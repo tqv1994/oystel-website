@@ -114,7 +114,7 @@
   </form>
 </div>
 
-<style lang="scss">
+<style>
     form {
       display: flex;
       flex-direction: column;
