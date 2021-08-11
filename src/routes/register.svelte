@@ -7,7 +7,7 @@
     createUserWithEmailAndPassword,
     inMemoryPersistence,
   } from 'firebase/auth';
-  import authStore from '../stores/auth';
+  import authStore from '$lib/stores/auth';
   import { goto } from '$app/navigation';
 
   let email = 'tester@test.net';
@@ -74,5 +74,4 @@
     display: flex;
     flex-direction: column;
   }
-
 </style>

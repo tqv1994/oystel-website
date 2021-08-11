@@ -24,7 +24,14 @@ const config = {
             '@smui/dialog',
             '@smui/layout-grid',
             '@smui/tab',
-            '@smui/tab-bar'
+            '@smui/tab-bar',
+            '@smui/checkbox',
+            '@smui/data-table',
+            '@smui/select',
+            '@smui/drawer',
+            '@smui/list',
+            '@smui/radio',
+            '@smui/form-field'
         ],
       }
     },

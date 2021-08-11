@@ -4,7 +4,15 @@ import { sessionCookieFromRequest, sessionCookieFromResponse } from '$lib/sessio
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const post: RequestHandler = async (request: Request<Record<string, any>,AuthForm>) => {
+  if (!request.body.token) {
+    return {
+      status: 400,
+      body: JSON.stringify({
+        message: 'ID token is required',
+      }),
+    };
+  }
   try {
     const cookie = sessionCookieFromRequest(request);
     if (cookie) {
@@ -13,6 +21,7 @@ export const get: RequestHandler = async (request: Request) => {
         method: 'DELETE',
         headers: {
           Cookie: cookie,
+          Authorization: 'Bearer ' + request.body.token,
         },
       });
       if (!res.ok) {

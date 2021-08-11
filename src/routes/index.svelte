@@ -1,95 +1,124 @@
 <script lang="ts">
-  import authStore from '../stores/auth';
-  import SignupModal from '../shared/components/modals/SignupModal.svelte';
-  import SigninModal from '../shared/components/modals/SigninModal.svelte';
-  import OyCarousel from '../shared/components/common/OyCarousel.svelte';
+  import authStore from '$lib/stores/auth';
+  import SignupModal from '$lib/components/modals/SignupModal.svelte';
+  import SigninModal from '$lib/components/modals/SigninModal.svelte';
+  import OyCarousel from '$lib/components/common/OyCarousel.svelte';
+  import Svg from '@smui/common/Svg.svelte';
   import Dialog, { Header, Title, Content, Actions } from '@smui/dialog';
   import IconButton from '@smui/icon-button';
   import Button, { Label, Icon } from '@smui/button';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   let openSignupModal, openSigninModal;
   let userModel = $authStore.user;
-  function getUserAfterSignup(event){
+  function getUserAfterSignup(event) {
     userModel = event.detail.user;
   }
 
-  function callOpenSignupModal(){
-    if(!userModel){
+  function callOpenSignupModal() {
+    if (!userModel) {
       openSignupModal = true;
       openSigninModal = false;
     }
+    openSignupModal = true;
+    openSigninModal = false;
   }
 
-  function callOpenSigninModal(){
-    if(!userModel){
+  function callOpenSigninModal() {
+    if (!userModel) {
       openSignupModal = false;
       openSigninModal = true;
     }
   }
-
 </script>
+
 <div class="content">
-  <section id="slider">
+  <section id="slider" class="full-width">
     <OyCarousel perPage={{ 800: 1 }} draggable={false}>
       <span class="control" slot="left-control">
-        <Icon><img src="./img/icons/icon-left-arrow.svg"></Icon>
+        <Icon><img src="./img/icons/icon-left-arrow.svg" /></Icon>
       </span>
-      <div class="slide-content slide-item" style="background-image: url(./img/slides/slide-01.jpg)">
-        <div class="dark text-box">
-          <LayoutGrid class="pb-15">
-            <Cell><h3 class="mt-0 mb-0">Welcome to Oysteo</h3></Cell>
-            <Cell><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
-          </LayoutGrid>
-          <LayoutGrid class="pb-15">
-            <Cell span="12"><h1 class="mt-0 mb-0">Your lifestyle concierge platform for incredible experiences and luxury resort fashion.</h1></Cell>
-          </LayoutGrid>
-          <LayoutGrid class="m-none">
-            <Cell>
-              <h4 style="text-transform: uppercase">Advisors</h4>
-              <p>First hand experience to craft your perfect vacation.</p>
-            </Cell>
-            <Cell>
-              <h4 style="text-transform: uppercase">Experiences</h4>
-              <p>Bespoke itineraries from our leading tastemakers.</p>
-            </Cell>
-            <Cell>
-              <h4 style="text-transform: uppercase">Fashion</h4>
-              <p>Purchase luxury goods from curated collections.</p>
-            </Cell>
-          </LayoutGrid>
+      <div
+        class="slide-content slide-item"
+        style="background-image: url(./img/slides/slide-01.jpg)"
+      >
+        <div class="content-wrap">
+          <div class="dark text-box">
+            <LayoutGrid class="pb-15">
+              <Cell><h3 class="mt-0 mb-0">Welcome to Oysteo</h3></Cell>
+              <Cell
+              ><Button variant="outlined"><Label>Plan Your Trip</Label></Button
+              ></Cell
+              >
+            </LayoutGrid>
+            <LayoutGrid class="pb-15">
+              <Cell span="12"
+              ><h1 class="mt-0 mb-0">
+                Your lifestyle concierge platform for incredible experiences and
+                luxury resort fashion.
+              </h1></Cell
+              >
+            </LayoutGrid>
+            <LayoutGrid class="m-none">
+              <Cell>
+                <h4 style="text-transform: uppercase">Advisors</h4>
+                <p>First hand experience to craft your perfect vacation.</p>
+              </Cell>
+              <Cell>
+                <h4 style="text-transform: uppercase">Experiences</h4>
+                <p>Bespoke itineraries from our leading tastemakers.</p>
+              </Cell>
+              <Cell>
+                <h4 style="text-transform: uppercase">Fashion</h4>
+                <p>Purchase luxury goods from curated collections.</p>
+              </Cell>
+            </LayoutGrid>
+          </div>
         </div>
       </div>
-      <div class="slide-content slide-item" style="background-image: url(./img/slides/slide-02.jpg)">
-        <div class="dark text-box">
-          <LayoutGrid class="pb-15">
-            <Cell><h3 class="mt-0 mb-0">Welcome to Oysteo</h3></Cell>
-            <Cell><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
-          </LayoutGrid>
-          <LayoutGrid class="pb-15">
-            <Cell span="12"><h1 class="mt-0 mb-0">Your lifestyle concierge platform for incredible experiences and luxury resort fashion.</h1></Cell>
-          </LayoutGrid>
-          <LayoutGrid class="m-none">
-            <Cell>
-              <h4 style="text-transform: uppercase">Advisors</h4>
-              <p>First hand experience to craft your perfect vacation.</p>
-            </Cell>
-            <Cell>
-              <h4 style="text-transform: uppercase">Experiences</h4>
-              <p>Bespoke itineraries from our leading tastemakers.</p>
-            </Cell>
-            <Cell>
-              <h4 style="text-transform: uppercase">Fashion</h4>
-              <p>Purchase luxury goods from curated collections.</p>
-            </Cell>
-          </LayoutGrid>
+      <div
+        class="slide-content slide-item"
+        style="background-image: url(./img/slides/slide-02.jpg)"
+      >
+        <div class="content-wrap">
+          <div class="dark text-box">
+            <LayoutGrid class="pb-15">
+              <Cell><h3 class="mt-0 mb-0">Welcome to Oysteo</h3></Cell>
+              <Cell
+              ><Button variant="outlined"><Label>Plan Your Trip</Label></Button
+              ></Cell
+              >
+            </LayoutGrid>
+            <LayoutGrid class="pb-15">
+              <Cell span="12"
+              ><h1 class="mt-0 mb-0">
+                Your lifestyle concierge platform for incredible experiences and
+                luxury resort fashion.
+              </h1></Cell
+              >
+            </LayoutGrid>
+            <LayoutGrid class="m-none">
+              <Cell>
+                <h4 style="text-transform: uppercase">Advisors</h4>
+                <p>First hand experience to craft your perfect vacation.</p>
+              </Cell>
+              <Cell>
+                <h4 style="text-transform: uppercase">Experiences</h4>
+                <p>Bespoke itineraries from our leading tastemakers.</p>
+              </Cell>
+              <Cell>
+                <h4 style="text-transform: uppercase">Fashion</h4>
+                <p>Purchase luxury goods from curated collections.</p>
+              </Cell>
+            </LayoutGrid>
+          </div>
         </div>
       </div>
       <span class="control" slot="right-control">
-        <Icon><img src="./img/icons/icon-right-arrow.svg"></Icon>
+        <Icon><img src="./img/icons/icon-right-arrow.svg" /></Icon>
       </span>
     </OyCarousel>
   </section>
-  <section class="has-padding" id="featured-drops">
+  <section class="has-padding m-pt-40 m-pb-70" id="featured-drops">
     <LayoutGrid class="pt-0">
       <Cell span="12"><h3 class="text-h1 mt-0 mb-0">Featured Drops</h3></Cell>
     </LayoutGrid>
@@ -97,156 +126,243 @@
       <Cell span="4">
         <div class="item-featured-drop new">
           <div class="thumbnail dark mb-70">
-            <img class="" src="./img/feature-drops/item-1.jpg" alt=""/>
+            <img class="" src="./img/feature-drops/item-1.jpg" alt="" />
             <div class="caption"><span>6 Packages left</span></div>
           </div>
-          <h5 class="mt-0" >Fashion Drop</h5>
-          <div class="divider pb-30"></div>
-          <h4 class="text-h2 mt-0 mb-30">Louis Vuitton - Photographed by Inez & Vinoodh in Monaco</h4>
-          <Button variant="outlined"><Label>Plan Your Trip</Label></Button>
+          <h5 class="mt-0">Fashion Drop</h5>
+          <div class="divider pb-30" />
+          <h4 class="text-h2 mt-0 mb-30">
+            Louis Vuitton - Photographed by Inez & Vinoodh in Monaco
+          </h4>
+          <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
         </div>
       </Cell>
       <Cell span="8" class="d-mr--30 m-mr-0">
         <div class="list-featured-drop">
           <div class="item-featured-drop">
             <div class="thumbnail dark mb-60">
-              <img class="" src="./img/feature-drops/item-2.jpg" alt=""/>
+              <img class="" src="./img/feature-drops/item-2.jpg" alt="" />
               <div class="caption"><span>11 Packages left</span></div>
             </div>
             <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
-            <div class="divider pb-30"></div>
-            <h4 class="text-h2 mt-0 mb-50 title">Exfoliating and polishing your skin with a finely ground herbs.</h4>
-            <Button variant="outlined"><Label>Plan Your Trip</Label></Button>
+            <div class="divider pb-30" />
+            <h4 class="text-h2 mt-0 mb-50 title">
+              Exfoliating and polishing your skin with a finely ground herbs.
+            </h4>
+            <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
           </div>
           <div class="item-featured-drop coming">
             <div class="thumbnail dark mb-60">
-              <img class="" src="./img/feature-drops/item-3.jpg" alt=""/>
+              <img class="" src="./img/feature-drops/item-3.jpg" alt="" />
               <div class="caption"><span>Coming 07.02.21</span></div>
             </div>
-            <p class="mt-0 mb-25 text-eyebrow category" >Fashion Drop</p>
-            <div class="divider pb-30"></div>
-            <h4 class="text-h2 mt-0 mb-50 title">Exfoliating and polishing your skin with a finely ground herbs.</h4>
-            <Button variant="outlined"><Label>Set Reminder</Label></Button>
+            <p class="mt-0 mb-25 text-eyebrow category">Fashion Drop</p>
+            <div class="divider pb-30" />
+            <h4 class="text-h2 mt-0 mb-50 title">
+              Exfoliating and polishing your skin with a finely ground herbs.
+            </h4>
+            <Button class="hover-affect" variant="outlined"><Label>Set Reminder</Label></Button>
           </div>
           <div class="item-featured-drop">
             <div class="thumbnail dark mb-60">
-              <img class="" src="./img/feature-drops/item-4.jpg" alt=""/>
+              <img class="" src="./img/feature-drops/item-4.jpg" alt="" />
               <div class="caption"><span>3 Packages left</span></div>
             </div>
-            <p class="mt-0 mb-25 text-eyebrow category" >Experience Drop</p>
-            <div class="divider pb-30"></div>
-            <h4 class="text-h2 mt-0 mb-50 title">Exfoliating and polishing your skin with a finely ground herbs.</h4>
-            <Button variant="outlined"><Label>Plan Your Trip</Label></Button>
+            <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
+            <div class="divider pb-30" />
+            <h4 class="text-h2 mt-0 mb-50 title">
+              Exfoliating and polishing your skin with a finely ground herbs.
+            </h4>
+            <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
           </div>
         </div>
       </Cell>
     </LayoutGrid>
   </section>
-  <section class="pt-55 pb-70" id="signup-section" style="background-color: #F0F7F8">
-    <LayoutGrid>
-      <Cell span="5">
-        <div class="thumbnail dark">
-          <img src="./img/signup-img.jpg" alt=""/>
-          <div class="caption">
-            <span>Channel Resort ‘21</span>
+  <section
+    class="d-pt-55 d-pb-70 m-pt-20 m-pb-20 full-width"
+    id="signup-section"
+    style="background-color: #F0F7F8"
+  >
+    <div class="content-wrap">
+      <LayoutGrid>
+        <Cell span="5">
+          <div class="thumbnail dark multi-images-affect">
+            <img src="./img/signup-img.jpg" alt="" />
+            <img src="./img/signup-img-2.jpg" alt=""/>
+            <div class="caption">
+              <span>Channel Resort ‘21</span>
+            </div>
           </div>
-        </div>
-      </Cell>
-      <Cell span="7" class="light d-pl-70 d-pr-70">
-        <h3 class="d-mb-100 d-mt-100 m-mt-40 m-mb-70">Join now for exclusive biweekly travel promotional drops, special content, and bespoke travel itineraries.</h3>
-        <div class="d-pb-100 m-pb-0"></div>
-        <h5>Become an Oysteo Member now</h5>
-        <h2 class="text-h1 mt-30 d-mb-40 m-mb-15">Never Miss a Drop</h2>
-        <Button variant="outlined" on:click={callOpenSignupModal}><Label>Sign Up Now</Label></Button>
-      </Cell>
-    </LayoutGrid>
+        </Cell>
+        <Cell span="7" class="light d-pl-70 d-pr-70">
+          <h3 class="d-mb-100 d-mt-100 m-mt-40 m-mb-70">
+            Join now for exclusive biweekly travel promotional drops, special
+            content, and bespoke travel itineraries.
+          </h3>
+          <div class="d-pb-100 m-pb-0" />
+          <h5>Become an Oysteo Member now</h5>
+          <h2 class="text-h1 mt-30 d-mb-40 m-mb-15">Never Miss a Drop</h2>
+          <Button variant="outlined" class="hover-affect" on:click={callOpenSignupModal}
+          ><Label >Sign Up Now</Label></Button
+          >
+        </Cell>
+      </LayoutGrid>
+    </div>
   </section>
-  <section class="has-padding" id="experience-section">
+  <section class="has-padding m-pt-48" id="experience-section">
     <LayoutGrid>
       <Cell span="5">
         <div class="item-experience featured text-center">
           <a href="#">
             <div class="thumbnail">
-              <img src="./img/experiences/experience-1.jpg"/>
+              <img src="./img/experiences/experience-1.jpg" />
+              <IconButton class="btn-favorite">
+                <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                    <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                </Icon>
+                <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                    <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                </Icon>
+              </IconButton>
             </div>
           </a>
           <p class="text-h1 mt-40">Curated for You</p>
-          <div class="divider pb-25"></div>
+          <div class="divider pb-25" />
           <p class="mt-0 text-eyebrow">Featured Experience</p>
           <a href="#">
-            <h4 class="text-h2">Archaval Ferrer Winery Tour </h4>
+            <h4 class="text-h2">Archaval Ferrer Winery Tour</h4>
           </a>
         </div>
       </Cell>
       <Cell span="7">
-        <LayoutGrid class="list-experiences">
-          <Cell span="6">
+        <LayoutGrid class="list-experiences m-p-0">
+          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
             <div class="item-experience">
               <div class="thumbnail">
-                <img src="./img/experiences/experience-2.jpg"/>
+                <img src="./img/experiences/experience-2.jpg" />
+                <IconButton class="btn-favorite">
+                  <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                    <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                  </Icon>
+                  <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                    <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                  </Icon>
+                </IconButton>
               </div>
               <p class="text-eyebrow mt-25 mb-0">Experience</p>
-              <div class="divider mt-25 pb-30"></div>
-              <h4 class="text-h2 title mt-0">Exfoliating and polishing your skin with a finely ground herbs.</h4>
+              <div class="divider mt-25 pb-30" />
+              <h4 class="text-h2 title mt-0">
+                Exfoliating and polishing your skin with a finely ground herbs.
+              </h4>
             </div>
           </Cell>
-          <Cell span="6">
+          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
             <div class="item-experience">
               <a href="#">
                 <div class="thumbnail">
-                  <img src="./img/experiences/experience-3.jpg"/>
+                  <img src="./img/experiences/experience-3.jpg" />
+                  <IconButton class="btn-favorite">
+                    <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                      <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                    </Icon>
+                    <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                      <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                    </Icon>
+                  </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25 mb-0">Experience</p>
-                <div class="divider mt-25 pb-30"></div>
-                <h4 class="text-h2 title mt-0">A one-of-a-kind journey of self-exploration.</h4>
+                <div class="divider mt-25 pb-30" />
+                <h4 class="text-h2 title mt-0">
+                  A one-of-a-kind journey of self-exploration.
+                </h4>
               </a>
             </div>
           </Cell>
-          <Cell span="6">
+          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
             <div class="item-experience">
               <a href="#">
                 <div class="thumbnail">
-                  <img src="./img/experiences/experience-4.jpg"/>
+                  <img src="./img/experiences/experience-4.jpg" />
+                  <IconButton class="btn-favorite">
+                    <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                      <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                    </Icon>
+                    <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                      <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                    </Icon>
+                  </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25 mb-0">Experience</p>
-                <div class="divider mt-25 pb-30"></div>
-                <h4 class="text-h2 title mt-0">A one-of-a-kind journey of self-exploration.</h4>
+                <div class="divider mt-25 pb-30" />
+                <h4 class="text-h2 title mt-0">
+                  A one-of-a-kind journey of self-exploration.
+                </h4>
               </a>
             </div>
           </Cell>
-          <Cell span="6">
+          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
             <div class="item-experience">
               <a href="#">
                 <div class="thumbnail">
-                  <img src="./img/experiences/experience-5.jpg"/>
+                  <img src="./img/experiences/experience-5.jpg" />
+                  <IconButton class="btn-favorite">
+                    <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                      <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                    </Icon>
+                    <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                      <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                    </Icon>
+                  </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25 mb-0">Destination</p>
-                <div class="divider mt-25 pb-30"></div>
+                <div class="divider mt-25 pb-30" />
                 <h4 class="text-h2 title mt-0">A Dream Cotswolds Getaway</h4>
               </a>
             </div>
           </Cell>
-          <Cell span="6">
+          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
             <div class="item-experience">
               <a href="#">
                 <div class="thumbnail">
-                  <img src="./img/experiences/experience-6.jpg"/>
+                  <img src="./img/experiences/experience-6.jpg" />
+                  <IconButton class="btn-favorite">
+                    <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                      <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                    </Icon>
+                    <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                      <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                    </Icon>
+                  </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25 mb-0">Experience</p>
-                <div class="divider mt-25 pb-30"></div>
-                <h4 class="text-h2 title mt-0">Exfoliating and polishing your skin with a finely ground herbs.</h4>
+                <div class="divider mt-25 pb-30" />
+                <h4 class="text-h2 title mt-0">
+                  Exfoliating and polishing your skin with a finely ground
+                  herbs.
+                </h4>
               </a>
             </div>
           </Cell>
-          <Cell span="6">
+          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
             <div class="item-experience">
               <a href="#">
                 <div class="thumbnail">
-                  <img src="./img/experiences/experience-7.jpg"/>
+                  <img src="./img/experiences/experience-7.jpg" />
+                  <IconButton class="btn-favorite">
+                    <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                      <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                    </Icon>
+                    <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                      <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                    </Icon>
+                  </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25 mb-0">Experience</p>
-                <div class="divider mt-25 pb-30"></div>
-                <h4 class="text-h2 title mt-0">A one-of-a-kind journey of self-exploration.</h4>
+                <div class="divider mt-25 pb-30" />
+                <h4 class="text-h2 title mt-0">
+                  A one-of-a-kind journey of self-exploration.
+                </h4>
               </a>
             </div>
           </Cell>
@@ -255,58 +371,125 @@
     </LayoutGrid>
   </section>
   <section id="from-advisors" class="pb-60">
-    <h2 class="text-h1 mt-0">From our Advisors</h2>
-    <LayoutGrid >
-      <Cell spanDevices={{desktop: 3, mobile: 6}}>
-        <div class="item-experience">
-          <a href="#">
-            <div class="thumbnail">
-              <img src="./img/from-advisors/item-1.jpg"/>
-            </div>
-            <p class="text-eyebrow mt-25 mb-0">Featured Experience</p>
-            <div class="divider mt-25 pb-30"></div>
-            <h4 class="text-h2 mt-0">Australian Masterchef Restaurant Tour - Starting in Sydney.</h4>
-          </a>
-        </div>
-      </Cell>
-      <Cell spanDevices={{desktop: 3, mobile: 6}}>
-        <div class="item-experience">
-          <a href="#">
-            <div class="thumbnail">
-              <img src="./img/from-advisors/item-2.jpg"/>
-            </div>
-            <p class="text-eyebrow mt-25 mb-0">Featured Experience</p>
-            <div class="divider  mt-25 pb-30"></div>
-            <h4 class="text-h2 mt-0">Archaval Ferrer Winery Tour - Drink directly from the cellar barrel.</h4>
-          </a>
-        </div>
-      </Cell>
-      <Cell spanDevices={{desktop: 3, mobile: 6}}>
-        <div class="item-experience">
-          <a href="#">
-            <div class="thumbnail">
-              <img src="./img/from-advisors/item-3.jpg"/>
-            </div>
-            <p class="text-eyebrow mt-25 mb-0">Featured Experience</p>
-            <div class="divider  mt-25 pb-30"></div>
-            <h4 class="text-h2 mt-0">Australian Masterchef Restaurant Tour - Starting in Sydney.</h4>
-          </a>
-        </div>
-      </Cell>
-      <Cell spanDevices={{desktop: 3, mobile: 6}}>
-        <div class="item-experience">
-          <a href="#">
-            <div class="thumbnail">
-              <img src="./img/from-advisors/item-4.jpg"/>
-            </div>
-            <p class="text-eyebrow mt-25 mb-0">Featured Experience</p>
-            <div class="divider mt-25 pb-30"></div>
-            <h4 class="text-h2 mt-0">A one-of-a-kind journey of self-exploration.</h4>
-          </a>
-        </div>
+    <LayoutGrid class="pt-0 pb-0">
+      <Cell span="12" >
+        <h2 class="text-h1 mt-0">From our Advisors</h2>
       </Cell>
     </LayoutGrid>
+
+      <LayoutGrid class="pt-0 pb-0">
+        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+          <div class="item-experience">
+            <a href="#">
+              <div class="thumbnail">
+                <img src="./img/from-advisors/item-1.jpg" />
+                <IconButton class="btn-favorite">
+                  <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                    <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                  </Icon>
+                  <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                    <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                  </Icon>
+                </IconButton>
+              </div>
+              <p class="text-eyebrow mt-25 mb-0">Experience</p>
+              <div class="divider mt-25 pb-30" />
+              <h4 class="text-h2 mt-0 title">
+                Australian Masterchef Restaurant Tour - Starting in Sydney.
+              </h4>
+            </a>
+          </div>
+        </Cell>
+        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+          <div class="item-experience">
+            <a href="#">
+              <div class="thumbnail">
+                <img src="./img/from-advisors/item-2.jpg" />
+                <IconButton class="btn-favorite">
+                  <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                    <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                  </Icon>
+                  <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                    <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                  </Icon>
+                </IconButton>
+              </div>
+              <p class="text-eyebrow mt-25 mb-0">Destination</p>
+              <div class="divider  mt-25 pb-30" />
+              <h4 class="text-h2 mt-0 title">
+                Archaval Ferrer Winery Tour - Drink directly from the cellar
+                barrel.
+              </h4>
+            </a>
+          </div>
+        </Cell>
+        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+          <div class="item-experience">
+            <a href="#">
+              <div class="thumbnail">
+                <img src="./img/from-advisors/item-3.jpg" />
+                <IconButton class="btn-favorite">
+                  <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                    <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                  </Icon>
+                  <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                    <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                  </Icon>
+                </IconButton>
+              </div>
+              <p class="text-eyebrow mt-25 mb-0">Experience</p>
+              <div class="divider  mt-25 pb-30" />
+              <h4 class="text-h2 mt-0 title">
+                Australian Masterchef Restaurant Tour - Starting in Sydney.
+              </h4>
+            </a>
+          </div>
+        </Cell>
+        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+          <div class="item-experience">
+            <a href="#">
+              <div class="thumbnail">
+                <img src="./img/from-advisors/item-4.jpg" />
+                <IconButton class="btn-favorite">
+                  <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                    <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                  </Icon>
+                  <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                    <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                  </Icon>
+                </IconButton>
+              </div>
+              <p class="text-eyebrow mt-25 mb-0">Experience</p>
+              <div class="divider mt-25 pb-30" />
+              <h4 class="text-h2 mt-0 title">
+                A one-of-a-kind journey of self-exploration.
+              </h4>
+            </a>
+          </div>
+        </Cell>
+      </LayoutGrid>
   </section>
 </div>
-<SignupModal bind:open={openSignupModal} bind:authModel={userModel} on:close={callOpenSigninModal} />
-<SigninModal bind:open={openSigninModal} bind:authModel={userModel} on:close={callOpenSignupModal} />
+<SignupModal
+  bind:open={openSignupModal}
+  bind:authModel={userModel}
+  on:close={callOpenSigninModal}
+/>
+<SigninModal
+  bind:open={openSigninModal}
+  bind:authModel={userModel}
+  on:close={callOpenSignupModal}
+/>
+<style>
+  @media screen and (max-width: 768px){
+    #slider :global(.dots){
+      position: absolute;
+      top: 250px;
+      left: 50%;
+      transform: translateX(-50%);
+      right: auto;
+      justify-content: left;
+      width: calc(100vw - 30px);
+    }
+  }
+</style>

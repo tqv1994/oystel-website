@@ -16,7 +16,7 @@ import { createClient } from '@urql/core';
 
 /** @type {import('@sveltejs/kit').GetSession} */
 export const getSession: GetSession = async (request) => {
-  console.log('session');
+  console.log('session', request.locals.user?.email);
   if (!request.locals.user) {
     // console.log('user not in session...');
     const cookie = sessionCookieFromRequest(request);
@@ -96,8 +96,9 @@ export const getSession: GetSession = async (request) => {
                   agency {
                     displayName
                     legalName
-                    approved
                     description
+                    state
+                    type
                   }
                   countries {
                     name

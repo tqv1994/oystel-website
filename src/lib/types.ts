@@ -1,4 +1,4 @@
-export type UserType = {
+export type UserModel = {
   username: string
   forenames?: string
   surname?: string
@@ -6,69 +6,84 @@ export type UserType = {
   phoneNumber?: string
   location?: string
   birthday?: Date
-  height?: Number
-  weight?: Number
+  height?: number
+  weight?: number
   notes?: string
   email?: string
   provider: string
   confirmed: boolean
   blocked: boolean
-  role: RoleType
-  destinationLikes?: DestinationLikeType[]
-  experienceLikes?: ExperienceLikeType[]
-  productLikes?: ProductLikeType[]
-  myAdvisors?: MyAdvisorType[]
-  advisorMe?: AdvisorType
+  role: RoleModel
+  destinationLikes?: DestinationLikeModel[]
+  experienceLikes?: ExperienceLikeModel[]
+  productLikes?: ProductLikeModel[]
+  myAdvisors?: MyAdvisorModel[]
+  advisorMe?: AdvisorModel
 }
 
-export type AdvisorType = {
+export type AdvisorModel = {
   bio?: string
   accept?: boolean
   countries?: number[]
   destinations?: number[]
   experiences: number[]
-  myUsers?: MyUserType
-  agency: AgencyType
+  myUsers?: MyUserModel
+  agency: AgencyModel
 }
 
-export type AgencyType = {
+export type AgencyModel = {
   displayName: string
   legalName?: string
   description?: string
-  advisors?: AdvisorType[]
+  advisors?: AdvisorModel[]
 }
 
-export type RoleType = {
+export type RoleModel = {
   name: string
   description?: string
   type: string
 }
 
-export type DestinationLikeType = {
+export type DestinationLikeModel = {
   id: number
   name: string
 }
 
-export type ExperienceLikeType = {
+export type ExperienceLikeModel = {
   id: number
   name: string
 }
 
-export type ProductLikeType = {
+export type ProductLikeModel = {
   id: number
   name: string
 }
 
-export type MyUserType = {
+export type MyUserModel = {
   id: number
   name: string
 }
 
-export type MyAdvisorType = {
+export type MyAdvisorModel = {
   id: number
   name: string
 }
 
 export type AuthData = {
   token: string
+}
+
+export enum AgencyType {
+  individual,
+  company,
+}
+
+export type AgencyApplicationForm1 = {
+  name: string
+  type: AgencyType
+  
+}
+
+export type AgencyApplicationForm3 = {
+  description: string
 }

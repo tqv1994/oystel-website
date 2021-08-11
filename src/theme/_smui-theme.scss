@@ -17,6 +17,8 @@
 @use "@material/floating-label/mdc-floating-label";
 @use "@material/line-ripple/mdc-line-ripple";
 @use "@material/notched-outline/mdc-notched-outline";
+@use "@material/checkbox";
+@use "@material/select";
 
 @use './variables';
 @use '@material/typography/index' as typography;
@@ -38,7 +40,7 @@
 
 @font-face {
   font-family: Surt;
-  src: url("./fonts/surt-light/Surt-SemiBoldExtended.woff");
+  src: url("./fonts/surt-semi-bold/Surt-SemiBoldExtended.woff");
   font-weight: 700;
 }
 
@@ -73,6 +75,17 @@ $desktop-width: 1025px;
 }
 }
 
+@mixin desktopLarge {   @media (min-width: #{$contentMaxWidth}) {
+  @content;
+}
+}
+
+@mixin onlyDesktop{ @media (min-width: #{$desktop-width}) and (max-width: #{$contentMaxWidth - 1px}){
+  @content
+}
+}
+
+
 @mixin light {
   .light{
     @content;
@@ -85,6 +98,29 @@ $desktop-width: 1025px;
   }
 }
 
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes fadeOutDown {
+  from {
+    visibility: visible;
+  }
+
+  to {
+    visibility: hidden;
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
 html,
 body {
   background-color: theme.$surface;
@@ -93,6 +129,7 @@ body {
 }
 
 a {
+  @include typography.typography('button');
   color: $blackColor;
   text-decoration: none;
 }
@@ -114,6 +151,7 @@ h4,.text-h4{
 }
 h5,.text-h5{
   @include typography.typography('headline5');
+  text-transform: uppercase;
 }
 h6,.text-h6{
   @include typography.typography('headline6');
@@ -130,15 +168,16 @@ h8,.text-h8{
 .text-body2{
   @include typography.typography('body2');
 }
-.text-eyebrow{
-  font-size: 13px;
-  letter-spacing: 2px;
-  line-height: 18px;
+button .text-eyebrow, .mdc-button .text-eyebrow, .text-eyebrow{
+  font-size: 13px !important;
+  letter-spacing: 0.2px !important;
+  line-height: 18px !important;
   @include mobile{
-    font-size: 11px;
-    line-height: 16px;
+    font-size: 11px !important;
+    line-height: 16px !important;
   }
 }
+
 caption {
   @include typography.typography('caption');
 }
@@ -155,7 +194,7 @@ button,button.mdc-button{
   }
   &,.mdc-button__label{
     @include typography.typography('button');
-    --mdc-typography-button-line-height: 0;
+    line-height: normal;
   }
   &.no-background{
     &:before, &:after{
@@ -165,14 +204,60 @@ button,button.mdc-button{
   &.border-white{
     @include button.outline-color(#fff);
   }
+  &.hover-affect{
+    position: relative;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgb(0 0 0 / 0%);
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    &:before{
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: $blackColor;
+      -webkit-transform: scaleX(0);
+      transform: scaleX(0);
+      -webkit-transform-origin: 0 50%;
+      transform-origin: 0 50%;
+      -webkit-transition-property: transform;
+      transition-property: transform;
+      -webkit-transition-duration: 0.3s;
+      transition-duration: 0.3s;
+      -webkit-transition-timing-function: ease-out;
+      transition-timing-function: ease-out;
+    }
+    &:hover{
+      color: white !important;
+      &:before{
+          -webkit-transform: scaleX(1);
+          transform: scaleX(1);
+      }
+    }
+  }
 }
-//.mdc-button{
-//  @include button.horizontal-padding(45px);
-//  @include button.outline-width(1px, 45px);
-//}
+
+/* Checkbox */
+.mdc-checkbox{
+ @include checkbox.ripple-size(0);
+}
+
+/* Text Label Of Fieldtext */
+.mdc-floating-label{
+  padding-right: 2px;
+}
 
 .content-wrap{
   max-width: $contentMaxWidth;
+  @include onlyDesktop{
+    max-width: calc(100vw - 60px );
+  }
   margin: 0 auto;
   position: relative;
   .container{
@@ -186,7 +271,7 @@ button,button.mdc-button{
   display: block;
 }
 .d-none{
-  display: none;
+  display: none !important;
 }
 @include mobile{
   .m-block{
@@ -237,6 +322,13 @@ button,button.mdc-button{
   }
   .mdc-button{
     @include button.outline-color($blackColor);
+    &.hover-affect{
+      &:hover{
+        & , & * {
+          color: $whiteColor !important;
+        }
+      }
+    }
   }
   .mdc-tab{
     --mdc-theme-primary: $blackColor;
@@ -317,6 +409,14 @@ header{
         margin-right: 0;
       }
     }
+    .sub-menu{
+      .mdc-tab{
+        padding-left: 0;
+        padding-right: 0;
+        justify-content: left;
+        margin-right: 24px;
+      }
+    }
   }
   .mdc-top-app-bar__section--align-end{
     .btn-plan-your-trip{
@@ -334,6 +434,7 @@ header{
       @include textfield.outline-color(#fff);
       @include textfield.hover-outline-color(#fff);
       @include textfield.label-color(#fff);
+      @include textfield.disabled-outline-color(#fff);
       padding-left: 22px;
       padding-right: 15px;
     }
@@ -345,6 +446,9 @@ header{
     margin-left: 100px;
     width: 100%;
     .list-tags{
+      &.open{
+        opacity: 1;
+      }
       opacity: 0;
       transition-duration: 1s;
       transition-property: opacity;
@@ -428,7 +532,6 @@ header{
     }
   }
   }
-
 }
 
 .page:not(.page-home){
@@ -439,8 +542,24 @@ header{
   }
 }
 
+
+.full-width {
+  @include desktopLarge {
+    margin-left: calc(calc(100vw / 2 - 1440px / 2) * -1);
+    margin-right: calc(calc(100vw / 2 - 1440px / 2) * -1);
+  }
+  @include onlyDesktop {
+    margin-left: -30px;
+    margin-right: -30px;
+  }
+  .content-wrap {
+    position: relative;
+    height: 100%;
+    width: 100%;
+  }
+}
+
 #slider{
-  width: 100%;
   .slide-item{
     height: 900px;
     @include mobile{
@@ -507,21 +626,50 @@ header{
   text-align: right !important;
 }
 
+.mdc-deprecated-list-item{
+  --mdc-typography-subtitle2-text-transform: uppercase;
+  &.active{
+    border-bottom: 1px solid #000;
+  }
+}
+
 /* Signup Modal */
 #signup-modal.mdc-dialog{
+  &.mdc-dialog--open{
+    animation-name: fadeInUp;
+    animation-duration: 2s;
+  }
+  &.closing{
+    animation-name: fadeOutDown;
+    animation-duration: 2s;
+  }
+  &.mdc-dialog--closing{
+    display: none;
+  }
   --mdc-layout-grid-gutter-desktop: 100px;
+  .mdc-dialog__container{
+    align-items: flex-end;
+  }
+  .mdc-dialog__scrim{
+    background-color: transparent;
+  }
   .mdc-dialog__surface{
-    max-width: $contentMaxWidth;
-    min-width: auto;
-    width: 100%;
+    width: var(--wrap-width);
+    max-width: var(--wrap-width);
+    background-color: $brownColor;
     .mdc-dialog__content{
-      padding: 40px 45px;
+      max-width: $contentMaxWidth;
+      margin: auto;
+      width: 100%;
+      padding: 80px 45px 90px 45px;
       position: relative;
-      background-color: $brownColor;
-      padding-top: 80px;
-      padding-bottom: 90px;
       .mdc-layout-grid{
         padding: 0
+      }
+    }
+    @include desktop{
+      h1{
+        letter-spacing: -2.5px;
       }
     }
     .close-modal{
@@ -577,7 +725,7 @@ header{
         text-decoration: none;
         font-size: 13px;
         line-height: 20px;
-        letter-spacing: 2px;
+        letter-spacing: 0.2px;
         @include mobile{
           font-size: 14px;
           line-height: 27px;
@@ -590,16 +738,42 @@ header{
 
 /* Signin Modal */
 #signin-modal.mdc-dialog{
+  &.mdc-dialog--open{
+    animation-name: fadeInUp;
+    animation-duration: 2s;
+  }
+  &.closing{
+    animation-name: fadeOutDown;
+    animation-duration: 2s;
+  }
+  &.mdc-dialog--closing{
+    display: none;
+  }
+  --mdc-layout-grid-gutter-desktop: 100px;
+  .mdc-dialog__container{
+    align-items: flex-end;
+  }
+  .mdc-dialog__scrim{
+    background-color: transparent;
+  }
   .mdc-dialog__surface{
-    max-width: $contentMaxWidth;
-    min-width: auto;
-    width: 100%;
+    width: var(--wrap-width);
+    max-width: var(--wrap-width);
+    background-color: $blackColor;
     .mdc-dialog__content{
+      max-width: $contentMaxWidth;
+      margin: auto;
       width: 100%;
+      padding: 80px 45px 90px 45px;
       position: relative;
-      background-color: $blackColor;
-      padding-top: 80px;
-      padding-bottom: 90px;
+      .mdc-layout-grid{
+        padding: 0
+      }
+    }
+    @include desktop{
+      h1{
+        letter-spacing: -2.5px;
+      }
     }
     .close-modal{
       position: absolute;
@@ -610,8 +784,6 @@ header{
       }
     }
     .signin-socials{
-      padding-right:113px;
-      padding-left:26px;
       @include tablet{
         padding:0;
       }
@@ -620,7 +792,7 @@ header{
       }
       button{
         display: block;
-        width: 100%;
+        width: 200px;
         height: 35px;
         text-transform: initial;
         @include mobile{
@@ -629,7 +801,6 @@ header{
       }
     }
     .signin-form{
-      padding: 0 67px;
       @include tablet{
         padding:0;
       }
@@ -649,7 +820,7 @@ header{
         text-decoration: none;
         font-size: 13px;
         line-height: 20px;
-        letter-spacing: 2px;
+        letter-spacing: 0.2px;
         @include mobile{
           font-size: 14px;
           line-height: 27px;
@@ -699,14 +870,13 @@ header{
         transform: translateX(-50%);
         padding: 20px 0;
         span{
-          margin: 0 85px;
-          @include mobile{
-            margin: 0 60px;
-          }
+          width: 100%;
+          display: inline-block;
+          text-align: center;
         }
         font-size: 14px;
         line-height: 32px;
-        letter-spacing: 1px;
+        letter-spacing: 0.1px;
       }
     }
     &.coming{
@@ -720,15 +890,23 @@ header{
         width: 315px;
         display: inline-block;
         margin-right: 30px;
+        @include mobile{
+          margin-right: 25px;
+        }
         white-space: normal;
         .caption{
           span{
-            margin: 0 60px;
+            width: 100%;
+            display: inline-block;
+            text-align: center;
           }
         }
     }
     .title{
       height: 55px;
+      @include mobile{
+        height: 70px;
+      }
       overflow: hidden;
     }
     .divider{
@@ -750,6 +928,19 @@ header{
     padding-bottom: 0;
   }
   .thumbnail{
+    &.multi-images-affect{
+      img:nth-of-type(2){
+        display: none;
+      }
+      &:hover{
+        img:nth-of-type(1){
+          display: none;
+        }
+        img:nth-of-type(2){
+          display: block;
+        }
+      }
+    }
     position: relative;
     .caption{
       text-transform: uppercase;
@@ -761,14 +952,13 @@ header{
       transform: translateX(-50%);
       padding: 20px 0;
       span{
-        margin: 0 85px;
-        @include mobile{
-          margin: 0 60px;
-        }
+        width: 100%;
+        display: inline-block;
+        text-align: center;
       }
       font-size: 14px;
       line-height: 32px;
-      letter-spacing: 1px;
+      letter-spacing: 0.1px;
     }
   }
 }
@@ -794,6 +984,28 @@ header{
 
   }
   .item-experience{
+    .thumbnail{
+      position: relative;
+      .btn-favorite{
+        position: absolute;
+        top: 2%;
+        right: 2%;
+        .like{
+          display: block;
+        }
+        .liked{
+          display: none;
+        }
+        &:hover{
+          .like{
+            display: none;
+          }
+          .liked{
+            display: block;
+          }
+        }
+      }
+    }
     .divider{
       &::after{
         background-color: #CCC;
@@ -801,6 +1013,9 @@ header{
     }
     .title{
       height: 55px;
+      @include mobile{
+        height: 70px;
+      }
       overflow: hidden;
     }
   }
@@ -808,10 +1023,32 @@ header{
 
 /* Home Page - Section From Advisors */
 #from-advisors{
-  @include desktop{
-    --mdc-layout-grid-margin-desktop: 0;
-  }
+  //@include desktop{
+  //  --mdc-layout-grid-margin-desktop: 0;
+  //}
   .item-experience{
+    .thumbnail{
+      position: relative;
+      .btn-favorite{
+        position: absolute;
+        top: 2%;
+        right: 2%;
+        .like{
+          display: block;
+        }
+        .liked{
+          display: none;
+        }
+        &:hover{
+          .like{
+            display: none;
+          }
+          .liked{
+            display: block;
+          }
+        }
+      }
+    }
     .divider{
       &::after{
         background-color: #CCC;
@@ -819,6 +1056,9 @@ header{
     }
     .title{
       height: 55px;
+      @include mobile{
+        height: 70px;
+      }
       overflow: hidden;
     }
   }
@@ -845,7 +1085,7 @@ footer{
     padding-inline-start: 0;
     li {
       font-size: 13px;
-      letter-spacing: 2px;
+      letter-spacing: 0.2px;
       line-height: 30px;
       list-style: none;
     }
@@ -855,5 +1095,37 @@ footer{
       text-transform: uppercase;
     }
     margin-bottom: 40px;
+  }
+}
+
+.user-dashboard{
+  --mdc-tab-horizontal-padding: 0;
+  .mdc-drawer{
+    border-color: transparent;
+  }
+  .mdc-tab-bar{
+    .mdc-tab-scroller__scroll-content{
+      display: block;
+    }
+    .mdc-tab{
+      padding-right: 0;
+      padding-left: 0;
+      justify-content: left;
+      width: 100%;
+      text-transform: uppercase;
+    }
+  }
+  .personal-info{
+    position: relative;
+    padding: 25px 30px;
+    border: 1px solid #000;
+  }
+  .user-profile-image{
+    position: relative;
+    .btn-update-avatar{
+      position: absolute;
+      top: 24px;
+      right: 15px;
+    }
   }
 }

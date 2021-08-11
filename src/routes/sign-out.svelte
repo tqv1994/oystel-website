@@ -1,5 +1,5 @@
 <script lang="ts">
-  import authStore from '../stores/auth';
+  import authStore from '$lib/stores/auth';
 
   async function signOut() {
     try {
