@@ -18,7 +18,7 @@
     "@rollup/pluginutils": "^4.1.1",
     "@smui/dialog": "^4.2.0",
     "@smui/select": "^4.2.0",
-    "@sveltejs/adapter-vercel": "^1.0.0-next.27",
+    "@sveltejs/adapter-vercel": "next",
     "@sveltejs/app-utils": "next",
     "@sveltejs/kit": "^1.0.0-next.138",
     "@types/cookie": "^0.4.1",
