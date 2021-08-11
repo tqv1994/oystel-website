@@ -36,11 +36,11 @@
     "svelte-check": "^2.2.3",
     "svelte-preprocess": "^4.7.4",
     "tslib": "^2.3.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "@mdi/js": "^5.9.55"
   },
   "type": "module",
   "dependencies": {
-    "@mdi/js": "^5.9.55",
     "@smui/button": "^4.2.0",
     "@smui/checkbox": "^4.2.0",
     "@smui/data-table": "^4.2.0",

@@ -14,7 +14,7 @@
 
     {/if}
     {#if dots}
-        <ul>
+        <ul class="dots">
             {#each {length: totalDots} as _, i}
                 <li on:click={() => go(i*currentPerPage)} class={isDotActive(currentIndex, i) ? "active" : ""}></li>
             {/each}

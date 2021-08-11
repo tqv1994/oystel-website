@@ -21,6 +21,7 @@
   let isEditProfile = false;
   let currentPage = ''
   afterUpdate(() => {
+    console.log($authStore.user);
     if (!$authStore.user) {
       window.location.href = '/';
     }

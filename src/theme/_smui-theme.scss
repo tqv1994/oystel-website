@@ -129,6 +129,7 @@ body {
 }
 
 a {
+  @include typography.typography('button');
   color: $blackColor;
   text-decoration: none;
 }
@@ -167,15 +168,16 @@ h8,.text-h8{
 .text-body2{
   @include typography.typography('body2');
 }
-.text-eyebrow{
-  font-size: 13px;
-  letter-spacing: 0.2px;
-  line-height: 18px;
+button .text-eyebrow, .mdc-button .text-eyebrow, .text-eyebrow{
+  font-size: 13px !important;
+  letter-spacing: 0.2px !important;
+  line-height: 18px !important;
   @include mobile{
-    font-size: 11px;
-    line-height: 16px;
+    font-size: 11px !important;
+    line-height: 16px !important;
   }
 }
+
 caption {
   @include typography.typography('caption');
 }
@@ -269,7 +271,7 @@ button,button.mdc-button{
   display: block;
 }
 .d-none{
-  display: none;
+  display: none !important;
 }
 @include mobile{
   .m-block{
@@ -888,6 +890,9 @@ header{
         width: 315px;
         display: inline-block;
         margin-right: 30px;
+        @include mobile{
+          margin-right: 25px;
+        }
         white-space: normal;
         .caption{
           span{
@@ -899,6 +904,9 @@ header{
     }
     .title{
       height: 55px;
+      @include mobile{
+        height: 70px;
+      }
       overflow: hidden;
     }
     .divider{
@@ -1005,6 +1013,9 @@ header{
     }
     .title{
       height: 55px;
+      @include mobile{
+        height: 70px;
+      }
       overflow: hidden;
     }
   }
@@ -1045,6 +1056,9 @@ header{
     }
     .title{
       height: 55px;
+      @include mobile{
+        height: 70px;
+      }
       overflow: hidden;
     }
   }
