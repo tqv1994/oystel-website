@@ -35,8 +35,6 @@
   import OySubMenu from '$lib/components/common/OySubMenu.svelte';
   import SignupModal from '$lib/components/modals/SignupModal.svelte';
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
-  import BottomAppBar from '$lib/components/common/BottomAppBar/index.svelte';
-  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
 
   let miniWindow = false;
   let searchResult = '';
@@ -48,7 +46,6 @@
   let openSignupModal = false;
   let openSigninModal = false;
   let openSearchResult = false;
-  let contentHeaderAction = '';
   function setMiniWindow() {
     page = location.pathname;
     page = page.replace('/', '');
@@ -126,7 +123,7 @@
         : 'light'}"
     >
       <Row>
-        <Section class="pl-0">
+        <Section>
           <Title
             id="logo"
             component={A}
@@ -181,13 +178,6 @@
           </ul>
           <OySubMenu bind:open={openSubMenu} bind:menuId={menuItemActive} />
         </Section>
-        <Section class="d-none m-block pr-0" align="end" toolbar>
-          <Wrapper>
-            <div class="wrap-menu-mobile">
-              <IconButton class="material-icons" on:click={()=>{contentHeaderAction='menu'}} >menu</IconButton>
-            </div>
-          </Wrapper>
-        </Section>
         <Section
           class="m-none"
           align="end"
@@ -233,7 +223,7 @@
         <div class="divider" />
       </div>
       <Row>
-        <Section align="start" class="m-pl-0 m-pr-0">
+        <Section align="start">
           <form class="search-form">
             <div class="form-control">
               <Textfield
@@ -251,7 +241,7 @@
             </div>
           </form>
         </Section>
-        <Section align="end" class="list-tags-wrap m-none">
+        <Section align="end" class="list-tags-wrap">
           <div class="list-tags {!openSearchResult ? '' : 'open'}" on:mouseout={()=>{openSearchResult=false}}>
             <Button variant="unelevated"
               ><Label>Beach with Friends</Label></Button
@@ -308,21 +298,6 @@
               </div>
             </form>
           </div>
-
-          <div class="widget mb-20 m-block d-none">
-            <h4 class="mt-0 widget-title">Follow Oysteo</h4>
-            <div class="widget-content button-socials">
-              <a href="#" class="mr-20" target="_blank"
-              ><img src="./img/icons/icon-instagram.svg" alt="" />
-              </a>
-              <a href="#" class="mr-20" target="_blank"
-              ><img src="./img/icons/icon-facebook2.svg" alt="" />
-              </a>
-              <a href="#" target="_blank"
-              ><img src="./img/icons/icon-twitter.svg" alt="" />
-              </a>
-            </div>
-          </div>
         </Cell>
         <Cell span="6">
           <LayoutGrid>
@@ -349,7 +324,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="widget mb-0 m-none">
+              <div class="widget mb-0">
                 <h4 class="mt-0 widget-title">Follow Oysteo</h4>
                 <div class="widget-content button-socials">
                   <a href="#" class="mr-20" target="_blank"
@@ -406,27 +381,3 @@
   bind:authModel={userModel}
   on:close={callOpenSignupModal}
 />
-<BottomAppBar on:openHeaderActionMobile={(event)=>{contentHeaderAction = event.detail.content}}>no content</BottomAppBar>
-<HeaderActionMobile bind:content={contentHeaderAction} ></HeaderActionMobile>
-<style>
-  .wrap-menu-mobile{
-    display: flex;
-    flex-direction: row-reverse;
-    flex-wrap: nowrap;
-  }
-  .wrap-menu-mobile :global(.mdc-icon-button){
-    --mdc-ripple-color: tranparent;
-    padding: 12px 0;
-    width: auto;
-    height: auto;
-  }
-  @media screen and (max-width: 768px) {
-    header .search-form ,header .search-form :global(.mdc-text-field){
-      width: 100%;
-    }
-  }
-
-  :global(#logo){
-    line-height: 0;
-  }
-</style>
