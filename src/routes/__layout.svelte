@@ -23,13 +23,11 @@
   import { goto } from '$app/navigation';
   import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
   import IconButton, { Icon } from '@smui/icon-button';
-  import { mdiHeart, mdiMagnify } from '@mdi/js';
   import Button, { Label } from '@smui/button';
   import Tooltip, { Wrapper } from '@smui/tooltip';
   import Textfield from '@smui/textfield';
   import A from '@smui/common/A.svelte';
   import Svg from '@smui/common/Svg.svelte';
-  import { mdiWeatherSunny, mdiWeatherNight } from '@mdi/js';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import { onMount, afterUpdate } from 'svelte';
   import OySubMenu from '$lib/components/common/OySubMenu.svelte';
