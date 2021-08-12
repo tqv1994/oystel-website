@@ -3,7 +3,7 @@
     import Button, {Icon} from '@smui/button';
     import Svg from '@smui/common/Svg.svelte';
     import IconButton from '@smui/icon-button';
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher, afterUpdate } from 'svelte';
     import { goto } from '$app/navigation';
 
     const dispatch = createEventDispatcher();
@@ -38,7 +38,7 @@
         },
         {
             name: 'Experiences',
-            link: '#',
+            link: '/experiences-listing',
             children: [
                 {
                     name: 'Sea',

@@ -35,37 +35,37 @@
             category: 'Beach',
             title: 'St.Barths, Grand Cul De Sac',
             link: '#',
-            image: './img/posts/post1.jpg'
+            image: '/img/posts/post1.jpg'
         },
         {
             category: 'City',
             title: 'St.Barths, Grand Cul De Sac',
             link: '#',
-            image: './img/posts/post1.jpg'
+            image: '/img/posts/post1.jpg'
         },
         {
             category: 'Mountain',
             title: 'St.Barths, Grand Cul De Sac',
             link: '#',
-            image: './img/posts/post1.jpg'
+            image: '/img/posts/post1.jpg'
         },
         {
             category: 'Sea',
             title: 'St.Barths, Grand Cul De Sac',
             link: '#',
-            image: './img/posts/post1.jpg'
+            image: '/img/posts/post1.jpg'
         },
         {
             category: 'Wildernes',
             title: 'St.Barths, Grand Cul De Sac',
             link: '#',
-            image: './img/posts/post1.jpg'
+            image: '/img/posts/post1.jpg'
         },
         {
             category: 'View All',
             title: 'St.Barths, Grand Cul De Sac',
             link: '#',
-            image: './img/posts/post1.jpg'
+            image: '/img/posts/post1.jpg'
         }
     ];
     let active = tabs[3];

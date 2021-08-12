@@ -215,12 +215,12 @@
           >
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
-          <Cell spanDevices={{ desktop: 2, mobile: 12 }}><h5>Height</h5></Cell>
-          <Cell spanDevices={{ desktop: 2, mobile: 12 }}><h5>Weight</h5></Cell>
+          <Cell spanDevices={{ desktop: 2, phone: 2 }}><h5>Height</h5></Cell>
+          <Cell spanDevices={{ desktop: 2, phone: 2 }}><h5>Weight</h5></Cell>
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
-          <Cell spanDevices={{ desktop: 2, mobile: 12 }}>5',7''</Cell>
-          <Cell spanDevices={{ desktop: 2, mobile: 12 }}>128 lbs</Cell>
+          <Cell spanDevices={{ desktop: 2, phone: 2 }}>5',7''</Cell>
+          <Cell spanDevices={{ desktop: 2, phone: 2 }}>128 lbs</Cell>
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell span="12"><h5>Assistant Infomation</h5></Cell>
@@ -238,10 +238,10 @@
           <Cell span="12">Email Preferences</Cell>
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-35">
-          <Cell spanDevices={{ desktop: 1, mobile: 2 }}>
+          <Cell spanDevices={{ desktop: 1, phone: 1 }}>
             <Checkbox bind:check={modelEmailPreferences.neverMissADrop} />
           </Cell>
-          <Cell spanDevices={{ desktop: 11, mobile: 10 }}>
+          <Cell spanDevices={{ desktop: 11, phone: 3 }}>
             <h5 class="mb-15 mt-0">Never Miss a Drop</h5>
             <p class="m-0">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -251,10 +251,10 @@
           </Cell>
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-0">
-          <Cell spanDevices={{ desktop: 1, mobile: 2 }}>
+          <Cell spanDevices={{ desktop: 1, phone: 1 }}>
             <Checkbox bind:check={modelEmailPreferences.curatedForYou} />
           </Cell>
-          <Cell spanDevices={{ desktop: 11, mobile: 10 }}>
+          <Cell spanDevices={{ desktop: 11, phone: 3 }}>
             <h5 class="mb-15 mt-0">Curated For You</h5>
             <p class="m-0">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -284,5 +284,18 @@
     position: relative;
     border: 1px solid #000;
   }
+  @media screen and (max-width: 768px) {
+    .user-profile-image {
+      max-width: 120px;
+      margin: 0 auto;
+    }
 
+    .user-profile-image :global(.btn-update-avatar) {
+      top: -5px;
+      right: -10px;
+    }
+    :global(.personal-info .mdc-layout-grid){
+      --mdc-layout-grid-gutter-phone: 5px;
+    }
+  }
 </style>

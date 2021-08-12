@@ -1,15 +1,19 @@
 <script lang="ts">
     import TopAppBar, {Section, Row, Title} from '@smui/top-app-bar';
+    import { createEventDispatcher } from 'svelte';
     import Button, {Icon} from '@smui/button';
     import Svg from '@smui/common/Svg.svelte';
     import IconButton from '@smui/icon-button';
     import OyMenu from './OyMenu.svelte';
     import OyExplode from './OyExplode.svelte';
-
+    import OyFormSearchExperience from './OyFormSearchExperience.svelte';
+    let dispathcher = createEventDispatcher();
     export let open = false;
     export let content;
+    export let searchModel;
     function callCloseHeaderActionMobile(){
-        open = false;
+        content = '';
+        dispathcher('close');
     }
 </script>
 {#if (content != '')}
@@ -47,9 +51,10 @@
         <div class="">
             {#if (!content || content == 'menu')}
             <OyMenu on:close={callCloseHeaderActionMobile}>no content</OyMenu>
-            {/if}
-            {#if (content == 'explode')}
+            {:else if (content == 'explode')}
                 <OyExplode on:close={callCloseHeaderActionMobile}>no content</OyExplode>
+            {:else if (content == 'experience-search')}
+                <OyFormSearchExperience bind:searchModel on:close={callCloseHeaderActionMobile}>no content</OyFormSearchExperience>
             {/if}
         </div>
     </div>

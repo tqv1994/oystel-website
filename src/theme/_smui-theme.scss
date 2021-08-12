@@ -128,7 +128,7 @@ body {
   @include typography.typography('body1');
 }
 
-a {
+a{
   @include typography.typography('button');
   color: $blackColor;
   text-decoration: none;
@@ -162,7 +162,7 @@ h7,.text-h7{
 h8,.text-h8{
   @include typography.typography('subtitle2');
 }
-.text-body1{
+p,.text-body1{
   @include typography.typography('body1');
 }
 .text-body2{
@@ -240,6 +240,17 @@ button,button.mdc-button{
           transform: scaleX(1);
       }
     }
+  }
+}
+
+.fixed {
+  position: fixed !important;
+  top:0 !important; left:0 !important;
+  width: 100%;
+  z-index: 30 !important;
+  &.full-width{
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 }
 

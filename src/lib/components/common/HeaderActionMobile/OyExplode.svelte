@@ -4,7 +4,7 @@
     import Svg from '@smui/common/Svg.svelte';
     import IconButton from '@smui/icon-button';
     import Textfield from '@smui/textfield';
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher, afterUpdate } from 'svelte';
     import { goto } from '$app/navigation';
 
     const dispatch = createEventDispatcher();
@@ -62,6 +62,8 @@
         goto(menu.link);
         dispatch('close');
     }
+
+    afterUpdate(()=>{ document.getElementById('header-action-mobile').style.backgroundColor = '#fff'; });
 </script>
 <div id="explode-wrap" class="mt-25">
     <form class="search-form">
@@ -87,9 +89,6 @@
     </form>
 </div>
 <style>
-    :global(#header-action-mobile#header-action-mobile){
-        background-color: #FFF;
-    }
     .wrap-search-result{
         height:calc( 100vh / 812  * 530);
         overflow-x: scroll;

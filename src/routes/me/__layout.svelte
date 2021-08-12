@@ -10,6 +10,7 @@
   import CreateAgencyModal from '$lib/components/modals/CreateAgencyModal.svelte';
   import Drawer, { AppContent, Content } from '@smui/drawer';
   import List, { Item, Text } from '@smui/list';
+  import Select, { Option } from '@smui/select';
 
   let active = 'Account Details';
   let userModel = $authStore.user;
@@ -79,23 +80,27 @@
 {#if userModel}
   <div class="content user-dashboard light">
     <div class="container">
-      <section class="pt-40 pb-40">
-        <div class="section-header">
-          <p>Welcome to Your Oysteo Account</p>
-          <h1 class="mb-0">
-            Good afternoon, {userModel.displayName || 'there'}.
-          </h1>
-          <a
-            href="javascript:void(0)"
-            on:click={signOut}
-            class="btn-sign-out text-input">Sign Out</a
-          >
-        </div>
-        <div class="divider"></div>
+      <section class="pt-20 pb-40">
+        <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+          <Cell span="12">
+            <div class="section-header">
+              <p>Welcome to Your Oysteo Account</p>
+              <h1 class="mb-0">
+                Good afternoon, {userModel.displayName || 'there'}.
+              </h1>
+              <a
+                      href="javascript:void(0)"
+                      on:click={signOut}
+                      class="btn-sign-out text-input">Sign Out</a
+              >
+            </div>
+            <div class="divider"></div>
+          </Cell>
+        </LayoutGrid>
         <div class="section-body">
           <LayoutGrid class="d-pl-0 d-pr-0">
             <Cell spanDevices={{ desktop: 3, mobile: 12 }}>
-              <Drawer>
+              <Drawer class="m-none">
                 <Content>
                   <List>
                     <Item href="/me" class="{currentPage == '/me' ? 'active' : ''}"><Text>Account Details</Text></Item>
@@ -107,8 +112,17 @@
                     <Item href="/me"><Text>Support</Text></Item>
                     <Item href="/my-agency"><Text>For advisors</Text></Item>
                   </List></Content
-                ></Drawer
-              >
+                ></Drawer>
+              <div class="d-none m-block text-center mb-35">
+                <Select
+                        bind:value={currentPage}
+                        label=""
+                >
+                    <Option value="/me" selected>Account Details</Option>
+                  <Option value="/trips">Trips</Option>
+                  <Option value="/my-advisors">My Advisors</Option>
+                </Select>
+              </div>
             </Cell>
             <Cell spanDevices={{ desktop: 9, mobile: 12 }}>
               <div class="tab-content">
@@ -156,5 +170,13 @@
 
   .mdc-deprecated-list-item.active{
     border-bottom: 1px solid #000;
+  }
+  @media screen and (max-width: 768px) {
+    .user-dashboard .section-header .btn-sign-out {
+      margin-top: 13px;
+      position: static;
+      margin-bottom: 20px;
+      display: block;
+    }
   }
 </style>
