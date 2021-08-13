@@ -265,17 +265,30 @@ button,button.mdc-button{
 }
 
 .content-wrap{
-  max-width: $contentMaxWidth;
-  @include onlyDesktop{
-    max-width: calc(100vw - 60px );
+  @media screen and (min-width: 1441px){
+    max-width: $contentMaxWidth;
   }
-  margin: 0 auto;
-  position: relative;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
   .container{
-    max-width: $containerWith;
-    width: 100%;
-    margin: 0 auto;
+    max-width: 1440px;
+    margin-left: 45px;
+    margin-right: 45px;
   }
+  @media screen and (max-width: 1239px) and (min-width: 600px) {
+    .container {
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+  }
+  @media screen and (max-width: 599px){
+    .container {
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+  }
+  position: relative;
 }
 
 .d-block{
@@ -367,21 +380,6 @@ header{
   }
   &.mdc-top-app-bar{
     background-color: transparent;
-  }
-  @include desktop {
-    .mdc-top-app-bar__section--align-start {
-      margin-left: 45px;
-    }
-
-    .mdc-top-app-bar__section--align-end {
-      margin-right: 45px;
-    }
-  }
-
-  @include mobile{
-    .mdc-top-app-bar{
-      padding: 0 20px;
-    }
   }
 
   .mdc-top-app-bar__section {
@@ -559,10 +557,10 @@ header{
     margin-left: calc(calc(100vw / 2 - 1440px / 2) * -1);
     margin-right: calc(calc(100vw / 2 - 1440px / 2) * -1);
   }
-  @include onlyDesktop {
-    margin-left: -30px;
-    margin-right: -30px;
-  }
+  //@include onlyDesktop {
+  //  margin-left: -30px;
+  //  margin-right: -30px;
+  //}
   .content-wrap {
     position: relative;
     height: 100%;
@@ -591,10 +589,11 @@ header{
       background-color: rgba(0,0,0,0.45);
     }
     .text-box{
-      width: 60%; top: 40%; left: 10%; position: absolute; z-index: 2;
+      width: 60%; top: 30%; left: 10%; position: absolute; z-index: 2;
       @include mobile{
         width: 100%;
         left: auto;
+        top: 45%;
       }
     }
   }

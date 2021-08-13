@@ -11,6 +11,7 @@
   import Drawer, { AppContent, Content } from '@smui/drawer';
   import List, { Item, Text } from '@smui/list';
   import Select, { Option } from '@smui/select';
+  import Layout from '$lib/components/common/Layout.svelte';
 
   let active = 'Account Details';
   let userModel = $authStore.user;
@@ -76,12 +77,12 @@
     }
   }
 </script>
-
 {#if userModel}
+  <Layout>
   <div class="content user-dashboard light">
     <div class="container">
       <section class="pt-20 pb-40">
-        <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+        <LayoutGrid class="p-0">
           <Cell span="12">
             <div class="section-header">
               <p>Welcome to Your Oysteo Account</p>
@@ -98,7 +99,7 @@
           </Cell>
         </LayoutGrid>
         <div class="section-body">
-          <LayoutGrid class="d-pl-0 d-pr-0">
+          <LayoutGrid class="pl-0 pr-0">
             <Cell spanDevices={{ desktop: 3, mobile: 12 }}>
               <Drawer class="m-none">
                 <Content>
@@ -135,6 +136,7 @@
     </div>
   </div>
   <CreateAgencyModal bind:open={openCreateAgencyModal} />
+  </Layout>
 {/if}
 
 <style type="text/css">

@@ -9,6 +9,7 @@
     import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
     import Svg from '@smui/common/Svg.svelte';
     import {StringHelper} from '$lib/helpers';
+    import Layout from '$lib/components/common/Layout.svelte';
     let stringHelper = new StringHelper();
     let searchModel = {
         name: '',
@@ -68,17 +69,18 @@
     }
 </script>
 <svelte:window on:load={()=>{setSizeForDivReadmore(); onScrollFixedHeader(); onLoad()}} on:resize={()=>{setSizeForDivReadmore}} on:scroll={()=>{onScrollFixedHeader()}}/>
+<Layout>
 <div class="content">
         <section class="header-title d-pt-120 d-pb-95 m-pt-90 m-pb-25 full-width">
             <div class="content-wrap">
                 <div class="container m-none">
                     <form class="search-form-experiences" action="/" on:submit|preventDefault={onSearchSubmit} >
-                        <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                        <LayoutGrid class="p-0">
                             <Cell span="5">
                                 <div class="form-control">
                                     <Textfield variant="outlined" bind:value={searchModel.name} label="Start with a search" withTrailingIcon={false}>
                                         <Icon slot="trailingIcon"
-                                        ><img src="./img/icons/icon-search.svg" /></Icon
+                                        ><img src="/img/icons/icon-search.svg" /></Icon
                                         >
                                     </Textfield>
                                 </div>
@@ -113,7 +115,7 @@
                             </Cell>
                         </LayoutGrid>
                     </form>
-                    <LayoutGrid class="d-p-0 m-pt-0 m-pb-0 hidden-on-sticky">
+                    <LayoutGrid class="p-0 hidden-on-sticky">
                         <Cell span="12">
                             <h1 class="text-center mb-30">Curate Your Experiences</h1>
                             <p class="text-center">Bespoke itineraries created by our leading tastemakers.</p>
@@ -121,7 +123,7 @@
                     </LayoutGrid>
                 </div>
                 <div class="container m-block d-none">
-                    <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                    <LayoutGrid class="p-0">
                         <Cell span="12">
                             <Button on:click={()=>{contentHeaderActionMobile = 'experience-search'}} style="width: 100%" variant="outlined"><Label>Filter Your Results</Label></Button>
                         </Cell>
@@ -132,12 +134,12 @@
         <section class="d-pt-85 d-pb-95 m-pt-50 m-pb-70">
             <div class="container">
                 <div class="section-title">
-                    <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                    <LayoutGrid class="p-0">
                         <Cell span="12"><h2 class="text-h1 title mt-0 d-mb-30">Adventure</h2></Cell>
                     </LayoutGrid>
                 </div>
                 <div class="section-content">
-                    <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                    <LayoutGrid class="p-0">
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
@@ -222,12 +224,12 @@
             </div>
             <div class="container">
                 <div class="section-title">
-                    <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                    <LayoutGrid class="p-0">
                         <Cell span="12"><h2 class="text-h1 title d-mb-30">Safari</h2></Cell>
                     </LayoutGrid>
                 </div>
                 <div class="section-content">
-                    <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                    <LayoutGrid class="p-0">
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
@@ -312,12 +314,12 @@
             </div>
             <div class="container">
                 <div class="section-title">
-                    <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                    <LayoutGrid class="p-0">
                         <Cell span="12"><h2 class="text-h1 title d-mb-30">Food</h2></Cell>
                     </LayoutGrid>
                 </div>
                 <div class="section-content">
-                    <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                    <LayoutGrid class="p-0">
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
@@ -402,12 +404,12 @@
             </div>
             <div class="container">
                 <div class="section-title">
-                    <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                    <LayoutGrid class="p-0">
                         <Cell span="12"><h2 class="text-h1 title d-mb-30">Beach</h2></Cell>
                     </LayoutGrid>
                 </div>
                 <div class="section-content">
-                    <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                    <LayoutGrid class="p-0">
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
@@ -492,6 +494,7 @@
             </div>
         </section>
 </div>
+</Layout>
 <HeaderActionMobile bind:content={contentHeaderActionMobile} bind:searchModel on:close={onSearchSubmit}></HeaderActionMobile>
 <style>
     .header-title{

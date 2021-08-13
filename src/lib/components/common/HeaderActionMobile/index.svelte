@@ -30,7 +30,7 @@
                             href="/"
                             class="mdc-theme--primary pl-0"
                     >
-                        <img src="./img/logo.svg" />
+                        <img src="/img/logo.svg" />
                     </Title>
                 </Section>
                 <Section class="pr-0" align="end">

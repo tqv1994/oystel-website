@@ -9,6 +9,7 @@
   import Button, { Label, Icon } from '@smui/button';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import {onMount} from 'svelte';
+  import Layout from '$lib/components/common/Layout.svelte';
   let openSignupModal, openSigninModal;
   let userModel = $authStore.user;
   function getUserAfterSignup(event) {
@@ -36,7 +37,7 @@
     }
   }
 </script>
-
+<Layout>
 <div class="content">
   <section id="slider" class="full-width">
     <OyCarousel perPage={{ 800: 1 }} draggable={false}>
@@ -476,6 +477,7 @@
       </LayoutGrid>
   </section>
 </div>
+</Layout>
 <SignupModal
   bind:open={openSignupModal}
   bind:authModel={userModel}

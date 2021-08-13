@@ -9,6 +9,7 @@
   import Textfield from '@smui/textfield';
   import InviteMembersModal from '$lib/components/modals/InviteMembersModal.svelte';
   import { goto } from '$app/navigation';
+  import Layout from '$lib/components/common/Layout.svelte';
   let active = 'Account Details';
   let model = { name: 'High places', type: 'company' };
   let userModel = $authStore.user;
@@ -71,7 +72,7 @@
     }
   }
 </script>
-
+<Layout>
 <div class="container">
   <section class="pt-40 pb-40 my-agency-dashboard light">
     {#if agencyApplicationState === 'submitted'}
@@ -179,7 +180,7 @@
   </section>
   <InviteMembersModal bind:open={openInviteMembers} />
 </div>
-
+</Layout>
 <style>
   a.text-input {
     text-decoration: underline;
@@ -211,7 +212,7 @@
     margin-bottom: 10px;
   }
   section {
-    padding: 2em;
+    /*padding: 2em;*/
   }
   .radio-demo > :global(*) {
     margin: 0 0.2em;
@@ -222,6 +223,12 @@
     width: 20em;
     border: 1px solid black;
     padding: 2em;
+  }
+  @media screen and (max-width: 768px) {
+    form {
+      width: 100%;
+      padding: 0;
+    }
   }
   form > :global(*) {
     margin: 1em 0;

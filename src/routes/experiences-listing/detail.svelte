@@ -11,6 +11,7 @@
     import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
     import Svg from '@smui/common/Svg.svelte';
     import OyCarousel from '$lib/components/common/OyCarousel.svelte';
+    import Layout from '$lib/components/common/Layout.svelte';
     function onLoad(){
         document.getElementById('header').classList.add('light','header-transparent');
     }
@@ -18,11 +19,12 @@
     onMount(()=>{onLoad()});
 </script>
 <svelte:window on:load={()=>{onLoad()}} on:resize={()=>{onLoad()}} />
+<Layout>
 <div class="content">
     <section class="header-title d-pt-90 d-pb-25 m-pt-90 m-pb-25 full-width">
         <div class="content-wrap">
             <div class="container">
-                <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                <LayoutGrid class="p-0">
                     <Cell spanDevices={{ desktop: 7, phone: 4 }}>
                         <div class="experience-detail-slides">
                             <OyCarousel perPage={{ 800: 1 }} draggable={false}>
@@ -72,7 +74,7 @@
     <section class="d-pt-90 d-pb-65">
         <div class="container">
             <div class="section-title mb-65">
-                <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                <LayoutGrid class="p-0">
                     <Cell spanDevices={{desktop: 6, phone: 4}}>
                         <TabBar tabs={['Where to Stay', 'Where to Dine & Drink', 'Where to Explore']} let:tab bind:active={tabActive}>
                             <!-- Note: the `tab` property is required! -->
@@ -135,13 +137,13 @@
         </div>
     </section>
     <div class="container">
-        <LayoutGrid class="d-p-0 d-pt-0 d-pb-0">
+        <LayoutGrid class="p-0">
             <Cell span="12"><div class="divider"></div></Cell>
         </LayoutGrid>
     </div>
     <section class="d-pt-70 d-pb-40">
         <div class="container">
-            <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+            <LayoutGrid class="p-0">
                 <Cell spanDevices={{desktop: 5, phone: 4}}>
                     <h1 class="mt-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h1>
                 </Cell>
@@ -157,10 +159,10 @@
     </section>
     <section class="d-pt-40">
         <div class="container">
-            <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+            <LayoutGrid class="p-0">
                 <Cell span="12"><h1 class="mt-0">Shop By Look</h1></Cell>
             </LayoutGrid>
-            <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+            <LayoutGrid class="p-0">
                 <Cell spanDevices={{desktop: 6, phone: 4}}>
                     <div class="item-product">
                         <div class="thumbnail">
@@ -226,6 +228,7 @@
         </div>
     </section>
 </div>
+</Layout>
 <style>
     .content :global(.mdc-button){
         width: 220px;

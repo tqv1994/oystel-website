@@ -9,6 +9,7 @@
     import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
     import Svg from '@smui/common/Svg.svelte';
     import {StringHelper} from '$lib/helpers';
+    import Layout from '$lib/components/common/Layout.svelte';
     let stringHelper = new StringHelper();
     let searchModel = {
         name: '',
@@ -48,12 +49,13 @@
     }
 </script>
 <svelte:window on:load={()=>{onScrollFixedHeader();onLoad()}} on:scroll={()=>{onScrollFixedHeader()}}/>
+<Layout>
 <div class="content">
     <section class="header-title d-pt-120 d-pb-55 m-pt-90 m-pb-25 full-width">
         <div class="content-wrap">
             <div class="container m-none">
                 <form class="search-form-experiences" action="/" on:submit|preventDefault={onSearchSubmit} >
-                    <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                    <LayoutGrid class="p-0">
                         <Cell span="5">
                             <div class="form-control">
                                 <Textfield variant="outlined" bind:value={searchModel.name} label="Start with a search" withTrailingIcon={false}>
@@ -95,7 +97,7 @@
                 </form>
             </div>
             <div class="container m-block d-none">
-                <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                <LayoutGrid class="p-0">
                     <Cell span="12">
                         <Button on:click={()=>{contentHeaderActionMobile = 'experience-search'}} style="width: 100%" variant="outlined"><Label>Filter Your Results</Label></Button>
                     </Cell>
@@ -106,7 +108,7 @@
     <section class="d-pt-85 d-pb-95 m-pt-50 m-pb-70">
         <div class="container">
             <div class="section-content">
-                <LayoutGrid class="d-p-0 m-pt-0 m-pb-0">
+                <LayoutGrid class="p-0">
                     <Cell spanDevices={{ desktop: 3, phone: 2 }}>
                         <a href="#">
                             <div class="experience-item">
@@ -400,6 +402,7 @@
         </div>
     </section>
 </div>
+</Layout>
 <HeaderActionMobile bind:content={contentHeaderActionMobile} bind:searchModel></HeaderActionMobile>
 <style>
     .header-title{

@@ -1,7 +1,7 @@
-<div class="container light sub-menu {open == true ? 'open' : ''}" on:mousemove={()=>{open=true}} on:mouseleave={()=>{open=false; menuId=""}}>
-    <LayoutGrid>
+<div class="light sub-menu {open == true ? 'open' : ''}" on:mousemove={()=>{open=true}} on:mouseleave={()=>{open=false; menuId=""}}>
+    <LayoutGrid class="p-25">
         <Cell spanDevices={{desktop: 5, mobile: 12}}>
-            <img src="{active.image}" alt=""/>
+            <img style="width: 100%;" src="{active.image}" alt=""/>
         </Cell>
         <Cell spanDevices={{desktop: 7, mobile: 12}}>
             <TabBar {tabs} let:tab bind:active>
@@ -96,7 +96,7 @@
         background: #fff;
         left: 50%;
         transform: translateX(-50%);
-
+        width: 100%;
     }
     .sub-menu:after{
         content: '';
