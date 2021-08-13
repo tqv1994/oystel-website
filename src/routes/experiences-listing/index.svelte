@@ -425,8 +425,8 @@
                                         </IconButton>
                                     </div>
                                     <LayoutGrid class="p-0">
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">India</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-right">Experience</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
                                     <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
@@ -473,8 +473,8 @@
                                         </IconButton>
                                     </div>
                                     <LayoutGrid class="p-0">
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">India</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-right">Experience</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
                                     <h4 class="text-h2 title">Australian Masterchef Restaurant Tour - Starting in Sydney.</h4>
@@ -556,7 +556,7 @@
     }
 
     .experience-item :global(.mdc-layout-grid){
-        --mdc-layout-grid-gutter-desktop: 24px;
+        --mdc-layout-grid-gutter-desktop: 0;
     }
     .experience-item .divider::after{
         background-color: rgba(0,0,0,0.2);
@@ -601,7 +601,7 @@
         top: 5px;
     }
 
-    @media screen and (max-width: 768px){
+    @media screen and (max-width: 599px){
         .section-title .title:after{
             margin-left: 20px;
         }

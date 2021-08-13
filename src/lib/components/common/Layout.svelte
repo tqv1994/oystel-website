@@ -267,7 +267,7 @@
         </TopAppBar>
     </header>
     <slot />
-    <footer class="dark full-width">
+    <footer class="dark full-width t-pb-50">
         <div class="content-wrap">
             <LayoutGrid>
                 <Cell span="6" class="m-block d-none">

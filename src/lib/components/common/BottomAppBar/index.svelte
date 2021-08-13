@@ -24,7 +24,7 @@
 </script>
 <div class=" d-none m-block" id="bottom-app-bar">
 <LayoutGrid class="pb-30" >
-    <Cell spanDevices={{ phone: 1 }}>
+    <Cell spanDevices={{ phone: 1, desktop: 3, tablet: 2 }} class="text-center">
         <Button on:click={()=>{openLink('#')}}>
             <div class="wrap-item">
                 <Icon component={Svg} viewBox="0 0 25.599 22.563">
@@ -34,7 +34,7 @@
             </div>
         </Button>
     </Cell>
-    <Cell spanDevices={{ phone: 1 }}>
+    <Cell spanDevices={{ phone: 1, desktop: 3, tablet: 2 }} class="text-center">
         <Button on:click={()=>{openTab('explode')}}>
             <div class="wrap-item">
                     <Icon component={Svg} viewBox="0 0 21.232 21.063">
@@ -44,7 +44,7 @@
             </div>
         </Button>
     </Cell>
-    <Cell spanDevices={{ phone: 1 }}>
+    <Cell spanDevices={{ phone: 1, desktop: 3, tablet: 2 }} class="text-center">
         <Button on:click={()=>{openLink('#')}}>
             <div class="wrap-item">
                     <Icon component={Svg} viewBox="0 0 16.47 22.827">
@@ -63,7 +63,7 @@
             </div>
         </Button>
     </Cell>
-    <Cell spanDevices={{ phone: 1 }}>
+    <Cell spanDevices={{ phone: 1, desktop: 3, tablet: 2 }} class="text-center">
         <Button on:click={()=>{openLink('#')}}>
             <div class="wrap-item">
                     <Icon component={Svg} viewBox="0 0 25.599 22.563">

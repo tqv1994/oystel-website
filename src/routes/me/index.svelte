@@ -238,10 +238,10 @@
           <Cell span="12">Email Preferences</Cell>
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-35">
-          <Cell spanDevices={{ desktop: 1, phone: 1 }}>
+          <Cell spanDevices={{ desktop: 1, phone: 1, tablet: 1 }}>
             <Checkbox bind:check={modelEmailPreferences.neverMissADrop} />
           </Cell>
-          <Cell spanDevices={{ desktop: 11, phone: 3 }}>
+          <Cell spanDevices={{ desktop: 11, phone: 3, tablet: 7 }}>
             <h5 class="mb-15 mt-0">Never Miss a Drop</h5>
             <p class="m-0">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -251,10 +251,10 @@
           </Cell>
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-0">
-          <Cell spanDevices={{ desktop: 1, phone: 1 }}>
+          <Cell spanDevices={{ desktop: 1, phone: 1, tablet: 1 }}>
             <Checkbox bind:check={modelEmailPreferences.curatedForYou} />
           </Cell>
-          <Cell spanDevices={{ desktop: 11, phone: 3 }}>
+          <Cell spanDevices={{ desktop: 11, phone: 3, tablet: 7 }}>
             <h5 class="mb-15 mt-0">Curated For You</h5>
             <p class="m-0">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

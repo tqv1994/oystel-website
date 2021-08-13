@@ -41,7 +41,7 @@
 <div class="content">
   <section id="slider" class="full-width">
     <OyCarousel perPage={{ 800: 1 }} draggable={false}>
-      <span class="control" slot="left-control">
+      <span class="control m-none" slot="left-control">
         <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon>
       </span>
       <div
@@ -120,7 +120,7 @@
           </div>
         </div>
       </div>
-      <span class="control" slot="right-control">
+      <span class="control m-none" slot="right-control">
         <Icon><img src="/img/icons/icon-right-arrow.svg" /></Icon>
       </span>
     </OyCarousel>
@@ -130,7 +130,7 @@
       <Cell span="12"><h3 class="text-h1 mt-0 mb-0">Featured Drops</h3></Cell>
     </LayoutGrid>
     <LayoutGrid>
-      <Cell span="4">
+      <Cell spanDevices={{desktop: 4 , mobile:4}}>
         <div class="item-featured-drop new">
           <div class="thumbnail dark mb-70">
             <img class="" src="/img/feature-drops/item-1.jpg" alt="" />
@@ -144,7 +144,7 @@
           <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
         </div>
       </Cell>
-      <Cell span="8" class="d-mr--30 m-mr-0">
+      <Cell spanDevices={{desktop: 8 , mobile:4}} class="d-mr--30 m-mr-0">
         <div class="list-featured-drop">
           <div class="item-featured-drop">
             <div class="thumbnail dark mb-60">
@@ -187,13 +187,13 @@
     </LayoutGrid>
   </section>
   <section
-    class="d-pt-55 d-pb-70 m-pt-20 m-pb-20 full-width"
+    class="d-pt-55 d-pb-70 t-pt-55 t-pb-70 m-pt-20 m-pb-20 full-width"
     id="signup-section"
     style="background-color: #F0F7F8"
   >
     <div class="content-wrap">
       <LayoutGrid>
-        <Cell span="5">
+        <Cell spanDevices={{desktop: 5, tablet: 8, phone: 4}}>
           <div class="thumbnail dark multi-images-affect">
             <img src="/img/signup-img.jpg" alt="" />
             <img src="/img/signup-img-2.jpg" alt=""/>
@@ -202,7 +202,7 @@
             </div>
           </div>
         </Cell>
-        <Cell span="7" class="light d-pl-70 d-pr-70">
+        <Cell spanDevices={{desktop: 7, tablet: 8, phone: 4}} class="light d-pl-70 d-pr-70">
           <h3 class="d-mb-100 d-mt-100 m-mt-40 m-mb-70">
             Join now for exclusive biweekly travel promotional drops, special
             content, and bespoke travel itineraries.
@@ -219,7 +219,7 @@
   </section>
   <section class="has-padding m-pt-48" id="experience-section">
     <LayoutGrid>
-      <Cell span="5">
+      <Cell spanDevices={{desktop: 5, phone: 4}}>
         <div class="item-experience featured text-center">
           <a href="#">
             <div class="thumbnail">
@@ -242,7 +242,7 @@
           </a>
         </div>
       </Cell>
-      <Cell span="7">
+      <Cell spanDevices={{desktop: 7, phone: 4}}>
         <LayoutGrid class="list-experiences m-p-0">
           <Cell spanDevices={{ desktop: 6, phone: 2 }}>
             <div class="item-experience">
@@ -489,7 +489,7 @@
   on:close={callOpenSignupModal}
 />
 <style>
-  @media screen and (max-width: 768px){
+  @media screen and (max-width: 1239px){
     #slider :global(.dots){
       position: absolute;
       top: 250px;

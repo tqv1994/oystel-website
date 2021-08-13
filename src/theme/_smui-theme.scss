@@ -57,9 +57,9 @@ $blackColor: #000;
 $brownColor: #91421C;
 $blueColor: #5078BC;
 /* Responsive */
-$mobile-width: 480px;
-$tablet-width: 769px;
-$desktop-width: 1025px;
+$mobile-width: 599px;
+$tablet-width: 600px;
+$desktop-width: 1240px;
 @mixin mobile { @media (max-width: #{$tablet-width - 1px}) {
   @content;
 }
@@ -192,6 +192,9 @@ button,button.mdc-button{
   @include mobile{
     @include button.outline-width(1px, 20px);
   }
+  @include tablet{
+    @include button.outline-width(1px, 20px);
+  }
   &,.mdc-button__label{
     @include typography.typography('button');
     line-height: normal;
@@ -298,6 +301,15 @@ button,button.mdc-button{
   display: none !important;
 }
 @include mobile{
+  .m-block{
+    display: block !important;
+  }
+  .m-none{
+    display: none !important;
+  }
+}
+
+@include tablet{
   .m-block{
     display: block !important;
   }
@@ -437,8 +449,14 @@ header{
     }
   }
   .search-form{
+    @include tablet{
+      width: 100%;
+    }
     .mdc-text-field{
       width: 300px;
+      @include tablet{
+        width: 100%;
+      }
       @include textfield.outlined-height(35px);
       @include textfield.outline-color(#fff);
       @include textfield.hover-outline-color(#fff);
@@ -597,6 +615,11 @@ header{
       }
     }
   }
+  @include desktop{
+    .dots{
+      display: none;
+    }
+  }
   @include mobile{
     .control{
       display: none;
@@ -657,6 +680,9 @@ header{
     display: none;
   }
   --mdc-layout-grid-gutter-desktop: 100px;
+  @include tablet{
+    --mdc-layout-grid-gutter-desktop: 50px;
+  }
   .mdc-dialog__container{
     align-items: flex-end;
   }
@@ -898,6 +924,12 @@ header{
     }
     &:not(.new){
         width: 315px;
+        @media (max-width: 1440px) and (min-width: 768px) {
+          & {
+            width: 250px;
+            margin-right: 25px;
+          }
+        }
         display: inline-block;
         margin-right: 30px;
         @include mobile{
@@ -940,14 +972,17 @@ header{
   .thumbnail{
     &.multi-images-affect{
       img:nth-of-type(2){
-        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
       }
       &:hover{
         img:nth-of-type(1){
-          display: none;
+          opacity: 0;
         }
         img:nth-of-type(2){
-          display: block;
+          opacity: 1;
         }
       }
     }
@@ -985,6 +1020,9 @@ header{
   }
   .list-experiences{
     max-height: 1155px;
+    @include tablet{
+      max-height: 770px;
+    }
     overflow-y: scroll;
     -ms-overflow-style: none; /* for Internet Explorer, Edge */
     scrollbar-width: none; /* for Firefox */

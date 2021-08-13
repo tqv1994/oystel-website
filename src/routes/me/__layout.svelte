@@ -100,7 +100,7 @@
         </LayoutGrid>
         <div class="section-body">
           <LayoutGrid class="pl-0 pr-0">
-            <Cell spanDevices={{ desktop: 3, mobile: 12 }}>
+            <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
               <Drawer class="m-none">
                 <Content>
                   <List>
@@ -125,7 +125,7 @@
                 </Select>
               </div>
             </Cell>
-            <Cell spanDevices={{ desktop: 9, mobile: 12 }}>
+            <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}>
               <div class="tab-content">
                 <slot />
               </div>

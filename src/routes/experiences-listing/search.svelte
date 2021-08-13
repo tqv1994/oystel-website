@@ -464,7 +464,7 @@
     }
 
     .experience-item :global(.mdc-layout-grid){
-        --mdc-layout-grid-gutter-desktop: 24px;
+        --mdc-layout-grid-gutter-desktop: 0;
     }
     .experience-item .divider::after{
         background-color: rgba(0,0,0,0.2);

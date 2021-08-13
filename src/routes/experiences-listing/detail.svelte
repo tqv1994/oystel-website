@@ -227,6 +227,19 @@
             </LayoutGrid>
         </div>
     </section>
+    <section class="d-pt-55">
+        <div class="container">
+            <h1 class="mt-0">What to Pack</h1>
+            <div class="products-list">
+                <LayoutGrid class="p-0">
+                    <Cell>
+                        <div class="item-product">
+                        </div>
+                    </Cell>
+                </LayoutGrid>
+            </div>
+        </div>
+    </section>
 </div>
 </Layout>
 <style>
