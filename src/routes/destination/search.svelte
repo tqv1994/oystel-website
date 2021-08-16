@@ -19,33 +19,13 @@
         sort_by: '',
     };
     let contentHeaderActionMobile = '';
-
     function onLoad(){
         document.getElementById('header').classList.add('light','header-transparent');
     }
 
     onMount(()=>{
-        setSizeForDivReadmore();
         onLoad();
     });
-
-    function setSizeForDivReadmore(){
-        let experienceReadmore = document.getElementsByClassName('item-read-more');
-        for (let i = 0; i< experienceReadmore.length; i ++){
-            let itemReadmore = experienceReadmore[i];
-            let parent = itemReadmore.parentElement.parentElement.parentElement;
-            let item = parent.querySelector('.experience-item');
-            if(typeof item != 'undefined'){
-                let thumb = item.querySelector('.thumbnail');
-                if(typeof thumb != 'undefined'){
-                    let width = thumb.clientWidth;
-                    let height = thumb.clientHeight;
-                    itemReadmore.style.width = width+'px';
-                    itemReadmore.style.height = height+'px';
-                }
-            }
-        }
-    }
 
     function onSearchSubmit(){
         let queryString = stringHelper.objectToQueryString(searchModel);
@@ -68,10 +48,10 @@
         }
     }
 </script>
-<svelte:window on:load={()=>{setSizeForDivReadmore(); onScrollFixedHeader(); onLoad()}} on:resize={()=>{setSizeForDivReadmore}} on:scroll={()=>{onScrollFixedHeader()}}/>
+<svelte:window on:load={()=>{onScrollFixedHeader();onLoad()}} on:scroll={()=>{onScrollFixedHeader()}}/>
 <Layout>
-<div class="content">
-        <section class="header-title d-pt-120 d-pb-95 m-pt-90 m-pb-25 full-width">
+    <div class="content">
+        <section class="header-title d-pt-120 d-pb-55 m-pt-90 m-pb-25 full-width">
             <div class="content-wrap">
                 <div class="container m-none">
                     <form class="search-form-experiences" action="/" on:submit|preventDefault={onSearchSubmit} >
@@ -115,12 +95,6 @@
                             </Cell>
                         </LayoutGrid>
                     </form>
-                    <LayoutGrid class="p-0 hidden-on-sticky">
-                        <Cell span="12">
-                            <h1 class="text-center mb-30">Curate Your Experiences</h1>
-                            <p class="text-center">Bespoke itineraries created by our leading tastemakers.</p>
-                        </Cell>
-                    </LayoutGrid>
                 </div>
                 <div class="container m-block d-none">
                     <LayoutGrid class="p-0">
@@ -133,18 +107,13 @@
         </section>
         <section class="d-pt-85 d-pb-95 m-pt-50 m-pb-70">
             <div class="container">
-                <div class="section-title">
-                    <LayoutGrid class="p-0">
-                        <Cell span="12"><h2 class="text-h1 title mt-0 d-mb-30">Adventure</h2></Cell>
-                    </LayoutGrid>
-                </div>
                 <div class="section-content">
                     <LayoutGrid class="p-0">
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
-                                        <img src="/img/experiences/experience-3.jpg" alt=""/>
+                                        <img src="/img/destinations/destination-1.jpg" alt=""/>
                                         <IconButton class="btn-favorite">
                                             <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
                                                 <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
@@ -156,10 +125,10 @@
                                     </div>
                                     <LayoutGrid class="p-0">
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
-                                    <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
+                                    <h4 class="text-h2 title">Lorem ipsum dolor sit amet, consectetur.</h4>
                                     <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
                                 </div>
                             </a>
@@ -168,7 +137,7 @@
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
-                                        <img src="/img/experiences/experience-8.jpg" alt=""/>
+                                        <img src="/img/destinations/destination-3.jpg" alt=""/>
                                         <IconButton class="btn-favorite">
                                             <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
                                                 <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
@@ -180,10 +149,10 @@
                                     </div>
                                     <LayoutGrid class="p-0">
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
-                                    <h4 class="text-h2 title">Australian Masterchef Restaurant Tour - Starting in Sydney.</h4>
+                                    <h4 class="text-h2 title">Lorem ipsum dolor sit amet, consectetur. Lorem ipsum dolor.</h4>
                                     <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
                                 </div>
                             </a>
@@ -192,7 +161,7 @@
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
-                                        <img src="/img/experiences/experience-9.jpg" alt=""/>
+                                        <img src="/img/destinations/destination-2.jpg" alt=""/>
                                         <IconButton class="btn-favorite">
                                             <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
                                                 <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
@@ -204,34 +173,16 @@
                                     </div>
                                     <LayoutGrid class="p-0">
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
-                                    <h4 class="text-h2 title">Archaval Ferrer Winery Tour Drink nine wines directly from the barrel.</h4>
+                                    <h4 class="text-h2 title">Lorem ipsum dolor sit amet, consectetur.</h4>
                                     <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
                                 </div>
                             </a>
                         </Cell>
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
-                            <a href="/experiences-listing/detail">
-                                <div class="experience-read-more item-read-more">
-                                    <p class="text-h3 label">Read more <i class="material-icons">chevron_right</i></p>
-                                </div>
-                            </a>
-                        </Cell>
-                    </LayoutGrid>
-                </div>
-            </div>
-            <div class="container">
-                <div class="section-title">
-                    <LayoutGrid class="p-0">
-                        <Cell span="12"><h2 class="text-h1 title d-mb-30">Safari</h2></Cell>
-                    </LayoutGrid>
-                </div>
-                <div class="section-content">
-                    <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
-                            <a href="/experiences-listing/detail">
+                            <a href="#">
                                 <div class="experience-item">
                                     <div class="thumbnail">
                                         <img src="/img/experiences/experience-10.jpg" alt=""/>
@@ -246,7 +197,7 @@
                                     </div>
                                     <LayoutGrid class="p-0">
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
                                     <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
@@ -258,7 +209,7 @@
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
-                                        <img src="/img/experiences/experience-11.jpg" alt=""/>
+                                        <img src="/img/experiences/experience-13.jpg" alt=""/>
                                         <IconButton class="btn-favorite">
                                             <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
                                                 <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
@@ -270,7 +221,31 @@
                                     </div>
                                     <LayoutGrid class="p-0">
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
+                                    </LayoutGrid>
+                                    <div class="divider"></div>
+                                    <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
+                                    <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
+                                </div>
+                            </a>
+                        </Cell>
+                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                            <a href="/experiences-listing/detail">
+                                <div class="experience-item">
+                                    <div class="thumbnail">
+                                        <img src="/img/destinations/destination-4.jpg" alt=""/>
+                                        <IconButton class="btn-favorite">
+                                            <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                                                <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                                            </Icon>
+                                            <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                                                <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                                            </Icon>
+                                        </IconButton>
+                                    </div>
+                                    <LayoutGrid class="p-0">
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
                                     <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
@@ -294,7 +269,7 @@
                                     </div>
                                     <LayoutGrid class="p-0">
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
                                     <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
@@ -303,49 +278,7 @@
                             </a>
                         </Cell>
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
-                            <a href="/experiences-listing/detail">
-                                <div class="experience-read-more item-read-more">
-                                    <p class="text-h3 label">Read more <i class="material-icons">chevron_right</i></p>
-                                </div>
-                            </a>
-                        </Cell>
-                    </LayoutGrid>
-                </div>
-            </div>
-            <div class="container">
-                <div class="section-title">
-                    <LayoutGrid class="p-0">
-                        <Cell span="12"><h2 class="text-h1 title d-mb-30">Food</h2></Cell>
-                    </LayoutGrid>
-                </div>
-                <div class="section-content">
-                    <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
-                            <a href="/experiences-listing/detail">
-                                <div class="experience-item">
-                                    <div class="thumbnail">
-                                        <img src="/img/experiences/experience-13.jpg" alt=""/>
-                                        <IconButton class="btn-favorite">
-                                            <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                                                <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                                            </Icon>
-                                            <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                                                <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                                            </Icon>
-                                        </IconButton>
-                                    </div>
-                                    <LayoutGrid class="p-0">
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
-                                    </LayoutGrid>
-                                    <div class="divider"></div>
-                                    <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
-                                    <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
-                                </div>
-                            </a>
-                        </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
-                            <a href="/experiences-listing/detail">
+                            <a href="#">
                                 <div class="experience-item">
                                     <div class="thumbnail">
                                         <img src="/img/experiences/experience-8.jpg" alt=""/>
@@ -360,7 +293,55 @@
                                     </div>
                                     <LayoutGrid class="p-0">
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
+                                    </LayoutGrid>
+                                    <div class="divider"></div>
+                                    <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
+                                    <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
+                                </div>
+                            </a>
+                        </Cell>
+                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                            <a href="/experiences-listing/detail">
+                                <div class="experience-item">
+                                    <div class="thumbnail">
+                                        <img src="/img/destinations/destination-5.jpg" alt=""/>
+                                        <IconButton class="btn-favorite">
+                                            <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                                                <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                                            </Icon>
+                                            <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                                                <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                                            </Icon>
+                                        </IconButton>
+                                    </div>
+                                    <LayoutGrid class="p-0">
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
+                                    </LayoutGrid>
+                                    <div class="divider"></div>
+                                    <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
+                                    <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
+                                </div>
+                            </a>
+                        </Cell>
+                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                            <a href="/experiences-listing/detail">
+                                <div class="experience-item">
+                                    <div class="thumbnail">
+                                        <img src="/img/destinations/destination-6.jpg" alt=""/>
+                                        <IconButton class="btn-favorite">
+                                            <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                                                <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                                            </Icon>
+                                            <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                                                <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                                            </Icon>
+                                        </IconButton>
+                                    </div>
+                                    <LayoutGrid class="p-0">
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
                                     <h4 class="text-h2 title">Australian Masterchef Restaurant Tour - Starting in Sydney.</h4>
@@ -384,7 +365,7 @@
                                     </div>
                                     <LayoutGrid class="p-0">
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
                                     <h4 class="text-h2 title">Archaval Ferrer Winery Tour Drink nine wines directly from the barrel.</h4>
@@ -393,73 +374,7 @@
                             </a>
                         </Cell>
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
-                            <a href="/experiences-listing/detail">
-                                <div class="experience-read-more item-read-more">
-                                    <p class="text-h3 label">Read more <i class="material-icons">chevron_right</i></p>
-                                </div>
-                            </a>
-                        </Cell>
-                    </LayoutGrid>
-                </div>
-            </div>
-            <div class="container">
-                <div class="section-title">
-                    <LayoutGrid class="p-0">
-                        <Cell span="12"><h2 class="text-h1 title d-mb-30">Beach</h2></Cell>
-                    </LayoutGrid>
-                </div>
-                <div class="section-content">
-                    <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
-                            <a href="/experiences-listing/detail">
-                                <div class="experience-item">
-                                    <div class="thumbnail">
-                                        <img src="/img/experiences/experience-15.jpg" alt=""/>
-                                        <IconButton class="btn-favorite">
-                                            <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                                                <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                                            </Icon>
-                                            <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                                                <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                                            </Icon>
-                                        </IconButton>
-                                    </div>
-                                    <LayoutGrid class="p-0">
-                                        <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-right">Experience</p></Cell>
-                                    </LayoutGrid>
-                                    <div class="divider"></div>
-                                    experience-item        <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
-                                    <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
-                                </div>
-                            </a>
-                        </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
-                            <a href="/experiences-listing/detail">
-                                <div class="experience-item">
-                                    <div class="thumbnail">
-                                        <img src="/img/experiences/experience-16.jpg" alt=""/>
-                                        <IconButton class="btn-favorite">
-                                            <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                                                <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                                            </Icon>
-                                            <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                                                <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                                            </Icon>
-                                        </IconButton>
-                                    </div>
-                                    <LayoutGrid class="p-0">
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Experience</p></Cell>
-                                    </LayoutGrid>
-                                    <div class="divider"></div>
-                                    <h4 class="text-h2 title">Australian Masterchef Restaurant Tour - Starting in Sydney.</h4>
-                                    <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
-                                </div>
-                            </a>
-                        </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
-                            <a href="/experiences-listing/detail">
+                            <a href="#">
                                 <div class="experience-item">
                                     <div class="thumbnail">
                                         <img src="/img/experiences/experience-9.jpg" alt=""/>
@@ -473,19 +388,12 @@
                                         </IconButton>
                                     </div>
                                     <LayoutGrid class="p-0">
-                                        <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">India</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
+                                        <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
-                                    <h4 class="text-h2 title">Australian Masterchef Restaurant Tour - Starting in Sydney.</h4>
+                                    <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
                                     <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
-                                </div>
-                            </a>
-                        </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
-                            <a href="/experiences-listing/detail">
-                                <div class="experience-read-more item-read-more">
-                                    <p class="text-h3 label">Read more <i class="material-icons">chevron_right</i></p>
                                 </div>
                             </a>
                         </Cell>
@@ -493,9 +401,9 @@
                 </div>
             </div>
         </section>
-</div>
+    </div>
 </Layout>
-<HeaderActionMobile bind:content={contentHeaderActionMobile} bind:searchModel on:close={onSearchSubmit}></HeaderActionMobile>
+<HeaderActionMobile bind:content={contentHeaderActionMobile} bind:searchModel></HeaderActionMobile>
 <style>
     .header-title{
         background-color: #F0F7F8;
@@ -601,14 +509,9 @@
         top: 5px;
     }
 
-    @media screen and (max-width: 599px){
+    @media screen and (max-width: 768px){
         .section-title .title:after{
             margin-left: 20px;
-        }
-
-        .experience-item .title{
-            height: 70px;
-            overflow: hidden;
         }
     }
 </style>

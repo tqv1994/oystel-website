@@ -12,11 +12,11 @@
     let menus = [
         {
             name: 'Travel Advisors',
-            link: '#'
+            link: '/advisor'
         },
         {
             name: 'Destinations',
-            link: '#',
+            link: '/destination',
             children: [
                 {
                     name: 'Sea',

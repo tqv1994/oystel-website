@@ -130,15 +130,8 @@
                         <ul id="main-menu">
                             <li
                                     id="menu-item-1"
-                                    on:mousemove={() => {
-                openSubMenu = true;
-                menuItemActive = 'menu-item-1';
-              }}
-                                    on:mouseleave={() => {
-                openSubMenu = false;
-              }}
                             >
-                                <a href="#">Travel Advisors</a>
+                                <a href="/advisor">Travel Advisors</a>
                             </li>
                             <li
                                     id="menu-item-2"
@@ -150,7 +143,7 @@
                 openSubMenu = false;
               }}
                             >
-                                <a href="#">Destinations</a>
+                                <a href="/destination">Destinations</a>
                             </li>
                             <li
                                     id="menu-item-3"

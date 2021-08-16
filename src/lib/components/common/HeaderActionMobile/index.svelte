@@ -7,6 +7,7 @@
     import OyMenu from './OyMenu.svelte';
     import OyExplode from './OyExplode.svelte';
     import OyFormSearchExperience from './OyFormSearchExperience.svelte';
+    import OyFormSearchAdvisor from './OyFormSearchAdvisor.svelte';
     let dispathcher = createEventDispatcher();
     export let open = false;
     export let content;
@@ -55,6 +56,8 @@
                 <OyExplode on:close={callCloseHeaderActionMobile}>no content</OyExplode>
             {:else if (content == 'experience-search')}
                 <OyFormSearchExperience bind:searchModel on:close={callCloseHeaderActionMobile}>no content</OyFormSearchExperience>
+            {:else if (content == 'advisor-search')}
+                <OyFormSearchAdvisor bind:searchModel on:close={callCloseHeaderActionMobile}>no content</OyFormSearchAdvisor>
             {/if}
         </div>
     </div>

@@ -129,7 +129,7 @@
     <LayoutGrid class="pt-0">
       <Cell span="12"><h3 class="text-h1 mt-0 mb-0">Featured Drops</h3></Cell>
     </LayoutGrid>
-    <LayoutGrid>
+    <LayoutGrid class="pt-0">
       <Cell spanDevices={{desktop: 4 , mobile:4}}>
         <div class="item-featured-drop new">
           <div class="thumbnail dark mb-70">
