@@ -82,17 +82,30 @@
         transform: translate(-50%, -50%);
         height: 1px;
     }
+
+    :global(.slide-content.has-fade-in) {
+        opacity: 0.7;
+        transition: all 1s ease;
+    }
+    :global(.slide-content.has-fade-in.current-slide) {
+        /*animation: fadeIn 0.5s ease 1 normal forwards;*/
+        /*animation-timing-function: ;*/
+        /*z-index: 3;*/
+        /*z-index: 2;*/
+         opacity: 1;
+    }
+
 </style>
 
 <script>
     import Siema from 'siema'
     import { onMount, createEventDispatcher } from 'svelte'
-
+    export let isFadeIn = false;
     export let perPage = 3
     export let loop = true
     export let autoplay = 0
     export let duration = 200
-    export let easing = 'ease-out'
+    export let easing = 'ease-in'
     export let startIndex = 0
     export let draggable = true
     export let multipleDrag = true
@@ -105,23 +118,31 @@
     let siema
     let controller
     let timer
+    let allSlides;
+    let transitionEvent;
     const dispatch = createEventDispatcher()
     $: pips = controller ? controller.innerElements : []
     $: currentPerPage = controller ? controller.perPage : perPage
     $: totalDots = controller ? Math.ceil(controller.innerElements.length / currentPerPage) : []
 
     onMount(() => {
+        allSlides = document.querySelectorAll('.slide-content');
+        transitionEvent = whichTransitionEvent();
         controller = new Siema({
             selector: siema,
             perPage: typeof perPage === 'object' ? perPage : Number(perPage),
             loop,
-            duration,
+            duration: isFadeIn ? 0 : duration,
             easing,
             startIndex,
             draggable,
             multipleDrag,
             threshold,
             rtl,
+            onInit: () =>{
+                allSlides[0].classList.add('current-slide');
+                changeSlide;
+            },
             onChange: handleChange
         })
 
@@ -144,6 +165,7 @@
     }
 
     export function right () {
+        // allSlides[controller.currentSlide].removeEventListener(transitionEvent, right);
         controller.next()
     }
     export function go (index) {
@@ -160,10 +182,46 @@
         }
     }
     function handleChange (event) {
+        console.log('is active',controller.currentSlide);
+        allSlides[controller.currentSlide].classList.add('current-slide');
+        //change speed of slide change
+        changeSlide();
+
         currentIndex = controller.currentSlide
         dispatch('change', {
             currentSlide: controller.currentSlide,
             slideCount: controller.innerElements.length
         } )
+    }
+
+    function changeSlide() {
+        if(isFadeIn) {
+            for (let i = 0; i < allSlides.length; i++) {
+                allSlides[i].classList.add('has-fade-in');
+                if (i != controller.currentSlide) {
+                    allSlides[i].classList.remove('current-slide');
+                    // transitionEvent && allSlides[i].addEventListener(transitionEvent, right);
+                }
+            }
+        }
+        // allSlides[controller.currentSlide].classList.add('is-not-active');
+        // transitionEvent && allSlides[controller.currentSlide].addEventListener(transitionEvent, right);
+    }
+
+    function whichTransitionEvent() {
+        var t;
+        var el = document.createElement('fakeelement');
+        var transitions = {
+            'transition': 'transitionend',
+            'OTransition': 'oTransitionEnd',
+            'MozTransition': 'transitionend',
+            'WebkitTransition': 'webkitTransitionEnd'
+        }
+
+        for (t in transitions) {
+            if (el.style[t] !== undefined) {
+                return transitions[t];
+            }
+        }
     }
 </script>

@@ -40,7 +40,7 @@
 <Layout>
 <div class="content">
   <section id="slider" class="full-width">
-    <OyCarousel perPage={{ 800: 1 }} draggable={false}>
+    <OyCarousel perPage={{ 800: 1 }} draggable={false} isFadeIn={true}>
       <span class="control m-none" slot="left-control">
         <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon>
       </span>
@@ -83,7 +83,7 @@
         </div>
       </div>
       <div
-        class="slide-content slide-item"
+        class="slide-content slide-item is-not-active"
         style="background-image: url(/img/slides/slide-02.jpg)"
       >
         <div class="content-wrap">

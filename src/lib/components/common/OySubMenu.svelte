@@ -89,10 +89,10 @@
 </script>
 <style>
     .sub-menu{
-        display: none;
+        opacity: 0;
         z-index: 99;
         position: absolute;
-        top: 65px;
+        top: -1000px;
         background: #fff;
         left: 50%;
         transform: translateX(-50%);
@@ -108,7 +108,9 @@
         bottom: -15px;
     }
     .sub-menu.open{
-        display: block;
+        top: 65px;
+        opacity: 1;
+        animation: fadeIn 1s ease;
     }
     .tab-content{
         padding-top: 100px;
