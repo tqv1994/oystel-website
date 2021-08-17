@@ -19,32 +19,37 @@
         sort_by: '',
     };
     let contentHeaderActionMobile = '';
-
-    function onLoad(){
-        document.getElementById('header').classList.add('light','header-transparent');
-    }
+    let configPage = {
+        header:{
+            page: 'destinations',
+            transparent: true,
+            theme: 'light',
+            currentMenu: 'destinations'
+        }
+    };
 
     onMount(()=>{
         setSizeForDivReadmore();
-        onLoad();
     });
 
     function setSizeForDivReadmore(){
-        let experienceReadmore = document.getElementsByClassName('item-read-more');
-        for (let i = 0; i< experienceReadmore.length; i ++){
-            let itemReadmore = experienceReadmore[i];
-            let parent = itemReadmore.parentElement.parentElement.parentElement;
-            let item = parent.querySelector('.experience-item');
-            if(typeof item != 'undefined'){
-                let thumb = item.querySelector('.thumbnail');
-                if(typeof thumb != 'undefined'){
-                    let width = thumb.clientWidth;
-                    let height = thumb.clientHeight;
-                    itemReadmore.style.width = width+'px';
-                    itemReadmore.style.height = height+'px';
+        setTimeout(()=>{
+            let experienceReadmore = document.getElementsByClassName('item-read-more');
+            for (let i = 0; i< experienceReadmore.length; i ++){
+                let itemReadmore = experienceReadmore[i];
+                let parent = itemReadmore.parentElement.parentElement.parentElement;
+                let item = parent.querySelector('.experience-item');
+                if(typeof item != 'undefined'){
+                    let thumb = item.querySelector('.thumbnail');
+                    if(typeof thumb != 'undefined'){
+                        let width = thumb.clientWidth;
+                        let height = thumb.clientHeight;
+                        itemReadmore.style.width = width+'px';
+                        itemReadmore.style.height = height+'px';
+                    }
                 }
             }
-        }
+        },1000);
     }
 
     function onSearchSubmit(){
@@ -69,7 +74,7 @@
     }
 </script>
 <svelte:window on:load={()=>{setSizeForDivReadmore(); onScrollFixedHeader(); onLoad()}} on:resize={()=>{setSizeForDivReadmore}} on:scroll={()=>{onScrollFixedHeader()}}/>
-<Layout>
+<Layout config={configPage}>
     <div class="content">
         <section class="header-title d-pt-120 d-pb-95 m-pt-90 m-pb-25 full-width">
             <div class="content-wrap">

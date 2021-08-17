@@ -13,12 +13,16 @@
     import OyCarousel from '$lib/components/common/OyCarousel.svelte';
     import Layout from '$lib/components/common/Layout.svelte';
     import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
-    function onLoad(){
-        document.getElementById('header').classList.add('light','header-transparent');
-    }
     let tabActive = "Where to Stay";
     let openProductSlide = false;
-    onMount(()=>{onLoad()});
+    let configPage = {
+        header:{
+            page: 'destination-detail',
+            transparent: true,
+            theme: 'light',
+            currentMenu: 'destinations'
+        }
+    };
 
     function onScrollFixedHeader(){
         if(document.documentElement.clientWidth > 1239) {
@@ -36,8 +40,8 @@
         }
     }
 </script>
-<svelte:window on:load={()=>{onLoad()}} on:resize={()=>{onLoad()}} on:scroll={()=>{onScrollFixedHeader()}} />
-<Layout>
+<svelte:window on:scroll={()=>{onScrollFixedHeader()}} />
+<Layout config={configPage}>
     <div class="content">
         <section class="header-title d-pt-90 d-pb-25 m-pt-90 m-pb-25 full-width">
             <div class="content-wrap">

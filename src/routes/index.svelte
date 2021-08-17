@@ -12,13 +12,20 @@
   import Layout from '$lib/components/common/Layout.svelte';
   let openSignupModal, openSigninModal;
   let userModel = $authStore.user;
+  let configPage = {
+    header:{
+      page: 'home',
+      transparent: true,
+      theme: 'dark',
+    }
+  };
   function getUserAfterSignup(event) {
     userModel = event.detail.user;
   }
 
   onMount(()=>{
-    document.getElementById('header').classList.remove('dark');
-    document.getElementById('header').classList.add('light','header-transparent');
+    // document.getElementById('header').classList.remove('dark');
+    // document.getElementById('header').classList.add('light','header-transparent');
   });
 
   function callOpenSignupModal() {
@@ -37,7 +44,7 @@
     }
   }
 </script>
-<Layout>
+<Layout bind:config={configPage}>
 <div class="content">
   <section id="slider" class="full-width">
     <OyCarousel perPage={{ 800: 1 }} draggable={false} isFadeIn={true}>

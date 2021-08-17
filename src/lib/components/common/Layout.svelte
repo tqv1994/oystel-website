@@ -35,6 +35,14 @@
     let openSigninModal = false;
     let openSearchResult = false;
     let contentHeaderAction = '';
+    export let config = {
+      header: {
+          page: "",
+          transparent: false,
+          theme: 'light',
+          currentMenu: '',
+      }
+    };
 
     function setMiniWindow() {
         page = location.pathname;
@@ -104,13 +112,13 @@
     afterUpdate(setMiniWindow);
 </script>
 <svelte:window on:resize={onResize}/>
-<div class="content-wrap page page-{page}">
+<div class="content-wrap page page-{config.header.page}">
     <header >
         <TopAppBar
                 variant="static"
-                class="demo-top-app-bar {page == 'home'
-        ? 'dark header-transparent'
-        : 'light'}" id="header"
+                class="demo-top-app-bar {config.header.transparent
+        ? 'header-transparent'
+        : ''} {config.header.theme}" id="header"
         >
             <div class="content-wrap">
             <div class="container">
@@ -128,12 +136,13 @@
                     </Section>
                     <Section class="m-none" toolbar align="center" style="z-index: 2">
                         <ul id="main-menu">
-                            <li
+                            <li class="{config.header.currentMenu == 'travel-advisors' ? 'active-static' : ''}"
                                     id="menu-item-1"
                             >
                                 <a href="/advisor">Travel Advisors</a>
                             </li>
                             <li
+                                    class="{config.header.currentMenu == 'destinations' ? 'active-static' : ''}"
                                     id="menu-item-2"
                                     on:mousemove={() => {
                 openSubMenu = true;
@@ -146,6 +155,7 @@
                                 <a href="/destination">Destinations</a>
                             </li>
                             <li
+                                    class="{config.header.currentMenu == 'experiences' ? 'active-static' : ''}"
                                     id="menu-item-3"
                                     on:mousemove={() => {
                 openSubMenu = true;
@@ -157,8 +167,8 @@
                             >
                                 <a href="/experiences-listing">Experiences</a>
                             </li>
-                            <li id="menu-item-4">
-                                <a href="#">Shop</a>
+                            <li id="menu-item-4" class="{config.header.currentMenu == 'shop' ? 'active-static' : ''}">
+                                <a href="/shop">Shop</a>
                             </li>
                         </ul>
                         <OySubMenu bind:open={openSubMenu} bind:menuId={menuItemActive} />

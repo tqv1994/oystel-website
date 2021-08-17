@@ -18,14 +18,14 @@
         location: ''
     };
     let contentHeaderActionMobile = '';
-
-    function onLoad(){
-        document.getElementById('header').classList.add('light','header-transparent');
-    }
-
-    onMount(()=>{
-        onLoad();
-    });
+    let configPage = {
+        header:{
+            page: 'advisors',
+            transparent: true,
+            theme: 'light',
+            currentMenu: 'travel-advisors'
+        }
+    };
 
     function onSearchSubmit(){
         let queryString = stringHelper.objectToQueryString(searchModel);
@@ -49,7 +49,7 @@
     }
 </script>
 <svelte:window on:load={()=>{onScrollFixedHeader(); onLoad()}} on:scroll={()=>{onScrollFixedHeader()}}/>
-<Layout>
+<Layout config={configPage}>
     <div class="content">
         <section class="header-title d-pt-120 d-pb-95 m-pt-90 m-pb-25 full-width">
             <div class="content-wrap">

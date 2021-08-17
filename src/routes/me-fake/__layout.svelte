@@ -21,19 +21,8 @@
     curatedForYou: false,
   };
   let isEditProfile = false;
-  let currentPage = '';
-  let configPage = {
-    header:{
-      page: 'advisor-account',
-      transparent: false,
-      theme: 'light',
-    }
-  };
+  let currentPage = ''
   afterUpdate(() => {
-    // console.log($authStore.user);
-    // if (!$authStore.user) {
-    //   window.location.href = '/';
-    // }
     currentPage = location.pathname;
   });
 
@@ -84,7 +73,7 @@
     }
   }
 </script>
-  <Layout config={configPage}>
+  <Layout>
   <div class="content user-dashboard light">
     <div class="container">
       <section class="pt-20 pb-40">
@@ -110,12 +99,14 @@
               <Drawer class="m-none">
                 <Content>
                   <List>
-                    <Item href="/advisor-account" class="{currentPage == '/advisor-account' ? 'active' : ''}"><Text>Account Details</Text></Item>
-                    <Item href="/advisor-account"><Text>Destinations</Text></Item>
-                    <Item href="/advisor-account"><Text>Experiences</Text></Item>
-                    <Item href="/advisor-account"><Text>Travellers</Text></Item>
-                    <Item href="/advisor-account"><Text>Documents</Text></Item>
-                    <Item href="/advisor-account"><Text>Support</Text></Item>
+                    <Item href="/me-fake" class="{currentPage == '/me-fake' ? 'active' : ''}"><Text>Account Details</Text></Item>
+                    <Item href="/me-fake"><Text>Trips</Text></Item>
+                    <Item href="/me-fake"><Text>My Advisors</Text></Item>
+                    <Item href="/me-fake"><Text>Wishlishs</Text></Item>
+                    <Item href="/me-fake"><Text>Preferences</Text></Item>
+                    <Item href="/me-fake"><Text>Family & Friends</Text></Item>
+                    <Item href="/me-fake"><Text>Support</Text></Item>
+                    <Item href="/my-agency"><Text>For advisors</Text></Item>
                   </List></Content
                 ></Drawer>
               <div class="d-none m-block text-center mb-35">
@@ -123,9 +114,9 @@
                         bind:value={currentPage}
                         label=""
                 >
-                    <Option value="/advisor-account" selected>Account Details</Option>
-                  <Option value="/destinations">Destinations</Option>
-                  <Option value="/experiences">Experiences</Option>
+                    <Option value="/me-fake" selected>Account Details</Option>
+                  <Option value="/trips">Trips</Option>
+                  <Option value="/my-advisors">My Advisors</Option>
                 </Select>
               </div>
             </Cell>

@@ -18,17 +18,16 @@
         location: ''
     };
     let contentHeaderActionMobile = '';
-
-    function onLoad(){
-        document.getElementById('header').classList.add('light','header-transparent');
-        document.getElementById('header').classList.remove('header-transparent');
-    }
-
-    onMount(()=>{
-        onLoad();
-    });
+    let configPage = {
+        header:{
+            page: 'advisor-detail',
+            transparent: false,
+            theme: 'light',
+            currentMenu: 'travel-advisors'
+        }
+    };
 </script>
-<Layout>
+<Layout config={configPage}>
     <div class="content mt-25">
         <section class="header-title full-width" style="background-image: url(/img/advisors/detail-advisor-banner.jpg)">
             <div class="content-wrap">

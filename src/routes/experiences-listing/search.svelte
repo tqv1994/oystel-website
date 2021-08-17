@@ -19,13 +19,14 @@
         sort_by: '',
     };
     let contentHeaderActionMobile = '';
-    function onLoad(){
-        document.getElementById('header').classList.add('light','header-transparent');
-    }
-
-    onMount(()=>{
-        onLoad();
-    });
+    let configPage = {
+        header:{
+            page: 'experiences-search',
+            transparent: true,
+            theme: 'light',
+            currentMenu: 'experiences'
+        }
+    };
 
     function onSearchSubmit(){
         let queryString = stringHelper.objectToQueryString(searchModel);
@@ -48,8 +49,8 @@
         }
     }
 </script>
-<svelte:window on:load={()=>{onScrollFixedHeader();onLoad()}} on:scroll={()=>{onScrollFixedHeader()}}/>
-<Layout>
+<svelte:window on:load={()=>{onScrollFixedHeader()}} on:scroll={()=>{onScrollFixedHeader()}}/>
+<Layout config={configPage}>
 <div class="content">
     <section class="header-title d-pt-120 d-pb-55 m-pt-90 m-pb-25 full-width">
         <div class="content-wrap">

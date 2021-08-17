@@ -1,0 +1,448 @@
+<script>
+    import authStore from '$lib/stores/auth';
+    import Layout from '$lib/components/common/Layout.svelte';
+    import LayoutGrid, {Cell} from '@smui/layout-grid';
+    import OyCarousel from '$lib/components/common/OyCarousel.svelte';
+    import Button, {Icon, Label} from '@smui/button';
+    import IconButton, {Icon as Icon2} from '@smui/button';
+    import Svg from '@smui/common/Svg.svelte';
+    import SignupModal from '$lib/components/modals/SignupModal.svelte';
+    import SigninModal from '$lib/components/modals/SigninModal.svelte';
+    import Select, {Option} from '@smui/select';
+    let openSignupModal, openSigninModal;
+    let userModel = $authStore.user;
+    let filterActive = 'Current Drops';
+    let configPage = {
+        header:{
+            page: 'shop',
+            transparent: true,
+            theme: 'dark',
+            currentMenu: 'shop'
+        }
+    };
+    function callOpenSignupModal() {
+        if (!userModel) {
+            openSignupModal = true;
+            openSigninModal = false;
+        }
+        openSignupModal = true;
+        openSigninModal = false;
+    }
+
+    function callOpenSigninModal() {
+        if (!userModel) {
+            openSignupModal = false;
+            openSigninModal = true;
+        }
+    }
+</script>
+<Layout config={configPage}>
+    <div class="content">
+        <section class="header-title full-width dark d-pt-80 d-pb-20 t-pt-80 t-pb-20 m-pt-90 m-pb-15">
+            <div class="content-wrap">
+                <div class="container">
+                    <LayoutGrid class="p-0 mb-15">
+                        <Cell spanDevices="{{ desktop: 5, phone: 4 }}">
+                            <div class="content-left">
+                                <div>
+                                    <span class="text-h3 d-mr-50 m-mr-60">Fashion Drop</span>
+                                    <Button variant="outlined"><Label>Shop the Drop</Label></Button>
+                                </div>
+                                <h1 >Louis Vuitton Resort Collection Summer</h1>
+                                <p class="mb-30 short-description">First hand experience to craft your perfect vacation.</p>
+                            </div>
+                        </Cell>
+                        <Cell spanDevices={{ desktop: 7, phone: 4 }}>
+                            <div class="shop-slides">
+                                <OyCarousel perPage={{ 800: 1 }} draggable={false}>
+                                  <span class="control" slot="left-control">
+                                    <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon>
+                                  </span>
+                                    <div class="slide-content slide-item" style="background-image: url(/img/slides/shop-slide-1.jpg)"></div>
+                                    <div class="slide-content slide-item" style="background-image: url(/img/slides/shop-slide-1.jpg)"></div>
+                                    <span class="control" slot="right-control">
+                                    <Icon><img src="/img/icons/icon-right-arrow.svg" /></Icon>
+                                  </span>
+                                </OyCarousel>
+                            </div>
+                        </Cell>
+                    </LayoutGrid>
+                    <div class="divider"></div>
+                </div>
+            </div>
+        </section>
+        <section class="has-padding m-pt-40 m-pb-70" id="featured-drops">
+            <LayoutGrid class="pt-0">
+                <Cell span="12"><h3 class="text-h1 mt-0 mb-0">Featured Drops</h3></Cell>
+            </LayoutGrid>
+            <LayoutGrid class="pt-0">
+                <Cell spanDevices={{desktop: 4 , mobile:4}}>
+                    <div class="item-featured-drop new">
+                        <div class="thumbnail dark mb-70">
+                            <img class="" src="/img/feature-drops/item-1.jpg" alt="" />
+                            <div class="caption"><span>6 Packages left</span></div>
+                        </div>
+                        <h5 class="mt-0">Fashion Drop</h5>
+                        <div class="divider pb-30" />
+                        <h4 class="text-h2 mt-0 mb-30">
+                            Louis Vuitton - Photographed by Inez & Vinoodh in Monaco
+                        </h4>
+                        <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                    </div>
+                </Cell>
+                <Cell spanDevices={{desktop: 8 , mobile:4}} class="d-mr--30 m-mr-0">
+                    <div class="list-featured-drop">
+                        <div class="item-featured-drop">
+                            <div class="thumbnail dark mb-60">
+                                <img class="" src="/img/feature-drops/item-2.jpg" alt="" />
+                                <div class="caption"><span>11 Packages left</span></div>
+                            </div>
+                            <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
+                            <div class="divider pb-30" />
+                            <h4 class="text-h2 mt-0 mb-50 title">
+                                Exfoliating and polishing your skin with a finely ground herbs.
+                            </h4>
+                            <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                        </div>
+                        <div class="item-featured-drop coming">
+                            <div class="thumbnail dark mb-60">
+                                <img class="" src="/img/feature-drops/item-3.jpg" alt="" />
+                                <div class="caption"><span>Coming 07.02.21</span></div>
+                            </div>
+                            <p class="mt-0 mb-25 text-eyebrow category">Fashion Drop</p>
+                            <div class="divider pb-30" />
+                            <h4 class="text-h2 mt-0 mb-50 title">
+                                Exfoliating and polishing your skin with a finely ground herbs.
+                            </h4>
+                            <Button class="hover-affect" variant="outlined"><Label>Set Reminder</Label></Button>
+                        </div>
+                        <div class="item-featured-drop">
+                            <div class="thumbnail dark mb-60">
+                                <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
+                                <div class="caption"><span>3 Packages left</span></div>
+                            </div>
+                            <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
+                            <div class="divider pb-30" />
+                            <h4 class="text-h2 mt-0 mb-50 title">
+                                Exfoliating and polishing your skin with a finely ground herbs.
+                            </h4>
+                            <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                        </div>
+                    </div>
+                </Cell>
+            </LayoutGrid>
+        </section>
+        <section
+                class="d-pt-55 d-pb-70 t-pt-55 t-pb-70 m-pt-20 m-pb-20 full-width"
+                id="signup-section"
+                style="background-color: #F0F7F8"
+        >
+            <div class="content-wrap">
+                <LayoutGrid>
+                    <Cell spanDevices={{desktop: 5, tablet: 8, phone: 4}}>
+                        <div class="thumbnail dark multi-images-affect">
+                            <img src="/img/signup-img.jpg" alt="" />
+                            <img src="/img/signup-img-2.jpg" alt=""/>
+                            <div class="caption">
+                                <span>Channel Resort ‘21</span>
+                            </div>
+                        </div>
+                    </Cell>
+                    <Cell spanDevices={{desktop: 7, tablet: 8, phone: 4}} class="light d-pl-70 d-pr-70">
+                        <h3 class="d-mb-100 d-mt-100 m-mt-40 m-mb-70">
+                            Join now for exclusive biweekly travel promotional drops, special
+                            content, and bespoke travel itineraries.
+                        </h3>
+                        <div class="d-pb-100 m-pb-0" />
+                        <h5>Become an Oysteo Member now</h5>
+                        <h2 class="text-h1 mt-30 d-mb-40 m-mb-15">Never Miss a Drop</h2>
+                        <Button variant="outlined" class="hover-affect" on:click={callOpenSignupModal}
+                        ><Label >Sign Up Now</Label></Button
+                        >
+                    </Cell>
+                </LayoutGrid>
+            </div>
+        </section>
+        <section class="d-pt-90 t-pt-90 m-pt-50 trips-list-wrap">
+            <div class="container">
+                <div class="text-center d-mb-80 t-mb-80 m-mb-55 filter-wrap">
+                    <label class="d-mr-100 t-mr-100">Filter Curations</label>
+                    <Select bind:value={filterActive}>
+                        <Option value="Current Drops"><h5>Current Drops</h5></Option>
+                    </Select>
+                </div>
+                <div class="list-featured-drop">
+                    <LayoutGrid class="p-0">
+                        <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
+                            <a href="#">
+                                <div class="item-featured-drop">
+                                    <div class="thumbnail dark mb-60">
+                                        <img class="" src="/img/feature-drops/item-5.jpg" alt="" />
+                                        <div class="caption"><span>6 Packages left</span></div>
+                                    </div>
+                                    <p class="mt-0 mb-25 text-eyebrow category">Fashion Drop</p>
+                                    <div class="divider pb-30" />
+                                    <h4 class="text-h2 mt-0 mb-50 title">
+                                        Louis Vuitton - Photographed by Inez & Vinoodh in Monaco
+                                    </h4>
+                                    <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                                </div>
+                            </a>
+                        </Cell>
+                        <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
+                            <a href="#">
+                                <div class="item-featured-drop">
+                                    <div class="thumbnail dark mb-60">
+                                        <img class="" src="/img/feature-drops/item-6.jpg" alt="" />
+                                        <div class="caption"><span>3 Packages left</span></div>
+                                    </div>
+                                    <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
+                                    <div class="divider pb-30" />
+                                    <h4 class="text-h2 mt-0 mb-50 title">
+                                        Australian Masterchef Restaurant Tour - Starting in Sydney.</h4>
+                                    <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                                </div>
+                            </a>
+                        </Cell>
+                        <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
+                            <a href="#">
+                                <div class="item-featured-drop">
+                                    <div class="thumbnail dark mb-60">
+                                        <img class="" src="/img/feature-drops/item-7.jpg" alt="" />
+                                        <div class="caption"><span>7 Packages left</span></div>
+                                    </div>
+                                    <p class="mt-0 mb-25 text-eyebrow category">Fashion Drop</p>
+                                    <div class="divider pb-30" />
+                                    <h4 class="text-h2 mt-0 mb-50 title">
+                                        Carolina Herrara Resort Collection - Designed and created for longevity.
+                                    </h4>
+                                    <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                                </div>
+                            </a>
+                        </Cell>
+                        <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
+                            <a href="#">
+                                <div class="item-featured-drop">
+                                    <div class="thumbnail dark mb-60">
+                                        <img class="" src="/img/feature-drops/item-2.jpg" alt="" />
+                                        <div class="caption"><span>4 Packages left</span></div>
+                                    </div>
+                                    <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
+                                    <div class="divider pb-30" />
+                                    <h4 class="text-h2 mt-0 mb-50 title">
+                                        Exfoliating and polishing your skin with a finely ground herbs.
+                                    </h4>
+                                    <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                                </div>
+                            </a>
+                        </Cell>
+
+                        <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
+                            <a href="#">
+                                <div class="item-featured-drop">
+                                    <div class="thumbnail dark mb-60">
+                                        <img class="" src="/img/feature-drops/item-8.jpg" alt="" />
+                                        <div class="caption"><span>2 Packages left</span></div>
+                                    </div>
+                                    <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
+                                    <div class="divider pb-30" />
+                                    <h4 class="text-h2 mt-0 mb-50 title">
+                                        Australian Masterchef
+                                        Restaurant Tour - Starting
+                                        in Sydney.
+                                    </h4>
+                                    <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                                </div>
+                            </a>
+                        </Cell>
+                        <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
+                            <a href="#">
+                                <div class="item-featured-drop">
+                                    <div class="thumbnail dark mb-60">
+                                        <img class="" src="/img/feature-drops/item-9.jpg" alt="" />
+                                        <div class="caption"><span>11 Packages left</span></div>
+                                    </div>
+                                    <p class="mt-0 mb-25 text-eyebrow category">Fashion Drop</p>
+                                    <div class="divider pb-30" />
+                                    <h4 class="text-h2 mt-0 mb-50 title">
+                                        Louis Vuitton - Photographed by Inez & Vinoodh in Monaco</h4>
+                                    <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                                </div>
+                            </a>
+                        </Cell>
+                        <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
+                            <a href="#">
+                                <div class="item-featured-drop">
+                                    <div class="thumbnail dark mb-60">
+                                        <img class="" src="/img/feature-drops/item-10.jpg" alt="" />
+                                        <div class="caption"><span>6 Packages left</span></div>
+                                    </div>
+                                    <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
+                                    <div class="divider pb-30" />
+                                    <h4 class="text-h2 mt-0 mb-50 title">
+                                        Exfoliating and polishing your skin with a finely ground herbs.
+                                    </h4>
+                                    <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                                </div>
+                            </a>
+                        </Cell>
+                        <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
+                            <a href="#">
+                                <div class="item-featured-drop">
+                                    <div class="thumbnail dark mb-60">
+                                        <img class="" src="/img/feature-drops/item-11.jpg" alt="" />
+                                        <div class="caption"><span>3 Packages left</span></div>
+                                    </div>
+                                    <p class="mt-0 mb-25 text-eyebrow category">Fashion Drop</p>
+                                    <div class="divider pb-30" />
+                                    <h4 class="text-h2 mt-0 mb-50 title">
+                                        Carolina Herrara Resort Collection - Designed and created for longevity.
+                                    </h4>
+                                    <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                                </div>
+                            </a>
+                        </Cell>
+                    </LayoutGrid>
+                </div>
+            </div>
+        </section>
+    </div>
+</Layout>
+<SignupModal
+        bind:open={openSignupModal}
+        bind:authModel={userModel}
+        on:close={callOpenSigninModal}
+/>
+<SigninModal
+        bind:open={openSigninModal}
+        bind:authModel={userModel}
+        on:close={callOpenSignupModal}
+/>
+<style>
+    .header-title{
+        background-color:  #000;
+    }
+    .shop-slides{
+        height: 100%;
+        width: 100%;
+        --wrap-width: 100%;
+    }
+
+    .shop-slides :global(.dots){
+        display: none;
+    }
+
+    .shop-slides :global(.carousel),.shop-slides :global(.slides),.shop-slides :global(.slides div){
+        height: 100%;
+    }
+    .shop-slides :global(.slide-item){
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+    .header-title .content-left{
+        padding-top: 315px;
+        padding-bottom: 70px;
+    }
+    .header-title .short-description{
+        width: 80%;
+    }
+    .trips-list-wrap{
+        padding-bottom: 110px;
+    }
+
+    :global(.mdc-select.smui-select--standard .mdc-select__anchor){
+        height: 35px;
+    }
+
+    .trips-list-wrap .item-featured-drop .thumbnail {
+        position: relative;
+    }
+    .trips-list-wrap .item-featured-drop .thumbnail .caption {
+        text-transform: uppercase;
+        position: absolute;
+        bottom: -20px;
+        width: calc(100% - 25px);
+        background-color: #91421c;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 20px 0;
+        font-size: 14px;
+        line-height: 32px;
+        letter-spacing: 0.1px;
+    }
+    .trips-list-wrap .item-featured-drop .thumbnail .caption span {
+        width: 100%;
+        display: inline-block;
+        text-align: center;
+    }
+    .trips-list-wrap .item-featured-drop.coming .thumbnail .caption {
+        background-color: #5078bc;
+    }
+    .trips-list-wrap .item-featured-drop:not(.new) {
+        white-space: normal;
+    }
+
+    .trips-list-wrap .item-featured-drop:not(.new) .caption span {
+        width: 100%;
+        display: inline-block;
+        text-align: center;
+    }
+    .trips-list-wrap .item-featured-drop .title {
+        height: 55px;
+        overflow: hidden;
+    }
+    .trips-list-wrap .item-featured-drop .divider::after {
+        background-color: #ccc;
+    }
+
+    .trips-list-wrap .item-featured-drop{
+        margin-bottom: 70px;
+    }
+
+    @media screen and (max-width: 599px) {
+        .shop-slides :global(.carousel),.shop-slides :global(.slides),.shop-slides :global(.slides div){
+            height: auto;
+        }
+        .shop-slides :global(.slide-item){
+            padding-top: 70%;
+        }
+        .header-title .short-description{
+            width: 100%;
+        }
+        .shop-slides :global(.wrap-control){
+            display: none;
+        }
+        .shop-slides{
+            margin-bottom: 20px;
+        }
+        .shop-slides :global(.dots){
+            display: flex;
+            justify-content: end;
+            margin-top: 20px;
+        }
+        .header-title :global(.mdc-layout-grid__cell:first-child){
+            order: 2;
+        }
+        .header-title .content-left{
+            padding-top: 15px;
+            padding-bottom: 20px;
+        }
+
+        .filter-wrap label{
+            display: block;
+            margin-bottom: 30px;
+        }
+
+        .trips-list-wrap .item-featured-drop .title {
+            height: auto;
+        }
+
+        .trips-list-wrap .item-featured-drop :global(.mdc-button){
+            display: none;
+        }
+    }
+
+</style>
