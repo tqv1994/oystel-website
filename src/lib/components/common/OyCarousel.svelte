@@ -81,11 +81,12 @@
         left: 50%;
         transform: translate(-50%, -50%);
         height: 1px;
+        z-index: 2;
     }
 
     :global(.slide-content.has-fade-in) {
-        opacity: 0.7;
-        transition: all 1s ease;
+        opacity: 0;
+        transition: opacity 1s ease;
     }
     :global(.slide-content.has-fade-in.current-slide) {
         /*animation: fadeIn 0.5s ease 1 normal forwards;*/
@@ -93,6 +94,32 @@
         /*z-index: 3;*/
         /*z-index: 2;*/
          opacity: 1;
+    }
+
+    :global(.slides .back-drop){
+        background-image: var(--background-image);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    :global(.slides .back-drop:before){
+        content: "";
+        background-color: rgba(0,0,0,0.5);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
     }
 
 </style>
@@ -123,7 +150,8 @@
     const dispatch = createEventDispatcher()
     $: pips = controller ? controller.innerElements : []
     $: currentPerPage = controller ? controller.perPage : perPage
-    $: totalDots = controller ? Math.ceil(controller.innerElements.length / currentPerPage) : []
+    $: totalDots = controller ? Math.ceil(controller.innerElements.length / currentPerPage) : [];
+    let prevBackground = '';
 
     onMount(() => {
         allSlides = document.querySelectorAll('.slide-content');
@@ -140,7 +168,13 @@
             threshold,
             rtl,
             onInit: () =>{
+                document.querySelector('.slides > div').style.zIndex = 1;
+                document.querySelector('.slides > div').style.position = 'relative';
                 allSlides[0].classList.add('current-slide');
+                let backDrop = document.createElement("div");
+                backDrop.classList.add('back-drop');
+                backDrop.style.backgroundImage = allSlides[0].style.backgroundImage;
+                document.querySelector('.slides').appendChild(backDrop);
                 changeSlide;
             },
             onChange: handleChange
@@ -161,11 +195,14 @@
     }
 
     export function left () {
+        prevBackground = allSlides[controller.currentSlide].style.backgroundImage;
         controller.prev()
     }
 
     export function right () {
         // allSlides[controller.currentSlide].removeEventListener(transitionEvent, right);
+        prevBackground = allSlides[controller.currentSlide].style.backgroundImage;
+
         controller.next()
     }
     export function go (index) {
@@ -184,6 +221,8 @@
     function handleChange (event) {
         console.log('is active',controller.currentSlide);
         allSlides[controller.currentSlide].classList.add('current-slide');
+        let slidesEl = document.querySelector('.slides .back-drop');
+        slidesEl.style.backgroundImage = prevBackground;
         //change speed of slide change
         changeSlide();
 

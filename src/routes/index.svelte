@@ -53,7 +53,7 @@
       </span>
       <div
         class="slide-content slide-item"
-        style="background-image: url(/img/slides/slide-01.jpg)"
+        style="background-image: url(/img/slides/slide-01.jpg);--background-img:url(/img/slides/slide-01.jpg);"
       >
         <div class="content-wrap">
           <div class="dark text-box">
