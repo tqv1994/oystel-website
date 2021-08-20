@@ -90,7 +90,7 @@
         </div>
       </div>
       <div
-        class="slide-content slide-item is-not-active"
+        class="slide-content slide-item slide-item-2 is-not-active"
         style="background-image: url(/img/slides/slide-02.jpg)"
       >
         <div class="content-wrap">
@@ -194,7 +194,7 @@
     </LayoutGrid>
   </section>
   <section
-    class="d-pt-55 d-pb-70 t-pt-55 t-pb-70 m-pt-20 m-pb-20 full-width"
+    class="d-pt-55 d-pb-70 t-pt-55 t-pb-70 m-pt-20 m-pb-40 full-width"
     id="signup-section"
     style="background-color: #F0F7F8"
   >
@@ -505,6 +505,17 @@
       right: auto;
       justify-content: left;
       width: calc(100vw - 30px);
+    }
+  }
+  @media screen and (max-width: 599px){
+    .list-experiences .item-experience .text-h2,.list-experiences .item-experience h2,
+    #from-advisors .item-experience .text-h2, #from-advisors .item-experience .h2{
+      font-size: 14px;
+      line-height: 18px;
+      letter-spacing: 0;
+    }
+    #slider .slide-item.slide-item-2{
+      background-position: right;
     }
   }
 </style>

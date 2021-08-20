@@ -221,7 +221,7 @@
                         </Wrapper>
                     </Section>
                 </Row>
-                <div class="divider" />
+                <div class="divider"></div>
                 <Row>
                     <Section align="start" class="m-pl-0 m-pr-0">
                         <form class="search-form">
@@ -264,7 +264,7 @@
                         </div>
                     </Section>
                 </Row>
-                <div class="divider" />
+                <div class="divider m-none"></div>
             </div>
             </div>
         </TopAppBar>
@@ -413,6 +413,12 @@
     @media screen and (max-width: 768px) {
         header .search-form ,header .search-form :global(.mdc-text-field){
             width: 100%;
+        }
+    }
+
+    @media screen and (max-width: 599px){
+        footer :global(.mdc-button){
+            width: 170px;
         }
     }
 

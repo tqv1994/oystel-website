@@ -89,7 +89,7 @@
         dispatch('close');
     }
 </script>
-<div id="menu-wrap" class="mt-40">
+<div id="menu-wrap" class="mt-35">
     {#if (!menuActive)}
         <ul>
             {#each menus as menu}
@@ -141,12 +141,13 @@
     #menu-wrap ul{
         list-style: none;
         padding-left: 0;
+        margin-top: 0;
     }
     #menu-wrap ul ul{
         padding-left: 24px;
     }
     #menu-wrap ul li{
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
     #menu-wrap ul li a{
         position: relative;

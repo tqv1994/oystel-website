@@ -122,6 +122,10 @@
         background-repeat: no-repeat;
     }
 
+    .dots{
+        z-index: 2;
+    }
+
 </style>
 
 <script>
