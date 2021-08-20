@@ -343,6 +343,14 @@
         border-bottom: 1px solid rgba(0,0,0,.12);
     }
 
+    :global(.header-title){
+        top: -200px;
+        transition: top 2s ease;
+    }
+    :global(#header.fixed){
+        animation: fadeIn 2s ease;
+    }
+
     @media screen and (min-width: 600px) {
         .advisors-list :global(.mdc-layout-grid  .mdc-layout-grid__cell .item-advisor){
             border-bottom: 1px solid rgba(0,0,0,0.2);

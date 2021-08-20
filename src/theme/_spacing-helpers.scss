@@ -28,7 +28,7 @@ $desktop-width: 1240px;
 }
 }
 
-$spaceamounts: (0, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 48, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 115, 120, 125, 150, 200); // Adjust this to include the pixel amounts you need.
+$spaceamounts: (0, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 48, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 115, 120, 125, 150, 160, 200); // Adjust this to include the pixel amounts you need.
 $sides: (top, bottom, left, right); // Leave this variable alone
 
 @each $space in $spaceamounts {
@@ -85,6 +85,17 @@ $sides: (top, bottom, left, right); // Leave this variable alone
     padding: #{$space}px !important;
   }
   @each $side in $sides {
+    .m#{str-slice($side, 0, 1)}--#{$space} {
+      margin-#{$side}: #{$space * (-1)}px !important;
+    }
+
+    .m#{str-slice($side, 0, 1)}-#{$space} {
+      margin-#{$side}: #{$space}px !important;
+    }
+
+    .p#{str-slice($side, 0, 1)}-#{$space} {
+      padding-#{$side}: #{$space}px !important;
+    }
     @include mobile{
       .m-m#{str-slice($side, 0, 1)}-#{$space} {
         margin-#{$side}: #{$space}px !important;
@@ -135,17 +146,6 @@ $sides: (top, bottom, left, right); // Leave this variable alone
       .d-p#{str-slice($side, 0, 1)}-#{$space} {
         padding-#{$side}: #{$space}px !important;
       }
-    }
-    .m#{str-slice($side, 0, 1)}--#{$space} {
-      margin-#{$side}: #{$space * (-1)}px !important;
-    }
-
-    .m#{str-slice($side, 0, 1)}-#{$space} {
-      margin-#{$side}: #{$space}px !important;
-    }
-
-    .p#{str-slice($side, 0, 1)}-#{$space} {
-      padding-#{$side}: #{$space}px !important;
     }
   }
 }

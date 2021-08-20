@@ -720,6 +720,14 @@
         top: 5px;
     }
 
+    :global(.header-title){
+        top: -200px;
+        transition: top 2s ease;
+    }
+    :global(#header.fixed){
+        animation: fadeIn 2s ease;
+    }
+
     @media screen and (max-width: 599px) {
         .experience-detail-slides :global(.carousel),.experience-detail-slides :global(.slides),.experience-detail-slides :global(.slides div){
             height: auto;

@@ -733,6 +733,14 @@
         top: 5px;
     }
 
+    :global(.header-title){
+        top: -200px;
+        transition: top 2s ease;
+    }
+    :global(#header.fixed){
+        animation: fadeIn 2s ease;
+    }
+
     @media screen and (max-width: 599px) {
         .experience-detail-image{
             position: relative;

@@ -434,7 +434,7 @@
                                         <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-right">Experience</p></Cell>
                                     </LayoutGrid>
                                     <div class="divider"></div>
-                                    experience-item        <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
+                                    <h4 class="text-h2 title">A one-of-a-kind journey of self-exploration.</h4>
                                     <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
                                 </div>
                             </a>
@@ -604,6 +604,14 @@
     .item-read-more .label .material-icons{
         position: relative;
         top: 5px;
+    }
+
+    :global(.header-title){
+        top: -200px;
+        transition: top 2s ease;
+    }
+    :global(#header.fixed){
+        animation: fadeIn 2s ease;
     }
 
     @media screen and (max-width: 599px){
