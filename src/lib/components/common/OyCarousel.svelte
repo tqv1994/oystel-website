@@ -175,10 +175,12 @@
                 document.querySelector('.slides > div').style.zIndex = 1;
                 document.querySelector('.slides > div').style.position = 'relative';
                 allSlides[0].classList.add('current-slide');
-                let backDrop = document.createElement("div");
-                backDrop.classList.add('back-drop');
-                backDrop.style.backgroundImage = allSlides[0].style.backgroundImage;
-                document.querySelector('.slides').appendChild(backDrop);
+                if(isFadeIn) {
+                    let backDrop = document.createElement("div");
+                    backDrop.classList.add('back-drop');
+                    backDrop.style.backgroundImage = allSlides[0].style.backgroundImage;
+                    document.querySelector('.slides').appendChild(backDrop);
+                }
                 changeSlide;
             },
             onChange: handleChange
@@ -223,10 +225,11 @@
         }
     }
     function handleChange (event) {
-        console.log('is active',controller.currentSlide);
-        allSlides[controller.currentSlide].classList.add('current-slide');
-        let slidesEl = document.querySelector('.slides .back-drop');
-        slidesEl.style.backgroundImage = prevBackground;
+        if(isFadeIn) {
+            allSlides[controller.currentSlide].classList.add('current-slide');
+            let slidesEl = document.querySelector('.slides .back-drop');
+            slidesEl.style.backgroundImage = prevBackground;
+        }
         //change speed of slide change
         changeSlide();
 

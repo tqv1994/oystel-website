@@ -93,10 +93,11 @@
         bottom:0;
         transform: translateX(-50%);
         opacity: 1;
+        transition: bottom 2s ease;
     }
     .popup-products.close{
         opacity: 0;
-        bottom: 999px;
+        bottom: -999px;
     }
     .popup-products.open{
     }

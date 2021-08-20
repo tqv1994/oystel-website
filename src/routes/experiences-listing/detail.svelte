@@ -655,7 +655,7 @@
     }
 
 
-    .products-list .item-product .thumbnail{
+    .products-list :global(.item-product .thumbnail){
         width: 100%;
         padding-bottom: 145%;
         background-color:#F2F2F2;
@@ -664,22 +664,22 @@
         position: relative;
     }
 
-    .products-list .item-product .thumbnail :global(.btn-favorite) {
+    .products-list :global(.item-product .thumbnail  .btn-favorite) {
         position: absolute;
         top: 2%;
         right: 2%;
         filter: brightness(0);
     }
-    .products-list .item-product .thumbnail :global(.btn-favorite .like) {
+    .products-list :global(.item-product .thumbnail  .btn-favorite .like) {
         display: block;
     }
-    .products-list .item-product .thumbnail :global(.btn-favorite .liked) {
+    .products-list :global(.item-product .thumbnail .btn-favorite .liked) {
         display: none;
     }
-    .products-list .item-product .thumbnail :global(.btn-favorite:hover .like) {
+    .products-list :global(.item-product .thumbnail .btn-favorite:hover .like) {
         display: none;
     }
-    .products-list .item-product .thumbnail :global(.btn-favorite:hover .liked) {
+    .products-list :global(.item-product .thumbnail .btn-favorite:hover .liked) {
         display: block;
     }
 
