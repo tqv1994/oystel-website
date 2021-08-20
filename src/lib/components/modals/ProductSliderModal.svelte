@@ -128,7 +128,7 @@
     }
 
     @media (max-width: 599px) {
-        .popup-products{
+        .popup-products.open{
             top: 0;
             overflow-y: scroll;
         }
