@@ -81,7 +81,6 @@
     section{
         --mdc-layout-grid-gutter-desktop: 100px;
         background-color: #fff;
-        border-top: 1px solid #000;
     }
     .divider:after{
         background-color: rgba(0,0,0,0.2);

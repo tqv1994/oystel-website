@@ -209,20 +209,20 @@
           </Cell>
           <Cell spanDevices={{ desktop: 4, mobile: 12 }}>
             <div class="signin-socials">
-              <p class="text-body2 m-mb-25">Or log in using</p>
+              <p class="text-input m-mb-25">Or log in using</p>
               <Button
                 on:click={signInWithFacebook}
                 variant="outlined"
                 class="mb-15 m-mb-20"
               >
-                <Icon><img src="./img/icons/icon-facebook.svg" /></Icon>
+                <Icon><img src="/img/icons/icon-facebook.svg" /></Icon>
                 <Label class="text-body2">Facebook</Label>
               </Button>
               <Button
                 on:click={signInWithGoogle}
                 variant="outlined"
                 class="mb-15"
-                ><Icon><img src="./img/icons/icon-google.svg" /></Icon><Label
+                ><Icon><img src="/img/icons/icon-google.svg" /></Icon><Label
                   class="text-body2">Google</Label
                 ></Button
               >

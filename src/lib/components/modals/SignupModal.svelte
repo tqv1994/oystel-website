@@ -226,14 +226,14 @@
                     variant="outlined"
                     class="mb-15 m-mb-20"
             >
-              <Icon><img src="./img/icons/icon-facebook.svg" /></Icon>
+              <Icon><img src="/img/icons/icon-facebook.svg" /></Icon>
               <Label class="text-body2">Facebook</Label>
             </Button>
             <Button
                     on:click={signInWithGoogle}
                     variant="outlined"
                     class="mb-15"
-            ><Icon><img src="./img/icons/icon-google.svg" /></Icon><Label
+            ><Icon><img src="/img/icons/icon-google.svg" /></Icon><Label
                     class="text-body2">Google</Label
             ></Button
             >

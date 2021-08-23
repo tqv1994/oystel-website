@@ -58,11 +58,7 @@
         <div class="content-wrap">
           <div class="dark text-box">
             <LayoutGrid class="pb-15">
-              <Cell><h3 class="mt-0 mb-0">Welcome to Oysteo</h3></Cell>
-              <Cell
-              ><Button variant="outlined"><Label>Plan Your Trip</Label></Button
-              ></Cell
-              >
+              <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}><h3 class="pb-15" style="display: inline-block; margin-right: 30px">Welcome to Oysteo</h3><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
             </LayoutGrid>
             <LayoutGrid class="pb-15">
               <Cell span="12"
@@ -137,7 +133,7 @@
       <Cell span="12"><h3 class="text-h1 mt-0 mb-0">Featured Drops</h3></Cell>
     </LayoutGrid>
     <LayoutGrid class="pt-0">
-      <Cell spanDevices={{desktop: 4 , mobile:4}}>
+      <Cell spanDevices={{desktop: 4, tablet: 4 , phone:4}}>
         <div class="item-featured-drop new">
           <div class="thumbnail dark mb-70">
             <img class="" src="/img/feature-drops/item-1.jpg" alt="" />
@@ -151,44 +147,66 @@
           <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
         </div>
       </Cell>
-      <Cell spanDevices={{desktop: 8 , mobile:4}} class="d-mr--30 m-mr-0">
+      <Cell spanDevices={{desktop: 8 ,tablet: 4, phone:4}} class="d-mr--30 m-mr-0">
         <div class="list-featured-drop">
-          <div class="item-featured-drop">
-            <div class="thumbnail dark mb-60">
-              <img class="" src="/img/feature-drops/item-2.jpg" alt="" />
-              <div class="caption"><span>11 Packages left</span></div>
-            </div>
-            <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
-            <div class="divider pb-30" />
-            <h4 class="text-h2 mt-0 mb-50 title">
-              Exfoliating and polishing your skin with a finely ground herbs.
-            </h4>
-            <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
-          </div>
-          <div class="item-featured-drop coming">
-            <div class="thumbnail dark mb-60">
-              <img class="" src="/img/feature-drops/item-3.jpg" alt="" />
-              <div class="caption"><span>Coming 07.02.21</span></div>
-            </div>
-            <p class="mt-0 mb-25 text-eyebrow category">Fashion Drop</p>
-            <div class="divider pb-30" />
-            <h4 class="text-h2 mt-0 mb-50 title">
-              Exfoliating and polishing your skin with a finely ground herbs.
-            </h4>
-            <Button class="hover-affect" variant="outlined"><Label>Set Reminder</Label></Button>
-          </div>
-          <div class="item-featured-drop">
-            <div class="thumbnail dark mb-60">
-              <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
-              <div class="caption"><span>3 Packages left</span></div>
-            </div>
-            <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
-            <div class="divider pb-30" />
-            <h4 class="text-h2 mt-0 mb-50 title">
-              Exfoliating and polishing your skin with a finely ground herbs.
-            </h4>
-            <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
-          </div>
+          <LayoutGrid class="p-0">
+            <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
+              <div class="item-featured-drop">
+                <div class="thumbnail dark mb-60">
+                  <img class="" src="/img/feature-drops/item-2.jpg" alt="" />
+                  <div class="caption"><span>11 Packages left</span></div>
+                </div>
+                <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
+                <div class="divider pb-30" />
+                <h4 class="text-h2 mt-0 mb-50 title">
+                  Exfoliating and polishing your skin with a finely ground herbs.
+                </h4>
+                <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+              </div>
+            </Cell>
+            <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
+              <div class="item-featured-drop coming">
+                <div class="thumbnail dark mb-60">
+                  <img class="" src="/img/feature-drops/item-3.jpg" alt="" />
+                  <div class="caption"><span>Coming 07.02.21</span></div>
+                </div>
+                <p class="mt-0 mb-25 text-eyebrow category">Fashion Drop</p>
+                <div class="divider pb-30" />
+                <h4 class="text-h2 mt-0 mb-50 title">
+                  Exfoliating and polishing your skin with a finely ground herbs.
+                </h4>
+                <Button class="hover-affect" variant="outlined"><Label>Set Reminder</Label></Button>
+              </div>
+            </Cell>
+            <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
+              <div class="item-featured-drop">
+                <div class="thumbnail dark mb-60">
+                  <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
+                  <div class="caption"><span>3 Packages left</span></div>
+                </div>
+                <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
+                <div class="divider pb-30" />
+                <h4 class="text-h2 mt-0 mb-50 title">
+                  Exfoliating and polishing your skin with a finely ground herbs.
+                </h4>
+                <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+              </div>
+            </Cell>
+            <Cell spanDevices={{desktop: 4, tablet:2, phone: 2}}>
+              <div class="item-featured-drop">
+                <div class="thumbnail dark mb-60">
+                  <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
+                  <div class="caption"><span>3 Packages left</span></div>
+                </div>
+                <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
+                <div class="divider pb-30" />
+                <h4 class="text-h2 mt-0 mb-50 title">
+                  Exfoliating and polishing your skin with a finely ground herbs.
+                </h4>
+                <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+              </div>
+            </Cell>
+          </LayoutGrid>
         </div>
       </Cell>
     </LayoutGrid>
@@ -516,6 +534,35 @@
     }
     #slider .slide-item.slide-item-2{
       background-position: right;
+    }
+  }
+  .list-featured-drop :global(.mdc-layout-grid__inner) {
+    overflow-x: auto;
+    grid-auto-flow: column;
+  }
+
+  @media (min-width: 1240px) {
+    .list-featured-drop :global(.mdc-layout-grid__inner) {
+      grid-auto-columns: minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr));
+    }
+  }
+  @media (max-width: 1239px) and (min-width: 905px) {
+    .list-featured-drop :global(.mdc-layout-grid__inner) {
+      grid-auto-columns: minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr));
+    }
+  }
+  @media (max-width: 904px) and (min-width: 600px){
+    .list-featured-drop :global(.mdc-layout-grid__inner) {
+      grid-auto-columns: minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)), 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)), 1fr));
+    }
+  }
+  @media (max-width: 599px){
+    .list-featured-drop :global(.mdc-layout-grid__inner) {
+      grid-auto-columns: minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr));
     }
   }
 </style>

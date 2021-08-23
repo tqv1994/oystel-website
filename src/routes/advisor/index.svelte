@@ -77,13 +77,13 @@
                         </Cell>
                         <Cell spanDevices={{desktop: 8}} class="form-inline text-right">
                             <div class="form-control">
-                                <label class="text-input">Filter by Specialty</label>
+                                <label class="text-h3">Filter by Specialty</label>
                                 <Select bind:value={searchModel.specialty} label="">
                                     <Option value="" >All</Option>
                                 </Select>
                             </div>
                             <div class="form-control">
-                                <label class="text-input">Location</label>
+                                <label class="text-h3">Location</label>
                                 <Select bind:value={searchModel.location} label="">
                                     <Option value="" >All</Option>
                                 </Select>
@@ -325,6 +325,10 @@
         margin-right: 25px;
     }
 
+    form :global(.mdc-select__selected-text){
+        text-transform: uppercase;
+    }
+
     :global(.item-advisor img){
         border-radius: 50%;
         vertical-align: middle;
@@ -386,6 +390,10 @@
         position: relative;
         top: 50%;
         transform: translateY(-50%);
+    }
+
+    :global(.page-advisors .mdc-data-table__header-cell){
+        text-transform: uppercase;
     }
 
 </style>

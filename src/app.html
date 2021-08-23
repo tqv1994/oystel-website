@@ -49,9 +49,17 @@
     <div id="svelte">%svelte.body%</div>
     <script type="text/javascript">
         function createDragScroll(element,typeElement = 'class'){
-          var ele = document.getElementsByClassName(element);
-          if(ele.length > 0){
-            ele = ele[0];
+          if(typeElement == 'query-selector'){
+            var ele = document.querySelector(element);
+          }else{
+            var ele = document.getElementsByClassName(element);
+            if(ele.length > 0){
+              ele = ele[0];
+            }
+          }
+
+          if(typeof ele != 'undefined'){
+
             ele.style.cursor = 'grab';
 
             let pos = { top: 0, left: 0, x: 0, y: 0 };
@@ -95,7 +103,7 @@
           }
         }
         createDragScroll('list-tags');
-        createDragScroll('list-featured-drop');
+        createDragScroll('.list-featured-drop .mdc-layout-grid__inner','query-selector');
         createDragScroll('list-experiences');
     </script>
   </body>

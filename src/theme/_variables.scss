@@ -1,7 +1,7 @@
 /* Responsive */
 $mobile-width: 599px;
 $tablet-width: 600px;
-$desktop-width: 1240px;
+$desktop-width: 905px;
 @mixin mobile { @media (max-width: #{$tablet-width - 1px}) {
   @content;
 }

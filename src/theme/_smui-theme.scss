@@ -59,7 +59,7 @@ $blueColor: #5078BC;
 /* Responsive */
 $mobile-width: 599px;
 $tablet-width: 600px;
-$desktop-width: 1240px;
+$desktop-width: 905px;
 @mixin mobile { @media (max-width: #{$tablet-width - 1px}) {
   @content;
 }
@@ -69,6 +69,10 @@ $desktop-width: 1240px;
   @content;
 }
 }
+
+@mixin tablet-large {@media (max-width: 1239px) and (min-width: 905px) {
+  @content
+}}
 
 @mixin desktop {   @media (min-width: #{$desktop-width}) {
   @content;
@@ -97,6 +101,14 @@ $desktop-width: 1240px;
     @content;
   }
 }
+
+//@media screen and (max-width: 1239px) and (min-width: 905px){
+//  body{
+//    &, * {
+//      transform: scale(1);
+//    }
+//  }
+//}
 
 /* Animation */
 @keyframes fadeIn {
@@ -203,6 +215,9 @@ caption {
   @include typography.typography('body2');
   font-style: oblique;
 }
+select, .mdc-select .mdc-floating-label.mdc-floating-label{
+  font-style: normal;
+}
 button,button.mdc-button{
   --mdc-theme-primary: $blackColor;
   @include button.outline-color(#000);
@@ -216,6 +231,11 @@ button,button.mdc-button{
   &,.mdc-button__label{
     @include typography.typography('button');
     line-height: normal;
+  }
+  @include mobile{
+    &.mdc-button {
+      min-width: 170px;
+    }
   }
   &.no-background{
     &:before, &:after{
@@ -284,6 +304,18 @@ button,button.mdc-button{
 .mdc-floating-label{
   padding-right: 2px;
 }
+
+.content{
+  .mdc-icon-button {
+    width: 36px;
+    height: 36px;
+  }
+  .mdc-icon-button svg, .mdc-icon-button img{
+    width: 18px;
+    height: 18px;
+  }
+}
+
 
 .content-wrap{
   @media screen and (min-width: 1441px){
@@ -409,6 +441,10 @@ section{
   }
 }
 
+#logo{
+  min-width: 170px;
+}
+
 header{
   &.header-transparent{
     position: absolute;
@@ -421,6 +457,11 @@ header{
   }
 
   .mdc-top-app-bar__section {
+    #main-menu{
+      height: 30px;
+      overflow: hidden;
+      padding-left: 0;
+    }
     #main-menu li {
       list-style: none;
       display: inline-block;
@@ -469,6 +510,7 @@ header{
     .btn-plan-your-trip{
       @include button.outline-color(theme.$surface);
       @include button.horizontal-padding(45px);
+      min-width: 195px;
     }
     a{
 
@@ -634,6 +676,9 @@ header{
     }
     .text-box{
       width: 60%; top: 30%; left: 10%; position: absolute; z-index: 2;
+      @include tablet-large{
+        width: 85%;
+      }
       @include mobile{
         width: 100%;
         left: auto;
@@ -941,13 +986,12 @@ header{
 
 /* Home Page - Section Featured Drops */
 #featured-drops{
-  .list-featured-drop{
-    white-space: nowrap;
-    overflow-x: scroll;
-    position: relative;
-    height: 100%;
+  .list-featured-drop {
+    &, .mdc-layout-grid, .mdc-layout-grid .mdc-layout-grid__inner {
+      height: 100%;
+    }
   }
-  .list-featured-drop
+  .list-featured-drop .mdc-layout-grid__inner
   {
     &::-webkit-scrollbar-track{
       background-color: #D3D3D3;
@@ -963,6 +1007,12 @@ header{
 
     @include mobile{
       padding-bottom: 30px;
+    }
+  }
+  @include desktop{
+    &::-webkit-scrollbar{
+      position: absolute;
+      bottom: 0;
     }
   }
   .item-featured-drop{
@@ -995,18 +1045,7 @@ header{
       }
     }
     &:not(.new){
-        width: 315px;
-        @media (max-width: 1440px) and (min-width: 600px) {
-          & {
-            width: 250px;
-            margin-right: 25px;
-          }
-        }
         display: inline-block;
-        margin-right: 30px;
-        @include mobile{
-          margin-right: 25px;
-        }
         white-space: normal;
         .caption{
           span{
@@ -1201,7 +1240,9 @@ footer{
     .mdc-layout-grid{
       --mdc-layout-grid-margin-desktop: 0;
       padding: 0;
-      --mdc-layout-grid-gutter-desktop: 50px;
+      @include desktop {
+        --mdc-layout-grid-gutter-desktop: 50px;
+      }
     }
   }
   ul{
@@ -1251,4 +1292,40 @@ footer{
       right: 15px;
     }
   }
+}
+
+@include mobile {
+  .trips-list-wrap .list-featured-drop {
+    .item-featured-drop {
+      .title {
+        font-size: 14px;
+        line-height: 18px;
+        letter-spacing: 0;
+      }
+    }
+  }
+  .experience-item{
+    .title {
+      font-size: 14px;
+      line-height: 18px;
+      letter-spacing: 0;
+    }
+  }
+}
+
+/* Animation when show sticky */
+@keyframes hidden-on-sticky {
+  from {height: auto;}
+  to {height: 0;}
+}
+.hidden-on-sticky{
+  height: auto;
+  overflow: hidden;
+}
+.is_sticky .hidden-on-sticky{
+  /*display: none;*/
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  /*transition: height 0.3s ease 0.3s;*/
+  animation: hidden-on-sticky 0.3s ease 0.3s forwards;
 }

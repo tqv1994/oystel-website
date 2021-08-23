@@ -67,7 +67,7 @@
                         <h1 class="mt-30 mb-10">Jan Wohl</h1>
                         <p class="mt-0 mb-45 description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac volutpat neque. Suspendisse varius vitae sem in elementum.</p>
                         <h4 class="mt-0 mb-55">Advisor  |  New York</h4>
-                        <Button variant="outlined"><Label>Contact Me</Label></Button>
+                        <Button variant="outlined" class="hover-affect"><Label>Contact Me</Label></Button>
                     </div>
                 </div>
             </div>
@@ -77,7 +77,7 @@
                 <LayoutGrid class="p-0 d-pl-115 d-pr-115 t-pl-0 t-pr-0">
                     <Cell spanDevices={{desktop: 6}} class="m-none t-block"></Cell>
                     <Cell spanDevices={{desktop: 6, tablet:8, phone: 4}}>
-                        <div class="">
+                        <div class="destinations-wrap">
                             <h1 class="mt-0">Destinations</h1>
                             <LayoutGrid class="p-0">
                                 <Cell spanDevices={{desktop: 6, tablet: 4, phone: 2}}>
@@ -121,7 +121,7 @@
                                                 <img src="/img/trips/trip-1.jpg" alt=""/>
                                             </div>
                                             <LayoutGrid class="p-0">
-                                                <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">Italy</p></Cell>
+                                                <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 8 }}><p class="text-eyebrow text-left">Italy</p></Cell>
                                             </LayoutGrid>
                                             <div class="divider"></div>
                                             <h4 class="text-h2 title">Aeolian Islands</h4>
@@ -135,7 +135,7 @@
                                                 <img src="/img/trips/trip-2.jpg" alt=""/>
                                             </div>
                                             <LayoutGrid class="p-0">
-                                                <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">England</p></Cell>
+                                                <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 8 }}><p class="text-eyebrow text-left">England</p></Cell>
                                             </LayoutGrid>
                                             <div class="divider"></div>
                                             <h4 class="text-h2 title">Dorset Cove</h4>
@@ -149,7 +149,7 @@
                                                 <img src="/img/trips/trip-3.jpg" alt=""/>
                                             </div>
                                             <LayoutGrid class="p-0">
-                                                <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">Indonesia</p></Cell>
+                                                <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 8 }}><p class="text-eyebrow text-left">Indonesia</p></Cell>
                                             </LayoutGrid>
                                             <div class="divider"></div>
                                             <h4 class="text-h2 title">Bali</h4>
@@ -163,7 +163,7 @@
                                                 <img src="/img/trips/trip-4.jpg" alt=""/>
                                             </div>
                                             <LayoutGrid class="p-0">
-                                                <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">Greece</p></Cell>
+                                                <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 8 }}><p class="text-eyebrow text-left">Greece</p></Cell>
                                             </LayoutGrid>
                                             <div class="divider"></div>
                                             <h4 class="text-h2 title">Mykonos</h4>
@@ -177,7 +177,7 @@
                                                 <img src="/img/trips/trip-5.jpg" alt=""/>
                                             </div>
                                             <LayoutGrid class="p-0">
-                                                <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">French Polynesia</p></Cell>
+                                                <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 8 }}><p class="text-eyebrow text-left">French Polynesia</p></Cell>
                                             </LayoutGrid>
                                             <div class="divider"></div>
                                             <h4 class="text-h2 title">Tahiti</h4>
@@ -191,7 +191,7 @@
                                                 <img src="/img/trips/trip-6.jpg" alt=""/>
                                             </div>
                                             <LayoutGrid class="p-0">
-                                                <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">Scotland</p></Cell>
+                                                <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 8 }}><p class="text-eyebrow text-left">Scotland</p></Cell>
                                             </LayoutGrid>
                                             <div class="divider"></div>
                                             <h4 class="text-h2 title">Isle of Skye</h4>
@@ -307,9 +307,22 @@
             top: 30px;
         }
     }
+    .destinations-wrap h5{
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 34px;
+        letter-spacing: 0.2px;
+    }
     @media screen and (min-width: 1441px){
         .contact-info{
             left: 45px;
+        }
+    }
+    @media (max-width: 599px) {
+        .destinations-wrap h5{
+            font-size: 12px;
+            line-height: 20px;
+            letter-spacing: 0.1px;
         }
     }
 </style>

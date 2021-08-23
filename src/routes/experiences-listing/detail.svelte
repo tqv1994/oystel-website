@@ -48,7 +48,7 @@
         <section class="header-title d-pt-90 d-pb-25 m-pt-90 m-pb-25 full-width">
             <div class="content-wrap">
                 <div class="container">
-                    <LayoutGrid class="p-0 hidden-on-scroll">
+                    <LayoutGrid class="p-0 hidden-on-sticky">
                         <Cell spanDevices={{ desktop: 7, phone: 4 }}>
                             <div class="experience-detail-image">
                                 <div class="thumbnail" style="background-image: url(/img/experiences/experience-detail-image.jpg)">
@@ -713,14 +713,6 @@
     .experience-item .thumbnail :global(.btn-favorite:hover .liked) {
         display: block;
     }
-
-    :global(.show-on-scroll),:global(.is_sticky .hidden-on-scroll){
-        display: none;
-    }
-
-    :global(.hidden-on-scroll),:global(.is_sticky .show-on-scroll){
-        display: block;
-    }
     :global(.is_sticky.header-title){
         padding-bottom: 50px !important;
     }
@@ -729,16 +721,8 @@
         background-color: #000;
     }
 
-    :global(.mdc-icon-button){
-        top: 5px;
-    }
-
-    :global(.header-title){
-        top: -200px;
-        transition: top 2s ease;
-    }
-    :global(#header.fixed){
-        animation: fadeIn 2s ease;
+    .content :global(.mdc-icon-button){
+        margin-top: -15px;
     }
 
     @media screen and (max-width: 599px) {

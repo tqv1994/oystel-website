@@ -58,6 +58,7 @@
     }
 
     function onScrollFixedHeader(){
+        let eleHiddenOnScrolls = document.querySelectorAll('.header-title .hidden-on-sticky');
         if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
             document.getElementById("header").classList.add("fixed");
             document.querySelector('header').style.zIndex = 8;
@@ -68,6 +69,7 @@
             document.querySelector('header').style.zIndex = 'auto';
             document.querySelector('header').style.position = 'static';
             document.querySelector('.header-title').classList.remove('fixed', 'is_sticky');
+
         }
     }
 </script>
@@ -218,7 +220,7 @@
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-read-more item-read-more">
-                                    <p class="text-h3 label">Read more <i class="material-icons">chevron_right</i></p>
+                                    <p class="text-h3 label">See more <i class="material-icons">chevron_right</i></p>
                                 </div>
                             </a>
                         </Cell>
@@ -308,7 +310,7 @@
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-read-more item-read-more">
-                                    <p class="text-h3 label">Read more <i class="material-icons">chevron_right</i></p>
+                                    <p class="text-h3 label">See more <i class="material-icons">chevron_right</i></p>
                                 </div>
                             </a>
                         </Cell>
@@ -398,7 +400,7 @@
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-read-more item-read-more">
-                                    <p class="text-h3 label">Read more <i class="material-icons">chevron_right</i></p>
+                                    <p class="text-h3 label">See more <i class="material-icons">chevron_right</i></p>
                                 </div>
                             </a>
                         </Cell>
@@ -488,7 +490,7 @@
                         <Cell spanDevices={{ desktop: 3, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-read-more item-read-more">
-                                    <p class="text-h3 label">Read more <i class="material-icons">chevron_right</i></p>
+                                    <p class="text-h3 label">See more <i class="material-icons">chevron_right</i></p>
                                 </div>
                             </a>
                         </Cell>
@@ -502,9 +504,6 @@
 <style>
     .header-title{
         background-color: #F0F7F8;
-    }
-    :global(.is_sticky .hidden-on-sticky){
-        display: none;
     }
     .header-title:global(.is_sticky){
         padding-bottom: 55px !important;
@@ -532,8 +531,8 @@
     .search-form-experiences :global(.mdc-select .mdc-notched-outline__trailing){
         border-color: #000;
     }
-    .search-form-experiences :global(.mdc-text-field .mdc-floating-label){
-        padding-left: 24px;
+    .search-form-experiences :global(.mdc-text-field .mdc-floating-label),.search-form-experiences :global(.mdc-select .mdc-floating-label){
+        padding-left: 18px;
     }
     .search-form-experiences .mdc-text-field--outlined :global(.mdc-floating-label){
         left: 22px;
@@ -602,14 +601,6 @@
     .item-read-more .label .material-icons{
         position: relative;
         top: 5px;
-    }
-
-    :global(.header-title){
-        top: -200px;
-        transition: top 2s ease;
-    }
-    :global(#header.fixed){
-        animation: fadeIn 2s ease;
     }
 
     @media screen and (max-width: 599px){

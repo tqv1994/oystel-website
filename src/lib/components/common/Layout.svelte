@@ -375,7 +375,7 @@
                                 />
                             </div>
                             <div class="form-control mb-10 m-mb-30">
-                                <Button variant="outlined">
+                                <Button variant="outlined" class="d-pl-60 d-pr-60">
                                     <Label>Submit</Label>
                                 </Button>
                             </div>
@@ -417,8 +417,20 @@
     }
 
     @media screen and (max-width: 599px){
+        footer .widget-title{
+            font-size: 14px;
+            line-height: 23px;
+            letter-spacing: 0;
+        }
         footer :global(.mdc-button){
             width: 170px;
+        }
+        .button-socials a{
+            padding: 10px;
+            margin-right: 30px !important;
+        }
+        .button-socials img{
+            width: 24px;
         }
     }
 

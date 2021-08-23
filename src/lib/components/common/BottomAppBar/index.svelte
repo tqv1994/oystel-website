@@ -98,4 +98,7 @@
     #bottom-app-bar :global(.mdc-button){
         padding: 0 8px 0 8px;
     }
+    #bottom-app-bar :global(.mdc-button){
+        min-width: auto;
+    }
 </style>

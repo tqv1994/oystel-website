@@ -407,9 +407,6 @@
     .header-title{
         background-color: #F0F7F8;
     }
-    :global(.is_sticky .hidden-on-sticky){
-        display: none;
-    }
     .header-title:global(.is_sticky){
         padding-bottom: 55px !important;
     }
@@ -428,6 +425,9 @@
     .search-form-experiences :global(.mdc-select.mdc-select--outlined .mdc-select__anchor){
         height: 35px;
     }
+    .search-form-experiences .mdc-text-field--outlined :global(.mdc-floating-label){
+        left: 22px;
+    }
     .search-form-experiences :global(.mdc-text-field .mdc-notched-outline__leading),
     .search-form-experiences :global(.mdc-text-field .mdc-notched-outline__notch),
     .search-form-experiences :global(.mdc-text-field .mdc-notched-outline__trailing),
@@ -436,11 +436,9 @@
     .search-form-experiences :global(.mdc-select .mdc-notched-outline__trailing){
         border-color: #000;
     }
-    .search-form-experiences :global(.mdc-text-field .mdc-floating-label){
-        padding-left: 24px;
-    }
-    .search-form-experiences .mdc-text-field--outlined :global(.mdc-floating-label){
-        left: 22px;
+    .search-form-experiences :global(.mdc-text-field .mdc-floating-label),
+    .search-form-experiences :global(.mdc-select .mdc-floating-label){
+        padding-left: 18px;
     }
     .search-form-experiences :global(.mdc-text-field img){
         filter: brightness(0.1);
@@ -506,14 +504,6 @@
     .item-read-more .label .material-icons{
         position: relative;
         top: 5px;
-    }
-
-    :global(.header-title){
-        top: -200px;
-        transition: top 2s ease;
-    }
-    :global(#header.fixed){
-        animation: fadeIn 2s ease;
     }
 
     @media screen and (max-width: 768px){
