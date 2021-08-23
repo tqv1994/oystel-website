@@ -53,7 +53,7 @@
             <div class="content-wrap">
                 <div class="container">
                     <LayoutGrid class="p-0 mb-15">
-                        <Cell spanDevices={{ desktop: 7, phone: 4 }}>
+                        <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
                             <div class="shop-slides">
                                 <OyCarousel perPage={{ 800: 1 }} draggable={false}>
                                   <span class="control" slot="left-control">
@@ -67,7 +67,7 @@
                                 </OyCarousel>
                             </div>
                         </Cell>
-                        <Cell spanDevices="{{ desktop: 5, phone: 4 }}">
+                        <Cell spanDevices="{{ desktop: 5, phone: 4, tablet: 8 }}">
                             <div class="content-left">
                                 <LayoutGrid class="p-0">
                                     <Cell spanDevices={{desktop: 6, tablet: 4, phone: 2}}>
@@ -95,16 +95,16 @@
             <div class="container">
                 <h1 class="mt-0 mb-55">Shop By Look</h1>
                 <LayoutGrid class="p-0">
-                    <Cell spanDevices={{desktop: 4 , mobile:4, tablet: 3}}>
+                    <Cell spanDevices={{desktop: 4 , mobile:4, tablet: 8}}>
                         <OySlideProducts images={imageSlidesProduct}></OySlideProducts>
                     </Cell>
-                    <Cell spanDevices={{desktop: 8 , mobile:4, tablet: 5}}>
+                    <Cell spanDevices={{desktop: 8 , mobile:4, tablet: 8}}>
                         <div class="d-pt-80 t-pt-0 m-pt-25 ">
                             <h5 class="d-mb-40 t-mb-40 m-mb-25 m-mt-0">3 items</h5>
                             <div class="products-list">
                             <LayoutGrid class="p-0">
-                                <Cell spanDevices={{desktop: 3, tablet:2, phone: 2}}>
-                                    <a href="#">
+                                <Cell spanDevices={{desktop: 3, tablet:4, phone: 2}}>
+                                    <a href="/shop/curated-looks-listing">
                                         <div class="item-product">
                                             <div class="thumbnail" style="background-image: url(/img/products/product-7.png)">
                                                 <IconButton class="btn-favorite">
@@ -121,8 +121,8 @@
                                         </div>
                                     </a>
                                 </Cell>
-                                <Cell spanDevices={{desktop: 3, tablet:2, phone: 2}}>
-                                    <a href="#">
+                                <Cell spanDevices={{desktop: 3, tablet:4, phone: 2}}>
+                                    <a href="/shop/curated-looks-listing">
                                         <div class="item-product">
                                             <div class="thumbnail" style="background-image: url(/img/products/product-8.png)">
                                                 <IconButton class="btn-favorite">
@@ -139,8 +139,8 @@
                                         </div>
                                     </a>
                                 </Cell>
-                                <Cell spanDevices={{desktop: 3, tablet:2, phone: 2}}>
-                                    <a href="#">
+                                <Cell spanDevices={{desktop: 3, tablet:4, phone: 2}}>
+                                    <a href="/shop/curated-looks-listing">
                                         <div class="item-product">
                                             <div class="thumbnail" style="background-image: url(/img/products/product-9.png)">
                                                 <IconButton class="btn-favorite">
@@ -169,7 +169,7 @@
                 <h1 class="mt-0">Shop the Collection</h1>
                 <div class="products-list">
                     <LayoutGrid class="p-0">
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product">
                                     <div class="thumbnail" style="background-image: url(/img/products/product-1.png)">
@@ -187,7 +187,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product">
                                     <div class="thumbnail" style="background-image: url(/img/products/product-2.png)">
@@ -205,7 +205,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product">
                                     <div class="thumbnail" style="background-image: url(/img/products/product-3.png)">
@@ -223,7 +223,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product">
                                     <div class="thumbnail" style="background-image: url(/img/products/product-4.png)">
@@ -241,7 +241,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product" >
                                     <div class="thumbnail" style="background-image: url(/img/products/product-5.png)">
@@ -259,7 +259,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product">
                                     <div class="thumbnail" style="background-image: url(/img/products/product-6.png)">
@@ -277,7 +277,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product">
                                     <div class="thumbnail" style="background-image: url(/img/products/product-1.png)">
@@ -295,7 +295,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product">
                                     <div class="thumbnail" style="background-image: url(/img/products/product-2.png)">
@@ -313,7 +313,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product">
                                     <div class="thumbnail" style="background-image: url(/img/products/product-3.png)">
@@ -331,7 +331,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product">
                                     <div class="thumbnail" style="background-image: url(/img/products/product-4.png)">
@@ -349,7 +349,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product" >
                                     <div class="thumbnail" style="background-image: url(/img/products/product-5.png)">
@@ -367,7 +367,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <a href="#">
                                 <div class="item-product">
                                     <div class="thumbnail" style="background-image: url(/img/products/product-6.png)">
@@ -458,7 +458,7 @@
         display: block;
     }
 
-    @media screen and (max-width: 599px) {
+    @media screen and (max-width: 839px) {
         .shop-slides :global(.carousel),.shop-slides :global(.slides),.shop-slides :global(.slides div){
             height: auto;
         }
@@ -499,7 +499,7 @@
         }
     }
 
-    @media screen and (max-width: 599px) {
+    @media screen and (max-width: 839px) {
         #shop-by-look-wrap h5{
             text-align: center;
         }

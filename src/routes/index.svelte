@@ -133,7 +133,7 @@
       <Cell span="12"><h3 class="text-h1 mt-0 mb-0">Featured Drops</h3></Cell>
     </LayoutGrid>
     <LayoutGrid class="pt-0">
-      <Cell spanDevices={{desktop: 4, tablet: 4 , phone:4}}>
+      <Cell spanDevices={{desktop: 4, tablet: 8 , phone:4}}>
         <div class="item-featured-drop new">
           <div class="thumbnail dark mb-70">
             <img class="" src="/img/feature-drops/item-1.jpg" alt="" />
@@ -147,7 +147,7 @@
           <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
         </div>
       </Cell>
-      <Cell spanDevices={{desktop: 8 ,tablet: 4, phone:4}} class="d-mr--30 m-mr-0">
+      <Cell spanDevices={{desktop: 8 ,tablet: 8, phone:4}} class="d-mr--30 m-mr-0">
         <div class="list-featured-drop">
           <LayoutGrid class="p-0">
             <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
@@ -192,7 +192,7 @@
                 <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
               </div>
             </Cell>
-            <Cell spanDevices={{desktop: 4, tablet:2, phone: 2}}>
+            <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
               <div class="item-featured-drop">
                 <div class="thumbnail dark mb-60">
                   <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
@@ -244,7 +244,7 @@
   </section>
   <section class="has-padding m-pt-48" id="experience-section">
     <LayoutGrid>
-      <Cell spanDevices={{desktop: 5, phone: 4}}>
+      <Cell spanDevices={{desktop: 5, tablet: 8, phone: 4}}>
         <div class="item-experience featured text-center">
           <a href="#">
             <div class="thumbnail">
@@ -267,7 +267,7 @@
           </a>
         </div>
       </Cell>
-      <Cell spanDevices={{desktop: 7, phone: 4}}>
+      <Cell spanDevices={{desktop: 7, tablet: 8, phone: 4}}>
         <LayoutGrid class="list-experiences m-p-0">
           <Cell spanDevices={{ desktop: 6, phone: 2 }}>
             <div class="item-experience">
@@ -289,7 +289,7 @@
               </h4>
             </div>
           </Cell>
-          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
+          <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
             <div class="item-experience">
               <a href="#">
                 <div class="thumbnail">
@@ -311,7 +311,7 @@
               </a>
             </div>
           </Cell>
-          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
+          <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
             <div class="item-experience">
               <a href="#">
                 <div class="thumbnail">
@@ -333,7 +333,7 @@
               </a>
             </div>
           </Cell>
-          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
+          <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
             <div class="item-experience">
               <a href="#">
                 <div class="thumbnail">
@@ -353,7 +353,7 @@
               </a>
             </div>
           </Cell>
-          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
+          <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
             <div class="item-experience">
               <a href="#">
                 <div class="thumbnail">
@@ -376,7 +376,7 @@
               </a>
             </div>
           </Cell>
-          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
+          <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
             <div class="item-experience">
               <a href="#">
                 <div class="thumbnail">
@@ -410,7 +410,7 @@
     </LayoutGrid>
 
       <LayoutGrid class="pt-0 pb-0">
-        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+        <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
           <div class="item-experience">
             <a href="#">
               <div class="thumbnail">
@@ -432,7 +432,7 @@
             </a>
           </div>
         </Cell>
-        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+        <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
           <div class="item-experience">
             <a href="#">
               <div class="thumbnail">
@@ -455,7 +455,7 @@
             </a>
           </div>
         </Cell>
-        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+        <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
           <div class="item-experience">
             <a href="#">
               <div class="thumbnail">
@@ -477,7 +477,7 @@
             </a>
           </div>
         </Cell>
-        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+        <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
           <div class="item-experience">
             <a href="#">
               <div class="thumbnail">

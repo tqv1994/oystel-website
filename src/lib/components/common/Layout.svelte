@@ -134,8 +134,8 @@
                             <img src="/img/logo.svg" />
                         </Title>
                     </Section>
-                    <Section class="m-none" toolbar align="center" style="z-index: 2">
-                        <ul id="main-menu">
+                    <Section class="m-none pt-0 pb-0" toolbar align="center" style="z-index: 2">
+                        <ul id="main-menu" class="m-0">
                             <li class="{config.header.currentMenu == 'travel-advisors' ? 'active-static' : ''}"
                                     id="menu-item-1"
                             >
@@ -273,7 +273,7 @@
     <footer class="dark full-width t-pb-50">
         <div class="content-wrap">
             <LayoutGrid>
-                <Cell span="6" class="m-block d-none">
+                <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}} class="m-block d-none">
                     <div class="widget">
                         <h4 class="mt-0 widget-title">Sign Up for Updates</h4>
                         <div class="widget-content">
@@ -314,9 +314,9 @@
                         </div>
                     </div>
                 </Cell>
-                <Cell span="6">
+                <Cell spanDevices={{desktop: 6, tablet: 8, phone: 4}}>
                     <LayoutGrid>
-                        <Cell span="5">
+                        <Cell spanDevices={{desktop: 5, tablet: 8, phone: 4}}>
                             <div class="widget">
                                 <h4 class="mt-0 widget-title">Explore Oysteo</h4>
                                 <div class="widget-content">
@@ -329,7 +329,7 @@
                                 </div>
                             </div>
                         </Cell>
-                        <Cell span="5">
+                        <Cell spanDevices={{desktop: 5, tablet: 8, phone: 4}}>
                             <div class="widget">
                                 <h4 class="mt-0 widget-title">Contact Oysteo</h4>
                                 <div class="widget-content">
@@ -356,7 +356,7 @@
                         </Cell>
                     </LayoutGrid>
                 </Cell>
-                <Cell span="6" class="m-none">
+                <Cell spanDevices={{desktop: 6, tablet: 8, phone: 4}} class="m-none">
                     <div class="widget pl-50">
                         <h4 class="mt-0 widget-title">Sign Up for Updates</h4>
                         <div class="widget-content">
@@ -416,7 +416,11 @@
         }
     }
 
-    @media screen and (max-width: 599px){
+    header :global(.mdc-icon-button){
+        min-width: auto;
+    }
+
+    @media screen and (max-width: 839px){
         footer .widget-title{
             font-size: 14px;
             line-height: 23px;

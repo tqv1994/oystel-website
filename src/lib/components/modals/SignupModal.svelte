@@ -177,7 +177,7 @@
               class="material-icons close-modal">close</IconButton
       >
       <LayoutGrid>
-        <Cell spanDevices={{ desktop: 4, mobile: 12 }}>
+        <Cell spanDevices={{ desktop: 4,tablet: 8, phone: 4 }}>
           <div>
             <h3 class="text-sub-title mb-50">
               Join now for exclusive biweekly travel promotional drops,
@@ -186,7 +186,7 @@
             <h1 class="m-mb-0">Never Miss a Drop</h1>
           </div>
         </Cell>
-        <Cell spanDevices={{ default: 4, mobile: 12 }}>
+        <Cell spanDevices={{ desktop: 4,tablet: 8, phone: 4 }}>
           <div class="signup-form">
             <form on:submit={onSubmit} action="javascript:void(0);">
               <div class="form-control mb-8">
@@ -218,7 +218,7 @@
             </form>
           </div>
         </Cell>
-        <Cell spanDevices={{ default: 4, mobile: 12 }}>
+        <Cell spanDevices={{ desktop: 4,tablet: 8, phone: 4 }}>
           <div class="signup-socials">
             <p class="text-input m-mb-25">Or sign up using</p>
             <Button

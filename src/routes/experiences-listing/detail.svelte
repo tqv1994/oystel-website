@@ -1,6 +1,6 @@
 <script>
     import {onMount, afterUpdate, beforeUpdate} from 'svelte';
-    import LayoutGrid, {Cell} from '@smui/layout-grid';
+    import LayoutGrid, {Cell, InnerGrid} from '@smui/layout-grid';
     import {goto} from '$app/navigation';
     import Textfield from '@smui/textfield';
     import Button, {Label} from '@smui/button';
@@ -27,7 +27,7 @@
     onMount(()=>{});
 
     function onScrollFixedHeader(){
-        if(document.documentElement.clientWidth > 1239) {
+        if(document.documentElement.clientWidth > 839) {
             if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
                 document.getElementById("header").classList.add("fixed");
                 document.querySelector('header').style.zIndex = 100;
@@ -49,14 +49,14 @@
             <div class="content-wrap">
                 <div class="container">
                     <LayoutGrid class="p-0 hidden-on-sticky">
-                        <Cell spanDevices={{ desktop: 7, phone: 4 }}>
+                        <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
                             <div class="experience-detail-image">
                                 <div class="thumbnail" style="background-image: url(/img/experiences/experience-detail-image.jpg)">
 
                                 </div>
                             </div>
                         </Cell>
-                        <Cell spanDevices="{{ desktop: 5, phone: 4 }}">
+                        <Cell spanDevices="{{ desktop: 5, phone: 4, tablet: 8 }}">
                             <div class="d-pt-90 d-pb-100">
                                 <p class="text-eyebrow">Experience Country</p>
                                 <h1 >The best destination dolor sit amet.</h1>
@@ -85,7 +85,7 @@
                             </div>
                         </Cell>
                     </LayoutGrid>
-                    <LayoutGrid class="p-0 show-on-scroll m-none">
+                    <LayoutGrid class="p-0 show-on-sticky m-none">
                         <Cell spanDevices={{desktop: 7}}><div>
                             <span class="text-eyebrow" >Destination Country</span>
                             <IconButton >
@@ -159,7 +159,7 @@
                             <p>Etiam ut semper erat. Sed rhoncus erat quis suscipit vehicula. Curabitur ultricies, leo a lacinia pulvinar, nisl enim finibus justo, sit amet placerat lorem nulla ac sapien. Sed nec massa tellus. Phasellus quis erat ac enim sodales maximus. Praesent a rutrum ex. Donec feugiat faucibus risus ut aliquam. Duis eu lorem felis. Vivamus eget turpis vel mauris varius hendrerit vitae sed leo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent eu ipsum bibendum, bibendum ante ornare, commodo dolor. Etiam ut augue molestie, fringilla metus a, eleifend nunc. Nunc vel lorem volutpat.</p>
                         </div>
                     </Cell>
-                    <Cell spanDevices={{desktop: 4, tablet: 4, phone: 4}} class="m-none">
+                    <Cell spanDevices={{desktop: 4, tablet: 8, phone: 4}} class="m-none">
                         <h1 class="mt-0 mb-40">My Favorites Places</h1>
                         <div class="experiences-list">
                             <LayoutGrid class="p-0">
@@ -247,7 +247,7 @@
                     <Cell span="12"><h1 class="mt-0 mb-0">Shop By Look</h1></Cell>
                 </LayoutGrid>
                 <LayoutGrid class="p-0">
-                    <Cell spanDevices={{desktop: 6, phone: 4}}>
+                    <Cell spanDevices={{desktop: 6, phone: 4, tablet: 8}}>
                         <div class="item-product">
                             <div class="thumbnail">
                                 <img src="/img/experiences/product-1.jpg" alt=""/>
@@ -266,9 +266,9 @@
                             </div>
                         </div>
                     </Cell>
-                    <Cell spanDevices={{desktop: 6, phone: 4}}>
+                    <Cell spanDevices={{desktop: 6, phone: 4, tablet: 8}}>
                         <LayoutGrid class="p-0">
-                            <Cell spanDevices={{desktop: 6, phone: 4}}>
+                            <Cell spanDevices={{desktop: 6, phone: 4 , tablet: 8}}>
                                 <div class="item-product">
                                     <div class="thumbnail">
                                         <img src="/img/experiences/product-2.jpg" alt=""/>
@@ -287,7 +287,7 @@
                                     </div>
                                 </div>
                             </Cell>
-                            <Cell spanDevices={{desktop: 6, phone: 4}}>
+                            <Cell spanDevices={{desktop: 6, phone: 4, tablet: 8}}>
                                 <div class="item-product">
                                     <div class="thumbnail">
                                         <img src="/img/experiences/product-3.jpg" alt=""/>
@@ -316,7 +316,7 @@
                 <h1 class="mt-0">What to Pack</h1>
                 <div class="products-list">
                     <LayoutGrid class="p-0">
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <div on:click={()=>{openProductSlide=true}} class="item-product">
                                 <div class="thumbnail" style="background-image: url(/img/products/product-1.png)">
                                     <IconButton class="btn-favorite">
@@ -332,7 +332,7 @@
                                 <h3>Papier Wide Brim Hat</h3>
                             </div>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <div class="item-product" on:click={()=>{openProductSlide=true}}>
                                 <div class="thumbnail" style="background-image: url(/img/products/product-2.png)">
                                     <IconButton class="btn-favorite">
@@ -348,7 +348,7 @@
                                 <h3>Oversized Acetate Sunglasses</h3>
                             </div>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <div class="item-product" on:click={()=>{openProductSlide=true}}>
                                 <div class="thumbnail" style="background-image: url(/img/products/product-3.png)">
                                     <IconButton class="btn-favorite">
@@ -364,7 +364,7 @@
                                 <h3>Asymmetric Tiered Organza Gown</h3>
                             </div>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <div class="item-product" on:click={()=>{openProductSlide=true}}>
                                 <div class="thumbnail" style="background-image: url(/img/products/product-4.png)">
                                     <IconButton class="btn-favorite">
@@ -380,7 +380,7 @@
                                 <h3>Square-Neck One-Piece Swimsuit</h3>
                             </div>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <div class="item-product" on:click={()=>{openProductSlide=true}}>
                                 <div class="thumbnail" style="background-image: url(/img/products/product-5.png)">
                                     <IconButton class="btn-favorite">
@@ -396,7 +396,7 @@
                                 <h3>Mallorca Platform Rubber Sandals</h3>
                             </div>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <div class="item-product" on:click={()=>{openProductSlide=true}}>
                                 <div class="thumbnail" style="background-image: url(/img/products/product-6.png)">
                                     <IconButton class="btn-favorite">
@@ -412,7 +412,7 @@
                                 <h3>Heroica Printed Cotton Sarong</h3>
                             </div>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <div class="item-product" on:click={()=>{openProductSlide=true}}>
                                 <div class="thumbnail" style="background-image: url(/img/products/product-6.png)">
                                     <IconButton class="btn-favorite">
@@ -428,7 +428,7 @@
                                 <h3>Heroica Printed Cotton Sarong</h3>
                             </div>
                         </Cell>
-                        <Cell spanDevices={{desktop: 2, table: 4, phone: 2}}>
+                        <Cell spanDevices={{desktop: 2, tablet: 4, phone: 2}}>
                             <div class="item-product" on:click={()=>{openProductSlide=true}}>
                                 <div class="thumbnail" style="background-image: url(/img/products/product-6.png)">
                                     <IconButton class="btn-favorite">
@@ -453,7 +453,7 @@
                 <h1 class="mt-0 d-mb-80 m-mb-35">My Favorite Places</h1>
                 <div class="experiences-list">
                     <LayoutGrid class="p-0">
-                        <Cell spanDevices={{desktop:3, phone: 4, tablet: 4}}>
+                        <Cell spanDevices={{desktop:3, phone: 4, tablet: 8}}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -477,7 +477,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop:3, phone: 4, tablet: 4}}>
+                        <Cell spanDevices={{desktop:3, phone: 4, tablet: 8}}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -501,7 +501,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop:3, phone: 4, tablet: 4}}>
+                        <Cell spanDevices={{desktop:3, phone: 4, tablet: 8}}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -525,7 +525,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{desktop:3, phone: 4, tablet: 4}}>
+                        <Cell spanDevices={{desktop:3, phone: 4, tablet: 8}}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -557,6 +557,12 @@
 </Layout>
 <ProductSliderModal bind:open={openProductSlide}>no content</ProductSliderModal>
 <style>
+    :global(.show-on-sticky){
+        display: none;
+    }
+    :global(.is_sticky .show-on-sticky){
+        display: block;
+    }
     .content :global(.mdc-button){
         width: 220px;
     }
@@ -725,7 +731,7 @@
         margin-top: -15px;
     }
 
-    @media screen and (max-width: 599px) {
+    @media screen and (max-width: 839px) {
         .experience-detail-image{
             position: relative;
             width: 100%;

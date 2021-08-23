@@ -60,7 +60,7 @@
         },
         {
             name: 'Shop',
-            link: '#',
+            link: '/shop',
             children: [
                 {
                     name: 'Sea',
@@ -169,5 +169,8 @@
     .follow-wrap{
         position: absolute;
         bottom: 30px;
+    }
+    .follow-wrap :global(.mdc-button){
+        min-width: auto;
     }
 </style>

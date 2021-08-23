@@ -66,7 +66,7 @@
 </script>
 
   <LayoutGrid class="p-0">
-    <Cell spanDevices={{ desktop: 4, mobile: 12 }}>
+    <Cell spanDevices={{ desktop: 4, phone: 4, tablet: 8 }}>
       <div class="thumbnail user-profile-image">
         <img src="./img/profile/profile-2.jpg" alt="" />
         <IconButton class="btn-update-avatar">
@@ -82,7 +82,7 @@
         </IconButton>
       </div>
     </Cell>
-    <Cell class="personal-info" spanDevices={{ desktop: 8, mobile: 12 }}>
+    <Cell class="personal-info" spanDevices={{ desktop: 8, phone: 4, tablet: 8 }}>
       <a
         href="javascript:void(0)"
         class="btn btn-edit btn-edit-profile text-input"
@@ -100,34 +100,34 @@
             >
           </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
-          <Cell spanDevices={{ desktop: 3, mobile: 12 }}
+          <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
             ><h5 class="mt-0 mb-0">Email</h5></Cell
           >
-          <Cell spanDevices={{ desktop: 9, mobile: 12 }}
+          <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >emailaddress@email.com</Cell
           >
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
-          <Cell spanDevices={{ desktop: 3, mobile: 12 }}
+          <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
             ><h5 class="mt-0 mb-0">Birthdate</h5></Cell
           >
-          <Cell spanDevices={{ desktop: 9, mobile: 12 }}
+          <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >March 7, 1966</Cell
           >
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
-          <Cell spanDevices={{ desktop: 3, mobile: 12 }}
+          <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
             ><h5 class="mt-0 mb-0">Phone</h5></Cell
           >
-          <Cell spanDevices={{ desktop: 9, mobile: 12 }}
+          <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >1 555 555 5555</Cell
           >
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
-          <Cell spanDevices={{ desktop: 3, mobile: 12 }}
+          <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
             ><h5 class="mt-0 mb-0">Location</h5></Cell
           >
-          <Cell spanDevices={{ desktop: 9, mobile: 12 }}
+          <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >NY, USA</Cell
           >
         </LayoutGrid>
@@ -181,7 +181,7 @@
     position: relative;
     border: 1px solid #000;
   }
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 839px) {
     .user-profile-image {
       max-width: 120px;
       margin: 0 auto;

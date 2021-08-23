@@ -9,6 +9,7 @@
     import SignupModal from '$lib/components/modals/SignupModal.svelte';
     import SigninModal from '$lib/components/modals/SigninModal.svelte';
     import Select, {Option} from '@smui/select';
+    import { goto } from '$app/navigation';
     let openSignupModal, openSigninModal;
     let userModel = $authStore.user;
     let filterActive = 'Current Drops';
@@ -42,7 +43,7 @@
             <div class="content-wrap">
                 <div class="container">
                     <LayoutGrid class="p-0 mb-15">
-                        <Cell spanDevices="{{ desktop: 5, phone: 4 }}">
+                        <Cell spanDevices="{{ desktop: 5, phone: 4, tablet: 8 }}">
                             <div class="content-left">
                                 <div>
                                     <span class="text-h3 d-mr-50 m-mr-60">Fashion Drop</span>
@@ -52,7 +53,7 @@
                                 <p class="mb-30 short-description">First hand experience to craft your perfect vacation.</p>
                             </div>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 7, phone: 4 }}>
+                        <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
                             <div class="shop-slides">
                                 <OyCarousel perPage={{ 800: 1 }} draggable={false}>
                                   <span class="control" slot="left-control">
@@ -76,7 +77,7 @@
                 <Cell span="12"><h3 class="text-h1 mt-0 mb-0">Featured Drops</h3></Cell>
             </LayoutGrid>
             <LayoutGrid class="pt-0">
-                <Cell spanDevices={{desktop: 4 , mobile:4}}>
+                <Cell spanDevices={{desktop: 4 , mobile:4, tablet: 8}}>
                     <div class="item-featured-drop new">
                         <div class="thumbnail dark mb-70">
                             <img class="" src="/img/feature-drops/item-1.jpg" alt="" />
@@ -87,10 +88,10 @@
                         <h4 class="text-h2 mt-0 mb-30">
                             Louis Vuitton - Photographed by Inez & Vinoodh in Monaco
                         </h4>
-                        <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                        <Button on:click={()=>{goto('/shop/fashion-drops')}} class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
                     </div>
                 </Cell>
-                <Cell spanDevices={{desktop: 8 , mobile:4}} class="d-mr--30 m-mr-0">
+                <Cell spanDevices={{desktop: 8 , mobile:4, tablet: 8}} class="d-mr--30 m-mr-0">
                     <div class="list-featured-drop">
                         <LayoutGrid class="p-0">
                             <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
@@ -104,7 +105,7 @@
                                     <h4 class="text-h2 mt-0 mb-50 title">
                                         Exfoliating and polishing your skin with a finely ground herbs.
                                     </h4>
-                                    <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                                    <Button on:click={()=>{goto('/shop/fashion-drops')}} class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
                                 </div>
                             </Cell>
                             <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
@@ -118,7 +119,7 @@
                                     <h4 class="text-h2 mt-0 mb-50 title">
                                         Exfoliating and polishing your skin with a finely ground herbs.
                                     </h4>
-                                    <Button class="hover-affect" variant="outlined"><Label>Set Reminder</Label></Button>
+                                    <Button on:click={()=>{goto('/shop/fashion-drops')}} class="hover-affect" variant="outlined"><Label>Set Reminder</Label></Button>
                                 </div>
                             </Cell>
                             <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
@@ -132,10 +133,10 @@
                                     <h4 class="text-h2 mt-0 mb-50 title">
                                         Exfoliating and polishing your skin with a finely ground herbs.
                                     </h4>
-                                    <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                                    <Button on:click={()=>{goto('/shop/fashion-drops')}} class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
                                 </div>
                             </Cell>
-                            <Cell spanDevices={{desktop: 4, tablet:2, phone: 2}}>
+                            <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
                                 <div class="item-featured-drop">
                                     <div class="thumbnail dark mb-60">
                                         <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
@@ -146,7 +147,7 @@
                                     <h4 class="text-h2 mt-0 mb-50 title">
                                         Exfoliating and polishing your skin with a finely ground herbs.
                                     </h4>
-                                    <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+                                    <Button on:click={()=>{goto('/shop/fashion-drops')}} class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
                                 </div>
                             </Cell>
                         </LayoutGrid>
@@ -424,37 +425,37 @@
         margin-bottom: 70px;
     }
 
-    .list-featured-drop :global(.mdc-layout-grid__inner) {
+    #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
         overflow-x: auto;
         grid-auto-flow: column;
     }
 
     @media (min-width: 1240px) {
-        .list-featured-drop :global(.mdc-layout-grid__inner) {
+        #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
             grid-auto-columns: minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr);
             grid-template-columns: repeat(auto-fill, minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr));
         }
     }
     @media (max-width: 1239px) and (min-width: 905px) {
-        .list-featured-drop :global(.mdc-layout-grid__inner) {
+        #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
             grid-auto-columns: minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr);
             grid-template-columns: repeat(auto-fill, minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr));
         }
     }
     @media (max-width: 904px) and (min-width: 600px){
-        .list-featured-drop :global(.mdc-layout-grid__inner) {
+        #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
             grid-auto-columns: minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)), 1fr);
             grid-template-columns: repeat(auto-fill, minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)), 1fr));
         }
     }
     @media (max-width: 599px){
-        .list-featured-drop :global(.mdc-layout-grid__inner) {
+        #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
             grid-auto-columns: minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr);
             grid-template-columns: repeat(auto-fill, minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr));
         }
     }
 
-    @media screen and (max-width: 599px) {
+    @media screen and (max-width: 839px) {
         .shop-slides :global(.carousel),.shop-slides :global(.slides),.shop-slides :global(.slides div){
             height: auto;
         }
@@ -501,6 +502,12 @@
             font-size: 9px;
             line-height: 10px;
             letter-spacing: 0.1px;
+        }
+    }
+    
+    @media (max-width: 389px ) {
+        .header-title .content-left .m-mr-60{
+            margin-right: 40px !important;
         }
     }
 

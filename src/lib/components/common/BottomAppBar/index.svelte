@@ -100,5 +100,6 @@
     }
     #bottom-app-bar :global(.mdc-button){
         min-width: auto;
+        overflow: visible;
     }
 </style>

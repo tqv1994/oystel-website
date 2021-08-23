@@ -166,7 +166,7 @@
     <div class="content-wrap">
       <div class="container">
         <LayoutGrid>
-          <Cell spanDevices={{ desktop: 4, mobile: 12 }}>
+          <Cell spanDevices={{ desktop: 4, mobile: 4,tablet: 8 }}>
             <div>
               <h3 class="text-sub-title mb-50">
                 Lorem ipsum dolor sit sen amet, consectetur adipiscing elit, sed
@@ -175,7 +175,7 @@
               <h1 class="m-mb-0">Welcome Back</h1>
             </div>
           </Cell>
-          <Cell spanDevices={{ desktop: 4, mobile: 12 }}>
+          <Cell spanDevices={{ desktop: 4,tablet: 8, phone: 4 }}>
             <div class="signin-form">
               <form on:submit={onSubmit} action="javascript:void(0);">
                 <div class="form-control mb-8">
@@ -207,7 +207,7 @@
               </form>
             </div>
           </Cell>
-          <Cell spanDevices={{ desktop: 4, mobile: 12 }}>
+          <Cell spanDevices={{ desktop: 4, phone: 4,tablet: 8 }}>
             <div class="signin-socials">
               <p class="text-input m-mb-25">Or log in using</p>
               <Button

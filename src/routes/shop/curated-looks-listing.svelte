@@ -42,7 +42,7 @@
             <div class="content-wrap">
                 <div class="container">
                     <LayoutGrid class="p-0 mb-15">
-                        <Cell spanDevices="{{ desktop: 5, phone: 4 }}">
+                        <Cell spanDevices="{{ desktop: 5, phone: 4, tablet: 8 }}">
                             <div class="content-left">
                                 <div>
                                     <span class="text-h3">Featured Article</span>
@@ -51,7 +51,7 @@
                                 <p class="d-mb-30 t-mb-30 m-mb-0 short-description">Curated by: Aureta Thomollari  |  Oysteo Partner</p>
                             </div>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 7, phone: 4 }}>
+                        <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
                             <div class="thumbnail" style="background-image: url(/img/shop/shop-thumbnail.jpg)">
                             </div>
                         </Cell>
@@ -66,7 +66,7 @@
                 <div class="latest-list">
                     <LayoutGrid class="p-0">
                         <Cell spanDevices={{desktop: 6 , tablet:8, phone: 4}}>
-                            <a href="#">
+                            <a href="/shop/detail">
                                 <div class="latest-item t-mb-0 m-mb-50">
                                     <div class="thumbnail d-mb-25 t-mb-25 m-mb-20">
                                         <img class="" src="/img/shop/curated-looks-1.jpg" alt="" />
@@ -81,7 +81,7 @@
                             </a>
                         </Cell>
                         <Cell spanDevices={{desktop: 6 , tablet:8, phone: 4}}>
-                            <a href="#">
+                            <a href="/shop/detail">
                                 <div class="latest-item t-mb-0 m-mb-50">
                                     <div class="thumbnail d-mb-25 t-mb-25 m-mb-20">
                                         <img class="" src="/img/shop/curated-looks-2.jpg" alt="" />
@@ -113,7 +113,7 @@
                 <div class="products-list">
                     <LayoutGrid class="p-0">
                         <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
-                            <a href="#">
+                            <a href="/shop/detail">
                                 <div class="product-item">
                                     <div class="thumbnail dark d-mb-25 t-mb-25 m-mb-20">
                                         <img class="" src="/img/shop/curated-looks-3.jpg" alt="" />
@@ -128,7 +128,7 @@
                             </a>
                         </Cell>
                         <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
-                            <a href="#">
+                            <a href="/shop/detail">
                                 <div class="product-item">
                                     <div class="thumbnail dark d-mb-25 t-mb-25 m-mb-20">
                                         <img class="" src="/img/shop/curated-looks-4.jpg" alt="" />
@@ -143,7 +143,7 @@
                             </a>
                         </Cell>
                         <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
-                            <a href="#">
+                            <a href="/shop/detail">
                                 <div class="product-item">
                                     <div class="thumbnail dark d-mb-25 t-mb-25 m-mb-20">
                                         <img class="" src="/img/shop/curated-looks-5.jpg" alt="" />
@@ -158,7 +158,7 @@
                             </a>
                         </Cell>
                         <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
-                            <a href="#">
+                            <a href="/shop/detail">
                                 <div class="product-item">
                                     <div class="thumbnail dark d-mb-25 t-mb-25 m-mb-20">
                                         <img class="" src="/img/shop/curated-looks-6.jpg" alt="" />
@@ -173,7 +173,7 @@
                             </a>
                         </Cell>
                         <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
-                            <a href="#">
+                            <a href="/shop/detail">
                                 <div class="product-item">
                                     <div class="thumbnail dark d-mb-25 t-mb-25 m-mb-20">
                                         <img class="" src="/img/shop/curated-looks-7.jpg" alt="" />
@@ -188,7 +188,7 @@
                             </a>
                         </Cell>
                         <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
-                            <a href="#">
+                            <a href="/shop/detail">
                                 <div class="product-item">
                                     <div class="thumbnail dark d-mb-25 t-mb-25 m-mb-20">
                                         <img class="" src="/img/shop/curated-looks-8.jpg" alt="" />
@@ -203,7 +203,7 @@
                             </a>
                         </Cell>
                         <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
-                            <a href="#">
+                            <a href="/shop/detail">
                                 <div class="product-item">
                                     <div class="thumbnail dark d-mb-25 t-mb-25 m-mb-20">
                                         <img class="" src="/img/shop/curated-looks-9.jpg" alt="" />
@@ -218,7 +218,7 @@
                             </a>
                         </Cell>
                         <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
-                            <a href="#">
+                            <a href="/shop/detail">
                                 <div class="product-item">
                                     <div class="thumbnail dark d-mb-25 t-mb-25 m-mb-20">
                                         <img class="" src="/img/shop/curated-looks-10.jpg" alt="" />
@@ -294,7 +294,7 @@
         height: 35px;
     }
 
-    @media screen and (max-width: 599px) {
+    @media screen and (max-width: 839px) {
         .header-title .thumbnail{
             padding-bottom: 100%;
             height: auto;

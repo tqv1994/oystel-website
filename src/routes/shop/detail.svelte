@@ -47,7 +47,7 @@
         <section class="pt-30 d-pb-150 t-pb-150 m-pb-80 ">
             <div class="container">
                 <LayoutGrid class="p-0">
-                    <Cell spanDevices={{desktop: 7, tablet: 4, phone: 4}} class="content-left">
+                    <Cell spanDevices={{desktop: 7, tablet: 8, phone: 4}} class="content-left">
                         <div class="get-the-look-item mb-30">
                             <div class="thumbnail mb-50">
                                 <img src="/img/products/detail-1.jpg"/>
@@ -97,7 +97,7 @@
                                 <div class="divider"></div>
                             </div>
                             <LayoutGrid class="p-0 d-mb-45 t-mb-45 m-pb-40">
-                                <Cell spanDevices={{desktop: 6, tablet: 4, phone: 4}}>
+                                <Cell spanDevices={{desktop: 6, tablet: 8, phone: 4}}>
                                     <div class="get-the-look-item m-pb-40 t-pb-0">
                                         <div class="thumbnail mb-25">
                                             <img src="/img/products/detail-3.jpg"/>
@@ -120,7 +120,7 @@
                                         <div class="divider"></div>
                                     </div>
                                 </Cell>
-                                <Cell spanDevices={{desktop: 6, tablet: 4, phone: 4}}>
+                                <Cell spanDevices={{desktop: 6, tablet: 8, phone: 4}}>
                                     <div class="get-the-look-item d-mt-80 t-mt-80">
                                         <div class="thumbnail mb-25">
                                             <img src="/img/products/detail-4.jpg"/>
@@ -170,7 +170,7 @@
                             </div>
                         </div>
                     </Cell>
-                    <Cell spanDevices={{desktop: 5, tablet: 4, phone: 4}} class="content-right">
+                    <Cell spanDevices={{desktop: 5, tablet: 8, phone: 4}} class="content-right">
                         <div class="header-title d-pt-120 d-pb-100 d-pl-120 t-pt-60 t-pb-50 t-pl-60">
                             <LayoutGrid class="p-0">
                                 <Cell spanDevices={{desktop: 6, tablet: 4, phone: 2}}>
@@ -321,7 +321,7 @@
             padding-right: var(--mdc-layout-grid-margin-desktop);
         }
     }
-    @media screen and (max-width: 1239px) and (min-width: 600px) {
+    @media screen and (max-width: 1239px) and (min-width: 840px) {
         .header-title {
             padding-right: var(--mdc-layout-grid-margin-tablet);
         }
@@ -389,7 +389,7 @@
         animation: fadeIn 2s ease;
     }
 
-    @media screen and (max-width: 599px) {
+    @media screen and (max-width: 839px) {
         :global(.page-shop-detail .content-right){
             order:2;
         }

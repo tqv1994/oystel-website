@@ -26,7 +26,19 @@
             currentMenu: 'travel-advisors'
         }
     };
+    function onScrollFixedContactInfo(){
+        if(document.documentElement.clientWidth > 839) {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                document.querySelector('.contact-info').classList.add('fixed');
+            } else {
+                document.querySelector('.contact-info').classList.remove('fixed');
+            }
+        }else{
+            document.querySelector('.contact-info').classList.remove('fixed');
+        }
+    }
 </script>
+<svelte:window on:load={()=>{onScrollFixedContactInfo();}} on:scroll={()=>{onScrollFixedContactInfo()}}/>
 <Layout config={configPage}>
     <div class="content mt-25">
         <section class="header-title full-width" style="background-image: url(/img/advisors/detail-advisor-banner.jpg)">
@@ -45,12 +57,12 @@
                             </Icon>
                         </IconButton>
                         <LayoutGrid class="p-0">
-                            <Cell spanDevices={{desktop: 6, tablet: 4, phone: 4}} class="text-left">
+                            <Cell spanDevices={{desktop: 6, tablet: 8, phone: 4}} class="text-left">
                                 <div class="thumbnail">
                                     <img src="/img/advisors/avatar-1.jpg" alt=""/>
                                 </div>
                             </Cell>
-                            <Cell spanDevices={{desktop: 6, tablet: 4, phone: 4}} class="text-center t-block m-none">
+                            <Cell spanDevices={{desktop: 6, tablet: 8, phone: 4}} class="text-center t-block m-none">
                                 <IconButton class="btn-share">
                                     <Icon component={Svg} viewBox="0 0 16.833 24.384">
                                         <g id="Group_439" data-name="Group 439" transform="translate(-1661.127 -152.323)">
@@ -227,6 +239,25 @@
         background-color: #F0F7F8;
         width: 475px;
     }
+    .contact-info:global(.fixed){
+        top: 50% !important;
+        transform: translateY(-50%);
+    }
+    @media screen and (min-width: 1441px) {
+        .contact-info:global(.fixed) {
+            margin-left: calc(calc(100vw / 2 - 1440px / 2) + var(--mdc-layout-grid-margin-desktop));
+        }
+    }
+    @media screen and (max-width: 1440px) and (min-width: 1240px) {
+        .contact-info:global(.fixed) {
+            margin-left: var(--mdc-layout-grid-margin-desktop);
+        }
+    }
+    @media screen and (max-width: 1239px) and (min-width: 840px) {
+        .contact-info:global(.fixed) {
+            margin-left: var(--mdc-layout-grid-margin-tablet);
+        }
+    }
     .contact-info .thumbnail{
         width: 100px;
     }
@@ -285,11 +316,17 @@
         font-size: 17px;
     }
 
-    @media screen and (max-width: 599px) {
+    @media screen and (max-width: 839px) {
+        .contact-info{
+            position: absolute;
+        }
+        .contact-info .description{
+            width: 100%;
+        }
         .header-title{
             height: auto;
             padding-bottom: 82.67%;
-            margin-bottom:  450px;
+            margin-bottom:  120px;
         }
         .contact-info{
             text-align: center !important;
@@ -307,18 +344,23 @@
             top: 30px;
         }
     }
+    @media screen and (max-width: 559px) {
+        .header-title{
+            margin-bottom:  450px;
+        }
+    }
     .destinations-wrap h5{
         font-weight: bold;
         font-size: 16px;
         line-height: 34px;
         letter-spacing: 0.2px;
     }
-    @media screen and (min-width: 1441px){
-        .contact-info{
+    @media (min-width: 1441px){
+        .contact-info:not(.fixed){
             left: 45px;
         }
     }
-    @media (max-width: 599px) {
+    @media (max-width: 904px) {
         .destinations-wrap h5{
             font-size: 12px;
             line-height: 20px;

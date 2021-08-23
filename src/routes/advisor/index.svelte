@@ -33,7 +33,7 @@
     }
 
     function onScrollFixedHeader(){
-        if(document.documentElement.clientWidth < 1240) {
+        if(document.documentElement.clientWidth < 839) {
             if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
                 document.getElementById("header").classList.add("fixed");
                 document.querySelector('header').style.zIndex = 7;
@@ -48,7 +48,7 @@
         }
     }
 </script>
-<svelte:window on:load={()=>{onScrollFixedHeader(); onLoad()}} on:scroll={()=>{onScrollFixedHeader()}}/>
+<svelte:window on:load={()=>{onScrollFixedHeader();}} on:scroll={()=>{onScrollFixedHeader()}}/>
 <Layout config={configPage}>
     <div class="content">
         <section class="header-title d-pt-120 d-pb-95 m-pt-90 m-pb-25 full-width">
@@ -150,16 +150,16 @@
                 <div class="d-none m-block">
                     <div class="advisors-list">
                         <LayoutGrid class="p-0">
-                            <Cell spanDevices={{desktop: 4, tablet: 4, phone: 4}}>
+                            <Cell span={12}>
                                 <div class="item-advisor">
                                     <a href="/advisor/detail">
                                         <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
                                                 <div class="thumbnail">
                                                     <img src="/img/advisors/avatar-1.jpg" alt=""/>
                                                 </div>
                                             </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
                                                 <h2 class="mt-0 mb-15">Jan Wohl</h2>
                                                 <p class="mt-0 mb-30">New York, USA</p>
                                                 <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
@@ -168,16 +168,16 @@
                                     </a>
                                 </div>
                             </Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 4, phone: 4}}>
+                            <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}>
                                 <div class="item-advisor">
                                     <a href="/advisor/detail">
                                         <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
                                                 <div class="thumbnail">
                                                     <img src="/img/advisors/avatar-1.jpg" alt=""/>
                                                 </div>
                                             </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 8}}>
                                                 <h2 class="mt-0 mb-15">Jan Wohl</h2>
                                                 <p class="mt-0 mb-30">New York, USA</p>
                                                 <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
@@ -186,16 +186,16 @@
                                     </a>
                                 </div>
                             </Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 4, phone: 4}}>
+                            <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}>
                                 <div class="item-advisor">
                                     <a href="/advisor/detail">
                                         <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
                                                 <div class="thumbnail">
                                                     <img src="/img/advisors/avatar-1.jpg" alt=""/>
                                                 </div>
                                             </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
                                                 <h2 class="mt-0 mb-15">Jan Wohl</h2>
                                                 <p class="mt-0 mb-30">New York, USA</p>
                                                 <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
@@ -204,16 +204,16 @@
                                     </a>
                                 </div>
                             </Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 4, phone: 4}}>
+                            <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}>
                                 <div class="item-advisor">
                                     <a href="/advisor/detail">
                                         <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
                                                 <div class="thumbnail">
                                                     <img src="/img/advisors/avatar-1.jpg" alt=""/>
                                                 </div>
                                             </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
                                                 <h2 class="mt-0 mb-15">Jan Wohl</h2>
                                                 <p class="mt-0 mb-30">New York, USA</p>
                                                 <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
@@ -222,16 +222,16 @@
                                     </a>
                                 </div>
                             </Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 4, phone: 4}}>
+                            <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}>
                                 <div class="item-advisor">
                                     <a href="/advisor/detail">
                                         <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
                                                 <div class="thumbnail">
                                                     <img src="/img/advisors/avatar-1.jpg" alt=""/>
                                                 </div>
                                             </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
                                                 <h2 class="mt-0 mb-15">Jan Wohl</h2>
                                                 <p class="mt-0 mb-30">New York, USA</p>
                                                 <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
@@ -240,16 +240,16 @@
                                     </a>
                                 </div>
                             </Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 4, phone: 4}}>
+                            <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}>
                                 <div class="item-advisor">
                                     <a href="/advisor/detail">
                                         <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
                                                 <div class="thumbnail">
                                                     <img src="/img/advisors/avatar-1.jpg" alt=""/>
                                                 </div>
                                             </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 8, desktop: 12}}>
+                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
                                                 <h2 class="mt-0 mb-15">Jan Wohl</h2>
                                                 <p class="mt-0 mb-30">New York, USA</p>
                                                 <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
@@ -355,12 +355,12 @@
         animation: fadeIn 2s ease;
     }
 
-    @media screen and (min-width: 600px) {
+    @media screen and (min-width: 840px) {
         .advisors-list :global(.mdc-layout-grid  .mdc-layout-grid__cell .item-advisor){
             border-bottom: 1px solid rgba(0,0,0,0.2);
         }
     }
-    @media screen and (max-width: 599px) {
+    @media screen and (max-width: 839px) {
         .advisors-list :global(.mdc-layout-grid) {
             --mdc-layout-grid-gutter-phone: 0;
             --mdc-layout-grid-gutter-tablet: 0;

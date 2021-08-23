@@ -32,12 +32,12 @@
                     <div class="slide-content slide-item">
                         <LayoutGrid class="p-0">
                             <Cell spanDevices={{desktop: 1}} class="m-none"></Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 4, phone: 4}}>
+                            <Cell spanDevices={{desktop: 4, tablet: 8, phone: 4}}>
                                 <div class="thumbnail">
                                     <img src="/img/slides/product-slide-1.jpg" alt=""/>
                                 </div>
                             </Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 4, phone: 4}}>
+                            <Cell spanDevices={{desktop: 4, tablet: 8, phone: 4}}>
                                 <div class="d-mt-90">
                                     <p class="text-eyebrow ">Matteau</p>
                                     <div class="divider mt-25 pb-25"></div>
@@ -52,12 +52,12 @@
                     <div class="slide-content slide-item">
                         <LayoutGrid class="p-0">
                             <Cell spanDevices={{desktop: 1}} class="m-none"></Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 4, phone: 12}}>
+                            <Cell spanDevices={{desktop: 4, tablet: 8, phone: 4}}>
                                 <div class="thumbnail">
                                     <img src="/img/slides/product-slide-2.jpg" alt=""/>
                                 </div>
                             </Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 4, phone: 12}}>
+                            <Cell spanDevices={{desktop: 4, tablet: 8, phone: 4}}>
                                 <div class="mt-90">
                                     <p class="text-eyebrow ">Matteau</p>
                                     <div class="divider mt-25 pb-25"></div>
@@ -97,6 +97,7 @@
     .popup-products.close{
         opacity: 0;
         bottom: -999px;
+        z-index: -1;
     }
     .popup-products.open{
     }
@@ -126,7 +127,7 @@
 
     }
 
-    @media (max-width: 599px) {
+    @media (max-width: 839px) {
         .popup-products.open{
             top: 0;
             overflow-y: scroll;

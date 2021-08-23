@@ -55,7 +55,7 @@
                 <div class="form-wrap d-mb-80 t-mb-80 m-mb-40 t-pl-0 m-pl-15">
                     <LayoutGrid class="p-0">
                         {#each model as item}
-                            <Cell spanDevices={{desktop: 6, tablet: 4, phone: 4}}>
+                            <Cell spanDevices={{desktop: 6, tablet: 8, phone: 4}}>
                                 <Checkbox bind:checked={item.value} class="d-mr-40 t-mr-40 m-mr-15" />
                                 <h4 class="mt-0 mb-0">{item.label}</h4>
                             </Cell>
@@ -169,7 +169,7 @@
         }
     }
 
-    @media (max-width: 599px){
+    @media (max-width: 839px){
         .requiry-wrap h1{
             height: 40px;
             overflow: hidden;

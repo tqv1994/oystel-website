@@ -59,7 +59,7 @@
         <div class="content-wrap">
             <div class="container">
                 <LayoutGrid>
-                    <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
+                    <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
                         <div>
                             <h3 class="text-sub-title mb-50">
                                 When you book with an Oysteo advisor, you gain access to a world of personalized travel experiences and exclusive perks.
@@ -67,7 +67,7 @@
                             <h1 class="m-mb-0">Amazing Travel Experiences Curated for you</h1>
                         </div>
                     </Cell>
-                    <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
+                    <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
                         <Button class="btn-find-advisor m-mt-30" variant="outlined"><Label>Find My Advisor</Label></Button>
                     </Cell>
                 </LayoutGrid>
@@ -82,7 +82,7 @@
         right: 15%;
         position: absolute;
     }
-    @media (max-width: 599px) {
+    @media (max-width: 839px) {
         :global(.btn-find-advisor){
             top: auto;
             transform: translateY(0);

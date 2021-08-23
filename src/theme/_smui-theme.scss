@@ -57,10 +57,10 @@ $blackColor: #000;
 $brownColor: #91421C;
 $blueColor: #5078BC;
 /* Responsive */
-$mobile-width: 599px;
+$mobile-width: 840px;
 $tablet-width: 600px;
-$desktop-width: 905px;
-@mixin mobile { @media (max-width: #{$tablet-width - 1px}) {
+$desktop-width: 840px;
+@mixin mobile { @media (max-width: #{$desktop-width - 1px}) {
   @content;
 }
 }
@@ -218,7 +218,7 @@ caption {
 select, .mdc-select .mdc-floating-label.mdc-floating-label{
   font-style: normal;
 }
-button,button.mdc-button{
+button.mdc-button{
   --mdc-theme-primary: $blackColor;
   @include button.outline-color(#000);
   @include button.outline-width(1px, 45px);
@@ -232,6 +232,8 @@ button,button.mdc-button{
     @include typography.typography('button');
     line-height: normal;
   }
+  min-width: 193px;
+  overflow: hidden;
   @include mobile{
     &.mdc-button {
       min-width: 170px;
@@ -350,14 +352,14 @@ button,button.mdc-button{
 .d-none{
   display: none !important;
 }
-@include tablet{
-  .t-block.t-block{
-    display: block !important;
-  }
-  .t-none.t-none{
-    display: none !important;
-  }
-}
+//@include tablet{
+//  .t-block.t-block{
+//    display: block !important;
+//  }
+//  .t-none.t-none{
+//    display: none !important;
+//  }
+//}
 @include mobile{
   .m-block{
     display: block !important;
@@ -458,16 +460,21 @@ header{
 
   .mdc-top-app-bar__section {
     #main-menu{
-      height: 30px;
+      height: 100%;
       overflow: hidden;
       padding-left: 0;
+      padding-right: 1px;
     }
     #main-menu li {
       list-style: none;
       display: inline-block;
       margin-right: 60px;
       position: relative;
+      margin-top: 16px;
+      margin-bottom: 16px;
       a{
+        margin-top: 1em;
+        margin-bottom: 1em;
         text-decoration: none;
         @include typography.typography('button');
         color: #fff;
@@ -1240,7 +1247,7 @@ footer{
     .mdc-layout-grid{
       --mdc-layout-grid-margin-desktop: 0;
       padding: 0;
-      @include desktop {
+      @media (min-width: 1240px){
         --mdc-layout-grid-gutter-desktop: 50px;
       }
     }

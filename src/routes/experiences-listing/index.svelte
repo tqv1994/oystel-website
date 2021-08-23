@@ -143,7 +143,7 @@
                 </div>
                 <div class="section-content">
                     <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -167,7 +167,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -191,7 +191,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -215,7 +215,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-read-more item-read-more">
                                     <p class="text-h3 label">See more <i class="material-icons">chevron_right</i></p>
@@ -233,7 +233,7 @@
                 </div>
                 <div class="section-content">
                     <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -257,7 +257,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -281,7 +281,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -305,7 +305,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-read-more item-read-more">
                                     <p class="text-h3 label">See more <i class="material-icons">chevron_right</i></p>
@@ -323,7 +323,7 @@
                 </div>
                 <div class="section-content">
                     <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -347,7 +347,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -371,7 +371,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -395,7 +395,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-read-more item-read-more">
                                     <p class="text-h3 label">See more <i class="material-icons">chevron_right</i></p>
@@ -413,7 +413,7 @@
                 </div>
                 <div class="section-content">
                     <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -437,7 +437,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -461,7 +461,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -485,7 +485,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                             <a href="/experiences-listing/detail">
                                 <div class="experience-read-more item-read-more">
                                     <p class="text-h3 label">See more <i class="material-icons">chevron_right</i></p>
@@ -601,7 +601,7 @@
         top: 5px;
     }
 
-    @media screen and (max-width: 599px){
+    @media screen and (max-width: 839px){
         .section-title .title:after{
             margin-left: 20px;
         }

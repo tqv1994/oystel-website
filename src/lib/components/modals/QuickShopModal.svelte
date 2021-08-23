@@ -181,6 +181,7 @@
     .popup-quick-shop.close{
         opacity: 0;
         bottom: -999px;
+        z-index: -1;
     }
     .popup-quick-shop.open{
     }

@@ -1,6 +1,6 @@
 <script>
     import {onMount, afterUpdate, beforeUpdate} from 'svelte';
-    import LayoutGrid, {Cell} from '@smui/layout-grid';
+    import LayoutGrid, {Cell, InnerGrid } from '@smui/layout-grid';
     import {goto} from '$app/navigation';
     import Textfield from '@smui/textfield';
     import Button, {Label} from '@smui/button';
@@ -159,10 +159,10 @@
                                             </Icon>
                                         </IconButton>
                                     </div>
-                                    <LayoutGrid class="p-0">
+                                    <InnerGrid  class="p-0">
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
-                                    </LayoutGrid>
+                                    </InnerGrid >
                                     <div class="divider"></div>
                                     <h4 class="text-h2 title">Lorem ipsum dolor sit amet, consectetur.</h4>
                                     <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
@@ -183,10 +183,10 @@
                                             </Icon>
                                         </IconButton>
                                     </div>
-                                    <LayoutGrid class="p-0">
+                                    <InnerGrid  class="p-0">
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
-                                    </LayoutGrid>
+                                    </InnerGrid >
                                     <div class="divider"></div>
                                     <h4 class="text-h2 title">Lorem ipsum dolor sit amet, consectetur. Lorem ipsum dolor.</h4>
                                     <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
@@ -207,10 +207,10 @@
                                             </Icon>
                                         </IconButton>
                                     </div>
-                                    <LayoutGrid class="p-0">
+                                    <InnerGrid class="p-0">
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">India</p></Cell>
                                         <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
-                                    </LayoutGrid>
+                                    </InnerGrid>
                                     <div class="divider"></div>
                                     <h4 class="text-h2 title">Lorem ipsum dolor sit amet, consectetur.</h4>
                                     <p class="short-text m-none">Lorem ipsum dolor sit sen amet, consect adipiscing  elit, sed do.</p>
@@ -325,7 +325,7 @@
                 </div>
                 <div class="section-content">
                     <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3,tablet: 4, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -349,7 +349,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3,tablet: 4, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -373,7 +373,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3,tablet: 4, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -397,7 +397,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3,tablet: 4, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-read-more item-read-more">
                                     <p class="text-h3 label">See more <i class="material-icons">chevron_right</i></p>
@@ -415,7 +415,7 @@
                 </div>
                 <div class="section-content">
                     <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3,tablet: 4, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -439,7 +439,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3,tablet: 4, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -463,7 +463,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3,tablet: 4, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-item">
                                     <div class="thumbnail">
@@ -487,7 +487,7 @@
                                 </div>
                             </a>
                         </Cell>
-                        <Cell spanDevices={{ desktop: 3, phone: 2 }}>
+                        <Cell spanDevices={{ desktop: 3,tablet: 4, phone: 2 }}>
                             <a href="/destination/detail">
                                 <div class="experience-read-more item-read-more">
                                     <p class="text-h3 label">See more <i class="material-icons">chevron_right</i></p>
