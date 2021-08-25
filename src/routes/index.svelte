@@ -58,7 +58,7 @@
         <div class="content-wrap">
           <div class="dark text-box">
             <LayoutGrid class="pb-15">
-              <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}><h3 class="pb-15" style="display: inline-block; margin-right: 30px">Welcome to Oysteo</h3><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
+              <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}><h3 class="pb-15 m-block" style="display: inline-block; margin-right: 30px">Welcome to Oysteo</h3><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
             </LayoutGrid>
             <LayoutGrid class="pb-15">
               <Cell span="12"
@@ -92,11 +92,7 @@
         <div class="content-wrap">
           <div class="dark text-box">
             <LayoutGrid class="pb-15">
-              <Cell><h3 class="mt-0 mb-0">Welcome to Oysteo</h3></Cell>
-              <Cell
-              ><Button variant="outlined"><Label>Plan Your Trip</Label></Button
-              ></Cell
-              >
+              <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}><h3 class="pb-15 m-block" style="display: inline-block; margin-right: 30px">Welcome to Oysteo</h3><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
             </LayoutGrid>
             <LayoutGrid class="pb-15">
               <Cell span="12"
@@ -133,13 +129,13 @@
       <Cell span="12"><h3 class="text-h1 mt-0 mb-0">Featured Drops</h3></Cell>
     </LayoutGrid>
     <LayoutGrid class="pt-0">
-      <Cell spanDevices={{desktop: 4, tablet: 8 , phone:4}}>
+      <Cell spanDevices={{desktop: 4, tablet: 8 , phone:4}} class="m-mb-45">
         <div class="item-featured-drop new">
           <div class="thumbnail dark mb-70">
             <img class="" src="/img/feature-drops/item-1.jpg" alt="" />
             <div class="caption"><span>6 Packages left</span></div>
           </div>
-          <h5 class="mt-0">Fashion Drop</h5>
+          <p class="mt-0 text-eyebrow">Fashion Drop</p>
           <div class="divider pb-30" />
           <h4 class="text-h2 mt-0 mb-30">
             Louis Vuitton - Photographed by Inez & Vinoodh in Monaco
@@ -150,11 +146,11 @@
       <Cell spanDevices={{desktop: 8 ,tablet: 8, phone:4}} class="d-mr--30 m-mr-0">
         <div class="list-featured-drop">
           <LayoutGrid class="p-0">
-            <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
+            <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
               <div class="item-featured-drop">
                 <div class="thumbnail dark mb-60">
                   <img class="" src="/img/feature-drops/item-2.jpg" alt="" />
-                  <div class="caption"><span>11 Packages left</span></div>
+                  <div class="caption text-h5"><span>11 Packages left</span></div>
                 </div>
                 <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
                 <div class="divider pb-30" />
@@ -164,7 +160,7 @@
                 <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
               </div>
             </Cell>
-            <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
+            <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
               <div class="item-featured-drop coming">
                 <div class="thumbnail dark mb-60">
                   <img class="" src="/img/feature-drops/item-3.jpg" alt="" />
@@ -178,7 +174,7 @@
                 <Button class="hover-affect" variant="outlined"><Label>Set Reminder</Label></Button>
               </div>
             </Cell>
-            <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
+            <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
               <div class="item-featured-drop">
                 <div class="thumbnail dark mb-60">
                   <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
@@ -192,7 +188,7 @@
                 <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
               </div>
             </Cell>
-            <Cell spanDevices={{desktop: 4, tablet:4, phone: 2}}>
+            <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
               <div class="item-featured-drop">
                 <div class="thumbnail dark mb-60">
                   <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
@@ -228,13 +224,13 @@
           </div>
         </Cell>
         <Cell spanDevices={{desktop: 7, tablet: 8, phone: 4}} class="light d-pl-70 d-pr-70">
-          <h3 class="d-mb-100 d-mt-100 m-mt-40 m-mb-70">
+          <h3 class="d-mb-100 d-mt-100 m-mt-40 m-mb-30">
             Join now for exclusive biweekly travel promotional drops, special
             content, and bespoke travel itineraries.
           </h3>
           <div class="d-pb-100 m-pb-0" />
-          <h5>Become an Oysteo Member now</h5>
-          <h2 class="text-h1 mt-30 d-mb-40 m-mb-15">Never Miss a Drop</h2>
+          <h5 class="mt-0 mb-0">Become an Oysteo Member now</h5>
+          <h2 class="text-h1 d-mt-30 d-mb-40 m-mb-15 m-mt-15">Never Miss a Drop</h2>
           <Button variant="outlined" class="hover-affect" on:click={callOpenSignupModal}
           ><Label >Sign Up Now</Label></Button
           >
@@ -259,11 +255,11 @@
               </IconButton>
             </div>
           </a>
-          <p class="text-h1 mt-40">Curated for You</p>
-          <div class="divider pb-25" />
+          <p class="text-h1 mt-40 m-mb-15">Curated for You</p>
+          <div class="divider d-pb-25 m-pb-15" />
           <p class="mt-0 text-eyebrow">Featured Experience</p>
           <a href="#">
-            <h4 class="text-h2">Archaval Ferrer Winery Tour</h4>
+            <h4 class="text-h2 mt-20">Archaval Ferrer Winery Tour</h4>
           </a>
         </div>
       </Cell>
@@ -282,8 +278,8 @@
                   </Icon>
                 </IconButton>
               </div>
-              <p class="text-eyebrow mt-25 mb-0">Experience</p>
-              <div class="divider mt-25 pb-30" />
+              <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
+              <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-25" />
               <h4 class="text-h2 title mt-0">
                 Exfoliating and polishing your skin with a finely ground herbs.
               </h4>
@@ -303,8 +299,8 @@
                     </Icon>
                   </IconButton>
                 </div>
-                <p class="text-eyebrow mt-25 mb-0">Experience</p>
-                <div class="divider mt-25 pb-30" />
+                <p class="text-eyebrow d-mt-25 mb-0 m-mt-20">Experience</p>
+                <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-20" />
                 <h4 class="text-h2 title mt-0">
                   A one-of-a-kind journey of self-exploration.
                 </h4>
@@ -325,8 +321,8 @@
                     </Icon>
                   </IconButton>
                 </div>
-                <p class="text-eyebrow mt-25 mb-0">Experience</p>
-                <div class="divider mt-25 pb-30" />
+                <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
+                <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-20" />
                 <h4 class="text-h2 title mt-0">
                   A one-of-a-kind journey of self-exploration.
                 </h4>
@@ -347,8 +343,8 @@
                     </Icon>
                   </IconButton>
                 </div>
-                <p class="text-eyebrow mt-25 mb-0">Destination</p>
-                <div class="divider mt-25 pb-30" />
+                <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Destination</p>
+                <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-20" />
                 <h4 class="text-h2 title mt-0">A Dream Cotswolds Getaway</h4>
               </a>
             </div>
@@ -367,8 +363,8 @@
                     </Icon>
                   </IconButton>
                 </div>
-                <p class="text-eyebrow mt-25 mb-0">Experience</p>
-                <div class="divider mt-25 pb-30" />
+                <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
+                <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-20" />
                 <h4 class="text-h2 title mt-0">
                   Exfoliating and polishing your skin with a finely ground
                   herbs.
@@ -390,8 +386,8 @@
                     </Icon>
                   </IconButton>
                 </div>
-                <p class="text-eyebrow mt-25 mb-0">Experience</p>
-                <div class="divider mt-25 pb-30" />
+                <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
+                <div class="divider d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
                 <h4 class="text-h2 title mt-0">
                   A one-of-a-kind journey of self-exploration.
                 </h4>
@@ -424,8 +420,8 @@
                   </Icon>
                 </IconButton>
               </div>
-              <p class="text-eyebrow mt-25 mb-0">Experience</p>
-              <div class="divider mt-25 pb-30" />
+              <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
+              <div class="divider d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
               <h4 class="text-h2 mt-0 title">
                 Australian Masterchef Restaurant Tour - Starting in Sydney.
               </h4>
@@ -446,8 +442,8 @@
                   </Icon>
                 </IconButton>
               </div>
-              <p class="text-eyebrow mt-25 mb-0">Destination</p>
-              <div class="divider  mt-25 pb-30" />
+              <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Destination</p>
+              <div class="divider  d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
               <h4 class="text-h2 mt-0 title">
                 Archaval Ferrer Winery Tour - Drink directly from the cellar
                 barrel.
@@ -469,8 +465,8 @@
                   </Icon>
                 </IconButton>
               </div>
-              <p class="text-eyebrow mt-25 mb-0">Experience</p>
-              <div class="divider  mt-25 pb-30" />
+              <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
+              <div class="divider  d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
               <h4 class="text-h2 mt-0 title">
                 Australian Masterchef Restaurant Tour - Starting in Sydney.
               </h4>
@@ -491,8 +487,8 @@
                   </Icon>
                 </IconButton>
               </div>
-              <p class="text-eyebrow mt-25 mb-0">Experience</p>
-              <div class="divider mt-25 pb-30" />
+              <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
+              <div class="divider d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
               <h4 class="text-h2 mt-0 title">
                 A one-of-a-kind journey of self-exploration.
               </h4>
@@ -561,8 +557,8 @@
   }
   @media (max-width: 599px){
     .list-featured-drop :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr);
-      grid-template-columns: repeat(auto-fill, minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr));
+      grid-auto-columns: minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr));
     }
   }
 </style>

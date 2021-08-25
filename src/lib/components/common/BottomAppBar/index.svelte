@@ -40,7 +40,7 @@
                     <Icon component={Svg} viewBox="0 0 21.232 21.063">
                             <path id="Icon_-_Search" data-name="Icon - Search" d="M28.369,19.5A8.869,8.869,0,1,0,33.6,35.532l.375-.274s4.506,4.332,5.253,5.079,2.024-.539,1.281-1.281-5.25-5.083-5.25-5.083l.275-.376a8.76,8.76,0,0,0,1.705-5.228h0A8.879,8.879,0,0,0,28.369,19.5Zm0,15.928a7.059,7.059,0,1,1,7.059-7.059A7.067,7.067,0,0,1,28.369,35.428Z" transform="translate(-19.5 -19.5)"/>
                     </Icon><br/>
-                <Label class="text-eyebrow">Explode</Label>
+                <Label class="text-eyebrow">Explore</Label>
             </div>
         </Button>
     </Cell>

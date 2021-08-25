@@ -689,7 +689,7 @@ header{
       @include mobile{
         width: 100%;
         left: auto;
-        top: 45%;
+        top: 38%;
       }
     }
   }
@@ -1033,13 +1033,14 @@ header{
         background-color: $brownColor;
         left: 50%;
         transform: translateX(-50%);
-        padding: 20px 0;
+        padding: 10px 0;
         span{
           width: 100%;
           display: inline-block;
           text-align: center;
         }
-        font-size: 14px;
+        @include typography.typography('headline5');
+        text-transform: uppercase;
         line-height: 32px;
         letter-spacing: 0.1px;
       }
@@ -1048,6 +1049,15 @@ header{
       .thumbnail {
         .caption {
           background-color: $blueColor;
+        }
+      }
+    }
+    &.new{
+      .caption{
+        @include desktop{
+          font-size: 17px;
+          line-height: 39px;
+          letter-spacing: 0.1px;
         }
       }
     }
@@ -1116,13 +1126,14 @@ header{
       background-color: $brownColor;
       left: 50%;
       transform: translateX(-50%);
-      padding: 20px 0;
+      padding: 10px 0;
       span{
         width: 100%;
         display: inline-block;
         text-align: center;
       }
-      font-size: 14px;
+      @include typography.typography('headline5');
+      text-transform: uppercase;
       line-height: 32px;
       letter-spacing: 0.1px;
     }
@@ -1141,10 +1152,12 @@ header{
   }
   .list-experiences{
     max-height: 1155px;
-    @include tablet{
-      max-height: 770px;
-    }
     overflow-y: scroll;
+    @include mobile{
+      max-height: 100%;
+      overflow-y: auto;
+    }
+
     -ms-overflow-style: none; /* for Internet Explorer, Edge */
     scrollbar-width: none; /* for Firefox */
     &::-webkit-scrollbar{

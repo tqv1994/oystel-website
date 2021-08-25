@@ -63,7 +63,8 @@
     ul li {
         margin: 6px;
         border-radius: 100%;
-        background-color: rgba(255,255,255,0.5);
+        background-color: transparent;
+        border: 1px solid #fff;
         height: 8px;
         width: 8px;
     }
@@ -228,7 +229,9 @@
         if(isFadeIn) {
             allSlides[controller.currentSlide].classList.add('current-slide');
             let slidesEl = document.querySelector('.slides .back-drop');
-            slidesEl.style.backgroundImage = prevBackground;
+            if(typeof slidesEl != 'undefined') {
+                slidesEl.style.backgroundImage = prevBackground;
+            }
         }
         //change speed of slide change
         changeSlide();
