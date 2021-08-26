@@ -328,19 +328,13 @@ button.mdc-button{
   margin-right: auto;
   .container{
     max-width: 1440px;
-    margin-left: 45px;
-    margin-right: 45px;
+    margin-left: var(--mdc-layout-grid-margin-desktop);
+    margin-right: var(--mdc-layout-grid-margin-desktop);
   }
-  @media screen and (max-width: 1239px) and (min-width: 600px) {
+  @media screen and (max-width: 839px){
     .container {
-      margin-left: 20px;
-      margin-right: 20px;
-    }
-  }
-  @media screen and (max-width: 599px){
-    .container {
-      margin-left: 20px;
-      margin-right: 20px;
+      margin-left: var(--mdc-layout-grid-margin-phone);
+      margin-right: var(--mdc-layout-grid-margin-phone);
     }
   }
   position: relative;
@@ -682,7 +676,7 @@ header{
       background-color: rgba(0,0,0,0.45);
     }
     .text-box{
-      width: 60%; top: 30%; left: 10%; position: absolute; z-index: 2;
+      width: 60%; top: 41.5%; left: 10%; position: absolute; z-index: 2;
       @include tablet-large{
         width: 85%;
       }
@@ -1066,6 +1060,9 @@ header{
           line-height: 39px;
           letter-spacing: 0.1px;
         }
+        @include mobile{
+          width: calc(100% - 120px);
+        }
       }
     }
     &:not(.new){
@@ -1078,13 +1075,6 @@ header{
             text-align: center;
           }
         }
-    }
-    .title{
-      height: 55px;
-      @include mobile{
-        height: 70px;
-      }
-      overflow: hidden;
     }
     .divider{
       &::after{
@@ -1200,13 +1190,6 @@ header{
         background-color: #CCC;
       }
     }
-    .title{
-      height: 55px;
-      @include mobile{
-        height: 70px;
-      }
-      overflow: hidden;
-    }
   }
 }
 
@@ -1242,13 +1225,6 @@ header{
       &::after{
         background-color: #CCC;
       }
-    }
-    .title{
-      height: 55px;
-      @include mobile{
-        height: 70px;
-      }
-      overflow: hidden;
     }
   }
 }

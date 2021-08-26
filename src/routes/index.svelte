@@ -60,7 +60,7 @@
             <LayoutGrid class="pb-0">
               <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}><h3 class="mb-0 m-pb-0 m-mb-25 m-block" style="display: inline-block; margin-right: 30px">Welcome to Oysteo</h3><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
             </LayoutGrid>
-            <LayoutGrid class="pb-15 m-pt-35">
+            <LayoutGrid class="pb-0 m-pt-35 d-pt-30">
               <Cell span="12"
               ><h1 class="mt-0 mb-0">
                 Your lifestyle concierge platform for incredible experiences and
@@ -68,18 +68,18 @@
               </h1></Cell
               >
             </LayoutGrid>
-            <LayoutGrid class="m-none">
+            <LayoutGrid class="pt-45 m-none">
               <Cell>
-                <h4 style="text-transform: uppercase">Advisors</h4>
-                <p>First hand experience to craft your perfect vacation.</p>
+                <h4 style="text-transform: uppercase" class="mt-0 mb-15">Advisors</h4>
+                <p class="mt-0">First hand experience to craft your perfect vacation.</p>
               </Cell>
               <Cell>
-                <h4 style="text-transform: uppercase">Experiences</h4>
-                <p>Bespoke itineraries from our leading tastemakers.</p>
+                <h4 style="text-transform: uppercase" class="mt-0 mb-15">Experiences</h4>
+                <p class="mt-0">Bespoke itineraries from our leading tastemakers.</p>
               </Cell>
               <Cell>
-                <h4 style="text-transform: uppercase">Fashion</h4>
-                <p>Purchase luxury goods from curated collections.</p>
+                <h4 style="text-transform: uppercase" class="mt-0 mb-15">Fashion</h4>
+                <p class="mt-0">Purchase luxury goods from curated collections.</p>
               </Cell>
             </LayoutGrid>
           </div>
@@ -94,7 +94,7 @@
             <LayoutGrid class="pb-0">
               <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}><h3 class="mb-0 m-pb-0 m-mb-25 m-block" style="display: inline-block; margin-right: 30px">Welcome to Oysteo</h3><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
             </LayoutGrid>
-            <LayoutGrid class="pb-15 m-pt-35">
+            <LayoutGrid class="pb-0 m-pt-35 d-pt-30">
               <Cell span="12"
               ><h1 class="mt-0 mb-0">
                 Your lifestyle concierge platform for incredible experiences and
@@ -102,18 +102,18 @@
               </h1></Cell
               >
             </LayoutGrid>
-            <LayoutGrid class="m-none">
+            <LayoutGrid class="pt-45 m-none">
               <Cell>
-                <h4 style="text-transform: uppercase">Advisors</h4>
-                <p>First hand experience to craft your perfect vacation.</p>
+                <h4 style="text-transform: uppercase" class="mt-0 mb-15">Advisors</h4>
+                <p class="mt-0">First hand experience to craft your perfect vacation.</p>
               </Cell>
               <Cell>
-                <h4 style="text-transform: uppercase">Experiences</h4>
-                <p>Bespoke itineraries from our leading tastemakers.</p>
+                <h4 style="text-transform: uppercase" class="mt-0 mb-15">Experiences</h4>
+                <p class="mt-0">Bespoke itineraries from our leading tastemakers.</p>
               </Cell>
               <Cell>
-                <h4 style="text-transform: uppercase">Fashion</h4>
-                <p>Purchase luxury goods from curated collections.</p>
+                <h4 style="text-transform: uppercase" class="mt-0 mb-15">Fashion</h4>
+                <p class="mt-0">Purchase luxury goods from curated collections.</p>
               </Cell>
             </LayoutGrid>
           </div>
@@ -131,16 +131,18 @@
     <LayoutGrid class="pt-0">
       <Cell spanDevices={{desktop: 4, tablet: 8 , phone:4}} class="m-mb-45">
         <div class="item-featured-drop new">
-          <div class="thumbnail dark mb-70">
+          <div class="thumbnail dark d-mb-70 m-mb-40">
             <img class="" src="/img/feature-drops/item-1.jpg" alt="" />
             <div class="caption"><span>6 Packages left</span></div>
           </div>
-          <p class="mt-0 text-eyebrow">Fashion Drop</p>
-          <div class="divider pb-30" />
-          <h4 class="text-h2 mt-0 mb-30">
-            Louis Vuitton - Photographed by Inez & Vinoodh in Monaco
-          </h4>
-          <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+          <div class="m-pr-45 m-pl-45">
+            <p class="mt-0 m-mb-15 text-eyebrow">Fashion Drop</p>
+            <div class="divider d-pb-30 m-pb-20" />
+            <h4 class="text-h2 mt-0 mb-30 ">
+              Louis Vuitton - Photographed by Inez & Vinoodh in Monaco
+            </h4>
+            <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+          </div>
         </div>
       </Cell>
       <Cell spanDevices={{desktop: 8 ,tablet: 8, phone:4}} class="d-mr--30 m-mr-0">
@@ -148,13 +150,13 @@
           <LayoutGrid class="p-0">
             <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
               <div class="item-featured-drop">
-                <div class="thumbnail dark mb-60">
+                <div class="thumbnail dark d-mb-60 m-mb-40">
                   <img class="" src="/img/feature-drops/item-2.jpg" alt="" />
                   <div class="caption text-h5"><span>11 Packages left</span></div>
                 </div>
-                <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
-                <div class="divider pb-30" />
-                <h4 class="text-h2 mt-0 mb-50 title">
+                <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">Experience Drop</p>
+                <div class="divider d-pb-30 m-pb-20 " />
+                <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
                   Exfoliating and polishing your skin with a finely ground herbs.
                 </h4>
                 <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
@@ -162,13 +164,13 @@
             </Cell>
             <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
               <div class="item-featured-drop coming">
-                <div class="thumbnail dark mb-60">
+                <div class="thumbnail dark d-mb-60 m-mb-40">
                   <img class="" src="/img/feature-drops/item-3.jpg" alt="" />
                   <div class="caption"><span>Coming 07.02.21</span></div>
                 </div>
-                <p class="mt-0 mb-25 text-eyebrow category">Fashion Drop</p>
-                <div class="divider pb-30" />
-                <h4 class="text-h2 mt-0 mb-50 title">
+                <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">Fashion Drop</p>
+                <div class="divider d-pb-30 m-pb-20" />
+                <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
                   Exfoliating and polishing your skin with a finely ground herbs.
                 </h4>
                 <Button class="hover-affect" variant="outlined"><Label>Set Reminder</Label></Button>
@@ -176,13 +178,13 @@
             </Cell>
             <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
               <div class="item-featured-drop">
-                <div class="thumbnail dark mb-60">
+                <div class="thumbnail dark d-mb-60 m-mb-40">
                   <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
                   <div class="caption"><span>3 Packages left</span></div>
                 </div>
-                <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
-                <div class="divider pb-30" />
-                <h4 class="text-h2 mt-0 mb-50 title">
+                <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">Experience Drop</p>
+                <div class="divider d-pb-30 m-pb-20" />
+                <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
                   Exfoliating and polishing your skin with a finely ground herbs.
                 </h4>
                 <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
@@ -190,13 +192,13 @@
             </Cell>
             <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
               <div class="item-featured-drop">
-                <div class="thumbnail dark mb-60">
+                <div class="thumbnail dark d-mb-60 m-mb-40">
                   <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
                   <div class="caption"><span>3 Packages left</span></div>
                 </div>
-                <p class="mt-0 mb-25 text-eyebrow category">Experience Drop</p>
-                <div class="divider pb-30" />
-                <h4 class="text-h2 mt-0 mb-50 title">
+                <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">Experience Drop</p>
+                <div class="divider d-pb-30 m-pb-20" />
+                <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
                   Exfoliating and polishing your skin with a finely ground herbs.
                 </h4>
                 <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
@@ -208,9 +210,9 @@
     </LayoutGrid>
   </section>
   <section
-    class="d-pt-55 d-pb-70 t-pt-55 t-pb-70 m-pt-20 m-pb-40 full-width"
-    id="signup-section"
-    style="background-color: #F0F7F8"
+          class="d-pt-55 d-pb-70 t-pt-55 t-pb-70 m-pt-20 m-pb-40 full-width"
+          id="signup-section"
+          style="background-color: #F0F7F8"
   >
     <div class="content-wrap">
       <LayoutGrid>
@@ -223,14 +225,14 @@
             </div>
           </div>
         </Cell>
-        <Cell spanDevices={{desktop: 7, tablet: 8, phone: 4}} class="light d-pl-70 d-pr-70">
-          <h3 class="d-mb-100 d-mt-100 m-mt-40 m-mb-30">
+        <Cell spanDevices={{desktop: 7, tablet: 8, phone: 4}} class="light d-pl-100 d-pr-70">
+          <h3 class="d-mb-100 d-mt-100 m-mt-40 m-mb-40">
             Join now for exclusive biweekly travel promotional drops, special
             content, and bespoke travel itineraries.
           </h3>
           <div class="d-pb-100 m-pb-0" />
-          <h5 class="mt-0 mb-0">Become an Oysteo Member now</h5>
-          <h2 class="text-h1 d-mt-30 d-mb-40 m-mb-15 m-mt-10">Never Miss a Drop</h2>
+          <h5>Become an Oysteo Member now</h5>
+          <h2 class="text-h1 mt-30 d-mb-40 m-mb-15">Never Miss a Drop</h2>
           <Button variant="outlined" class="hover-affect" on:click={callOpenSignupModal}
           ><Label >Sign Up Now</Label></Button
           >

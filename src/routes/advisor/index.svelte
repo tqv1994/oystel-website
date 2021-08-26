@@ -33,7 +33,7 @@
     }
 
     function onScrollFixedHeader(){
-        if(document.documentElement.clientWidth < 839) {
+        /*if(document.documentElement.clientWidth < 839) {
             if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
                 document.getElementById("header").classList.add("fixed");
                 document.querySelector('header').style.zIndex = 7;
@@ -45,17 +45,17 @@
                 document.querySelector('header').style.position = 'static';
                 document.querySelector('.header-title').classList.remove('fixed', 'is_sticky');
             }
-        }
+        }*/
     }
 </script>
 <svelte:window on:load={()=>{onScrollFixedHeader();}} on:scroll={()=>{onScrollFixedHeader()}}/>
 <Layout config={configPage}>
     <div class="content">
-        <section class="header-title d-pt-120 d-pb-95 m-pt-90 m-pb-25 full-width">
+        <section class="header-title d-pt-120 d-pb-95 m-pt-100 m-pb-25 full-width">
             <div class="content-wrap">
                 <div class="container">
-                    <h1 class="text-center mb-30">Crafted from Experience</h1>
-                    <p class="text-center">First hand experience, ready to craft your perfect vacation.</p>
+                    <h1 class="text-center d-mb-30 m-mb-25 mt-0">Crafted from Experience</h1>
+                    <p class="text-center mt-0 m-pl-40 m-pr-40 m-mb-45">First hand experience, ready to craft your perfect vacation.</p>
                     <div class="d-none m-block">
                         <Button on:click={()=>{contentHeaderActionMobile = 'advisor-search'}} type="button" style="width: 100%" variant="outlined"><Label>Filter Your Results</Label></Button>
                     </div>
@@ -177,7 +177,7 @@
                                                     <img src="/img/advisors/avatar-1.jpg" alt=""/>
                                                 </div>
                                             </Cell>
-                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 8}}>
+                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 9}}>
                                                 <h2 class="mt-0 mb-15">Jan Wohl</h2>
                                                 <p class="mt-0 mb-30">New York, USA</p>
                                                 <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
@@ -329,7 +329,7 @@
         text-transform: uppercase;
     }
 
-    :global(.item-advisor img){
+    :global(.page-advisors .item-advisor img){
         border-radius: 50%;
         vertical-align: middle;
     }
