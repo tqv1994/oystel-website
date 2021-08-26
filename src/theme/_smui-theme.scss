@@ -308,13 +308,13 @@ button.mdc-button{
 }
 
 .content{
-  .mdc-icon-button {
+  .mdc-icon-button:not(.btn-update-avatar) {
     width: 36px;
     height: 36px;
-  }
-  .mdc-icon-button svg, .mdc-icon-button img{
-    width: 18px;
-    height: 18px;
+    svg,img{
+      width: 18px;
+      height: 18px;
+    }
   }
 }
 
@@ -738,11 +738,18 @@ header{
 .text-right{
   text-align: right !important;
 }
+.font-weight-bold{
+  font-weight: 700;
+}
 
-.mdc-deprecated-list-item{
-  --mdc-typography-subtitle2-text-transform: uppercase;
-  &.active{
-    border-bottom: 1px solid #000;
+.mdc-drawer {
+  .mdc-deprecated-list-item.mdc-deprecated-list-item {
+    @include typography.typography('headline4');
+    text-transform: uppercase;
+
+    &.active {
+      border-bottom: 1px solid #000;
+    }
   }
 }
 

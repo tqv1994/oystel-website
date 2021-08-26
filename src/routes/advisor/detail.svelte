@@ -248,14 +248,12 @@
             margin-left: calc(calc(100vw / 2 - 1440px / 2) + var(--mdc-layout-grid-margin-desktop));
         }
     }
-    @media screen and (max-width: 1440px) and (min-width: 1240px) {
-        .contact-info:global(.fixed) {
-            margin-left: var(--mdc-layout-grid-margin-desktop);
+    @media screen and (max-width: 1440px) and (min-width: 840px) {
+        .contact-info{
+            width: 40vw;
         }
-    }
-    @media screen and (max-width: 1239px) and (min-width: 840px) {
         .contact-info:global(.fixed) {
-            margin-left: var(--mdc-layout-grid-margin-tablet);
+            margin-left: 0;
         }
     }
     .contact-info .thumbnail{

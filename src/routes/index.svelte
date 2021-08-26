@@ -57,10 +57,10 @@
       >
         <div class="content-wrap">
           <div class="dark text-box">
-            <LayoutGrid class="pb-15">
-              <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}><h3 class="pb-15 m-block" style="display: inline-block; margin-right: 30px">Welcome to Oysteo</h3><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
+            <LayoutGrid class="pb-0">
+              <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}><h3 class="mb-0 m-pb-0 m-mb-25 m-block" style="display: inline-block; margin-right: 30px">Welcome to Oysteo</h3><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
             </LayoutGrid>
-            <LayoutGrid class="pb-15">
+            <LayoutGrid class="pb-15 m-pt-35">
               <Cell span="12"
               ><h1 class="mt-0 mb-0">
                 Your lifestyle concierge platform for incredible experiences and
@@ -91,10 +91,10 @@
       >
         <div class="content-wrap">
           <div class="dark text-box">
-            <LayoutGrid class="pb-15">
-              <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}><h3 class="pb-15 m-block" style="display: inline-block; margin-right: 30px">Welcome to Oysteo</h3><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
+            <LayoutGrid class="pb-0">
+              <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}><h3 class="mb-0 m-pb-0 m-mb-25 m-block" style="display: inline-block; margin-right: 30px">Welcome to Oysteo</h3><Button variant="outlined"><Label>Plan Your Trip</Label></Button></Cell>
             </LayoutGrid>
-            <LayoutGrid class="pb-15">
+            <LayoutGrid class="pb-15 m-pt-35">
               <Cell span="12"
               ><h1 class="mt-0 mb-0">
                 Your lifestyle concierge platform for incredible experiences and
@@ -230,7 +230,7 @@
           </h3>
           <div class="d-pb-100 m-pb-0" />
           <h5 class="mt-0 mb-0">Become an Oysteo Member now</h5>
-          <h2 class="text-h1 d-mt-30 d-mb-40 m-mb-15 m-mt-15">Never Miss a Drop</h2>
+          <h2 class="text-h1 d-mt-30 d-mb-40 m-mb-15 m-mt-10">Never Miss a Drop</h2>
           <Button variant="outlined" class="hover-affect" on:click={callOpenSignupModal}
           ><Label >Sign Up Now</Label></Button
           >
@@ -255,8 +255,10 @@
               </IconButton>
             </div>
           </a>
-          <p class="text-h1 mt-40 m-mb-15">Curated for You</p>
-          <div class="divider d-pb-25 m-pb-15" />
+          <div class="d-pl-80 d-pr-80">
+            <p class="text-h1 mt-40 d-mb-25 m-mb-15">Curated for You</p>
+            <div class="divider d-pb-25 m-pb-15" ></div>
+          </div>
           <p class="mt-0 text-eyebrow">Featured Experience</p>
           <a href="#">
             <h4 class="text-h2 mt-20">Archaval Ferrer Winery Tour</h4>

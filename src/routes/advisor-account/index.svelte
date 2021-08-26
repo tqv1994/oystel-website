@@ -101,7 +101,7 @@
           </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
-            ><h5 class="mt-0 mb-0">Email</h5></Cell
+            ><h5 class="mt-0 mb-0 font-weight-bold">Email</h5></Cell
           >
           <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >emailaddress@email.com</Cell
@@ -109,7 +109,7 @@
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
-            ><h5 class="mt-0 mb-0">Birthdate</h5></Cell
+            ><h5 class="mt-0 mb-0 font-weight-bold">Birthdate</h5></Cell
           >
           <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >March 7, 1966</Cell
@@ -117,7 +117,7 @@
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
-            ><h5 class="mt-0 mb-0">Phone</h5></Cell
+            ><h5 class="mt-0 mb-0 font-weight-bold">Phone</h5></Cell
           >
           <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >1 555 555 5555</Cell
@@ -125,7 +125,7 @@
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
-            ><h5 class="mt-0 mb-0">Location</h5></Cell
+            ><h5 class="mt-0 mb-0 font-weight-bold">Location</h5></Cell
           >
           <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >NY, USA</Cell
@@ -145,7 +145,7 @@
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell span="12"
-            ><h5>Specialties</h5></Cell
+            ><h5 class="font-weight-bold">Specialties</h5></Cell
           >
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
@@ -156,7 +156,7 @@
           >
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
-          <Cell span="12"><h5>Languages</h5></Cell>
+          <Cell span="12"><h5 class="font-weight-bold">Languages</h5></Cell>
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell span="12">French, Italian, English</Cell>

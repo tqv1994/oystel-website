@@ -25,23 +25,19 @@
         }
     };
 
-    function onScrollFixedHeader(){
-        if(document.documentElement.clientWidth > 1239) {
+    function onScrollFixedTitleHeader(){
+        if(document.documentElement.clientWidth > 839) {
             if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                document.getElementById("header").classList.add("fixed");
-                document.querySelector('header').style.zIndex = 100;
-                document.querySelector('header').style.position = 'relative';
-                document.querySelector('.header-title').classList.add('fixed', 'is_sticky');
+                document.querySelector('.header-title').classList.add('fixed');
             } else {
-                document.getElementById("header").classList.remove("fixed");
-                document.querySelector('header').style.zIndex = 'auto';
-                document.querySelector('header').style.position = 'static';
-                document.querySelector('.header-title').classList.remove('fixed', 'is_sticky');
+                document.querySelector('.header-title').classList.remove('fixed');
             }
+        }else{
+            document.querySelector('.header-title').classList.remove('fixed');
         }
     }
 </script>
-<svelte:window />
+<svelte:window on:scroll={()=>{onScrollFixedTitleHeader()}} />
 <Layout config={configPage}>
     <div class="content">
         <section class="pt-30 d-pb-150 t-pb-150 m-pb-80 ">
@@ -305,25 +301,34 @@
 <style>
     .header-title{
         background-color: #F0F7F8;
-        position: fixed;
-        top: 50%;
-        transform: translateY(-50%);
         z-index: 2;
+    }
+    @media screen and (min-width: 840px) {
+        .header-title{
+            padding-right: var(--mdc-layout-grid-margin-desktop);
+        }
+        .header-title:global(:not(.fixed)){
+            margin-top: 80px;
+            margin-right: calc(var(--mdc-layout-grid-margin-desktop) * (-1));
+        }
+    }
+
+    .header-title:global(.fixed){
+        position: fixed;
+        top: 50% !important;
+        left: auto !important;
+        transform: translateY(-50%);
+        width: auto;
     }
 
     @media screen and (min-width: 1441px) {
-        .header-title {
-            padding-right: calc(calc(100vw / 2 - 1440px / 2) + var(--mdc-layout-grid-margin-desktop));
+        .header-title:global(.fixed) {
+            margin-right: calc(calc(100vw / 2 - 1440px / 2));
         }
     }
-    @media screen and (max-width: 1440px) and (min-width: 1240px) {
-        .header-title {
-            padding-right: var(--mdc-layout-grid-margin-desktop);
-        }
-    }
-    @media screen and (max-width: 1239px) and (min-width: 840px) {
-        .header-title {
-            padding-right: var(--mdc-layout-grid-margin-tablet);
+    @media screen and (max-width: 1440px) and (min-width: 840px) {
+        .header-title:global(.fixed) {
+            padding-right: 0;
         }
     }
 

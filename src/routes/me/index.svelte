@@ -109,7 +109,7 @@
         {/if}
         <LayoutGrid class="p-0 pb-15">
           <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
-            ><h5 class="mt-0 mb-0">Email</h5></Cell
+            ><h5 class="mt-0 mb-0 font-weight-bold">Email</h5></Cell
           >
           <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >{userModel.email || 'Please update'}</Cell
@@ -117,7 +117,7 @@
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
-            ><h5 class="mt-0 mb-0">Birthdate</h5></Cell
+            ><h5 class="mt-0 mb-0 font-weight-bold">Birthdate</h5></Cell
           >
           <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >{userModel.birthday || 'Please update'}</Cell
@@ -125,7 +125,7 @@
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
-            ><h5 class="mt-0 mb-0">Phone</h5></Cell
+            ><h5 class="mt-0 mb-0 font-weight-bold">Phone</h5></Cell
           >
           <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >{userModel.phoneNumber || 'Please update'}</Cell
@@ -133,7 +133,7 @@
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
-            ><h5 class="mt-0 mb-0">Location</h5></Cell
+            ><h5 class="mt-0 mb-0 font-weight-bold">Location</h5></Cell
           >
           <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
             >{userModel.location || 'Please update'}</Cell
@@ -197,33 +197,33 @@
     <Cell span="12">
       <div class="travel-detais">
         <a href="#" class="btn btn-edit btn-edit-travel-details text-input"
-          >Edit</a
+        >Edit</a
         >
         <LayoutGrid class="p-0 pb-15">
           <Cell span="12">Travel Details</Cell>
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell span="12"
-            ><h5>Medical Conditions & Dietary requirements</h5></Cell
+          ><h5 class="font-weight-bold">Medical Conditions & Dietary requirements</h5></Cell
           >
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell span="12"
-            >Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          >Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
             ad minim veniam</Cell
           >
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
-          <Cell spanDevices={{ desktop: 2, phone: 2, tablet: 4 }}><h5>Height</h5></Cell>
-          <Cell spanDevices={{ desktop: 2, phone: 2, tablet: 4 }}><h5>Weight</h5></Cell>
+          <Cell spanDevices={{ desktop: 2, phone: 2, tablet: 4 }}><h5 class="font-weight-bold">Height</h5></Cell>
+          <Cell spanDevices={{ desktop: 2, phone: 2, tablet: 4 }}><h5 class="font-weight-bold">Weight</h5></Cell>
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell spanDevices={{ desktop: 2, phone: 2, tablet: 4 }}>5',7''</Cell>
           <Cell spanDevices={{ desktop: 2, phone: 2, tablet: 4 }}>128 lbs</Cell>
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
-          <Cell span="12"><h5>Assistant Infomation</h5></Cell>
+          <Cell span="12"><h5 class="font-weight-bold">Assistant Infomation</h5></Cell>
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">
           <Cell span="12">Full Name, Email, Phone Number</Cell>
@@ -242,7 +242,7 @@
             <Checkbox bind:check={modelEmailPreferences.neverMissADrop} />
           </Cell>
           <Cell spanDevices={{ desktop: 11, phone: 3, tablet: 7 }}>
-            <h5 class="mb-15 mt-0">Never Miss a Drop</h5>
+            <h5 class="mb-15 mt-0 font-weight-bold">Never Miss a Drop</h5>
             <p class="m-0">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
@@ -255,7 +255,7 @@
             <Checkbox bind:check={modelEmailPreferences.curatedForYou} />
           </Cell>
           <Cell spanDevices={{ desktop: 11, phone: 3, tablet: 7 }}>
-            <h5 class="mb-15 mt-0">Curated For You</h5>
+            <h5 class="mb-15 mt-0 font-weight-bold">Curated For You</h5>
             <p class="m-0">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut

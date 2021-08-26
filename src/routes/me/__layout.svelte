@@ -99,7 +99,7 @@
           </Cell>
         </LayoutGrid>
         <div class="section-body">
-          <LayoutGrid class="pl-0 pr-0">
+          <LayoutGrid class="pl-0 pr-0 d-pt-90">
             <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
               <Drawer class="m-none">
                 <Content>
