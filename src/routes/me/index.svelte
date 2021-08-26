@@ -72,7 +72,7 @@
   <LayoutGrid class="p-0">
     <Cell spanDevices={{ desktop: 4, phone: 4, tablet: 8 }}>
       <div class="thumbnail user-profile-image">
-        <img src="./img/profile/profile-1.jpg" alt="" />
+        <img src="/img/profile/profile-1.jpg" alt="" />
         <IconButton class="btn-update-avatar">
           <Icon  class="like"  component={Svg} viewBox="0 0 40 40">
               <g id="Icon_-_Edit" data-name="Icon - Edit" transform="translate(13.624 32.383) rotate(-135)">
