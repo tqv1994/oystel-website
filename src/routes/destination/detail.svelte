@@ -25,7 +25,7 @@
     };
 
     function onScrollFixedHeader(){
-        if(document.documentElement.clientWidth > 839) {
+        /*if(document.documentElement.clientWidth > 839) {
             if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
                 document.getElementById("header").classList.add("fixed");
                 document.querySelector('header').style.zIndex = 100;
@@ -42,7 +42,7 @@
             document.querySelector('header').style.zIndex = 'auto';
             document.querySelector('header').style.position = 'static';
             document.querySelector('.header-title').classList.remove('fixed', 'is_sticky');
-        }
+        }*/
     }
 </script>
 <svelte:window on:scroll={()=>{onScrollFixedHeader()}} />
@@ -638,7 +638,7 @@
 
     .products-list :global(.item-product .thumbnail  .btn-favorite) {
         position: absolute;
-        top: 2%;
+        top: 5%;
         right: 2%;
         filter: brightness(0);
     }
@@ -694,7 +694,7 @@
     }
     .experience-item .thumbnail :global(.btn-favorite) {
         position: absolute;
-        top: 2%;
+        top: 5%;
         right: 2%;
     }
     .experience-item .thumbnail :global(.btn-favorite .like) {

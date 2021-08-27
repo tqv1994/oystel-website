@@ -672,7 +672,7 @@
 
     .products-list :global(.item-product .thumbnail  .btn-favorite) {
         position: absolute;
-        top: 2%;
+        top: 5%;
         right: 2%;
         filter: brightness(0);
     }
