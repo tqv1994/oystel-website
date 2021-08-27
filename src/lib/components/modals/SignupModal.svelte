@@ -179,11 +179,11 @@
       <LayoutGrid>
         <Cell spanDevices={{ desktop: 4,tablet: 8, phone: 4 }}>
           <div>
-            <h3 class="text-sub-title mb-50">
+            <h3 class="text-sub-title d-mb-50 m-mb-35">
               Join now for exclusive biweekly travel promotional drops,
               special content, and bespoke travel itineraries.
             </h3>
-            <h1 class="m-mb-0">Never Miss a Drop</h1>
+            <h1 class="m-mb-0 mt-0">Never Miss a Drop</h1>
           </div>
         </Cell>
         <Cell spanDevices={{ desktop: 4,tablet: 8, phone: 4 }}>
