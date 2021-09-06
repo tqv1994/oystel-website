@@ -1,5 +1,5 @@
 export class ApiConfig{
-  apiUrl:string = 'http://localhost:1337/';
+  apiUrl:string = 'https://cms.oysteo.su93rheroes.com';
 
   public getApiRoute(endpoint: string){
     return this.apiUrl+endpoint;

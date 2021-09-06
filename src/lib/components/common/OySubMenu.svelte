@@ -1,15 +1,19 @@
 <div class="light sub-menu {open == true ? 'open' : ''}" on:mousemove={()=>{open=true}} on:mouseleave={()=>{open=false; menuId=""}}>
+    {#if tabs && tabs.length > 0}
     <LayoutGrid class="p-25">
         <Cell spanDevices={{desktop: 5, mobile: 12}}>
-            <img style="width: 100%;" src="{active.image}" alt=""/>
+            {#if active && active.image}
+            <div class="image" style="background-image: url({active.image})"></div>
+            {/if}
         </Cell>
         <Cell spanDevices={{desktop: 7, mobile: 12}}>
-            <TabBar {tabs} let:tab bind:active>
+            <TabBar {tabs} let:tab bind:active={active}>
                 <!-- Note: the `tab` property is required! -->
                 <Tab {tab}>
                     <Label>{tab.category}</Label>
                 </Tab>
             </TabBar>
+            {#if active && active.title}
             <div class="tab-content light">
                 <div class="post-type mb-15">Most Popular</div>
                 <h2 class="mb-40">{active.title}</h2>
@@ -17,8 +21,10 @@
                     <Label>Explore Now</Label>
                 </Button>
             </div>
+            {/if}
         </Cell>
     </LayoutGrid>
+    {/if}
 </div>
 <script lang="ts">
     import IconButton from '@smui/icon-button';
@@ -28,47 +34,13 @@
     import Tab, { Icon, Label } from '@smui/tab';
     import TabBar from '@smui/tab-bar';
     import { onMount, afterUpdate } from 'svelte';
+    import { MenuModel } from '$lib/models/menu';
+    import { ExperienceModel } from '$lib/models/experience';
     export let open = false;
-    export let menuId;
-    let tabs = [
-        {
-            category: 'Beach',
-            title: 'St.Barths, Grand Cul De Sac',
-            link: '#',
-            image: '/img/posts/post1.jpg'
-        },
-        {
-            category: 'City',
-            title: 'St.Barths, Grand Cul De Sac',
-            link: '#',
-            image: '/img/posts/post1.jpg'
-        },
-        {
-            category: 'Mountain',
-            title: 'St.Barths, Grand Cul De Sac',
-            link: '#',
-            image: '/img/posts/post1.jpg'
-        },
-        {
-            category: 'Sea',
-            title: 'St.Barths, Grand Cul De Sac',
-            link: '#',
-            image: '/img/posts/post1.jpg'
-        },
-        {
-            category: 'Wildernes',
-            title: 'St.Barths, Grand Cul De Sac',
-            link: '#',
-            image: '/img/posts/post1.jpg'
-        },
-        {
-            category: 'View All',
-            title: 'St.Barths, Grand Cul De Sac',
-            link: '#',
-            image: '/img/posts/post1.jpg'
-        }
-    ];
-    let active = tabs[3];
+    export let menuId: string;
+    export let tabs: any[];
+    export let active: any;
+    
     afterUpdate(async () => {
         let liMenus = document.querySelectorAll('header #main-menu li');
         if(typeof liMenus !== 'undefined' && liMenus.length > 0){
@@ -83,6 +55,13 @@
                     menuActive.classList.add('active');
                 }
             }
+        }
+        
+    });
+
+    onMount(()=>{
+        if(tabs){
+            active = tabs[0];
         }
     });
 
@@ -108,7 +87,7 @@
         bottom: -15px;
     }
     .sub-menu.open{
-        top: 65px;
+        top: 63px;
         opacity: 1;
         animation: fadeIn 1s ease;
     }
@@ -118,5 +97,13 @@
     .mdc-tab{
         padding-left: 0;
         justify-content: left;
+    }
+    .image{
+        position: relative;
+        width: 100%;
+        padding-bottom: 64.31%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
     }
 </style>

@@ -5,10 +5,12 @@
     import IconButton from '@smui/icon-button';
     import { createEventDispatcher, afterUpdate } from 'svelte';
     import { goto } from '$app/navigation';
+    import { MenuModel } from '$lib/models/menu';
 
     const dispatch = createEventDispatcher();
     export let showSubmenu = false;
     let menuActive;
+    export let itemsMenu;
     let menus = [
         {
             name: 'Travel Advisors',
@@ -90,22 +92,29 @@
     }
 </script>
 <div id="menu-wrap" class="mt-35">
-    {#if (!menuActive)}
+    {#if (!menuActive && itemsMenu)}
         <ul>
-            {#each menus as menu}
-            <li><a href="javascript:void(0)" on:click={()=>{ typeof menu.children != "undefined" ? doOpenSubmenu(menu) : openLink(menu)}}>{menu.name} {#if (typeof menu.children != "undefined")}<i class="material-icons">chevron_right</i>{/if}</a></li>
+            {#each itemsMenu as menu}
+            <li><a href="javascript:void(0)" on:click={()=>{ menu.hasSubMenu ? doOpenSubmenu(menu) : openLink(menu)}}>{menu.title} {#if (menu.hasSubMenu)}<i class="material-icons">chevron_right</i>{/if}</a></li>
             {/each}
         </ul>
     {/if}
     {#if (menuActive)}
         <ul>
             <li><a href="javascript:void(0)" class="back" on:click={()=>{menuActive=undefined}}><i class="material-icons">chevron_left</i> Back</a></li>
-            <li><a>{menuActive.name}</a></li>
+            <li><a>{menuActive.title}</a></li>
             <ul>
-                {#each menuActive.children as menu}
-                    <li><a href="javascript:void(0)" on:click={()=>{openLink(menu)}} >{menu.name}</a></li>
-                {/each}
-                <li><a href="javascript:void(0)" on:click={()=>{openLink(menuActive)}}>All {menuActive.name}</a></li>
+                {#if menuActive.experience_types && menuActive.experience_types.length > 0}
+                    {#each menuActive.experience_types as menu}
+                        <li><a href="javascript:void(0)" on:click={()=>{openLink(menu)}} >{menu.title}</a></li>
+                    {/each}
+                {/if}
+                {#if menuActive.destination_types && menuActive.destination_types.length > 0}
+                    {#each menuActive.destination_types as menu}
+                        <li><a href="javascript:void(0)" on:click={()=>{openLink(menu)}} >{menu.title}</a></li>
+                    {/each}
+                {/if}
+                <li><a href="javascript:void(0)" on:click={()=>{openLink(menuActive)}}>All {menuActive.title}</a></li>
             </ul>
         </ul>
     {/if}

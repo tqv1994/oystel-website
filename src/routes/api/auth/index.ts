@@ -1,10 +1,12 @@
 import { sessionCookieFromResponse } from '$lib/session';
 import type { RequestHandler, Request } from '@sveltejs/kit';
+import { ApiConfig } from '../config';
 
 /**
  * @type {import('@sveltejs/kit').Post}
  */
 export const post: RequestHandler = async (request: Request<Record<string, any>,AuthForm>) => {
+  const apiConfig = new ApiConfig();
   if (!request.body.token) {
     return {
       status: 400,
@@ -15,7 +17,7 @@ export const post: RequestHandler = async (request: Request<Record<string, any>,
   }
 
   try {
-    const res = await fetch('http://localhost:1337/auth/me', {
+    const res = await fetch(apiConfig.getApiRoute('/auth/me'), {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + request.body.token,

@@ -4,6 +4,7 @@ import {
 } from '$lib/session';
 import type { AgencyApplicationForm3 } from '$lib/types';
 import type { RequestHandler, Request } from '@sveltejs/kit';
+import { ApiConfig } from '../config';
 
 /**
  * @type {import('@sveltejs/kit').Post}
@@ -19,11 +20,11 @@ export const post: RequestHandler = async (
       }),
     };
   }
-
+  const apiConfig = new ApiConfig();
   const cookie = sessionCookieFromRequest(request);
   if (cookie) {
     try {
-      const res = await fetch('http://localhost:1337/agencies', {
+      const res = await fetch(apiConfig('/agencies'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

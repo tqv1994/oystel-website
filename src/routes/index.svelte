@@ -10,6 +10,10 @@
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import {onMount} from 'svelte';
   import Layout from '$lib/components/common/Layout.svelte';
+  import {ExperienceModel} from '$lib/models/experience';
+  import { DestinationModel } from '$lib/models/destination';
+import { DropModel } from '$lib/models/drop';
+import { goto } from '$app/navigation';
   let openSignupModal, openSigninModal;
   let userModel = $authStore.user;
   let configPage = {
@@ -19,13 +23,49 @@
       theme: 'dark',
     }
   };
-  function getUserAfterSignup(event) {
+  let itemsCuratedForYou: ExperienceModel[] = [];
+  let itemsFromOurAdvisor: any[] = [];
+  let itemsFeaturedDrop: DropModel[] = [];
+  function getUserAfterSignup(event: any) {
     userModel = event.detail.user;
   }
 
-  onMount(()=>{
-    // document.getElementById('header').classList.remove('dark');
-    // document.getElementById('header').classList.add('light','header-transparent');
+  onMount(async ()=> {
+    const res = await fetch('/api/page', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (res.ok) {
+      const content = await res.json();
+      if(content.itemsCuratedForYou){
+        itemsCuratedForYou = [];
+         content.itemsCuratedForYou.map(item=>{
+           itemsCuratedForYou.push(new ExperienceModel(item));
+        });
+      }
+      if(content.itemsFromOurAdvisor){
+        itemsFromOurAdvisor = [];
+        content.itemsFromOurAdvisor.map(item=>{
+          if(item.type === 'experience'){
+            itemsFromOurAdvisor.push(new ExperienceModel(item));
+          }else if(item.type === 'destination'){
+            itemsFromOurAdvisor.push(new DestinationModel(item));
+          }
+        });
+      }
+      if(content.itemsFeaturedDrop){
+        itemsFeaturedDrop = [];
+        content.itemsFeaturedDrop.map((item: any)=>{
+          itemsFeaturedDrop.push(new DropModel(item));
+        });
+      }
+      // authModel = authStore.user;
+      // doAfterSignup(user);
+      return;
+      // return goto('/me').then(auth.signOut);
+    }
   });
 
   function callOpenSignupModal() {
@@ -130,82 +170,48 @@
     </LayoutGrid>
     <LayoutGrid class="pt-0">
       <Cell spanDevices={{desktop: 4, tablet: 8 , phone:4}} class="m-mb-45">
+        {#if itemsFeaturedDrop.length > 0}
         <div class="item-featured-drop new">
           <div class="thumbnail dark d-mb-70 m-mb-40">
-            <img class="" src="/img/feature-drops/item-1.jpg" alt="" />
-            <div class="caption"><span>6 Packages left</span></div>
+            <img class="" src="{itemsFeaturedDrop[0].featuredPhoto}" alt="" />
+            <div class="caption"><span>{itemsFeaturedDrop[0].products.length} Packages left</span></div>
           </div>
           <div class="m-pr-45 m-pl-45">
             <p class="mt-0 m-mb-15 text-eyebrow">Fashion Drop</p>
             <div class="divider d-pb-30 m-pb-20" />
             <h4 class="text-h2 mt-0 mb-30 ">
-              Louis Vuitton - Photographed by Inez & Vinoodh in Monaco
+              {itemsFeaturedDrop[0].title}
             </h4>
-            <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
+            <Button on:click={()=>{goto(itemsFeaturedDrop[0].link)}} class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
           </div>
         </div>
+        {/if}
       </Cell>
       <Cell spanDevices={{desktop: 8 ,tablet: 8, phone:4}} class="d-mr--30 m-mr-0">
+        {#if itemsFeaturedDrop.length > 1}
         <div class="list-featured-drop">
           <LayoutGrid class="p-0">
-            <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
-              <div class="item-featured-drop">
-                <div class="thumbnail dark d-mb-60 m-mb-40">
-                  <img class="" src="/img/feature-drops/item-2.jpg" alt="" />
-                  <div class="caption text-h5"><span>11 Packages left</span></div>
+            {#each itemsFeaturedDrop as item,i}
+              {#if i > 0}
+              <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
+                <div class="item-featured-drop">
+                  <div class="thumbnail dark d-mb-60 m-mb-40">
+                    <img class="" src="{item.featuredPhoto}" alt="" />
+                    <div class="caption text-h5"><span>{item.products.length} Packages left</span></div>
+                  </div>
+                  <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">Experience Drop</p>
+                  <div class="divider d-pb-30 m-pb-20 " />
+                  <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
+                    {item.title}
+                  </h4>
+                  <Button class="hover-affect" variant="outlined" on:click={()=>{goto(item.link)}}><Label>Plan Your Trip</Label></Button>
                 </div>
-                <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">Experience Drop</p>
-                <div class="divider d-pb-30 m-pb-20 " />
-                <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
-                  Exfoliating and polishing your skin with a finely ground herbs.
-                </h4>
-                <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
-              </div>
-            </Cell>
-            <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
-              <div class="item-featured-drop coming">
-                <div class="thumbnail dark d-mb-60 m-mb-40">
-                  <img class="" src="/img/feature-drops/item-3.jpg" alt="" />
-                  <div class="caption"><span>Coming 07.02.21</span></div>
-                </div>
-                <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">Fashion Drop</p>
-                <div class="divider d-pb-30 m-pb-20" />
-                <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
-                  Exfoliating and polishing your skin with a finely ground herbs.
-                </h4>
-                <Button class="hover-affect" variant="outlined"><Label>Set Reminder</Label></Button>
-              </div>
-            </Cell>
-            <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
-              <div class="item-featured-drop">
-                <div class="thumbnail dark d-mb-60 m-mb-40">
-                  <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
-                  <div class="caption"><span>3 Packages left</span></div>
-                </div>
-                <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">Experience Drop</p>
-                <div class="divider d-pb-30 m-pb-20" />
-                <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
-                  Exfoliating and polishing your skin with a finely ground herbs.
-                </h4>
-                <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
-              </div>
-            </Cell>
-            <Cell spanDevices={{desktop: 4, tablet:4, phone: 4}}>
-              <div class="item-featured-drop">
-                <div class="thumbnail dark d-mb-60 m-mb-40">
-                  <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
-                  <div class="caption"><span>3 Packages left</span></div>
-                </div>
-                <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">Experience Drop</p>
-                <div class="divider d-pb-30 m-pb-20" />
-                <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
-                  Exfoliating and polishing your skin with a finely ground herbs.
-                </h4>
-                <Button class="hover-affect" variant="outlined"><Label>Plan Your Trip</Label></Button>
-              </div>
-            </Cell>
+              </Cell>
+              {/if}
+            {/each}
           </LayoutGrid>
         </div>
+        {/if}
       </Cell>
     </LayoutGrid>
   </section>
@@ -243,10 +249,11 @@
   <section class="has-padding m-pt-48" id="experience-section">
     <LayoutGrid>
       <Cell spanDevices={{desktop: 5, tablet: 8, phone: 4}}>
+        {#if itemsCuratedForYou.length > 0}
         <div class="item-experience featured text-center">
-          <a href="#">
+          <a href="{itemsCuratedForYou[0].link}">
             <div class="thumbnail">
-              <img src="/img/experiences/experience-1.jpg" />
+              <img src="{itemsCuratedForYou[0].featuredPhoto}" />
               <IconButton class="btn-favorite">
                 <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
                     <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
@@ -262,142 +269,42 @@
             <div class="divider d-pb-25 m-pb-15" ></div>
           </div>
           <p class="mt-0 text-eyebrow">Featured Experience</p>
-          <a href="#">
-            <h4 class="text-h2 mt-20">Archaval Ferrer Winery Tour</h4>
+          <a href="{itemsCuratedForYou[0].link}">
+            <h4 class="text-h2 mt-20">{itemsCuratedForYou[0].title}</h4>
           </a>
         </div>
+        {/if}
       </Cell>
       <Cell spanDevices={{desktop: 7, tablet: 8, phone: 4}}>
         <LayoutGrid class="list-experiences m-p-0">
-          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
-            <div class="item-experience">
-              <div class="thumbnail">
-                <img src="/img/experiences/experience-2.jpg" />
-                <IconButton class="btn-favorite">
-                  <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                    <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                  </Icon>
-                  <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                    <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                  </Icon>
-                </IconButton>
-              </div>
-              <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
-              <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-25" />
-              <h4 class="text-h2 title mt-0">
-                Exfoliating and polishing your skin with a finely ground herbs.
-              </h4>
-            </div>
-          </Cell>
-          <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
-            <div class="item-experience">
-              <a href="#">
-                <div class="thumbnail">
-                  <img src="/img/experiences/experience-3.jpg" />
-                  <IconButton class="btn-favorite">
-                    <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                      <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                    </Icon>
-                    <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                      <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                    </Icon>
-                  </IconButton>
+          {#if itemsCuratedForYou.length > 1}
+            {#each itemsCuratedForYou as item, index}
+              {#if index > 0}
+              <Cell spanDevices={{ desktop: 6, phone: 2 }}>
+                <a href="{item.link}">
+                <div class="item-experience">
+                  <div class="thumbnail">
+                    <img src="{item.featuredPhoto}" />
+                    <IconButton class="btn-favorite">
+                      <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                        <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                      </Icon>
+                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                        <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                      </Icon>
+                    </IconButton>
+                  </div>
+                  <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
+                  <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-25" />
+                  <h4 class="text-h2 title mt-0">
+                    {item.title}
+                  </h4>
                 </div>
-                <p class="text-eyebrow d-mt-25 mb-0 m-mt-20">Experience</p>
-                <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-20" />
-                <h4 class="text-h2 title mt-0">
-                  A one-of-a-kind journey of self-exploration.
-                </h4>
-              </a>
-            </div>
-          </Cell>
-          <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
-            <div class="item-experience">
-              <a href="#">
-                <div class="thumbnail">
-                  <img src="/img/experiences/experience-4.jpg" />
-                  <IconButton class="btn-favorite">
-                    <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                      <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                    </Icon>
-                    <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                      <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                    </Icon>
-                  </IconButton>
-                </div>
-                <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
-                <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-20" />
-                <h4 class="text-h2 title mt-0">
-                  A one-of-a-kind journey of self-exploration.
-                </h4>
-              </a>
-            </div>
-          </Cell>
-          <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
-            <div class="item-experience">
-              <a href="#">
-                <div class="thumbnail">
-                  <img src="/img/experiences/experience-5.jpg" />
-                  <IconButton class="btn-favorite">
-                    <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                      <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                    </Icon>
-                    <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                      <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                    </Icon>
-                  </IconButton>
-                </div>
-                <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Destination</p>
-                <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-20" />
-                <h4 class="text-h2 title mt-0">A Dream Cotswolds Getaway</h4>
-              </a>
-            </div>
-          </Cell>
-          <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
-            <div class="item-experience">
-              <a href="#">
-                <div class="thumbnail">
-                  <img src="/img/experiences/experience-6.jpg" />
-                  <IconButton class="btn-favorite">
-                    <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                      <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                    </Icon>
-                    <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                      <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                    </Icon>
-                  </IconButton>
-                </div>
-                <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
-                <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-20" />
-                <h4 class="text-h2 title mt-0">
-                  Exfoliating and polishing your skin with a finely ground
-                  herbs.
-                </h4>
-              </a>
-            </div>
-          </Cell>
-          <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
-            <div class="item-experience">
-              <a href="#">
-                <div class="thumbnail">
-                  <img src="/img/experiences/experience-7.jpg" />
-                  <IconButton class="btn-favorite">
-                    <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                      <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                    </Icon>
-                    <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                      <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                    </Icon>
-                  </IconButton>
-                </div>
-                <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
-                <div class="divider d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
-                <h4 class="text-h2 title mt-0">
-                  A one-of-a-kind journey of self-exploration.
-                </h4>
-              </a>
-            </div>
-          </Cell>
+                </a>
+              </Cell>
+              {/if}
+            {/each}
+          {/if}
         </LayoutGrid>
       </Cell>
     </LayoutGrid>
@@ -410,95 +317,32 @@
     </LayoutGrid>
 
       <LayoutGrid class="pt-0 pb-0">
-        <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-          <div class="item-experience">
-            <a href="#">
-              <div class="thumbnail">
-                <img src="/img/from-advisors/item-1.jpg" />
-                <IconButton class="btn-favorite">
-                  <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                    <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                  </Icon>
-                  <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                    <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                  </Icon>
-                </IconButton>
+        {#if itemsFromOurAdvisor.length > 0}
+          {#each itemsFromOurAdvisor as item,index}
+            <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
+              <div class="item-experience">
+                <a href="{item.link}">
+                  <div class="thumbnail">
+                    <img src="{item.featuredPhoto}" />
+                    <IconButton class="btn-favorite">
+                      <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
+                        <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
+                      </Icon>
+                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
+                        <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
+                      </Icon>
+                    </IconButton>
+                  </div>
+                  <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">{item.type == 'experience' ? 'Experience' : 'Destination'}</p>
+                  <div class="divider d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
+                  <h4 class="text-h2 mt-0 title">
+                    {item.type == 'destination' ? item.name : item.title}
+                  </h4>
+                </a>
               </div>
-              <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
-              <div class="divider d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
-              <h4 class="text-h2 mt-0 title">
-                Australian Masterchef Restaurant Tour - Starting in Sydney.
-              </h4>
-            </a>
-          </div>
-        </Cell>
-        <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-          <div class="item-experience">
-            <a href="#">
-              <div class="thumbnail">
-                <img src="/img/from-advisors/item-2.jpg" />
-                <IconButton class="btn-favorite">
-                  <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                    <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                  </Icon>
-                  <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                    <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                  </Icon>
-                </IconButton>
-              </div>
-              <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Destination</p>
-              <div class="divider  d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
-              <h4 class="text-h2 mt-0 title">
-                Archaval Ferrer Winery Tour - Drink directly from the cellar
-                barrel.
-              </h4>
-            </a>
-          </div>
-        </Cell>
-        <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-          <div class="item-experience">
-            <a href="#">
-              <div class="thumbnail">
-                <img src="/img/from-advisors/item-3.jpg" />
-                <IconButton class="btn-favorite">
-                  <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                    <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                  </Icon>
-                  <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                    <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                  </Icon>
-                </IconButton>
-              </div>
-              <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
-              <div class="divider  d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
-              <h4 class="text-h2 mt-0 title">
-                Australian Masterchef Restaurant Tour - Starting in Sydney.
-              </h4>
-            </a>
-          </div>
-        </Cell>
-        <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-          <div class="item-experience">
-            <a href="#">
-              <div class="thumbnail">
-                <img src="/img/from-advisors/item-4.jpg" />
-                <IconButton class="btn-favorite">
-                  <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
-                    <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
-                  </Icon>
-                  <Icon class="liked" component={Svg} viewBox="-4 -4 24 24" >
-                    <path  d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0" transform="translate(0)" fill="#fff" fill-rule="evenodd"/>
-                  </Icon>
-                </IconButton>
-              </div>
-              <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">Experience</p>
-              <div class="divider d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
-              <h4 class="text-h2 mt-0 title">
-                A one-of-a-kind journey of self-exploration.
-              </h4>
-            </a>
-          </div>
-        </Cell>
+            </Cell>
+          {/each}
+        {/if}
       </LayoutGrid>
   </section>
 </div>

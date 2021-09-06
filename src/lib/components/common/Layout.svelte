@@ -9,7 +9,7 @@
     import { goto } from '$app/navigation';
     import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
     import IconButton, { Icon } from '@smui/icon-button';
-    import { mdiHeart, mdiMagnify } from '@mdi/js';
+    import { mdiEarHearing, mdiHeart, mdiMagnify } from '@mdi/js';
     import Button, { Label } from '@smui/button';
     import Tooltip, { Wrapper } from '@smui/tooltip';
     import Textfield from '@smui/textfield';
@@ -23,11 +23,14 @@
     import SigninModal from '$lib/components/modals/SigninModal.svelte';
     import BottomAppBar from '$lib/components/common/BottomAppBar/index.svelte';
     import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
+    import {MenuModel} from '$lib/models/menu';
+import { ExperienceModel } from '$lib/models/experience';
+import { DestinationModel } from '$lib/models/destination';
 
     let miniWindow = false;
     let searchResult = '';
     let openSubMenu = false;
-    let menuItemActive;
+    let menuItemActive: string;
     let emailSubscribe = '';
     let page = '';
     let userModel = $authStore.user;
@@ -35,6 +38,8 @@
     let openSigninModal = false;
     let openSearchResult = false;
     let contentHeaderAction = '';
+    let itemsMenu: MenuModel[];
+    let tabsSubMenu: any[];
     export let config = {
       header: {
           page: "",
@@ -108,7 +113,37 @@
             .insertAdjacentElement('afterend', siteLink);
     }
 
-    onMount(onResize);
+    onMount(async ()=>{
+        onResize();
+        let itemsMenuStorage = localStorage.getItem('itemsMenu');
+        if(itemsMenuStorage == null){
+            const res = await fetch('/api/menu', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (res.ok) {
+                const content = await res.json();
+                if(Array.isArray(content)){
+                    itemsMenu = [];
+                    content.map(item=>{
+                        itemsMenu.push(new MenuModel(item));
+                    });
+                    localStorage.setItem('itemsMenu',JSON.stringify(itemsMenu));
+                }
+                return;
+            }
+        }else{
+            itemsMenuStorage = JSON.parse(itemsMenuStorage);
+            if(Array.isArray(itemsMenuStorage)){
+                itemsMenu = [];
+                itemsMenuStorage.map(item=>{
+                    itemsMenu.push(new MenuModel(item));
+                });
+            }
+        }
+    });
     afterUpdate(setMiniWindow);
 </script>
 <svelte:window on:resize={onResize}/>
@@ -136,12 +171,50 @@
                     </Section>
                     <Section class="m-none pt-0 pb-0" toolbar align="center" style="z-index: 2">
                         <ul id="main-menu" class="m-0">
-                            <li class="{config.header.currentMenu == 'travel-advisors' ? 'active-static' : ''}"
-                                    id="menu-item-1"
-                            >
-                                <a href="/advisor">Travel Advisors</a>
-                            </li>
-                            <li
+                            {#if typeof itemsMenu != 'undefined' && itemsMenu.length > 0}
+                                {#each itemsMenu as item,i }
+                                    <li class="{config.header.currentMenu == item.slug ? 'active-static' : ''}"
+                                        id="menu-item-{item.id}"
+                                        on:mousemove={() => {
+                                            if(item.hasSubMenu){
+                                                openSubMenu = true;
+                                                menuItemActive = 'menu-item-'+item.id;
+                                                if(item  && item.experience_types.length > 0){
+                                                    tabsSubMenu = [];
+                                                    item.experience_types.map(itemType=>{
+                                                        let experience = new ExperienceModel(itemType.experiences[0]);
+                                                        tabsSubMenu.push({
+                                                            category: itemType.title,
+                                                            title: experience.title,
+                                                            link: experience.link,
+                                                            image: experience.featuredPhoto
+                                                        });
+                                                    });
+                                                }else if(item  && item.destination_types.length > 0){
+                                                    tabsSubMenu = [];
+                                                    item.destination_types.map(itemType=>{
+                                                        let destination = new DestinationModel(itemType.destinations[0]);
+                                                        tabsSubMenu.push({
+                                                            category: itemType.title,
+                                                            title: destination.name,
+                                                            link: destination.link,
+                                                            image: destination.featuredPhoto
+                                                        });
+                                                    });
+                                                }
+                                            }
+                                        }}
+                                        on:mouseleave={() => {
+                                            if(item.hasSubMenu){
+                                                openSubMenu = false;
+                                            }
+                                        }}
+                                    >
+                                        <a href="{item.link}">{item.title}</a>
+                                    </li>
+                                {/each}
+                            {/if}
+                            <!-- <li
                                     class="{config.header.currentMenu == 'destinations' ? 'active-static' : ''}"
                                     id="menu-item-2"
                                     on:mousemove={() => {
@@ -169,9 +242,11 @@
                             </li>
                             <li id="menu-item-4" class="{config.header.currentMenu == 'shop' ? 'active-static' : ''}">
                                 <a href="/shop">Shop</a>
-                            </li>
+                            </li> -->
                         </ul>
-                        <OySubMenu bind:open={openSubMenu} bind:menuId={menuItemActive} />
+                        {#if tabsSubMenu}
+                        <OySubMenu bind:open={openSubMenu} bind:menuId={menuItemActive} tabs={tabsSubMenu} active={tabsSubMenu[0]} />
+                        {/if}
                     </Section>
                     <Section class="d-none m-block pr-0" align="end" toolbar>
                         <Wrapper>
@@ -397,7 +472,7 @@
         on:close={callOpenSignupModal}
 />
 <BottomAppBar on:openHeaderActionMobile={(event)=>{contentHeaderAction = event.detail.content}}>no content</BottomAppBar>
-<HeaderActionMobile bind:content={contentHeaderAction} ></HeaderActionMobile>
+<HeaderActionMobile itemsMenu={itemsMenu} bind:content={contentHeaderAction} ></HeaderActionMobile>
 <style>
     .wrap-menu-mobile{
         display: flex;
