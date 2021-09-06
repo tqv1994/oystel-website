@@ -1,3 +1,4 @@
+<script lang="ts">
 import { sessionCookieFromResponse } from '$lib/session';
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import {ExperienceModel} from '$lib/models/experience';
@@ -30,3 +31,4 @@ export const get: RequestHandler = async (request: Request<Record<string, any>,A
         console.error('Error server', error);
     }
 };
+</script>
