@@ -14,7 +14,6 @@
   import { DestinationModel } from '$lib/models/destination';
   import { DropModel } from '$lib/models/drop';
   import { goto } from '$app/navigation';
-  import { BlurhashImage } from 'svelte-blurhash';
   let openSignupModal, openSigninModal;
   let userModel = $authStore.user;
   let configPage = {
