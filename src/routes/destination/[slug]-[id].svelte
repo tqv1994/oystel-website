@@ -428,7 +428,7 @@ import { DestinationModel } from '$lib/models/destination';
   </Layout>
   <ProductSliderModal bind:open={openProductSlide} products={products} bind:active={productIndex}>no content</ProductSliderModal>
   
-  <style lang="scss">
+  <style>
     :global(.show-on-sticky) {
       display: none;
     }
