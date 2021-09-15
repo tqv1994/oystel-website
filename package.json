@@ -14,11 +14,11 @@
     "format": "prettier --write --plugin-search-dir=. ."
   },
   "devDependencies": {
-    "@firebase/app-types": "^0.7.0",
+    "@firebase/app-types": "^0.6.2",
     "@rollup/pluginutils": "^4.1.1",
     "@sveltejs/adapter-vercel": "^1.0.0-next.28",
     "@sveltejs/app-utils": "next",
-    "@sveltejs/kit": "^1.0.0-next.164",
+    "@sveltejs/kit": "^1.0.0-next.138",
     "@types/cookie": "^0.4.1",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
@@ -40,6 +40,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@mdi/js": "^5.9.55",
     "@smui/button": "^4.2.0",
     "@smui/checkbox": "^4.2.0",
     "@smui/data-table": "^4.2.0",
