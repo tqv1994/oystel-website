@@ -307,7 +307,7 @@ button.mdc-button{
   padding-right: 2px;
 }
 
-*, .thumbnail{
+.thumbnail{
   .image-cover{
     position: relative;
     height: auto;
@@ -315,11 +315,11 @@ button.mdc-button{
     padding-top: 100%;
     background-size: cover;
     img{
-      -webkit-transition: opacity .6s,-webkit-filter .6s,-webkit-transform .6s,-webkit-box-shadow .3s;
-      transition: opacity .6s,-webkit-filter .6s,-webkit-transform .6s,-webkit-box-shadow .3s;
-      -o-transition: filter .6s,opacity .6s,transform .6s,box-shadow .3s;
-      transition: filter .6s,opacity .6s,transform .6s,box-shadow .3s;
-      transition: filter .6s,opacity .6s,transform .6s,box-shadow .3s,-webkit-filter .6s,-webkit-transform .6s,-webkit-box-shadow .3s;
+      // -webkit-transition: opacity .6s,-webkit-filter .6s,-webkit-transform .6s,-webkit-box-shadow .3s;
+      // transition: opacity .6s,-webkit-filter .6s,-webkit-transform .6s,-webkit-box-shadow .3s;
+      // -o-transition: filter .6s,opacity .6s,transform .6s,box-shadow .3s;
+      // transition: filter .6s,opacity .6s,transform .6s,box-shadow .3s;
+      // transition: filter .6s,opacity .6s,transform .6s,box-shadow .3s,-webkit-filter .6s,-webkit-transform .6s,-webkit-box-shadow .3s;
       right: 0;
       left: 0;
       width: 100%;
