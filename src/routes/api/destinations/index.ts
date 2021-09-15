@@ -1,16 +1,16 @@
 import { sessionCookieFromResponse } from '$lib/session';
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import {ExperienceModel} from '$lib/models/experience';
+import { StringHelper } from '$lib/helpers';
 import { ApiConfig } from '../config';
 import { apiPrefix } from '$lib/env';
 /**
  * @type {import('@sveltejs/kit').Post}
  */
 export const get: RequestHandler = async (request: Request<Record<string, any>,AuthForm>) => {
-    const apiConfig = new ApiConfig();
+    console.log(request.query);
     try {
-      console.log(apiPrefix)
-        const res = await fetch(`${apiPrefix}/page/home`, {
+        const res = await fetch(`${apiPrefix}/destinations?${request.query}`, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -29,6 +29,6 @@ export const get: RequestHandler = async (request: Request<Record<string, any>,A
             headers,
         };
     } catch (error) {
-        console.error('Error signing in', error);
+        console.error('Error service', error);
     }
 };

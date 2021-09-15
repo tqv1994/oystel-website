@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Dialog, { Header, Title, Content, Actions } from '@smui/dialog';
     import IconButton from '@smui/icon-button';
     import Button, { Label, Icon } from '@smui/button';
@@ -9,10 +9,15 @@
     import { goto } from '$app/navigation';
     import Svg from '@smui/common/Svg.svelte';
     import OyCarousel from '../common/OyCarousel.svelte';
+    import { ProductModel } from '$lib/models/product';
+import { each } from 'svelte/internal';
 
     export let open = false;
+    export let products: ProductModel[];
+    export let active: number ;
 </script>
 <div class="content-wrap popup-products {open ? 'open' : 'close'}">
+    {#if products && products.length > 0  && open}
     <section class="full-width pt-50 pb-70">
         <div class="content-wrap">
             <div class="container">
@@ -25,50 +30,36 @@
                         </g>
                     </Icon>
                 </IconButton>
-                <OyCarousel perPage={{ 800: 1 }} draggable={false}>
+                <OyCarousel perPage={{ 800: 1 }} draggable={false} bind:startIndex={active}>
               <span class="control" slot="left-control">
                   <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon> Previous
               </span>
-                    <div class="slide-content slide-item">
-                        <LayoutGrid class="p-0">
-                            <Cell spanDevices={{desktop: 1}} class="m-none"></Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 8, phone: 4}}>
-                                <div class="thumbnail">
-                                    <img src="/img/slides/product-slide-1.jpg" alt=""/>
-                                </div>
-                            </Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 8, phone: 4}}>
-                                <div class="d-mt-90">
-                                    <p class="text-eyebrow ">Matteau</p>
-                                    <div class="divider mt-25 pb-25"></div>
-                                    <h2 class="mb-25">Square-Neck One-Piece Swimsuit</h2>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac volutpat neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac volutpat neque.</p>
-                                    <h3 class="mb-35 mt-20">$425</h3>
-                                    <Button variant="outlined"><Label>Purchase Item</Label></Button>
-                                </div>
-                            </Cell>
-                        </LayoutGrid>
-                    </div>
-                    <div class="slide-content slide-item">
-                        <LayoutGrid class="p-0">
-                            <Cell spanDevices={{desktop: 1}} class="m-none"></Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 8, phone: 4}}>
-                                <div class="thumbnail">
-                                    <img src="/img/slides/product-slide-2.jpg" alt=""/>
-                                </div>
-                            </Cell>
-                            <Cell spanDevices={{desktop: 4, tablet: 8, phone: 4}}>
-                                <div class="mt-90">
-                                    <p class="text-eyebrow ">Matteau</p>
-                                    <div class="divider mt-25 pb-25"></div>
-                                    <h2 class="mb-25">Square-Neck One-Piece Swimsuit</h2>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac volutpat neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac volutpat neque.</p>
-                                    <h3 class="mb-35 mt-20">$425</h3>
-                                    <Button variant="outlined"><Label>Purchase Item</Label></Button>
-                                </div>
-                            </Cell>
-                        </LayoutGrid>
-                    </div>
+                    
+                        {#each products as item}
+                        <div class="slide-content slide-item">
+                            <LayoutGrid class="p-0">
+                                <Cell spanDevices={{desktop: 1}} class="m-none"></Cell>
+                                <Cell spanDevices={{desktop: 4, tablet: 8, phone: 4}}>
+                                    <div class="thumbnail">
+                                        <div class="image-cover" style="padding-top: calc(615 / 383 * 100%)">
+                                            <img src="{item.featuredPhoto}" alt=""/>
+                                        </div>
+                                    </div>
+                                </Cell>
+                                <Cell spanDevices={{desktop: 4, tablet: 8, phone: 4}}>
+                                    <div class="d-mt-90">
+                                        <p class="text-eyebrow ">{item.brand}</p>
+                                        <div class="divider mt-25 pb-25"></div>
+                                        <h2 class="mb-25">{item.title}</h2>
+                                        <p>{item.intro}</p>
+                                        <h3 class="mb-35 mt-20">${item.price}</h3>
+                                        <Button variant="outlined"><Label>Purchase Item</Label></Button>
+                                    </div>
+                                </Cell>
+                            </LayoutGrid>
+                        </div>
+                        {/each}
+                    
                     <span class="control" slot="right-control">
                     Next <Icon><img src="/img/icons/icon-right-arrow.svg" /></Icon>
                   </span>
@@ -76,7 +67,9 @@
             </div>
         </div>
     </section>
+    {/if}
 </div>
+
 <style>
     section{
         --mdc-layout-grid-gutter-desktop: 100px;

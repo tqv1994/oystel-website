@@ -1,3 +1,4 @@
+import { apiPrefix } from '$lib/env';
 import {
   sessionCookieFromRequest,
   sessionCookieFromResponse,
@@ -24,7 +25,7 @@ export const post: RequestHandler = async (
   const cookie = sessionCookieFromRequest(request);
   if (cookie) {
     try {
-      const res = await fetch(apiConfig('/agencies'), {
+      const res = await fetch(`${apiPrefix}/agencies`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
