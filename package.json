@@ -34,14 +34,15 @@
     "svelte-check": "^2.2.3",
     "svelte-preprocess": "^4.7.4",
     "tslib": "^2.3.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "@smui/dialog": "^4.2.0",
+    "@smui/select": "^4.2.0"
   },
   "type": "module",
   "dependencies": {
     "@smui/button": "^4.2.0",
     "@smui/checkbox": "^4.2.0",
     "@smui/data-table": "^4.2.0",
-    "@smui/dialog": "^4.2.0",
     "@smui/drawer": "^4.2.0",
     "@smui/form-field": "^4.2.0",
     "@smui/icon-button": "^4.2.0",
@@ -49,7 +50,6 @@
     "@smui/list": "^4.2.0",
     "@smui/radio": "^4.2.0",
     "@smui/ripple": "^4.2.0",
-    "@smui/select": "^4.2.0",
     "@smui/tab": "^4.2.0",
     "@smui/tab-bar": "^4.2.0",
     "@smui/textfield": "^4.2.0",
