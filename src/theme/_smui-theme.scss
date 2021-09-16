@@ -17,7 +17,7 @@
 @use "@material/floating-label/mdc-floating-label";
 @use "@material/line-ripple/mdc-line-ripple";
 @use "@material/notched-outline/mdc-notched-outline";
-// @use "@material/checkbox";
+@use "@material/checkbox";
 @use "@material/select";
 
 @use './variables';
@@ -298,9 +298,9 @@ button.mdc-button{
 }
 
 /* Checkbox */
-.mdc-checkbox{
- @include checkbox.ripple-size(0);
-}
+// .mdc-checkbox{
+//  @include checkbox.ripple-size(0);
+// }
 
 /* Text Label Of Fieldtext */
 .mdc-floating-label{
