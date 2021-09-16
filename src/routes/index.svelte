@@ -39,29 +39,31 @@
       },
     });
     if (res.ok) {
-      const content = await res.json();
-      if (content.itemsCuratedForYou) {
-        itemsCuratedForYou = [];
-        content.itemsCuratedForYou.map((item: any) => {
-          itemsCuratedForYou.push(new ExperienceModel(item));
-        });
-      }
-      if (content.itemsFromOurAdvisor) {
-        itemsFromOurAdvisor = [];
-        content.itemsFromOurAdvisor.map((item: any) => {
-          if (item.type === 'experience') {
-            itemsFromOurAdvisor.push(new ExperienceModel(item));
-          } else if (item.type === 'destination') {
-            itemsFromOurAdvisor.push(new DestinationModel(item));
-          }
-        });
-      }
-      if (content.itemsFeaturedDrop) {
-        itemsFeaturedDrop = [];
-        content.itemsFeaturedDrop.map((item: any) => {
-          itemsFeaturedDrop.push(new DropModel(item));
-        });
-      }
+      const content = await res.json().then(item=>{
+        if (item.itemsCuratedForYou) {
+          itemsCuratedForYou = [];
+          item.itemsCuratedForYou.map((item: any) => {
+            itemsCuratedForYou.push(new ExperienceModel(item));
+          });
+        }
+        if (item.itemsFromOurAdvisor) {
+          itemsFromOurAdvisor = [];
+          item.itemsFromOurAdvisor.map((item: any) => {
+            if (item.type === 'experience') {
+              itemsFromOurAdvisor.push(new ExperienceModel(item));
+            } else if (item.type === 'destination') {
+              itemsFromOurAdvisor.push(new DestinationModel(item));
+            }
+          });
+        }
+        if (item.itemsFeaturedDrop) {
+          itemsFeaturedDrop = [];
+          item.itemsFeaturedDrop.map((item: any) => {
+            itemsFeaturedDrop.push(new DropModel(item));
+          });
+        }
+      });
+      
       // authModel = authStore.user;
       // doAfterSignup(user);
       return;
