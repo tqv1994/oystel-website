@@ -13,7 +13,7 @@ const config = {
       //     pages: 'build',
       //     assets: 'build',
       //     fallback: null
-      // }),
+      // })1,
       adapter: adapter(),
     target: '#svelte',
 
