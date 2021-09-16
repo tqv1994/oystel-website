@@ -1,4 +1,4 @@
 [build]
-  command = "yarn fix && yarn theme && yarn build"
+  command = "npm run fix && npm run theme && npm run build"
   publish = "build/"
   functions = "functions/"
