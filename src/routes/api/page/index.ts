@@ -13,6 +13,8 @@ export const get: RequestHandler = async (request: Request<Record<string, any>,A
         const res = await fetch(`${apiPrefix}/page/home`, {
             headers: {
                 'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*', 
+                'Access-Control-Allow-Credentials': 'true'
             },
         });
         const headers = sessionCookieFromResponse(res);
