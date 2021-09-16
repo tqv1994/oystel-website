@@ -298,7 +298,9 @@ import { CountryModel } from '$lib/models/country';
                   <a href={item.link}>
                     <div class="experience-item">
                       <div class="thumbnail">
-                        <img src={item.featuredPhoto} alt="" />
+                        <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
+                          <img src={item.featuredPhoto} alt="" />
+                        </div>
                         <IconButton class="btn-favorite">
                           <Icon
                             class="like"

@@ -14,7 +14,6 @@
   import { DestinationTypeModel } from '$lib/models/destination_type';
   import { DestinationModel } from '$lib/models/destination';
   import { ExperienceModel } from '$lib/models/experience';
-  import { mdiExponentBox } from '@mdi/js';
   import { CountryModel } from '$lib/models/country';
   let stringHelper = new StringHelper();
   let searchModel = {
@@ -38,7 +37,6 @@
   let countries: CountryModel[];
 
   onMount(async () => {
-    setSizeForDivReadmore();
     const res = await fetch('/api/page/experience', {
       method: 'GET',
       headers: {
@@ -79,27 +77,6 @@
     }
   });
 
-  function setSizeForDivReadmore() {
-    setTimeout(() => {
-      let experienceReadmore =
-        document.getElementsByClassName('item-read-more');
-      for (let i = 0; i < experienceReadmore.length; i++) {
-        let itemReadmore = experienceReadmore[i];
-        let parent = itemReadmore.parentElement.parentElement.parentElement;
-        let item = parent.querySelector('.experience-item');
-        if (typeof item != 'undefined') {
-          let thumb = item.querySelector('.thumbnail');
-          if (typeof thumb != 'undefined') {
-            let width = thumb.clientWidth;
-            let height = thumb.clientHeight;
-            itemReadmore.style.width = width + 'px';
-            itemReadmore.style.height = height + 'px';
-          }
-        }
-      }
-    }, 1000);
-  }
-
   function onSearchSubmit() {
     let queryString = stringHelper.objectToQueryString(searchModel);
     goto('/experiences-listing/search?' + queryString);
@@ -129,11 +106,9 @@
 
 <svelte:window
   on:load={() => {
-    setSizeForDivReadmore();
     onScrollFixedHeader();
   }}
   on:resize={() => {
-    setSizeForDivReadmore;
   }}
   on:scroll={() => {
     onScrollFixedHeader();
@@ -274,7 +249,9 @@
                       <a href={item.link}>
                         <div class="experience-item">
                           <div class="thumbnail">
-                            <img src={item.featuredPhoto} alt="" />
+                            <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
+                              <img src={item.featuredPhoto} alt="" />
+                            </div>
                             <IconButton class="btn-favorite">
                               <Icon
                                 class="like"
@@ -323,7 +300,7 @@
                   {/each}
                   <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                     <a href={type.link}>
-                      <div class="experience-read-more item-read-more">
+                      <div class="experience-read-more item-read-more" style="padding-top: calc(410 / 315 * 100%)">
                         <p class="text-h3 label">
                           See more <i class="material-icons">chevron_right</i>
                         </p>

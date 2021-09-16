@@ -1,6 +1,7 @@
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import { sessionCookieFromRequest, sessionCookieFromResponse } from '$lib/session';
 import { ApiConfig } from '../config';
+import { apiPrefix } from '$lib/env';
 
 /**
  * @type {import('@sveltejs/kit').Get}
@@ -19,7 +20,7 @@ export const post: RequestHandler = async (request: Request<Record<string, any>,
     const cookie = sessionCookieFromRequest(request);
     if (cookie) {
       // console.log('we have session cookie...');
-      const res = await fetch(apiConfig.getApiRoute('/auth/me'), {
+      const res = await fetch(`${apiPrefix}/auth/me`, {
         method: 'DELETE',
         headers: {
           Cookie: cookie,

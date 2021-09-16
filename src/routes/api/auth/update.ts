@@ -1,3 +1,4 @@
+import { apiPrefix } from '$lib/env';
 import { sessionCookieFromResponse } from '$lib/session';
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import { ApiConfig } from '../config';
@@ -17,7 +18,7 @@ export const put: RequestHandler = async (request: Request<Record<string, any>,A
     }
 
     try {
-        const res = await fetch(apiConfig.getApiRoute('/users/'+request.body.data.id), {
+        const res = await fetch(`${apiPrefix}'/users/'${request.body.data.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

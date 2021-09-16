@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import {onMount, afterUpdate, beforeUpdate} from 'svelte';
     import LayoutGrid, {Cell} from '@smui/layout-grid';
     import {goto} from '$app/navigation';
@@ -11,6 +11,8 @@
     import Svg from '@smui/common/Svg.svelte';
     import {StringHelper} from '$lib/helpers';
     import Layout from '$lib/components/common/Layout.svelte';
+    import { CountryModel } from '$lib/models/country';
+    import { AdvisorModel, AdvisorSpecialty } from '$lib/models/advisor';
     let stringHelper = new StringHelper();
     let searchModel = {
         name: '',
@@ -26,10 +28,14 @@
             currentMenu: 'travel-advisors'
         }
     };
+    let advisors: AdvisorModel[];
+    let specialties: AdvisorSpecialty[];
+    let countries: CountryModel[];
 
     function onSearchSubmit(){
         let queryString = stringHelper.objectToQueryString(searchModel);
         goto('/advisor?'+queryString);
+        onSearch();
     }
 
     function onScrollFixedHeader(){
@@ -46,6 +52,72 @@
                 document.querySelector('.header-title').classList.remove('fixed', 'is_sticky');
             }
         }*/
+    }
+
+    onMount(async () => {
+        const res = await fetch('/api/page/advisor', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (res.ok) {
+        const content = await res.json();
+        if (content.advisors) {
+            advisors = [];
+            content.advisors.map((item: any) => {
+                advisors.push(new AdvisorModel(item));
+            });
+        }
+        if (content.advisor_specialties) {
+            specialties = [];
+            content.advisor_specialties.map((item: any) => {
+                specialties.push(new AdvisorSpecialty(item));
+            });
+        }
+        if (content.countries) {
+            countries = [];
+            content.countries.map((item: any) => {
+            countries.push(new CountryModel(item));
+            });
+        }
+        // authModel = authStore.user;
+        // doAfterSignup(user);
+        return;
+        // return goto('/me').then(auth.signOut);
+        }
+    });
+
+    async function onSearch() {
+        let searchParams: any = {};
+        if (searchModel.name && searchModel.name != '') {
+            searchParams['userMe.displayName_contains'] = searchModel.name;
+        }
+        if (searchModel.specialty && searchModel.specialty != '') {
+            searchParams['specialties.title_in'] = searchModel.specialty;
+        }
+        if (searchModel.location && searchModel.location != '') {
+        searchParams['location.name_eq'] = searchModel.location;
+        }
+        const res = await fetch(
+            '/api/advisors?' + stringHelper.objectToQueryString(searchParams),
+            {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+            },
+        );
+        if (res.ok) {
+        const content = await res.json();
+        if (Array.isArray(content)) {
+            advisors = [];
+            content.map((item) => {
+                advisors.push(new AdvisorModel(item));
+            });
+        }
+        return;
+        }
     }
 </script>
 <svelte:window on:load={()=>{onScrollFixedHeader();}} on:scroll={()=>{onScrollFixedHeader()}}/>
@@ -68,7 +140,7 @@
                     <LayoutGrid class="p-0">
                         <Cell spanDevices={{desktop: 4}}>
                             <div class="form-control">
-                                <Textfield variant="outlined" bind:value={searchModel.name} label="Search by name" withTrailingIcon={false}>
+                                <Textfield variant="outlined" bind:value={searchModel.name} label="Search by name" withTrailingIcon={false} on:change={onSearchSubmit}>
                                     <Icon slot="trailingIcon"
                                     ><img src="/img/icons/icon-search.svg" /></Icon
                                     >
@@ -78,14 +150,24 @@
                         <Cell spanDevices={{desktop: 8}} class="form-inline text-right">
                             <div class="form-control">
                                 <label class="text-h3">Filter by Specialty</label>
-                                <Select bind:value={searchModel.specialty} label="">
+                                <Select bind:value={searchModel.specialty} label="" on:click={onSearchSubmit}>
                                     <Option value="" >All</Option>
+                                    {#if specialties && specialties.length > 0}
+                                        {#each specialties as specialty}
+                                            <Option value={specialty.title}>{specialty.title}</Option>
+                                        {/each}
+                                    {/if}
                                 </Select>
                             </div>
                             <div class="form-control">
                                 <label class="text-h3">Location</label>
-                                <Select bind:value={searchModel.location} label="">
+                                <Select bind:value={searchModel.location} label="" on:click={onSearchSubmit}>
                                     <Option value="" >All</Option>
+                                    {#if countries && countries.length > 0}
+                                        {#each countries as country}
+                                            <Option value={country.name}>{country.name}</Option>
+                                        {/each}
+                                    {/if}
                                 </Select>
                             </div>
                         </Cell>
@@ -102,48 +184,16 @@
                             </Row>
                         </Head>
                         <Body>
-                            <Row class="item-advisor">
-                                <CellTable><a href="/advisor/detail"><img class="avatar" src="/img/advisors/avatar-1.jpg" /></a></CellTable>
-                                <CellTable><a href="/advisor/detail" ><p class="name text-h2">Jan Wohl</p></a></CellTable>
-                                <CellTable><p>Adventure, Ocean Cruising, River Cruising, Hot…</p></CellTable>
-                                <CellTable><p>New York, USA</p></CellTable>
-                            </Row>
-                            <Row class="item-advisor">
-                                <CellTable><a href="/advisor/detail"><img class="avatar" src="/img/advisors/avatar-1.jpg" /></a></CellTable>
-                                <CellTable><a href="/advisor/detail" ><p class="name text-h2">Jan Wohl</p></a></CellTable>
-                                <CellTable><p>Adventure, Ocean Cruising, River Cruising, Hot…</p></CellTable>
-                                <CellTable><p>New York, USA</p></CellTable>
-                            </Row>
-                            <Row class="item-advisor">
-                                <CellTable><a href="/advisor/detail"><img class="avatar" src="/img/advisors/avatar-1.jpg" /></a></CellTable>
-                                <CellTable><a href="/advisor/detail" ><p class="name text-h2">Jan Wohl</p></a></CellTable>
-                                <CellTable><p>Adventure, Ocean Cruising, River Cruising, Hot…</p></CellTable>
-                                <CellTable><p>New York, USA</p></CellTable>
-                            </Row>
-                            <Row class="item-advisor">
-                                <CellTable><a href="/advisor/detail"><img class="avatar" src="/img/advisors/avatar-1.jpg" /></a></CellTable>
-                                <CellTable><a href="/advisor/detail" ><p class="name text-h2">Jan Wohl</p></a></CellTable>
-                                <CellTable><p>Adventure, Ocean Cruising, River Cruising, Hot…</p></CellTable>
-                                <CellTable><p>New York, USA</p></CellTable>
-                            </Row>
-                            <Row class="item-advisor">
-                                <CellTable><a href="/advisor/detail"><img class="avatar" src="/img/advisors/avatar-1.jpg" /></a></CellTable>
-                                <CellTable><a href="/advisor/detail" ><p class="name text-h2">Jan Wohl</p></a></CellTable>
-                                <CellTable><p>Adventure, Ocean Cruising, River Cruising, Hot…</p></CellTable>
-                                <CellTable><p>New York, USA</p></CellTable>
-                            </Row>
-                            <Row class="item-advisor">
-                                <CellTable><a href="/advisor/detail"><img class="avatar" src="/img/advisors/avatar-1.jpg" /></a></CellTable>
-                                <CellTable><a href="/advisor/detail" ><p class="name text-h2">Jan Wohl</p></a></CellTable>
-                                <CellTable><p>Adventure, Ocean Cruising, River Cruising, Hot…</p></CellTable>
-                                <CellTable><p>New York, USA</p></CellTable>
-                            </Row>
-                            <Row class="item-advisor">
-                                <CellTable><a href="/advisor/detail"><img class="avatar" src="/img/advisors/avatar-1.jpg" /></a></CellTable>
-                                <CellTable><a href="/advisor/detail" ><p class="name text-h2">Jan Wohl</p></a></CellTable>
-                                <CellTable><p>Adventure, Ocean Cruising, River Cruising, Hot…</p></CellTable>
-                                <CellTable><p>New York, USA</p></CellTable>
-                            </Row>
+                            {#if advisors && advisors.length > 0}
+                                {#each advisors as item}
+                                    <Row class="item-advisor">
+                                        <CellTable><a href={item.link}><img class="avatar" src={item.userMe.avatarUrl} /></a></CellTable>
+                                        <CellTable><a href={item.link} ><p class="name text-h2">{item.userMe.displayName}</p></a></CellTable>
+                                        <CellTable><p>{item.specialtiesString}</p></CellTable>
+                                        <CellTable><p>{item.locationTitle}</p></CellTable>
+                                    </Row>
+                                {/each}
+                            {/if}
                         </Body>
                     </DataTable >
                 </div>
