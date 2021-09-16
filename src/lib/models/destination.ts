@@ -1,8 +1,6 @@
 import {GalleryModel} from './gallery';
 import { ApiConfig } from '../../routes/api/config';
 import { CountryModel } from './country';
-import { apiPrefix } from '$lib/env';
-import { StringHelper } from '$lib/helpers';
 
 export class DestinationModel{
     id: any;
@@ -19,9 +17,6 @@ export class DestinationModel{
         let photo = '';
         if(this.gallery && this.gallery.length>0) {
             photo = new GalleryModel(this.gallery[0]).url;
-        }
-        if(photo.indexOf(apiPrefix) < 0){
-            photo = apiPrefix+photo;
         }
         return photo;
     }
@@ -51,11 +46,7 @@ export class DestinationModel{
     }
 
     get link(){
-        if(!this.name){
-            return '#';
-        }
-        const stringHelper = new StringHelper();
-        return '/destination/'+stringHelper.stringToSlug(this.name)+'-'+this.id;
+        return '#';
     }
 
     get excerpt(){

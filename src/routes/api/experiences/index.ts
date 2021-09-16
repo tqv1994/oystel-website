@@ -3,14 +3,15 @@ import type { RequestHandler, Request } from '@sveltejs/kit';
 import {ExperienceModel} from '$lib/models/experience';
 import { StringHelper } from '$lib/helpers';
 import { ApiConfig } from '../config';
-import { apiPrefix } from '$lib/env';
 /**
  * @type {import('@sveltejs/kit').Post}
  */
 export const get: RequestHandler = async (request: Request<Record<string, any>,AuthForm>) => {
+    let stringHelper = new StringHelper();
+    const apiConfig = new ApiConfig();
     console.log(request.query);
     try {
-        const res = await fetch(`${apiPrefix}/experiences?${request.query}`, {
+        const res = await fetch(apiConfig.getApiRoute('/experiences?'+request.query), {
             headers: {
                 'Content-Type': 'application/json',
             },

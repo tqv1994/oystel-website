@@ -16,6 +16,10 @@
   "devDependencies": {
     "@firebase/app-types": "^0.6.2",
     "@rollup/pluginutils": "^4.1.1",
+    "@smui/dialog": "^4.2.0",
+    "@smui/select": "^4.2.0",
+    "@sveltejs/adapter-netlify": "^1.0.0-next.30",
+    "@sveltejs/adapter-static": "^1.0.0-next.17",
     "@sveltejs/adapter-vercel": "^1.0.0-next.27",
     "@sveltejs/app-utils": "next",
     "@sveltejs/kit": "^1.0.0-next.138",
@@ -34,9 +38,7 @@
     "svelte-check": "^2.2.3",
     "svelte-preprocess": "^4.7.4",
     "tslib": "^2.3.0",
-    "typescript": "^4.3.5",
-    "@smui/dialog": "^4.2.0",
-    "@smui/select": "^4.2.0"
+    "typescript": "^4.3.5"
   },
   "type": "module",
   "dependencies": {

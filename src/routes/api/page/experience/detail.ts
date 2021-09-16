@@ -2,14 +2,13 @@ import { sessionCookieFromResponse } from '$lib/session';
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import {ExperienceModel} from '$lib/models/experience';
 import { ApiConfig } from '../../config';
-import { apiPrefix } from '$lib/env';
 /**
  * @type {import('@sveltejs/kit').Post}
  */
 export const get: RequestHandler = async (request: Request<Record<string, any>,AuthForm>) => {
     const apiConfig = new ApiConfig();
     try {
-        const res = await fetch(`${apiPrefix}/page/experience/detail?${request.query}`, {
+        const res = await fetch(apiConfig.getApiRoute('/page/experience/detail?'+request.query), {
             headers: {
                 'Content-Type': 'application/json',
             },

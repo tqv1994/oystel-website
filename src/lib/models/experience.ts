@@ -2,7 +2,6 @@ import {GalleryModel} from './gallery';
 import { ApiConfig } from '../../routes/api/config';
 import { CountryModel } from './country';
 import { StringHelper } from '$lib/helpers';
-import { apiPrefix } from '$lib/env';
 
 export class ExperienceModel{
     id: any;
@@ -19,9 +18,6 @@ export class ExperienceModel{
         let photo = '';
         if(this.gallery?.length>0) {
             photo = new GalleryModel(this.gallery[0]).url;
-        }
-        if(photo.indexOf(apiPrefix) < 0){
-            photo = apiPrefix+photo;
         }
         return photo;
     }
@@ -48,7 +44,6 @@ export class ExperienceModel{
 
             });
         }
-        console.log(photos);
         return photos;
     }
 

@@ -1,7 +1,6 @@
 import {GalleryModel} from './gallery';
 import { ApiConfig } from '../../routes/api/config';
 import { DropModel } from './drop';
-import { apiPrefix } from '$lib/env';
 
 export class ProductModel{
     id: any;
@@ -11,7 +10,6 @@ export class ProductModel{
     price: string;
     gallery: any[];
     drops: DropModel[];
-    intro: string;
 
     get featuredPhoto(){
         const apiConfig = new ApiConfig();
@@ -19,9 +17,8 @@ export class ProductModel{
         if(this.gallery.length>0) {
             photo = new GalleryModel(this.gallery[0]).url;
         }
-        if(photo.indexOf(apiPrefix) < 0){
-            photo = apiPrefix+photo;
-        }
+        console.log(photo);
+        photo = apiConfig.getApiRoute(photo);
         return photo;
     }
 

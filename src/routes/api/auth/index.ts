@@ -1,4 +1,3 @@
-import { apiPrefix } from '$lib/env';
 import { sessionCookieFromResponse } from '$lib/session';
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import { ApiConfig } from '../config';
@@ -18,7 +17,7 @@ export const post: RequestHandler = async (request: Request<Record<string, any>,
   }
 
   try {
-    const res = await fetch(`${apiPrefix}/auth/me`, {
+    const res = await fetch(apiConfig.getApiRoute('/auth/me'), {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + request.body.token,
