@@ -42,13 +42,13 @@
       const content = await res.json();
       if (content.itemsCuratedForYou) {
         itemsCuratedForYou = [];
-        content.itemsCuratedForYou.map((item) => {
+        content.itemsCuratedForYou.map((item: any) => {
           itemsCuratedForYou.push(new ExperienceModel(item));
         });
       }
       if (content.itemsFromOurAdvisor) {
         itemsFromOurAdvisor = [];
-        content.itemsFromOurAdvisor.map((item) => {
+        content.itemsFromOurAdvisor.map((item: any) => {
           if (item.type === 'experience') {
             itemsFromOurAdvisor.push(new ExperienceModel(item));
           } else if (item.type === 'destination') {
