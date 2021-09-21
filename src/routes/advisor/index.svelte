@@ -13,6 +13,9 @@
     import Layout from '$lib/components/common/Layout.svelte';
     import { CountryModel } from '$lib/models/country';
     import { AdvisorModel, AdvisorSpecialty } from '$lib/models/advisor';
+    import {BlurhashImage} from 'svelte-blurhash';
+import InviteMembersModal from '$lib/components/modals/InviteMembersModal.svelte';
+import { UserModel } from '$lib/models/user';
     let stringHelper = new StringHelper();
     let searchModel = {
         name: '',
@@ -187,7 +190,7 @@
                             {#if advisors && advisors.length > 0}
                                 {#each advisors as item}
                                     <Row class="item-advisor">
-                                        <CellTable><a href={item.link}><img class="avatar" src={item.userMe.avatarUrl} /></a></CellTable>
+                                        <CellTable><a href={item.link}><BlurhashImage class="avatar" src={item.userMe.avatarUrl} fadeDuration="1000" /></a></CellTable>
                                         <CellTable><a href={item.link} ><p class="name text-h2">{item.userMe.displayName}</p></a></CellTable>
                                         <CellTable><p>{item.specialtiesString}</p></CellTable>
                                         <CellTable><p>{item.locationTitle}</p></CellTable>
@@ -201,22 +204,26 @@
                     <div class="advisors-list">
                         <LayoutGrid class="p-0">
                             <Cell span={12}>
-                                <div class="item-advisor">
-                                    <a href="/advisor/detail">
-                                        <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
-                                                <div class="thumbnail">
-                                                    <img src="/img/advisors/avatar-1.jpg" alt=""/>
-                                                </div>
-                                            </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
-                                                <h2 class="mt-0 mb-15">Jan Wohl</h2>
-                                                <p class="mt-0 mb-30">New York, USA</p>
-                                                <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
-                                            </Cell>
-                                        </LayoutGrid>
-                                    </a>
-                                </div>
+                                {#if advisors && advisors.length > 0}
+                                    {#each advisors as item}
+                                        <div class="item-advisor">
+                                            <a href={item.link}>
+                                                <LayoutGrid class="p-0">
+                                                    <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
+                                                        <div class="thumbnail">
+                                                            <BlurhashImage class="avatar" src={item.userMe.avatarUrl} fadeDuration="1000" />
+                                                        </div>
+                                                    </Cell>
+                                                    <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
+                                                        <h2 class="mt-0 mb-15">{item.userMe.displayName}</h2>
+                                                        <p class="mt-0 mb-30">{item.specialtiesString}</p>
+                                                        <p class="m-0">{item.specialtiesString}</p>
+                                                    </Cell>
+                                                </LayoutGrid>
+                                            </a>
+                                        </div>
+                                    {/each}
+                                {/if}
                             </Cell>
                             <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}>
                                 <div class="item-advisor">

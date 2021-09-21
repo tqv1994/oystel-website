@@ -1,7 +1,7 @@
 import { AdvisorModel, RoleModel } from "$lib/types"
 import { DestinationModel } from "./destination"
 import { ExperienceModel } from "./experience"
-import { ThumbnailModel } from "./gallery";
+import { GalleryModel, ThumbnailModel } from "./gallery";
 import { ProductModel } from "./product"
 import { apiPrefix } from '$lib/env';
 
@@ -26,7 +26,7 @@ export class UserModel{
     productLikes?: ProductModel[];
     myAdvisors?: AdvisorModel[];
     advisorMe?: AdvisorModel;
-    avatar: ThumbnailModel;
+    avatar: GalleryModel;
     constructor(values: Object = {}) {
         Object.assign(this, values);
     }

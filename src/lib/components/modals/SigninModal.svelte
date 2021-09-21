@@ -36,7 +36,9 @@
     classModal = 'closing';
   }
   function doSignUp() {
-    dispatch('close');
+    dispatch('close',{
+      type: 'open-signup'
+    });
   }
 
   function closeHandler(e) {
@@ -135,8 +137,10 @@
           localStorage.setItem('token', token);
           const user = await res.json();
           authStore.set({ user });
-          console.log('user', user);
           authModel = user;
+          dispatch('close',{
+            type: 'refresh'
+          });
           closeModal();
           return;
         }

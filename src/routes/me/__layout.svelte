@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import authStore from '$lib/stores/auth';
   import { onMount, afterUpdate } from 'svelte';
   import Button, { Label, Icon } from '@smui/button';
@@ -12,9 +12,11 @@
   import List, { Item, Text } from '@smui/list';
   import Select, { Option } from '@smui/select';
   import Layout from '$lib/components/common/Layout.svelte';
+import { UserModel } from '$lib/models/user';
+import { goto } from '$app/navigation';
 
   let active = 'Account Details';
-  let userModel = $authStore.user;
+  let userModel: UserModel;
   let openCreateAgencyModal = false;
   let modelEmailPreferences = {
     neverMissADrop: false,
@@ -23,12 +25,45 @@
   let isEditProfile = false;
   let currentPage = ''
   afterUpdate(() => {
-    console.log($authStore.user);
-    if (!$authStore.user) {
-      window.location.href = '/';
-    }
+    // console.log($authStore.user);
+    // if (!$authStore.user) {
+    //   window.location.href = '/';
+    // }
     currentPage = location.pathname;
   });
+
+  onMount(async()=>{
+    await getData();
+  })
+
+  async function getData(){
+    const res = await fetch('/api/users/me', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: localStorage.getItem('token'),
+        }),
+      });
+      if (res.ok) {
+        const content = await res.json();
+        userModel = new UserModel(content);
+        authStore.set({ user:userModel });
+
+        // authModel = authStore.user;
+        // doAfterSignup(user);
+        return;
+        // return goto('/me').then(auth.signOut);
+      }else{
+        const error = await res.json();
+        if(error.statusCode == 401){
+            localStorage.setItem('token','');
+            authStore.set({ user: undefined });
+        }
+        goto('/');
+      }
+  }
 
   async function onSubmitProfile() {
     // await userAPIService.update(userModel).then((res)=>{
@@ -68,6 +103,7 @@
       });
       if (res.ok) {
         authStore.set({ user: undefined });
+        localStorage.setItem('token', '');
         location.href = '/';
         return;
       }

@@ -1,6 +1,7 @@
 import { writable, readable } from 'svelte/store';
 
-import type { UserModel, AuthData } from '$lib/types';
+import type { AuthData } from '$lib/types';
+import type { UserModel } from '$lib/models/user';
 
 const store = writable<{
   user?: UserModel;

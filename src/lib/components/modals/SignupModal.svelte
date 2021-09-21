@@ -37,7 +37,9 @@
     classModal = 'closing';
   }
   function doSignIn() {
-    dispatch('close');
+    dispatch('close',{
+      type: 'open-signin'
+    });
   }
 
   async function signInWithGoogle() {
@@ -51,7 +53,6 @@
         }
         try {
           const token = await cred.user.getIdToken();
-          console.log('token', token);
           const res = await fetch('/api/auth', {
             method: 'POST',
             headers: {
@@ -149,6 +150,9 @@
           // authModel = authStore.user;
           // doAfterSignup(user);
           authModel = user;
+          dispatch('close',{
+            type: 'refresh'
+          });
           closeModal();
           return;
           // return goto('/me').then(auth.signOut);

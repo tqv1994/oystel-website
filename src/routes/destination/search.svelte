@@ -10,11 +10,14 @@
     import Svg from '@smui/common/Svg.svelte';
     import {StringHelper} from '$lib/helpers';
     import Layout from '$lib/components/common/Layout.svelte';
-import { ExperienceModel } from '$lib/models/experience';
-import { DestinationModel } from '$lib/models/destination';
-import { ExperienceTypeModel } from '$lib/models/experience_type';
-import { DestinationTypeModel } from '$lib/models/destination_type';
-import { CountryModel } from '$lib/models/country';
+    import { ExperienceModel } from '$lib/models/experience';
+    import { DestinationModel } from '$lib/models/destination';
+    import { ExperienceTypeModel } from '$lib/models/experience_type';
+    import { DestinationTypeModel } from '$lib/models/destination_type';
+    import { CountryModel } from '$lib/models/country';
+    import authStore from '$lib/stores/auth';
+    import OyNotification from '$lib/components/common/OyNotification.svelte';
+    import { BlurhashImage } from 'svelte-blurhash';
     let stringHelper = new StringHelper();
     let searchModel = {
         name: '',
@@ -42,11 +45,11 @@ import { CountryModel } from '$lib/models/country';
         goto('/destination/search?' + queryString);
         let url = new URL(location.href);
         searchModel = {
-        name: url.searchParams.get('name'),
-        type: url.searchParams.get('type'),
-        destination: url.searchParams.get('destination'),
-        country: url.searchParams.get('country'),
-        sort_by: url.searchParams.get('sort_by'),
+            name: url.searchParams.get('name'),
+            type: url.searchParams.get('type'),
+            destination: url.searchParams.get('destination'),
+            country: url.searchParams.get('country'),
+            sort_by: url.searchParams.get('sort_by'),
         };
         await onSearch();
     }
@@ -66,6 +69,10 @@ import { CountryModel } from '$lib/models/country';
     }
 
     onMount(async () => {
+        await getData();
+    });
+
+    async function getData(){
         let url = new URL(location.href);
         searchModel = {
         name: url.searchParams.get('name'),
@@ -93,10 +100,13 @@ import { CountryModel } from '$lib/models/country';
         '/api/page/destination/search?' +
             stringHelper.objectToQueryString(searchParams),
         {
-            method: 'GET',
+            method: 'POST',
             headers: {
             'Content-Type': 'application/json',
             },
+            body: JSON.stringify({
+                token: localStorage.getItem('token'),
+            }),
         },
         );
         if (res.ok) {
@@ -126,32 +136,74 @@ import { CountryModel } from '$lib/models/country';
                 });
             }
             return;
+        }else{
+            const error = await res.json();
+            if(error.statusCode == 401){
+                localStorage.setItem('token','');
+                authStore.set({ user: undefined });
+                getData();
+            }
         }
-  });
+    }
+
+    async function likeItem(item: DestinationModel){
+        const res = await fetch(`/api/destinations/like?id=${item.id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('token'),
+            }),
+        });
+        if (res.ok) {
+        item.liked = !item.liked;
+        let index =  destinations.findIndex((itemDetail)=>itemDetail.id == item.id);
+        if(index >= 0){
+            destinations[index] = item;
+        }
+        }else{
+        const error = await res.json();
+        if(error.statusCode == 401){
+            if(localStorage.getItem('token') != ''){
+                window.pushToast('Your account has expired. Please login to continue using this feature');
+            }else{
+                window.pushToast('Please login to use this feature');
+            }
+            localStorage.setItem('token','');
+            authStore.set({ user: undefined });
+        }
+        }
+    }
 
   async function onSearch() {
+      
     let searchParams: any = {};
     if (searchModel.name && searchModel.name != '') {
       searchParams.name_contains = searchModel.name;
     }
-    if (searchModel.destination && searchModel.type != '') {
+    if (searchModel.destination && searchModel.destination != '') {
       searchParams['destination_type.title_eq'] = searchModel.destination;
     }
     if (searchModel.country && searchModel.country != '') {
       searchParams['country.name_eq'] = searchModel.country;
     }
-    if (searchModel.destination && searchModel.sort_by != '') {
+    if (searchModel.sort_by && searchModel.sort_by != '') {
       searchParams._sort = searchModel.sort_by + ':desc';
     } else {
       searchParams._sort = 'published_at:desc';
     }
+    console.log('searchModel',searchParams);
     const res = await fetch(
       '/api/destinations?' + stringHelper.objectToQueryString(searchParams),
       {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+            token: localStorage.getItem('token'),
+        }),
       },
     );
     if (res.ok) {
@@ -163,11 +215,18 @@ import { CountryModel } from '$lib/models/country';
         });
       }
       return;
+    }else{
+        const error = await res.json();
+        if(error.statusCode == 401){
+            localStorage.setItem('token','');
+            authStore.set({ user: undefined });
+            await onSearch();
+        }
     }
   }
 </script>
 <svelte:window on:load={()=>{onScrollFixedHeader();}} on:scroll={()=>{onScrollFixedHeader()}}/>
-<Layout config={configPage}>
+<Layout config={configPage} on:refreshPage={()=>{getData()}}>
     <div class="content">
         <section class="header-title d-pt-120 d-pb-55 m-pt-90 m-pb-25 full-width">
             <div class="content-wrap">
@@ -275,13 +334,14 @@ import { CountryModel } from '$lib/models/country';
                     <LayoutGrid class="p-0">
                         {#each destinations as item}
                             <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-                                <a href={item.link}>
                                     <div class="experience-item">
                                         <div class="thumbnail">
-                                            <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
-                                                <img src="{item.featuredPhoto}" alt=""/>
-                                            </div>
-                                            <IconButton class="btn-favorite">
+                                            <a href={item.link}>
+                                                <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
+                                                    <BlurhashImage src="{item.featuredPhotoWithHash.url}" hash={item.featuredPhotoWithHash.blurHash} blur alt="" fadeDuration={1000}/>
+                                                </div>
+                                            </a>
+                                            <IconButton class="btn-favorite {item.liked ? 'liked' : ''}" on:click={likeItem(item)}>
                                                 <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
                                                     <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
                                                 </Icon>
@@ -290,15 +350,16 @@ import { CountryModel } from '$lib/models/country';
                                                 </Icon>
                                             </IconButton>
                                         </div>
-                                        <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">{item.country_title}</p></Cell>
-                                            <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
-                                        </LayoutGrid>
-                                        <div class="divider"></div>
-                                        <h4 class="text-h2 title">{item.name}</h4>
-                                        <p class="short-text m-none">{item.excerpt}</p>
+                                        <a href={item.link}>
+                                            <LayoutGrid class="p-0">
+                                                <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">{item.country_title}</p></Cell>
+                                                <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
+                                            </LayoutGrid>
+                                            <div class="divider"></div>
+                                            <h4 class="text-h2 title">{item.name}</h4>
+                                            <p class="short-text m-none">{item.excerpt}</p>
+                                        </a>
                                     </div>
-                                </a>
                             </Cell>
                         {/each}
                         
@@ -309,6 +370,7 @@ import { CountryModel } from '$lib/models/country';
         </section>
     </div>
 </Layout>
+<OyNotification />
 <HeaderActionMobile bind:content={contentHeaderActionMobile} bind:searchModel></HeaderActionMobile>
 <style>
     .header-title{
@@ -375,26 +437,6 @@ import { CountryModel } from '$lib/models/country';
     .experience-item .title{
         height: 50px;
         overflow: hidden;
-    }
-    .experience-item .thumbnail {
-        position: relative;
-    }
-    .experience-item .thumbnail :global(.btn-favorite) {
-        position: absolute;
-        top: 2%;
-        right: 2%;
-    }
-    .experience-item .thumbnail :global(.btn-favorite .like) {
-        display: block;
-    }
-    .experience-item .thumbnail :global(.btn-favorite .liked) {
-        display: none;
-    }
-    .experience-item .thumbnail :global(.btn-favorite:hover .like) {
-        display: none;
-    }
-    .experience-item .thumbnail :global(.btn-favorite:hover .liked) {
-        display: block;
     }
 
     .item-read-more{

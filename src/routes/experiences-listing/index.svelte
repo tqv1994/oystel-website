@@ -15,6 +15,9 @@
   import { DestinationModel } from '$lib/models/destination';
   import { ExperienceModel } from '$lib/models/experience';
   import { CountryModel } from '$lib/models/country';
+  import authStore from '$lib/stores/auth';
+  import OyNotification from '$lib/components/common/OyNotification.svelte';
+  import { BlurhashImage } from 'svelte-blurhash';
   let stringHelper = new StringHelper();
   let searchModel = {
     name: '',
@@ -37,20 +40,27 @@
   let countries: CountryModel[];
 
   onMount(async () => {
+    await getData();
+  });
+
+  async function getData() {
     const res = await fetch('/api/page/experience', {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify({
+          token: localStorage.getItem('token'),
+        }),
     });
     if (res.ok) {
       const content = await res.json();
       if (content.experience_types) {
         experience_types = [];
-        content.experience_types.map((type) => {
+        content.experience_types.map((type: any) => {
           let experiences: ExperienceModel[] = [];
           if (type.experiences) {
-            type.experiences.map((item) => {
+            type.experiences.map((item: any) => {
               experiences.push(new ExperienceModel(item));
             });
           }
@@ -60,7 +70,7 @@
       }
       if (content.destination_types) {
         destination_types = [];
-        content.destination_types.map((type) => {
+        content.destination_types.map((type: any) => {
           destination_types.push(new DestinationTypeModel(type));
         });
       }
@@ -70,12 +80,46 @@
           countries.push(new CountryModel(item));
         });
       }
-      // authModel = authStore.user;
-      // doAfterSignup(user);
       return;
-      // return goto('/me').then(auth.signOut);
+    }else{
+      const error = await res.json();
+      if(error.statusCode == 401){
+            localStorage.setItem('token','');
+            authStore.set({ user: undefined });
+            getData();
+        }
     }
-  });
+  }
+
+  async function likeItem(item: ExperienceModel, indexType: number){
+    const res = await fetch(`/api/experiences/like?id=${item.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          token: localStorage.getItem('token'),
+        }),
+    });
+    if (res.ok) {
+      item.liked = !item.liked;
+      let index =  experience_types[indexType].experiences.findIndex((itemDetail)=>itemDetail.id == item.id);
+      if(index >= 0){
+        experience_types[indexType].experiences[index] = item;
+      }
+    }else{
+      const error = await res.json();
+      if(error.statusCode == 401){
+        if(localStorage.getItem('token') != ''){
+          window.pushToast('Your account has expired. Please login to continue using this feature');
+        }else{
+          window.pushToast('Please login to use this feature');
+        }
+        localStorage.setItem('token','');
+        authStore.set({ user: undefined });
+      }
+    }
+  }
 
   function onSearchSubmit() {
     let queryString = stringHelper.objectToQueryString(searchModel);
@@ -114,7 +158,7 @@
     onScrollFixedHeader();
   }}
 />
-<Layout config={configPage}>
+<Layout config={configPage} on:refreshPage={getData}>
   <div class="content">
     <section class="header-title d-pt-120 d-pb-95 m-pt-90 m-pb-25 full-width">
       <div class="content-wrap">
@@ -236,7 +280,7 @@
               <div class="section-title">
                 <LayoutGrid class="p-0">
                   <Cell span="12"
-                    ><h2 class="text-h1 title mt-0 d-mb-30">
+                    ><h2 class="text-h1 title {indexType == 0 ? 'mt-0' : ''} d-mb-30">
                       {type.title}
                     </h2></Cell
                   >
@@ -246,13 +290,14 @@
                 <LayoutGrid class="p-0">
                   {#each type.experiences as item, i}
                     <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-                      <a href={item.link}>
                         <div class="experience-item">
                           <div class="thumbnail">
-                            <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
-                              <img src={item.featuredPhoto} alt="" />
-                            </div>
-                            <IconButton class="btn-favorite">
+                            <a href={item.link}>
+                              <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
+                                <BlurhashImage src={item.featuredPhotoWithHash.url} hash={item.featuredPhotoWithHash.blurHash} fadeDuration="1000" alt="" />
+                              </div>
+                            </a>
+                            <IconButton class="btn-favorite {item.liked ? 'liked' : ''}" on:click={likeItem(item,indexType)}>
                               <Icon
                                 class="like"
                                 component={Svg}
@@ -279,23 +324,31 @@
                               </Icon>
                             </IconButton>
                           </div>
-                          <LayoutGrid class="p-0">
-                            <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                              ><p class="text-eyebrow text-left">
-                                {item.country_title}
-                              </p></Cell
-                            >
-                            <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                              ><p class="text-eyebrow text-right">
-                                Experience
-                              </p></Cell
-                            >
-                          </LayoutGrid>
-                          <div class="divider" />
-                          <h4 class="text-h2 title">{item.title}</h4>
-                          <p class="short-text m-none">{item.excerpt}</p>
+                          <a href={item.link}>
+                            <LayoutGrid class="p-0 d-block m-none">
+                              <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                                ><p class="text-eyebrow text-left">
+                                  {item.country_title}
+                                </p></Cell
+                              >
+                              <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                                ><p class="text-eyebrow text-right">
+                                  Experience
+                                </p></Cell
+                              >
+                            </LayoutGrid>
+                            <LayoutGrid class="p-0 m-block d-none">
+                              <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                                ><p class="text-eyebrow text-left">
+                                  Experience
+                                </p></Cell
+                              >
+                            </LayoutGrid>
+                            <div class="divider" />
+                            <h4 class="text-h2 title">{item.title}</h4>
+                            <p class="short-text m-none">{item.excerpt}</p>
+                          </a>
                         </div>
-                      </a>
                     </Cell>
                   {/each}
                   <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
@@ -324,6 +377,7 @@
   bind:countries
   on:close={onSearchSubmit}
 />
+<OyNotification />
 
 <style>
   .header-title {
@@ -332,43 +386,7 @@
   .header-title:global(.is_sticky) {
     padding-bottom: 55px !important;
   }
-  .search-form-experiences :global(.mdc-layout-grid) {
-    --mdc-layout-grid-gutter-desktop: 0;
-    --mdc-select-idle-line-color: #000;
-    --mdc-select-hover-line-color: #000;
-  }
-  .search-form-experiences :global(.mdc-text-field),
-  .search-form-experiences :global(.mdc-select) {
-    height: 35px;
-    width: 100%;
-    padding-right: 15px;
-  }
-  .search-form-experiences
-    :global(.mdc-select.mdc-select--outlined .mdc-select__anchor) {
-    height: 35px;
-  }
-  .search-form-experiences
-    :global(.mdc-text-field .mdc-notched-outline__leading),
-  .search-form-experiences :global(.mdc-text-field .mdc-notched-outline__notch),
-  .search-form-experiences
-    :global(.mdc-text-field .mdc-notched-outline__trailing),
-  .search-form-experiences :global(.mdc-select .mdc-notched-outline__leading),
-  .search-form-experiences :global(.mdc-select .mdc-notched-outline__notch),
-  .search-form-experiences :global(.mdc-select .mdc-notched-outline__trailing) {
-    border-color: #000;
-  }
-  .search-form-experiences :global(.mdc-text-field .mdc-floating-label),
-  .search-form-experiences :global(.mdc-select .mdc-floating-label) {
-    padding-left: 18px;
-  }
-  .search-form-experiences
-    .mdc-text-field--outlined
-    :global(.mdc-floating-label) {
-    left: 22px;
-  }
-  .search-form-experiences :global(.mdc-text-field img) {
-    filter: brightness(0.1);
-  }
+  
 
   /* Section title */
   .section-title .title {
@@ -399,23 +417,6 @@
   .experience-item .thumbnail {
     position: relative;
   }
-  .experience-item .thumbnail :global(.btn-favorite) {
-    position: absolute;
-    top: 2%;
-    right: 2%;
-  }
-  .experience-item .thumbnail :global(.btn-favorite .like) {
-    display: block;
-  }
-  .experience-item .thumbnail :global(.btn-favorite .liked) {
-    display: none;
-  }
-  .experience-item .thumbnail :global(.btn-favorite:hover .like) {
-    display: none;
-  }
-  .experience-item .thumbnail :global(.btn-favorite:hover .liked) {
-    display: block;
-  }
 
   .item-read-more {
     background-color: #f0f7f8;
@@ -424,8 +425,10 @@
   .item-read-more .label {
     position: absolute;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
+    margin: 0;
   }
   .item-read-more .label .material-icons {
     position: relative;

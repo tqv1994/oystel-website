@@ -36,7 +36,11 @@
     import { StringHelper } from '$lib/helpers';
     import { ExperienceModel } from '$lib/models/experience';
     import { ProductModel } from '$lib/models/product';
-import { DestinationModel } from '$lib/models/destination';
+    import { DestinationModel } from '$lib/models/destination';
+    import authStore from '$lib/stores/auth';
+    import OyNotification from '$lib/components/common/OyNotification.svelte';
+    import { BlurhashImage } from 'svelte-blurhash';
+import InviteMembersModal from '$lib/components/modals/InviteMembersModal.svelte';
     
     let configPage = {
       header: {
@@ -55,11 +59,18 @@ import { DestinationModel } from '$lib/models/destination';
     let productIndex: number;
     export let id: string;
     onMount(async() => {
+      await getData();
+    });
+
+    async function getData() {
       const res = await fetch('/api/page/destination/detail?id='+id, {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          token: localStorage.getItem('token'),
+        }),
       });
       if (res.ok) {
         const content = await res.json();
@@ -82,19 +93,80 @@ import { DestinationModel } from '$lib/models/destination';
         // doAfterSignup(user);
         return;
         // return goto('/me').then(auth.signOut);
+      }else{
+        const error = await res.json();
+        if(error.statusCode == 401){
+            localStorage.setItem('token','');
+            authStore.set({ user: undefined });
+            getData();
+        }
       }
+    }
+
+    async function likeDestination(item: DestinationModel){
+      const res = await fetch(`/api/destinations/like?id=${item.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('token'),
+          }),
+      });
+      if (res.ok) {
+        item.liked = !item.liked;
+        destination = item;
+      }else{
+        const error = await res.json();
+        if(error.statusCode == 401){
+          if(localStorage.getItem('token') != ''){
+            window.pushToast('Your account has expired. Please login to continue using this feature');
+          }else{
+            window.pushToast('Please login to use this feature');
+          }
+          localStorage.setItem('token','');
+          authStore.set({ user: undefined });
+        }
+      }
+  }
+
+  async function likeExperience(item: ExperienceModel){
+    const res = await fetch(`/api/experiences/like?id=${item.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          token: localStorage.getItem('token'),
+        }),
     });
+    if (res.ok) {
+      item.liked = !item.liked;
+      let index =  experiences.findIndex((itemDetail)=>itemDetail.id == item.id);
+      if(index >= 0){
+        experiences[index] = item;
+      }
+    }else{
+      const error = await res.json();
+      if(error.statusCode == 401){
+        if(localStorage.getItem('token') != ''){
+          window.pushToast('Your account has expired. Please login to continue using this feature');
+        }else{
+          window.pushToast('Please login to use this feature');
+        }
+        localStorage.setItem('token','');
+        authStore.set({ user: undefined });
+      }
+    }
+  }
   
   </script>
   
   <svelte:window
-    on:scroll={() => {
-      onScrollFixedHeader();
-    }}
   />
-  <Layout config={configPage}>
+  <Layout config={configPage} on:refreshPage={()=>{getData()}}>
       {#if destination}
-      <div class="content">
+      <div class="content destination-detail">
         <section class="header-title d-pt-90 d-pb-25 m-pt-90 m-pb-25 full-width">
             <div class="content-wrap">
                 <div class="container">
@@ -105,8 +177,8 @@ import { DestinationModel } from '$lib/models/destination';
                                   <span class="control" slot="left-control">
                                     <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon>
                                   </span>
-                                    {#each destination.getImagesUrl() as item}
-                                    <div class="slide-content slide-item" style="background-image: url({item})"></div>
+                                    {#each destination.imageUrlWithHashs as item}
+                                        <div class="slide-content slide-item" style="background-image:url({item.url})"></div>
                                     {/each}
                                     <span class="control" slot="right-control">
                                     <Icon><img src="/img/icons/icon-right-arrow.svg" /></Icon>
@@ -133,12 +205,31 @@ import { DestinationModel } from '$lib/models/destination';
                                         </g>
                                     </Icon>
                                 </IconButton>
-                                <IconButton >
-                                    <Icon component="{Svg}" viewBox="0 0 16.249 14.588">
-                                        <g id="Icon_-_Heart" data-name="Icon - Heart" transform="translate(0.125 0.125)">
-                                            <path id="Heart_Off" data-name="Heart Off" d="M11.453,0c-.121,0-.245,0-.365.014A4.8,4.8,0,0,0,7.943,1.769,4.789,4.789,0,0,0,4.726.146H4.579A4.528,4.528,0,0,0,0,4.579c-.089,2.3,1.438,4.236,2.6,5.5A25.674,25.674,0,0,0,7.78,14.236a.775.775,0,0,0,.805-.021A25.736,25.736,0,0,0,13.6,9.846c1.107-1.308,2.558-3.313,2.384-5.6A4.536,4.536,0,0,0,11.453,0m0,1.367a3.2,3.2,0,0,1,3.2,2.985c.135,1.776-1.113,3.474-2.062,4.6a24.721,24.721,0,0,1-4.44,3.924A24.207,24.207,0,0,1,3.569,9.138c-.991-1.081-2.3-2.724-2.234-4.506a3.161,3.161,0,0,1,3.237-3.12h.115a3.48,3.48,0,0,1,2.3,1.209l1,1.053.955-1.093a3.485,3.485,0,0,1,2.261-1.3c.084-.008.17-.01.255-.01" transform="translate(0.001)" stroke="#f0f7f8" stroke-width="0.25" fill-rule="evenodd"/>
-                                        </g>
-                                    </Icon>
+                                <IconButton class="btn-favorite {destination.liked ? 'liked' : ''}" on:click={likeDestination(destination)}>
+                                  <Icon class="like" component={Svg} viewBox="0 0 16.249 14.588">
+                                    <g
+                                      data-name="Icon - Heart"
+                                      transform="translate(0.125 0.125)"
+                                    >
+                                      <path
+                                        id="Heart_Off"
+                                        data-name="Heart Off"
+                                        d="M11.453,0c-.121,0-.245,0-.365.014A4.8,4.8,0,0,0,7.943,1.769,4.789,4.789,0,0,0,4.726.146H4.579A4.528,4.528,0,0,0,0,4.579c-.089,2.3,1.438,4.236,2.6,5.5A25.674,25.674,0,0,0,7.78,14.236a.775.775,0,0,0,.805-.021A25.736,25.736,0,0,0,13.6,9.846c1.107-1.308,2.558-3.313,2.384-5.6A4.536,4.536,0,0,0,11.453,0m0,1.367a3.2,3.2,0,0,1,3.2,2.985c.135,1.776-1.113,3.474-2.062,4.6a24.721,24.721,0,0,1-4.44,3.924A24.207,24.207,0,0,1,3.569,9.138c-.991-1.081-2.3-2.724-2.234-4.506a3.161,3.161,0,0,1,3.237-3.12h.115a3.48,3.48,0,0,1,2.3,1.209l1,1.053.955-1.093a3.485,3.485,0,0,1,2.261-1.3c.084-.008.17-.01.255-.01"
+                                        transform="translate(0.001)"
+                                        stroke="#f0f7f8"
+                                        stroke-width="0.25"
+                                        fill-rule="evenodd"
+                                      />
+                                    </g>
+                                  </Icon>
+                                  <Icon class="liked" component={Svg} viewBox="0 0 16.249 14.588">
+                                    <path
+                                        d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
+                                        transform="translate(0)"
+                                        fill="#000"
+                                        fill-rule="evenodd"
+                                      />
+                                  </Icon>
                                 </IconButton>
                             </div>
                         </Cell>
@@ -155,12 +246,31 @@ import { DestinationModel } from '$lib/models/destination';
                                         </g>
                                     </Icon>
                                 </IconButton>
-                                <IconButton >
-                                    <Icon component="{Svg}" viewBox="0 0 16.249 14.588">
-                                        <g id="Icon_-_Heart" data-name="Icon - Heart" transform="translate(0.125 0.125)">
-                                            <path id="Heart_Off" data-name="Heart Off" d="M11.453,0c-.121,0-.245,0-.365.014A4.8,4.8,0,0,0,7.943,1.769,4.789,4.789,0,0,0,4.726.146H4.579A4.528,4.528,0,0,0,0,4.579c-.089,2.3,1.438,4.236,2.6,5.5A25.674,25.674,0,0,0,7.78,14.236a.775.775,0,0,0,.805-.021A25.736,25.736,0,0,0,13.6,9.846c1.107-1.308,2.558-3.313,2.384-5.6A4.536,4.536,0,0,0,11.453,0m0,1.367a3.2,3.2,0,0,1,3.2,2.985c.135,1.776-1.113,3.474-2.062,4.6a24.721,24.721,0,0,1-4.44,3.924A24.207,24.207,0,0,1,3.569,9.138c-.991-1.081-2.3-2.724-2.234-4.506a3.161,3.161,0,0,1,3.237-3.12h.115a3.48,3.48,0,0,1,2.3,1.209l1,1.053.955-1.093a3.485,3.485,0,0,1,2.261-1.3c.084-.008.17-.01.255-.01" transform="translate(0.001)" stroke="#f0f7f8" stroke-width="0.25" fill-rule="evenodd"/>
-                                        </g>
-                                    </Icon>
+                                <IconButton class="btn-favorite {destination.liked ? 'liked' : ''}" on:click={likeDestination(destination)}>
+                                  <Icon class="like" component={Svg} viewBox="0 0 16.249 14.588">
+                                    <g
+                                      data-name="Icon - Heart"
+                                      transform="translate(0.125 0.125)"
+                                    >
+                                      <path
+                                        id="Heart_Off"
+                                        data-name="Heart Off"
+                                        d="M11.453,0c-.121,0-.245,0-.365.014A4.8,4.8,0,0,0,7.943,1.769,4.789,4.789,0,0,0,4.726.146H4.579A4.528,4.528,0,0,0,0,4.579c-.089,2.3,1.438,4.236,2.6,5.5A25.674,25.674,0,0,0,7.78,14.236a.775.775,0,0,0,.805-.021A25.736,25.736,0,0,0,13.6,9.846c1.107-1.308,2.558-3.313,2.384-5.6A4.536,4.536,0,0,0,11.453,0m0,1.367a3.2,3.2,0,0,1,3.2,2.985c.135,1.776-1.113,3.474-2.062,4.6a24.721,24.721,0,0,1-4.44,3.924A24.207,24.207,0,0,1,3.569,9.138c-.991-1.081-2.3-2.724-2.234-4.506a3.161,3.161,0,0,1,3.237-3.12h.115a3.48,3.48,0,0,1,2.3,1.209l1,1.053.955-1.093a3.485,3.485,0,0,1,2.261-1.3c.084-.008.17-.01.255-.01"
+                                        transform="translate(0.001)"
+                                        stroke="#f0f7f8"
+                                        stroke-width="0.25"
+                                        fill-rule="evenodd"
+                                      />
+                                    </g>
+                                  </Icon>
+                                  <Icon class="liked" component={Svg} viewBox="0 0 16.249 14.588">
+                                    <path
+                                        d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
+                                        transform="translate(0)"
+                                        fill="#000"
+                                        fill-rule="evenodd"
+                                      />
+                                  </Icon>
                                 </IconButton>
                         </div>
                             <h1 class="mb-0 mt-40">{destination.name}</h1>
@@ -209,7 +319,9 @@ import { DestinationModel } from '$lib/models/destination';
                                 <a href="#">
                                     <div class="item-advisor">
                                         <div class="thumbnail">
-                                            <img src="/img/experiences/advisor-1.jpg" alt=""/>
+                                            <div class="image-cover" style="padding-top: calc( 410 / 315 * 100% );">
+                                                <BlurhashImage src="/img/experiences/advisor-1.jpg" fadeDuration={1000}/>
+                                            </div>
                                         </div>
                                         <h4 class="text-h2 mt-30 title">Where to Stay - Hotel Location One</h4>
                                     </div>
@@ -219,7 +331,9 @@ import { DestinationModel } from '$lib/models/destination';
                                 <a href="#">
                                     <div class="item-advisor">
                                         <div class="thumbnail">
-                                            <img src="/img/experiences/advisor-2.jpg" alt=""/>
+                                            <div class="image-cover" style="padding-top: calc( 410 / 315 * 100% );">
+                                                <BlurhashImage src="/img/experiences/advisor-2.jpg"/>
+                                            </div>
                                         </div>
                                         <h4 class="text-h2 mt-30 title">Where to Stay - Hotel Location One</h4>
                                     </div>
@@ -229,7 +343,9 @@ import { DestinationModel } from '$lib/models/destination';
                                 <a href="#">
                                     <div class="item-advisor">
                                         <div class="thumbnail">
-                                            <img src="/img/experiences/advisor-3.jpg" alt=""/>
+                                            <div class="image-cover" style="padding-top: calc( 410 / 315 * 100% );">
+                                                <BlurhashImage src="/img/experiences/advisor-3.jpg"/>
+                                            </div>
                                         </div>
                                         <h4 class="text-h2 mt-30 title">Where to Stay - Hotel Location One</h4>
                                     </div>
@@ -239,7 +355,9 @@ import { DestinationModel } from '$lib/models/destination';
                                 <a href="#">
                                     <div class="item-advisor">
                                         <div class="thumbnail">
-                                            <img src="/img/experiences/advisor-3.jpg" alt=""/>
+                                            <div class="image-cover" style="padding-top: calc( 410 / 315 * 100% );">
+                                                <BlurhashImage src="/img/experiences/advisor-3.jpg"/>
+                                            </div>
                                         </div>
                                         <h4 class="text-h2 mt-30 title">Where to Stay - Hotel Location One</h4>
                                     </div>
@@ -276,7 +394,9 @@ import { DestinationModel } from '$lib/models/destination';
                     <Cell spanDevices={{desktop: 6,tablet: 8, phone: 4}}>
                         <div class="item-product">
                             <div class="thumbnail">
-                                <img src="/img/experiences/product-1.jpg" alt=""/>
+                                <div class="image-cover" style="padding-top: calc( 142 / 165 * 100% );">
+                                    <BlurhashImage src="/img/experiences/product-1.jpg"/>
+                                </div>
                             </div>
                             <div class="title-wrap">
                                 <h5>Get the Look</h5>
@@ -297,7 +417,9 @@ import { DestinationModel } from '$lib/models/destination';
                             <Cell spanDevices={{desktop: 6,tablet: 8, phone: 4}}>
                                 <div class="item-product">
                                     <div class="thumbnail">
-                                        <img src="/img/experiences/product-2.jpg" alt=""/>
+                                        <div class="image-cover" style="padding-top: calc( 58 / 45 * 100% );">
+                                            <BlurhashImage src="/img/experiences/product-2.jpg"/>
+                                        </div>
                                     </div>
                                     <div class="title-wrap">
                                         <h5>Get the Look</h5>
@@ -316,7 +438,9 @@ import { DestinationModel } from '$lib/models/destination';
                             <Cell spanDevices={{desktop: 6,tablet: 8, phone: 4}}>
                                 <div class="item-product">
                                     <div class="thumbnail">
-                                        <img src="/img/experiences/product-3.jpg" alt=""/>
+                                        <div class="image-cover" style="padding-top: calc( 58 / 45 * 100% );">
+                                            <BlurhashImage src="/img/experiences/product-3.jpg"/>
+                                        </div>
                                     </div>
                                     <div class="title-wrap">
                                         <h5>Get the Look</h5>
@@ -392,13 +516,15 @@ import { DestinationModel } from '$lib/models/destination';
                     <LayoutGrid class="p-0">
                         {#each experiences as item}
                         <Cell spanDevices={{desktop:3, phone: 2, tablet: 4}}>
-                            <a href={item.link}>
                                 <div class="experience-item">
                                     <div class="thumbnail">
+                                      <a href={item.link}>
                                         <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
+                                            <BlurhashImage src={item.featuredPhotoWithHash.url} hash={item.featuredPhotoWithHash.blurHash} />
                                           <img src={item.featuredPhoto} alt=""/>
                                         </div>
-                                        <IconButton class="btn-favorite">
+                                      </a>
+                                        <IconButton class="btn-favorite {item.liked ? 'liked' : ''}" on:click={likeExperience(item)}>
                                             <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
                                                 <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
                                             </Icon>
@@ -407,15 +533,16 @@ import { DestinationModel } from '$lib/models/destination';
                                             </Icon>
                                         </IconButton>
                                     </div>
-                                    <LayoutGrid class="p-0">
-                                        <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">{item.country_title}</p></Cell>
-                                        <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-right">Experience</p></Cell>
-                                    </LayoutGrid>
+                                    <a href={item.link}>
+                                      <LayoutGrid class="p-0">
+                                          <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">{item.country_title}</p></Cell>
+                                          <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-right">Experience</p></Cell>
+                                      </LayoutGrid>
+                                    </a>
                                     <div class="divider"></div>
                                     <h4 class="text-h2 title">{item.title}</h4>
                                     <p class="short-text m-none">{item.excerpt}</p>
                                 </div>
-                            </a>
                         </Cell>
                         {/each}
                     </LayoutGrid>
@@ -427,224 +554,234 @@ import { DestinationModel } from '$lib/models/destination';
     {/if}
   </Layout>
   <ProductSliderModal bind:open={openProductSlide} products={products} bind:active={productIndex}>no content</ProductSliderModal>
-  
+  <OyNotification />
   <style lang="scss">
-    :global(.show-on-sticky) {
-      display: none;
+    :global(.show-on-sticky){
+        display: none;
     }
-    :global(.is_sticky .show-on-sticky) {
-      display: block;
+    :global(.is_sticky .show-on-sticky){
+        display: block;
     }
-    .content :global(.mdc-button) {
-      width: 220px;
+    .content :global(.mdc-button){
+        width: 220px;
     }
     /* Header title */
-    .header-title {
-      background-color: #f0f7f8;
+    .header-title{
+        background-color: #F0F7F8;
     }
-    .experience-detail-image {
-      width: 100%;
-      height: 100%;
-    }
-    .experience-detail-image .thumbnail {
-      height: 100%;
-      background-size: cover;
-      background-repeat: no-repeat;
-    }
-    .header-title .action-buttons {
-      position: absolute;
-      top: 85px;
-      right: 100px;
-    }
-    .header-title .short-description {
-      width: 80%;
-    }
-  
-    .section-title :global(.mdc-tab) {
-      padding: 0;
-      margin-right: 30px;
-    }
-    .section-title :global(.mdc-tab .mdc-tab__content) {
-      width: 100%;
-      justify-content: left;
-    }
-  
-    .detail-content .container > :global(.mdc-layout-grid) {
-      --mdc-layout-grid-gutter-desktop: 100px;
-    }
-  
-    .detail-content .container :global(.mdc-layout-grid .mdc-layout-grid) {
-      --mdc-layout-grid-gutter-desktop: 30px;
-    }
-  
-    /* Products */
-    .item-product .title-wrap {
-      position: relative;
-    }
-    .item-product .title-wrap :global(.mdc-icon-button) {
-      position: absolute;
-      top: 50%;
-      right: 0;
-      transform: translateY(-50%);
-    }
-  
-    .item-product .title-wrap .divider:after {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-  
-    .products-list :global(.mdc-layout-grid__inner) {
-      overflow-x: auto;
-      grid-auto-flow: column;
-      padding-bottom: 80px;
-    }
-    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-track) {
-      background-color: #d3d3d3;
-    }
-    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar) {
-      height: 10px;
-      background-color: #d3d3d3;
-    }
-    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-      background-color: #91421c;
-    }
-    @media (min-width: 1240px) {
-      .products-list :global(.mdc-layout-grid__inner) {
-        grid-auto-columns: minmax(
-          calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)),
-          1fr
-        );
-        grid-template-columns: repeat(
-          auto-fill,
-          minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr)
-        );
-      }
-    }
-    @media (max-width: 1239px) and (min-width: 905px) {
-      .products-list :global(.mdc-layout-grid__inner) {
-        grid-auto-columns: minmax(
-          calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)),
-          1fr
-        );
-        grid-template-columns: repeat(
-          auto-fill,
-          minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)), 1fr)
-        );
-      }
-    }
-    @media (max-width: 904px) and (min-width: 600px) {
-      .products-list :global(.mdc-layout-grid__inner) {
-        grid-auto-columns: minmax(
-          calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
-          1fr
-        );
-        grid-template-columns: repeat(
-          auto-fill,
-          minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
-        );
-      }
-    }
-    @media (max-width: 599px) {
-      .products-list :global(.mdc-layout-grid__inner) {
-        grid-auto-columns: minmax(
-          calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
-          1fr
-        );
-        grid-template-columns: repeat(
-          auto-fill,
-          minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
-        );
-      }
-    }
-  
-    .products-list :global(.item-product .thumbnail) {
-      width: 100%;
-      padding-bottom: 145%;
-      background-color: #f2f2f2;
-      background-position: center;
-      background-repeat: no-repeat;
-      position: relative;
-    }
-  
-    .products-list :global(.item-product .thumbnail .btn-favorite) {
-      position: absolute;
-      top: 5%;
-      right: 2%;
-      filter: brightness(0);
-    }
-    .products-list :global(.item-product .thumbnail .btn-favorite .like) {
+
+    :global(.destination-detail .header-title  .btn-favorite){
+    position: relative;
+    :global(.like){
       display: block;
     }
-    .products-list :global(.item-product .thumbnail .btn-favorite .liked) {
+    :global(.liked){
       display: none;
     }
-    .products-list :global(.item-product .thumbnail .btn-favorite:hover .like) {
-      display: none;
+    &:hover{
+      :global(.like){
+        display: none;
+      }
+      :global(.liked){
+        display: block;
+      }
     }
-    .products-list :global(.item-product .thumbnail .btn-favorite:hover .liked) {
-      display: block;
-    }
-  
-    .experience-item :global(.mdc-layout-grid) {
-      --mdc-layout-grid-gutter-desktop: 0;
-    }
-    .experience-item .divider::after {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-    .experience-item .title {
-      height: 50px;
-      overflow: hidden;
-    }
-    .experience-item .thumbnail {
-      position: relative;
-    }
-    .experience-item .thumbnail :global(.btn-favorite) {
-      position: absolute;
-      top: 2%;
-      right: 2%;
-    }
-    .experience-item .thumbnail :global(.btn-favorite .like) {
-      display: block;
-    }
-    .experience-item .thumbnail :global(.btn-favorite .liked) {
-      display: none;
-    }
-    .experience-item .thumbnail :global(.btn-favorite:hover .like) {
-      display: none;
-    }
-    .experience-item .thumbnail :global(.btn-favorite:hover .liked) {
-      display: block;
-    }
-    :global(.is_sticky.header-title) {
-      padding-bottom: 50px !important;
-    }
-  
-    .divider:after {
-      background-color: #000;
-    }
-  
-    .content :global(.mdc-icon-button) {
-      margin-top: -15px;
-    }
-  
-    @media screen and (max-width: 839px) {
-      .experience-detail-image {
-        position: relative;
+  }
+  :global(.destination-detail .header-title  .btn-favorite.liked){
+    :global(.liked){
+        display: block;
+      }
+      :global(.like){
+        display: none;
+      }
+  }
+
+    .experience-detail-slides{
+        height: 100%;
         width: 100%;
-        padding-bottom: 65.625%;
-        height: auto;
-      }
-      .experience-detail-image .thumbnail {
-        position: absolute;
-        top: 0;
-        left: 0;
+        --wrap-width: 100%;
+    }
+
+    .experience-detail-slides :global(.dots){
+        display: none;
+    }
+
+    .experience-detail-slides{
+        :global(.carousel), :global(.slides), :global(.slides div){
+            height: 100%;
+        }
+    }
+
+    .experience-detail-slides :global(.slide-item){
         width: 100%;
         height: 100%;
-        background-size: cover;
         background-repeat: no-repeat;
-      }
-      .products-list :global(.mdc-layout-grid__inner) {
-        margin-bottom: 45px;
-      }
+        background-size: cover;
+        background-position: center;
     }
-  </style>
+    .header-title .action-buttons{
+        position: absolute;
+        top: 85px;
+        right: 100px;
+    }
+    .header-title .short-description{
+        width: 80%;
+    }
+
+    .section-title :global(.mdc-tab){
+        padding: 0;
+        margin-right: 30px;
+    }
+    .section-title :global(.mdc-tab .mdc-tab__content){
+        width: 100%;
+        justify-content: left;
+    }
+
+    /* Advisors */
+    .item-advisor .title{
+        height: 30px;
+        overflow: hidden;
+    }
+
+    /* Products */
+    .item-product .title-wrap{
+        position: relative;
+    }
+    .item-product .title-wrap :global(.mdc-icon-button){
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+    }
+
+    .item-product .title-wrap .divider:after{
+        background-color: rgba(0,0,0,0.2);
+    }
+
+    .products-list :global(.mdc-layout-grid__inner){
+        overflow-x: auto;
+        grid-auto-flow: column;
+        margin-bottom: 80px;
+    }
+    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-track){
+        background-color: #D3D3D3;
+    }
+    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar){
+        height: 10px;
+        background-color: #D3D3D3;
+    }
+    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb){
+        background-color: #91421C;
+    }
+
+    .products-list  :global(.item-product .thumbnail){
+        width: 100%;
+        padding-bottom: 145%;
+        background-color:#F2F2F2;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+    }
+
+    .products-list :global(.item-product .thumbnail  .btn-favorite) {
+        position: absolute;
+        top: 5%;
+        right: 2%;
+        filter: brightness(0);
+    }
+    .products-list :global(.item-product .thumbnail  .btn-favorite .like) {
+        display: block;
+    }
+    .products-list :global(.item-product .thumbnail  .btn-favorite .liked) {
+        display: none;
+    }
+    .products-list :global(.item-product .thumbnail .btn-favorite:hover .like) {
+        display: none;
+    }
+    .products-list :global(.item-product .thumbnail  .btn-favorite:hover .liked) {
+        display: block;
+    }
+    @media (min-width: 1240px) {
+        .products-list :global(.mdc-layout-grid__inner) {
+            grid-auto-columns: minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr));
+        }
+    }
+    @media (max-width: 1239px) and (min-width: 905px) {
+        .products-list :global(.mdc-layout-grid__inner) {
+            grid-auto-columns: minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)), 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)), 1fr));
+        }
+    }
+    @media (max-width: 904px) and (min-width: 600px){
+        .products-list :global(.mdc-layout-grid__inner) {
+            grid-auto-columns: minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr));
+        }
+    }
+    @media (max-width: 599px){
+        .products-list :global(.mdc-layout-grid__inner) {
+            grid-auto-columns: minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr));
+        }
+    }
+
+    .experience-item :global(.mdc-layout-grid){
+        --mdc-layout-grid-gutter-desktop: 0;
+    }
+    .experience-item .divider::after{
+        background-color: rgba(0,0,0,0.2);
+    }
+    .experience-item .title{
+        height: 50px;
+        overflow: hidden;
+    }
+
+    :global(.is_sticky.header-title){
+        padding-bottom: 50px !important;
+    }
+
+    .divider:after{
+        background-color: #000;
+    }
+
+    .content :global(.mdc-icon-button){
+        margin-top: -15px;
+    }
+
+    @media screen and (max-width: 839px) {
+        .experience-detail-slides :global(.carousel),.experience-detail-slides :global(.slides),.experience-detail-slides :global(.slides div){
+            height: auto;
+        }
+        .experience-detail-slides :global(.slide-item){
+            padding-top: 70%;
+        }
+        .header-title .short-description{
+            width: 100%;
+        }
+        .experience-detail-slides :global(.wrap-control){
+            display: none;
+        }
+        .experience-detail-slides{
+            margin-bottom: 20px;
+        }
+        .experience-detail-slides :global(.dots){
+            display: flex;
+            justify-content: end;
+            margin-top: 20px;
+            filter: brightness(0);
+        }
+        .item-advisor .title{
+            height: 50px;
+        }
+        .products-list :global(.mdc-layout-grid__inner){
+            margin-bottom: 45px;
+        }
+    }
+    /*@media  (max-width: 1239px){*/
+    /*    :global(.fixed, .is_sticky){*/
+    /*        position: static !important;*/
+    /*    }*/
+    /*}*/
+</style>
   

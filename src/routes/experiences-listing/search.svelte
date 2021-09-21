@@ -13,7 +13,11 @@
   import { ExperienceModel } from '$lib/models/experience';
   import { ExperienceTypeModel } from '$lib/models/experience_type';
   import { DestinationTypeModel } from '$lib/models/destination_type';
-import { CountryModel } from '$lib/models/country';
+  import { CountryModel } from '$lib/models/country';
+  import authStore from '$lib/stores/auth';
+  import OyNotification from '$lib/components/common/OyNotification.svelte';
+  import InviteMembersModal from '$lib/components/modals/InviteMembersModal.svelte';
+  import {BlurhashImage} from 'svelte-blurhash';
   let stringHelper = new StringHelper();
   let searchModel = {
     name: '',
@@ -72,6 +76,10 @@ import { CountryModel } from '$lib/models/country';
   }
 
   onMount(async () => {
+    await getData();
+  });
+
+  async function getData(){
     let url = new URL(location.href);
     searchModel = {
       name: url.searchParams.get('name'),
@@ -99,10 +107,13 @@ import { CountryModel } from '$lib/models/country';
       '/api/page/experience/search?' +
         stringHelper.objectToQueryString(searchParams),
       {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          token: localStorage.getItem('token'),
+        }),
       },
     );
     if (res.ok) {
@@ -132,8 +143,45 @@ import { CountryModel } from '$lib/models/country';
         });
       }
       return;
+    }else{
+      const error = await res.json();
+      if(error.statusCode == 401){
+          localStorage.setItem('token','');
+          authStore.set({ user: undefined });
+          getData();
+      }
     }
-  });
+  }
+
+  async function likeItem(item: ExperienceModel){
+    const res = await fetch(`/api/experiences/like?id=${item.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          token: localStorage.getItem('token'),
+        }),
+    });
+    if (res.ok) {
+      item.liked = !item.liked;
+      let index =  experiences.findIndex((itemDetail)=>itemDetail.id == item.id);
+      if(index >= 0){
+        experiences[index] = item;
+      }
+    }else{
+      const error = await res.json();
+      if(error.statusCode == 401){
+        if(localStorage.getItem('token') != ''){
+          window.pushToast('Your account has expired. Please login to continue using this feature');
+        }else{
+          window.pushToast('Please login to use this feature');
+        }
+        localStorage.setItem('token','');
+        authStore.set({ user: undefined });
+      }
+    }
+  }
 
   async function onSearch() {
     let searchParams: any = {};
@@ -154,10 +202,13 @@ import { CountryModel } from '$lib/models/country';
     const res = await fetch(
       '/api/experiences?' + stringHelper.objectToQueryString(searchParams),
       {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          token: localStorage.getItem('token'),
+        }),
       },
     );
     if (res.ok) {
@@ -169,6 +220,13 @@ import { CountryModel } from '$lib/models/country';
         });
       }
       return;
+    }else{
+      const error = await res.json();
+      if(error.statusCode == 401){
+          localStorage.setItem('token','');
+          authStore.set({ user: undefined });
+          onSearch();
+      }
     }
   }
 </script>
@@ -181,7 +239,7 @@ import { CountryModel } from '$lib/models/country';
     onScrollFixedHeader();
   }}
 />
-<Layout config={configPage}>
+<Layout config={configPage} on:refreshPage={getData}>
   <div class="content">
     <section class="header-title d-pt-120 d-pb-55 m-pt-90 m-pb-25 full-width">
       <div class="content-wrap">
@@ -295,13 +353,14 @@ import { CountryModel } from '$lib/models/country';
             {#if experiences}
               {#each experiences as item, i}
                 <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-                  <a href={item.link}>
                     <div class="experience-item">
                       <div class="thumbnail">
-                        <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
-                          <img src={item.featuredPhoto} alt="" />
-                        </div>
-                        <IconButton class="btn-favorite">
+                        <a href={item.link}>
+                          <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
+                            <BlurhashImage src={item.featuredPhoto} alt="" fadeDuration="1000" />
+                          </div>
+                        </a>
+                        <IconButton class="btn-favorite {item.liked ? 'liked' : ''}" on:click={likeItem(item)}>
                           <Icon
                             class="like"
                             component={Svg}
@@ -328,21 +387,29 @@ import { CountryModel } from '$lib/models/country';
                           </Icon>
                         </IconButton>
                       </div>
-                      <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                          ><p class="text-eyebrow text-left">{item.country_title}</p></Cell
-                        >
-                        <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                          ><p class="text-eyebrow text-right">
-                            Experience
-                          </p></Cell
-                        >
-                      </LayoutGrid>
-                      <div class="divider" />
-                      <h4 class="text-h2 title">{item.title}</h4>
-                      <p class="short-text m-none">{item.excerpt}</p>
+                      <a href={item.link}>
+                        <LayoutGrid class="p-0 d-block m-none">
+                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                            ><p class="text-eyebrow text-left">{item.country_title}</p></Cell
+                          >
+                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                            ><p class="text-eyebrow text-right">
+                              Experience
+                            </p></Cell
+                          >
+                        </LayoutGrid>
+                        <LayoutGrid class="p-0 d-none m-block">
+                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                            ><p class="text-eyebrow text-left">
+                              Experience
+                            </p></Cell
+                          >
+                        </LayoutGrid>
+                        <div class="divider" />
+                        <h4 class="text-h2 title">{item.title}</h4>
+                        <p class="short-text m-none">{item.excerpt}</p>
+                      </a>
                     </div>
-                  </a>
                 </Cell>
               {/each}
             {/if}
@@ -358,6 +425,7 @@ import { CountryModel } from '$lib/models/country';
   bind:countries
   on:close={onSearchSubmit}
 />
+<OyNotification />
 
 <style>
   .header-title {
@@ -432,23 +500,6 @@ import { CountryModel } from '$lib/models/country';
   }
   .experience-item .thumbnail {
     position: relative;
-  }
-  .experience-item .thumbnail :global(.btn-favorite) {
-    position: absolute;
-    top: 2%;
-    right: 2%;
-  }
-  .experience-item .thumbnail :global(.btn-favorite .like) {
-    display: block;
-  }
-  .experience-item .thumbnail :global(.btn-favorite .liked) {
-    display: none;
-  }
-  .experience-item .thumbnail :global(.btn-favorite:hover .like) {
-    display: none;
-  }
-  .experience-item .thumbnail :global(.btn-favorite:hover .liked) {
-    display: block;
   }
 
   .item-read-more {

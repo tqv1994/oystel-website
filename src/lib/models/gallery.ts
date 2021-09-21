@@ -11,6 +11,9 @@ export class GalleryModel{
         medium: ThumbnailModel,
         small: ThumbnailModel
     };
+    blurHash: string;
+    hash: string;
+    
     constructor(values: Object = {}) {
         Object.assign(this, values);
     }

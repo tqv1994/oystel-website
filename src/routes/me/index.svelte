@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import authStore from '$lib/stores/auth';
   import { onMount, afterUpdate } from 'svelte';
   import Button, { Label, Icon } from '@smui/button';
@@ -7,12 +7,15 @@
   import Textfield from '@smui/textfield';
   import IconButton from '@smui/icon-button';
   import Svg from '@smui/common/Svg.svelte';
+  import { BlurhashImage } from 'svelte-blurhash';
+import { UserModel } from '$lib/models/user';
 
-  let userModel = $authStore.user;
+  let userModel = new UserModel($authStore.user);
   let modelEmailPreferences = {
     neverMissADrop: false,
     curatedForYou: false,
   };
+  console.log(userModel);
   let isEditProfile = false;
   afterUpdate(() => {
     if (!$authStore.user) {
@@ -72,7 +75,10 @@
   <LayoutGrid class="p-0">
     <Cell spanDevices={{ desktop: 4, phone: 4, tablet: 8 }}>
       <div class="thumbnail user-profile-image">
-        <img src="/img/profile/profile-1.jpg" alt="" />
+        <div class="image-cover" style="padding-top: 100%">
+          <BlurhashImage  src={userModel.avatarUrl} hash={userModel.avatar?.blurHash} fadeDuration="1000" alt="" />
+        </div>
+        
         <IconButton class="btn-update-avatar">
           <Icon  class="like"  component={Svg} viewBox="0 0 40 40">
               <g id="Icon_-_Edit" data-name="Icon - Edit" transform="translate(13.624 32.383) rotate(-135)">
@@ -268,7 +274,7 @@
   </LayoutGrid>
 {/if}
 
-<style type="text/css">
+<style lang="scss">
   a.text-input {
     text-decoration: underline;
   }
@@ -284,6 +290,13 @@
     position: relative;
     border: 1px solid #000;
   }
+
+  .user-profile-image{
+    img, div{
+      border-radius: 100%;
+    }
+  }
+
   @media screen and (max-width: 839px) {
     .user-profile-image {
       max-width: 120px;

@@ -6,12 +6,12 @@ import { apiPrefix } from '$lib/env';
 /**
  * @type {import('@sveltejs/kit').Post}
  */
-export const get: RequestHandler = async (request: Request<Record<string, any>,AuthForm>) => {
-    const apiConfig = new ApiConfig();
+export const post: RequestHandler = async (request: Request<Record<string, any>,AuthForm>) => {
     try {
         const res = await fetch(`${apiPrefix}/page/experience`, {
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: request.body.token != '' ? 'Bearer ' + request.body.token : "",
             },
         });
         const headers = sessionCookieFromResponse(res);

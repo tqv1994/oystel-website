@@ -14,6 +14,9 @@
     import { DestinationTypeModel } from '$lib/models/destination_type';
     import { CountryModel } from '$lib/models/country';
     import { DestinationModel } from '$lib/models/destination';
+    import authStore from '$lib/stores/auth';
+    import OyNotification from '$lib/components/common/OyNotification.svelte';
+    import { BlurhashImage } from 'svelte-blurhash';
     let stringHelper = new StringHelper();
     let searchModel = {
         name: '',
@@ -36,45 +39,89 @@
     let countries: CountryModel[];
 
     onMount(async () => {
-    const res = await fetch('/api/page/destination', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      await getData();
     });
-    if (res.ok) {
-      const content = await res.json();
-      if (content.destination_types) {
-        destination_types = [];
-        content.destination_types.map((type) => {
-          let destinations: DestinationModel[] = [];
-          if (type.destinations) {
-            type.destinations.map((item) => {
-              destinations.push(new DestinationModel(item));
-            });
-          }
-          type.destinations = destinations;
-          destination_types.push(new DestinationTypeModel(type));
-        });
+
+    async function getData(){
+      const res = await fetch('/api/page/destination', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: localStorage.getItem('token'),
+        }),
+      });
+      if (res.ok) {
+        const content = await res.json();
+        if (content.destination_types) {
+          destination_types = [];
+          content.destination_types.map((type: any) => {
+            let destinations: DestinationModel[] = [];
+            if (type.destinations) {
+              type.destinations.map((item: any) => {
+                destinations.push(new DestinationModel(item));
+              });
+            }
+            type.destinations = destinations;
+            destination_types.push(new DestinationTypeModel(type));
+          });
+        }
+        if (content.experience_types) {
+          experience_types = [];
+          content.experience_types.map((type: any) => {
+            experience_types.push(new ExperienceTypeModel(type));
+          });
+        }
+        if (content.countries) {
+          countries = [];
+          content.countries.map((item: any) => {
+            countries.push(new CountryModel(item));
+          });
+        }
+        // authModel = authStore.user;
+        // doAfterSignup(user);
+        return;
+        // return goto('/me').then(auth.signOut);
+      }else{
+        const error = await res.json();
+        if(error.statusCode == 401){
+            localStorage.setItem('token','');
+            authStore.set({ user: undefined });
+            getData();
+        }
       }
-      if (content.experience_types) {
-        experience_types = [];
-        content.experience_types.map((type) => {
-          experience_types.push(new ExperienceTypeModel(type));
-        });
-      }
-      if (content.countries) {
-        countries = [];
-        content.countries.map((item: any) => {
-          countries.push(new CountryModel(item));
-        });
-      }
-      // authModel = authStore.user;
-      // doAfterSignup(user);
-      return;
-      // return goto('/me').then(auth.signOut);
     }
-  });
+
+    async function likeItem(item: DestinationModel, indexType: number){
+      const res = await fetch(`/api/destinations/like?id=${item.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('token'),
+          }),
+      });
+      if (res.ok) {
+        item.liked = !item.liked;
+        let index =  destination_types[indexType].destinations.findIndex((itemDetail)=>itemDetail.id == item.id);
+        if(index >= 0){
+          destination_types[indexType].destinations[index] = item;
+        }
+      }else{
+        const error = await res.json();
+        if(error.statusCode == 401){
+          if(localStorage.getItem('token') != ''){
+            window.pushToast('Your account has expired. Please login to continue using this feature');
+          }else{
+            window.pushToast('Please login to use this feature');
+          }
+          localStorage.setItem('token','');
+          authStore.set({ user: undefined });
+        }
+      }
+    }
 
     function onSearchSubmit(){
         let queryString = stringHelper.objectToQueryString(searchModel);
@@ -98,7 +145,7 @@
     }
 </script>
 <svelte:window on:load={()=>{onScrollFixedHeader();}} on:resize={()=>{}} on:scroll={()=>{}}/>
-<Layout config={configPage}>
+<Layout config={configPage} on:refreshPage={()=>{getData()}}>
     <div class="content">
         <section class="header-title d-pt-120 d-pb-95 m-pt-90 m-pb-25 full-width">
             <div class="content-wrap">
@@ -206,24 +253,29 @@
         </section>
         <section class="d-pt-85 d-pb-95 m-pt-50 m-pb-70">
             {#if destination_types && destination_types.length > 0}
-                {#each destination_types as type}
+                {#each destination_types as type, indexType}
                     <div class="container">
                         <div class="section-title">
                             <LayoutGrid class="p-0">
-                                <Cell span="12"><h2 class="text-h1 title mt-0 d-mb-30">{type.title}</h2></Cell>
+                                <Cell span="12"><h2 class="text-h1 title {indexType == 0 ?  'mt-0' : ''} d-mb-30">{type.title}</h2></Cell>
                             </LayoutGrid>
                         </div>
                         <div class="section-content">
                             <LayoutGrid class="p-0">
                                 {#each type.destinations as  item}
                                     <Cell spanDevices={{ desktop: 3, phone: 2 }}>
-                                        <a href="{item.link}">
                                             <div class="experience-item">
                                                 <div class="thumbnail">
+                                                  <a href="{item.link}">
                                                     <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
-                                                        <img src="{item.featuredPhoto}" alt=""/>
+                                                      <BlurhashImage 
+                                                        src={item.featuredPhotoWithHash.url}
+                                                        hash={item.featuredPhotoWithHash.blurHash}
+                                                        fadeDuration={1000}
+                                                        />
                                                     </div>
-                                                    <IconButton class="btn-favorite">
+                                                  </a>
+                                                    <IconButton class="btn-favorite {item.liked ? 'liked' : ''}" on:click={likeItem(item, indexType)}>
                                                         <Icon  class="like"  component={Svg} viewBox="-4 -4 24 24">
                                                             <path d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009" transform="translate(0.001)" fill="#fff" fill-rule="evenodd"/>
                                                         </Icon>
@@ -232,15 +284,19 @@
                                                         </Icon>
                                                     </IconButton>
                                                 </div>
-                                                <LayoutGrid  class="p-0">
-                                                    <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">{item.country_title}</p></Cell>
-                                                    <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
-                                                </LayoutGrid >
-                                                <div class="divider"></div>
-                                                <h4 class="text-h2 title">{item.name}</h4>
-                                                <p class="short-text m-none">{item.excerpt}</p>
+                                                <a href={item.link}>
+                                                  <LayoutGrid  class="p-0 d-block m-none">
+                                                      <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">{item.country_title}</p></Cell>
+                                                      <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-right">Destination</p></Cell>
+                                                  </LayoutGrid >
+                                                  <LayoutGrid  class="p-0 m-block d-none">
+                                                      <Cell spanDevices={{ desktop: 6, phone: 2 }}><p class="text-eyebrow text-left">Destination</p></Cell>
+                                                  </LayoutGrid >
+                                                  <div class="divider"></div>
+                                                  <h4 class="text-h2 title">{item.name}</h4>
+                                                  <p class="short-text m-none">{item.excerpt}</p>
+                                                </a>
                                             </div>
-                                        </a>
                                     </Cell>
                                 {/each}
                                 <Cell spanDevices={{ desktop: 3, phone: 2 }}>
@@ -258,6 +314,7 @@
         </section>
     </div>
 </Layout>
+<OyNotification />
 <HeaderActionMobile bind:content={contentHeaderActionMobile} bind:searchModel on:close={onSearchSubmit}></HeaderActionMobile>
 <style>
     .header-title{
@@ -325,26 +382,7 @@
         height: 50px;
         overflow: hidden;
     }
-    .experience-item .thumbnail {
-        position: relative;
-    }
-    .experience-item .thumbnail :global(.btn-favorite) {
-        position: absolute;
-        top: 2%;
-        right: 2%;
-    }
-    .experience-item .thumbnail :global(.btn-favorite .like) {
-        display: block;
-    }
-    .experience-item .thumbnail :global(.btn-favorite .liked) {
-        display: none;
-    }
-    .experience-item .thumbnail :global(.btn-favorite:hover .like) {
-        display: none;
-    }
-    .experience-item .thumbnail :global(.btn-favorite:hover .liked) {
-        display: block;
-    }
+    
 
     .item-read-more{
         background-color: #F0F7F8;
@@ -353,8 +391,9 @@
     .item-read-more .label{
         position: absolute;
         top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translateY(-50%);
+        width: 100%;
+        text-align: center;
     }
     .item-read-more .label .material-icons{
         position: relative;

@@ -31,10 +31,11 @@
     import {StringHelper} from '$lib/helpers';
     import Layout from '$lib/components/common/Layout.svelte';
     import { AdvisorModel } from '$lib/models/advisor';
-import InviteMembersModal from '$lib/components/modals/InviteMembersModal.svelte';
-import { CountryModel } from '$lib/models/country';
-import { DestinationModel } from '$lib/models/destination';
-import { ExperienceModel } from '$lib/models/experience';
+    import InviteMembersModal from '$lib/components/modals/InviteMembersModal.svelte';
+    import { CountryModel } from '$lib/models/country';
+    import { DestinationModel } from '$lib/models/destination';
+    import { ExperienceModel } from '$lib/models/experience';
+    import { BlurhashImage } from 'svelte-blurhash';
     let stringHelper = new StringHelper();
     let searchModel = {
         name: '',
@@ -55,6 +56,10 @@ import { ExperienceModel } from '$lib/models/experience';
     let myRecentTrips: any[];
     let countries: any[];
     onMount(async() => {
+        await getData();
+    });
+
+    async function getData(){
         const res = await fetch('/api/page/advisor/detail?id='+id, {
         method: 'GET',
         headers: {
@@ -62,29 +67,31 @@ import { ExperienceModel } from '$lib/models/experience';
         },
         });
         if (res.ok) {
-        const content = await res.json();
-        if(content.advisor){
-            advisor = new AdvisorModel(content.advisor);
+            const content = await res.json();
+            if(content.advisor){
+                advisor = new AdvisorModel(content.advisor);
+            }
+            if(content.countries){
+                countries = content.countries;
+            }
+            if(content.myRecentTrips){
+                myRecentTrips = [];
+                content.myRecentTrips.map((item: any)=>{
+                    if(item.type == 'destination'){
+                        myRecentTrips.push(new DestinationModel(item));
+                    }else{
+                        myRecentTrips.push(new ExperienceModel(item));
+                    }
+                });
+            }
+            // authModel = authStore.user;
+            // doAfterSignup(user);
+            return;
+            // return goto('/me').then(auth.signOut);
+        }else{
         }
-        if(content.countries){
-            countries = content.countries;
-        }
-        if(content.myRecentTrips){
-            myRecentTrips = [];
-            content.myRecentTrips.map((item: any)=>{
-                if(item.type == 'destination'){
-                    myRecentTrips.push(new DestinationModel(item));
-                }else{
-                    myRecentTrips.push(new ExperienceModel(item));
-                }
-            });
-        }
-        // authModel = authStore.user;
-        // doAfterSignup(user);
-        return;
-        // return goto('/me').then(auth.signOut);
-        }
-    });
+    }
+
     function onScrollFixedContactInfo(){
         if(document.documentElement.clientWidth > 839) {
             if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
@@ -119,7 +126,7 @@ import { ExperienceModel } from '$lib/models/experience';
                         <LayoutGrid class="p-0">
                             <Cell spanDevices={{desktop: 6, tablet: 8, phone: 4}} class="text-left">
                                 <div class="thumbnail">
-                                    <img src="{advisor.userMe.avatarUrl}" alt=""/>
+                                    <BlurhashImage src="{advisor.userMe.avatarUrl}" fadeDuration="1000" alt=""/>
                                 </div>
                             </Cell>
                             <Cell spanDevices={{desktop: 6, tablet: 8, phone: 4}} class="text-center t-block m-none">
@@ -195,7 +202,7 @@ import { ExperienceModel } from '$lib/models/experience';
                                             <div class="trip-item">
                                                 <div class="thumbnail">
                                                     <div class="image-cover" style="padding-top: calc(335 / 258 * 100%)">
-                                                        <img src={item.featuredPhoto} alt=""/>
+                                                        <BlurhashImage src={item.featuredPhotoWithHash.url} hash={item.featuredPhotoWithHash.blurHash} fadeDuration="1000" alt=""/>
                                                     </div>
                                                 </div>
                                                 <LayoutGrid class="p-0">
@@ -258,7 +265,7 @@ import { ExperienceModel } from '$lib/models/experience';
     .contact-info .thumbnail{
         width: 100px;
     }
-    .contact-info .thumbnail img{
+    .contact-info .thumbnail :global(img){
         border-radius: 50%;
     }
     .contact-info :global(.btn-share){

@@ -1,3 +1,14 @@
+<script context="module">
+  export const load = ({session}) => {
+    console.log(session);
+    return {
+      props: {
+        session,
+      },
+    };
+  };
+
+</script>
 <script lang="ts">
   import authStore from '$lib/stores/auth';
   import SignupModal from '$lib/components/modals/SignupModal.svelte';
@@ -15,6 +26,7 @@
   import { DropModel } from '$lib/models/drop';
   import { goto } from '$app/navigation';
   import { BlurhashImage } from 'svelte-blurhash';
+  import OyNotification from '$lib/components/common/OyNotification.svelte';
   let openSignupModal, openSigninModal;
   let userModel = $authStore.user;
   let configPage = {
@@ -32,46 +44,103 @@
   }
 
   onMount(async () => {
+    await getData();
+  });
+
+  async function getData(){
     const res = await fetch('/api/page', {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*', 
-        'Access-Control-Allow-Credentials': 'true'
       },
+      body: JSON.stringify({
+          token: localStorage.getItem('token'),
+        }),
     });
     if (res.ok) {
-      const content = await res.json().then(item=>{
-        if (item.itemsCuratedForYou) {
-          itemsCuratedForYou = [];
-          item.itemsCuratedForYou.map((item: any) => {
-            itemsCuratedForYou.push(new ExperienceModel(item));
-          });
-        }
-        if (item.itemsFromOurAdvisor) {
-          itemsFromOurAdvisor = [];
-          item.itemsFromOurAdvisor.map((item: any) => {
-            if (item.type === 'experience') {
-              itemsFromOurAdvisor.push(new ExperienceModel(item));
-            } else if (item.type === 'destination') {
-              itemsFromOurAdvisor.push(new DestinationModel(item));
-            }
-          });
-        }
-        if (item.itemsFeaturedDrop) {
-          itemsFeaturedDrop = [];
-          item.itemsFeaturedDrop.map((item: any) => {
-            itemsFeaturedDrop.push(new DropModel(item));
-          });
-        }
-      });
-      
+      const content = await res.json();
+      if (content.itemsCuratedForYou) {
+        itemsCuratedForYou = [];
+        content.itemsCuratedForYou.map((item: any) => {
+          itemsCuratedForYou.push(new ExperienceModel(item));
+        });
+      }
+      if (content.itemsFromOurAdvisor) {
+        itemsFromOurAdvisor = [];
+        content.itemsFromOurAdvisor.map((item: any) => {
+          if (item.type === 'experience') {
+            itemsFromOurAdvisor.push(new ExperienceModel(item));
+          } else if (item.type === 'destination') {
+            itemsFromOurAdvisor.push(new DestinationModel(item));
+          }
+        });
+      }
+      if (content.itemsFeaturedDrop) {
+        itemsFeaturedDrop = [];
+        content.itemsFeaturedDrop.map((item: any) => {
+          itemsFeaturedDrop.push(new DropModel(item));
+        });
+      }
       // authModel = authStore.user;
       // doAfterSignup(user);
       return;
       // return goto('/me').then(auth.signOut);
+    }else{
+      const error = await res.json();
+      if(error.statusCode == 401){
+        localStorage.setItem('token','');
+        authStore.set({ user: undefined });
+        getData();
+      }
     }
-  });
+  }
+
+  async function likeItem(item: any, type: string = 'experience'){
+    let url = '';
+    if(type == 'destination'){
+      url = `/api/destinations/like?id=${item.id}`;
+    }else{
+      url = `/api/experiences/like?id=${item.id}`;
+    }
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          token: localStorage.getItem('token'),
+        }),
+    });
+    if (res.ok) {
+      item.liked = !item.liked;
+      if(type == 'destination'){
+        let indexFromOurAdvisor = itemsFromOurAdvisor.findIndex((itemDetail)=>itemDetail.id == item.id && itemDetail.type && itemDetail.type == 'destination');
+        if(indexFromOurAdvisor >= 0){
+          itemsFromOurAdvisor[indexFromOurAdvisor] = item;
+        }
+      }else{
+        let index =  itemsCuratedForYou.findIndex((itemDetail)=>itemDetail.id == item.id);
+        if(index >= 0){
+          itemsCuratedForYou[index] = item;
+        }
+        let indexFromOurAdvisor = itemsFromOurAdvisor.findIndex((itemDetail)=>itemDetail.id == item.id && itemDetail.type && itemDetail.type == 'experience');
+        if(indexFromOurAdvisor >= 0){
+          itemsFromOurAdvisor[indexFromOurAdvisor] = item;
+        }
+      }
+    }else{
+      const error = await res.json();
+      if(error.statusCode == 401){
+        if(localStorage.getItem('token') != ''){
+          window.pushToast('Your account has expired. Please login to continue using this feature');
+        }else{
+          window.pushToast('Please login to use this feature');
+        }
+        localStorage.setItem('token','');
+        authStore.set({ user: undefined });
+      }
+    }
+  }
 
   function callOpenSignupModal() {
     if (!userModel) {
@@ -90,7 +159,7 @@
   }
 </script>
 
-<Layout bind:config={configPage}>
+<Layout bind:config={configPage} on:refreshPage={getData}>
   <div class="content">
     <section id="slider" class="full-width">
       <OyCarousel perPage={{ 800: 1 }} draggable={false} isFadeIn={true}>
@@ -224,7 +293,7 @@
             <div class="item-featured-drop new">
               <div class="thumbnail dark d-mb-70 m-mb-40">
                 <div class="image-cover" style="padding-top: calc(633/430 * 100%)">
-                  <img src={itemsFeaturedDrop[0].featuredPhoto} />
+                  <BlurhashImage src={itemsFeaturedDrop[0].featuredPhotoWithHash.url} hash={itemsFeaturedDrop[0].featuredPhotoWithHash.blurHash} fadeDuration="1000" />
                 </div>
                 <div class="caption">
                   <span
@@ -262,7 +331,7 @@
                       <div class="item-featured-drop">
                         <div class="thumbnail dark d-mb-60 m-mb-40">
                           <div class="image-cover" style="padding-top: calc(356/227 * 100%)">
-                            <img class="" src={item.featuredPhoto} alt="" />
+                            <BlurhashImage class="" src={item.featuredPhotoWithHash.url} hash={item.featuredPhotoWithHash.blurHash} fadeDuration="1000" alt="" />
                           </div>
                           <div class="caption text-h5">
                             <span>{item.products.length} Packages left</span>
@@ -333,13 +402,16 @@
         <Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }}>
           {#if itemsCuratedForYou.length > 0}
             <div class="item-experience featured text-center">
-              <a href={itemsCuratedForYou[0].link}>
                 <div class="thumbnail">
-                  <div class="image-cover" style="padding-top: calc(628/483 * 100%)">
-                    <img src={itemsCuratedForYou[0].featuredPhoto} />
-                  </div>
-                  <IconButton class="btn-favorite">
-                    <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
+                  <a href={itemsCuratedForYou[0].link}>
+                    <div class="image-cover" style="padding-top: calc(628/483 * 100%)">
+                      <BlurhashImage src={itemsCuratedForYou[0].featuredPhotoWithHash.url} hash={itemsCuratedForYou[0].featuredPhotoWithHash.blurHash} fadeDuration="1000" />
+                    </div>
+                  </a>
+                  <IconButton class="btn-favorite {itemsCuratedForYou[0].liked ? 'liked' : ''}"
+                  on:click={()=>{likeItem(itemsCuratedForYou[0])}}
+                  >
+                    <Icon class="like"  component={Svg} viewBox="-4 -4 24 24">
                       <path
                         d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
                         transform="translate(0.001)"
@@ -357,7 +429,6 @@
                     </Icon>
                   </IconButton>
                 </div>
-              </a>
               <div class="d-pl-80 d-pr-80">
                 <p class="text-h1 mt-40 d-mb-25 m-mb-15">Curated for You</p>
                 <div class="divider d-pb-25 m-pb-15" />
@@ -375,14 +446,15 @@
               {#each itemsCuratedForYou as item, index}
                 {#if index > 0}
                   <Cell spanDevices={{ desktop: 6, phone: 2 }}>
-                    <a href={item.link}>
                       <div class="item-experience">
                         <div class="thumbnail">
-                          <div class="image-cover" style="padding-top: calc(423/329 * 100%)">
-                            <img src={item.featuredPhoto} />
-                          </div>
-                          <IconButton class="btn-favorite">
-                            <Icon
+                          <a href={item.link}>
+                            <div class="image-cover" style="padding-top: calc(423/329 * 100%)">
+                              <BlurhashImage src={item.featuredPhotoWithHash.url} hash={item.featuredPhotoWithHash.blurHash} fadeDuration="1000" />
+                            </div>
+                          </a>
+                          <IconButton class="btn-favorite {item.liked ? 'liked' : ''}" on:click={()=>{likeItem(item)}}>
+                            <Icon 
                               class="like"
                               component={Svg}
                               viewBox="-4 -4 24 24"
@@ -408,15 +480,16 @@
                             </Icon>
                           </IconButton>
                         </div>
-                        <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">
-                          Experience
-                        </p>
-                        <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-25" />
-                        <h4 class="text-h2 title mt-0">
-                          {item.title}
-                        </h4>
+                        <a href={item.link}>
+                          <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">
+                            Experience
+                          </p>
+                          <div class="divider d-mt-25 d-pb-30 m-mt-15 m-pb-25" />
+                          <h4 class="text-h2 title mt-0">
+                            {item.title}
+                          </h4>
+                        </a>
                       </div>
-                    </a>
                   </Cell>
                 {/if}
               {/each}
@@ -437,12 +510,13 @@
           {#each itemsFromOurAdvisor as item, index}
             <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
               <div class="item-experience">
-                <a href={item.link}>
                   <div class="thumbnail">
-                    <div class="image-cover" style="padding-top: calc(410/315 * 100%)">
-                      <img src={item.featuredPhoto} />
-                    </div>
-                    <IconButton class="btn-favorite">
+                    <a href={item.link}>
+                      <div class="image-cover" style="padding-top: calc(410/315 * 100%)">
+                        <BlurhashImage src={item.featuredPhotoWithHash.url} hash={item.featuredPhotoWithHash.blurHash} fadeDuration="1000" />
+                      </div>
+                    </a>
+                    <IconButton class="btn-favorite {item.liked ? 'liked' : ''}" on:click={()=>{likeItem(item,item.type)}}>
                       <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
                         <path
                           d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
@@ -461,14 +535,15 @@
                       </Icon>
                     </IconButton>
                   </div>
-                  <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">
-                    {item.type == 'experience' ? 'Experience' : 'Destination'}
-                  </p>
-                  <div class="divider d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
-                  <h4 class="text-h2 mt-0 title">
-                    {item.type == 'destination' ? item.name : item.title}
-                  </h4>
-                </a>
+                  <a href={item.link}>
+                    <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">
+                      {item.type == 'experience' ? 'Experience' : 'Destination'}
+                    </p>
+                    <div class="divider d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
+                    <h4 class="text-h2 mt-0 title">
+                      {item.type == 'destination' ? item.name : item.title}
+                    </h4>
+                  </a>
               </div>
             </Cell>
           {/each}
@@ -487,6 +562,7 @@
   bind:authModel={userModel}
   on:close={callOpenSignupModal}
 />
+<OyNotification />
 
 <style>
   @media screen and (max-width: 1239px) {
