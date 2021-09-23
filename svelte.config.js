@@ -1,6 +1,6 @@
 import preprocess from 'svelte-preprocess';
-// import adapter from '@sveltejs/adapter-vercel';
-import netlify  from '@sveltejs/adapter-netlify';
+import adapter from '@sveltejs/adapter-vercel';
+// import netlify  from '@sveltejs/adapter-netlify';
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
@@ -14,7 +14,7 @@ const config = {
       //     assets: 'build',
       //     fallback: null
       // })1,
-      adapter: netlify(),
+      adapter: adapter(),
     target: '#svelte',
 
     vite: {
