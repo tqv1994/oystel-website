@@ -1,4 +1,4 @@
-<script context="module">
+<script lang="ts" context="module">
   export const load = ({session}) => {
     console.log(session);
     return {

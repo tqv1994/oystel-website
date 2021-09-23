@@ -22,7 +22,7 @@ export class DestinationModel{
             photo = new GalleryModel(this.gallery[0]).url;
         }
         if(photo.indexOf(apiPrefix) < 0){
-            photo = apiPrefix+photo;
+            photo = photo;
         }
         return photo;
     }
@@ -76,7 +76,7 @@ export class DestinationModel{
             this.gallery.map((item)=>{
                 item = new GalleryModel(item);
                 if(item.url.indexOf(apiPrefix) < 0){
-                    item.url = apiPrefix+item.url;
+                    item.url = item.url;
                 }
                 photos.push({url: item.url, blurHash: item.blurHash});
             });
