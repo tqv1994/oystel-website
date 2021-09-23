@@ -12,6 +12,7 @@
   import { ExperienceTypeModel } from '$lib/models/experience_type';
   import { DestinationTypeModel } from '$lib/models/destination_type';
   import { CountryModel } from '$lib/models/country';
+import { AdvisorSpecialty } from '$lib/models/advisor';
   let dispathcher = createEventDispatcher();
   export let open = false;
   export let content;
@@ -20,6 +21,7 @@
   export let experience_types: ExperienceTypeModel[];
   export let destination_types: DestinationTypeModel[];
   export let countries: CountryModel[];
+  export let specialties: AdvisorSpecialty[];
   function callCloseHeaderActionMobile() {
     content = '';
     dispathcher('close');
@@ -97,6 +99,8 @@
         {:else if content == 'advisor-search'}
           <OyFormSearchAdvisor
             bind:searchModel
+            bind:locations={countries}
+            bind:specialties
             on:close={callCloseHeaderActionMobile}
             >no content</OyFormSearchAdvisor
           >

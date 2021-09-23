@@ -120,6 +120,10 @@ import { each } from 'svelte/internal';
 
     }
 
+    .popup-products :global(.carousel .dots){
+        display: none;
+    }
+
     @media (max-width: 839px) {
         .popup-products.open{
             top: 0;

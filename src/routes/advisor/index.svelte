@@ -216,7 +216,7 @@ import { UserModel } from '$lib/models/user';
                                                     </Cell>
                                                     <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
                                                         <h2 class="mt-0 mb-15">{item.userMe.displayName}</h2>
-                                                        <p class="mt-0 mb-30">{item.specialtiesString}</p>
+                                                        <p class="mt-0 mb-30">{item.languagesString}</p>
                                                         <p class="m-0">{item.specialtiesString}</p>
                                                     </Cell>
                                                 </LayoutGrid>
@@ -225,96 +225,6 @@ import { UserModel } from '$lib/models/user';
                                     {/each}
                                 {/if}
                             </Cell>
-                            <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}>
-                                <div class="item-advisor">
-                                    <a href="/advisor/detail">
-                                        <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
-                                                <div class="thumbnail">
-                                                    <img src="/img/advisors/avatar-1.jpg" alt=""/>
-                                                </div>
-                                            </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 9}}>
-                                                <h2 class="mt-0 mb-15">Jan Wohl</h2>
-                                                <p class="mt-0 mb-30">New York, USA</p>
-                                                <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
-                                            </Cell>
-                                        </LayoutGrid>
-                                    </a>
-                                </div>
-                            </Cell>
-                            <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}>
-                                <div class="item-advisor">
-                                    <a href="/advisor/detail">
-                                        <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
-                                                <div class="thumbnail">
-                                                    <img src="/img/advisors/avatar-1.jpg" alt=""/>
-                                                </div>
-                                            </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
-                                                <h2 class="mt-0 mb-15">Jan Wohl</h2>
-                                                <p class="mt-0 mb-30">New York, USA</p>
-                                                <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
-                                            </Cell>
-                                        </LayoutGrid>
-                                    </a>
-                                </div>
-                            </Cell>
-                            <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}>
-                                <div class="item-advisor">
-                                    <a href="/advisor/detail">
-                                        <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
-                                                <div class="thumbnail">
-                                                    <img src="/img/advisors/avatar-1.jpg" alt=""/>
-                                                </div>
-                                            </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
-                                                <h2 class="mt-0 mb-15">Jan Wohl</h2>
-                                                <p class="mt-0 mb-30">New York, USA</p>
-                                                <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
-                                            </Cell>
-                                        </LayoutGrid>
-                                    </a>
-                                </div>
-                            </Cell>
-                            <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}>
-                                <div class="item-advisor">
-                                    <a href="/advisor/detail">
-                                        <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
-                                                <div class="thumbnail">
-                                                    <img src="/img/advisors/avatar-1.jpg" alt=""/>
-                                                </div>
-                                            </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
-                                                <h2 class="mt-0 mb-15">Jan Wohl</h2>
-                                                <p class="mt-0 mb-30">New York, USA</p>
-                                                <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
-                                            </Cell>
-                                        </LayoutGrid>
-                                    </a>
-                                </div>
-                            </Cell>
-                            <Cell spanDevices={{desktop: 12, tablet: 8, phone: 4}}>
-                                <div class="item-advisor">
-                                    <a href="/advisor/detail">
-                                        <LayoutGrid class="p-0">
-                                            <Cell spanDevices={{phone: 1, tablet: 2, desktop: 4}}>
-                                                <div class="thumbnail">
-                                                    <img src="/img/advisors/avatar-1.jpg" alt=""/>
-                                                </div>
-                                            </Cell>
-                                            <Cell spanDevices={{phone: 3, tablet: 6, desktop: 8}}>
-                                                <h2 class="mt-0 mb-15">Jan Wohl</h2>
-                                                <p class="mt-0 mb-30">New York, USA</p>
-                                                <p class="m-0">Adventure, Ocean Cruising, River Cruising, Hot…</p>
-                                            </Cell>
-                                        </LayoutGrid>
-                                    </a>
-                                </div>
-                            </Cell>
                         </LayoutGrid>
                     </div>
                 </div>
@@ -322,7 +232,7 @@ import { UserModel } from '$lib/models/user';
         </section>
     </div>
 </Layout>
-<HeaderActionMobile bind:content={contentHeaderActionMobile} bind:searchModel on:close={onSearchSubmit}></HeaderActionMobile>
+<HeaderActionMobile bind:content={contentHeaderActionMobile} bind:searchModel bind:countries bind:specialties on:close={onSearchSubmit}></HeaderActionMobile>
 <style>
     .header-title{
         background-color: #F0F7F8;
@@ -360,12 +270,6 @@ import { UserModel } from '$lib/models/user';
     .search-form-advisor :global(.mdc-select .mdc-notched-outline__notch),
     .search-form-advisor :global(.mdc-select .mdc-notched-outline__trailing){
         border-color: #000;
-    }
-    .search-form-advisor :global(.mdc-text-field .mdc-floating-label){
-        padding-left: 24px;
-    }
-    .search-form-advisor .mdc-text-field--outlined :global(.mdc-floating-label){
-        left: 22px;
     }
     .search-form-advisor :global(.mdc-text-field img){
         filter: brightness(0.1);

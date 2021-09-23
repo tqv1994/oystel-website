@@ -16,6 +16,7 @@
   import authStore from '$lib/stores/auth';
   import { createEventDispatcher } from 'svelte';
   import { goto } from '$app/navigation';
+import { UserModel } from '$lib/models/user';
   export let open;
   export let authModel;
   const dispatch = createEventDispatcher();
@@ -69,9 +70,11 @@
             const user = await res.json();
             authStore.set({ user });
             authModel = user;
+            authModel = user;
+            dispatch('close',{
+              type: 'refresh'
+            });
             closeModal();
-            auth.signOut();
-            return goto('/me');
           }
           console.error('Error authenticating', res);
         } catch (error) {
@@ -93,12 +96,37 @@
   async function signInWithFacebook() {
     const auth = getAuth();
     try {
+      await auth.setPersistence(inMemoryPersistence);
       const provider = new FacebookAuthProvider();
-      signInWithPopup(auth, provider).then((result) => {
-        let user = result.user;
-        authStore.set({ user });
-        authModel = user;
-        closeModal();
+      signInWithPopup(auth, provider).then(async (cred) => {
+        if (!cred) {
+          return;
+        }
+        try {
+          console.log('facebook login',cred.user);
+          const token = await cred.user.getIdToken();
+          console.log('token', token);
+          const res = await fetch('/api/auth', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token }),
+          });
+          if (res.ok) {
+            localStorage.setItem('token', token);
+            const user = await res.json();
+            authStore.set({ user });
+            authModel = user;
+            dispatch('close',{
+              type: 'refresh'
+            });
+            closeModal();
+          }
+          console.error('Error authenticating', res);
+        } catch (error) {
+          console.error('Create/update user failure', error);
+        }
       });
     } catch (error) {
       // Handle Errors here.
@@ -107,7 +135,8 @@
       // The email of the user's account used.
       const email = error.email;
       // The AuthCredential type that was used.
-      const credential = GoogleAuthProvider.credentialFromError(error);
+      const credential = FacebookAuthProvider.credentialFromError(error);
+      console.log('error login facebook ',error);
       // ...
     }
   }

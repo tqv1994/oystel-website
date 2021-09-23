@@ -24,6 +24,7 @@
   import { MenuModel } from '$lib/models/menu';
   import { ExperienceModel } from '$lib/models/experience';
   import { DestinationModel } from '$lib/models/destination';
+  import { TagModel } from '$lib/models/tag';
 
   let miniWindow = false;
   let searchResult = '';
@@ -38,6 +39,7 @@
   let contentHeaderAction = '';
   let itemsMenu: MenuModel[];
   let tabsSubMenu: any[];
+  let tags: TagModel[];
   const dispatch = createEventDispatcher();
   export let refreshPage: boolean = false;
   export let config = {
@@ -154,6 +156,25 @@
       }
     }
   });
+
+  async function getTags(){
+    const res = await fetch('/api/page/home/tags', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res.ok) {
+        const content = await res.json();
+        if (Array.isArray(content)) {
+          tags = [];
+          content.map((item) => {
+            tags.push(new TagModel(item));
+          });
+        }
+        return;
+      }
+  }
   afterUpdate(setMiniWindow);
 </script>
 
@@ -315,6 +336,7 @@
                     bind:value={searchResult}
                     on:click={() => {
                       openSearchResult = !openSearchResult;
+                      getTags();
                     }}
                     label="Start with a search"
                     withTrailingIcon={false}
@@ -333,24 +355,13 @@
                   openSearchResult = false;
                 }}
               >
-                <Button variant="unelevated"
-                  ><Label>Beach with Friends</Label></Button
-                >
-                <Button variant="unelevated"
-                  ><Label>Destinations - Sea</Label></Button
-                >
-                <Button variant="unelevated"
-                  ><Label>Beach with Friends</Label></Button
-                >
-                <Button variant="unelevated"
-                  ><Label>Destinations - Sea</Label></Button
-                >
-                <Button variant="unelevated"
-                  ><Label>Beach with Friends</Label></Button
-                >
-                <Button variant="unelevated"
-                  ><Label>Destinations - Sea</Label></Button
-                >
+                {#if tags}
+                  {#each tags as tag}
+                    <Button variant="unelevated" on:click={()=>{goto(tag.link)}}
+                      ><Label>{tag.title}</Label></Button
+                    >
+                  {/each}
+                {/if}
               </div>
             </Section>
           </Row>

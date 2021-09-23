@@ -315,7 +315,11 @@
     </div>
 </Layout>
 <OyNotification />
-<HeaderActionMobile bind:content={contentHeaderActionMobile} bind:searchModel on:close={onSearchSubmit}></HeaderActionMobile>
+<HeaderActionMobile bind:content={contentHeaderActionMobile}
+bind:searchModel
+  bind:destination_types
+  bind:experience_types
+  bind:countries on:close={onSearchSubmit}></HeaderActionMobile>
 <style>
     .header-title{
         background-color: #F0F7F8;
@@ -345,12 +349,6 @@
     .search-form-experiences :global(.mdc-select .mdc-notched-outline__notch),
     .search-form-experiences :global(.mdc-select .mdc-notched-outline__trailing){
         border-color: #000;
-    }
-    .search-form-experiences :global(.mdc-text-field .mdc-floating-label),.search-form-experiences :global(.mdc-select .mdc-floating-label){
-        padding-left: 18px;
-    }
-    .search-form-experiences .mdc-text-field--outlined :global(.mdc-floating-label){
-        left: 22px;
     }
     .search-form-experiences :global(.mdc-text-field img){
         filter: brightness(0.1);
@@ -394,6 +392,7 @@
         transform: translateY(-50%);
         width: 100%;
         text-align: center;
+        margin: 0;
     }
     .item-read-more .label .material-icons{
         position: relative;

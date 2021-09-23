@@ -36,7 +36,7 @@ export class UserModel{
         if(this.avatar){
             let url = this.avatar.url;
             if(url.indexOf(apiPrefix) < 0){
-                return apiPrefix+url;
+                return url;
             }else{
                 return url;
             }

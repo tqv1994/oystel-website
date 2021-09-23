@@ -78,7 +78,7 @@ export class ExperienceModel{
                 if(index > 0){
                     item = new GalleryModel(item);
                     if(item.url.indexOf(apiPrefix) < 0){
-                        item.url = apiPrefix+item.url;
+                        item.url = item.url;
                     }
                     photos.push({url: item.url, blurHash: item.blurHash});
                 }

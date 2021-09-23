@@ -380,7 +380,7 @@ import InviteMembersModal from '$lib/components/modals/InviteMembersModal.svelte
                         <h1 class="mt-0">{destination.name}</h1>
                     </Cell>
                     <Cell spanDevices={{desktop: 7,tablet: 8, phone: 4}}>
-                        <p class="mt-5">{destination.body}</p>
+                        <p class="mt-5">{@html destination.body}</p>
                     </Cell>
                 </LayoutGrid>
             </div>

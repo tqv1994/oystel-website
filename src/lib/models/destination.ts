@@ -35,7 +35,7 @@ export class DestinationModel{
             photo = new GalleryModel(this.gallery[0]);
         }
         if(photo.url.indexOf(apiPrefix) < 0){
-            photoUrl = apiPrefix+photo.url;
+            photoUrl = photo.url;
         }
         return {
             url: photoUrl,

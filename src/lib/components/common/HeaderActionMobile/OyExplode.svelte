@@ -4,57 +4,16 @@
     import Svg from '@smui/common/Svg.svelte';
     import IconButton from '@smui/icon-button';
     import Textfield from '@smui/textfield';
-    import { createEventDispatcher, afterUpdate } from 'svelte';
+    import { createEventDispatcher, afterUpdate, onMount } from 'svelte';
     import { goto } from '$app/navigation';
+import { TagModel } from '$lib/models/tag';
 
     const dispatch = createEventDispatcher();
     export let showSubmenu = false;
     let menuActive;
     let searchResultString = '';
-    let searchResult = [
-        {
-            category: 'Hot Destinations',
-            items: [
-                {
-                    name: 'Sea',
-                    link: '#'
-                },
-                {
-                    name: 'Mountain',
-                    link: '#'
-                },
-                {
-                    name: 'Jungle',
-                    link: '#'
-                },
-                {
-                    name: 'Wilderness',
-                    link: '#'
-                }
-            ],
-        },
-        {
-            category: 'Hot Experiences',
-            items: [
-                {
-                    name: 'Dining with a View',
-                    link: '#'
-                },
-                {
-                    name: 'Exotic Animals',
-                    link: '#'
-                },
-                {
-                    name: 'Yachting Around the World',
-                    link: '#'
-                },
-                {
-                    name: 'Backpacking in Style',
-                    link: '#'
-                }
-            ],
-        },
-    ];
+    let tags: TagModel[];
+    let tagsResult: TagModel[];
     function doOpenSubmenu(menu){
         menuActive = menu;
     }
@@ -63,32 +22,69 @@
         dispatch('close');
     }
 
+    onMount(async () =>{
+        await getTags();
+    });
+
+    async function getTags(){
+        const res = await fetch('/api/page/home/tags', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res.ok) {
+        const content = await res.json();
+        if (Array.isArray(content)) {
+          tags = [];
+          content.map((item) => {
+            tags.push(new TagModel(item));
+          });
+          tagsResult = tags;
+        }
+        return;
+      }
+    }
+
+    function searchTags(){
+        if(searchResultString != ''){
+            tagsResult = [];
+            tags.map((item)=>{
+                let title = item.title.toLowerCase();
+                let search = searchResultString.toLowerCase();
+                let index = title.indexOf(search);
+                if(index >=0 ){
+                    tagsResult.push(item);
+                }
+            });
+        }else{
+            tagsResult = tags;
+        }
+    }
+
     afterUpdate(()=>{ document.getElementById('header-action-mobile').style.backgroundColor = '#fff'; });
 </script>
 <div id="explode-wrap" class="mt-25">
     <form class="search-form">
         <div class="form-control">
-            <Textfield variant="outlined" bind:value={searchResultString} label="Start with a search" withTrailingIcon={false}>
+            <Textfield variant="outlined" on:keyup={searchTags} bind:value={searchResultString} label="Start with a search" withTrailingIcon={false}>
                 <Icon slot="trailingIcon"
                 ><img src="./img/icons/icon-search.svg" /></Icon
                 >
             </Textfield>
         </div>
         <div class="wrap-search-result mt-40">
+            {#if tagsResult}
             <ul class="mt-0">
-                {#each searchResult as result}
-                    <li><a>{result.category}</a></li>
-                    <ul>
-                        {#each result.items as item}
-                            <li><a href="#">{item.name}</a> </li>
-                        {/each}
-                    </ul>
+                {#each tagsResult as tag}
+                    <li><a href={tag.link}>{@html (searchResultString == '' ? tag.titleWithPrefix : tag.title)}</a></li>
                 {/each}
             </ul>
+            {/if}
         </div>
     </form>
 </div>
-<style>
+<style lang="scss">
     .wrap-search-result{
         height:calc( 100vh / 812  * 530);
         overflow-x: scroll;
@@ -130,17 +126,14 @@
         width: 100%;
 
         padding-right: 15px;
+        :global(.mdc-text-field__input){
+            padding-left: 24px;
+        }
     }
     .search-form :global(.mdc-text-field .mdc-notched-outline__leading),
     .search-form :global(.mdc-text-field .mdc-notched-outline__notch),
     .search-form :global(.mdc-text-field .mdc-notched-outline__trailing){
         border-color: #000;
-    }
-    .search-form :global(.mdc-text-field .mdc-floating-label){
-        padding-left: 24px;
-    }
-    .search-form .mdc-text-field--outlined :global(.mdc-floating-label){
-        left: 22px;
     }
     .search-form :global(.mdc-text-field img){
         filter: brightness(0.1);

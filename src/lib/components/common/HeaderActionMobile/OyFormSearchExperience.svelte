@@ -112,8 +112,4 @@
   .search-form-experiences :global(.mdc-select .mdc-notched-outline__trailing) {
     border-color: #000;
   }
-
-  .search-form-experiences :global(.mdc-select .mdc-floating-label) {
-    padding-left: 14px;
-  }
 </style>

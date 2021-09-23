@@ -144,7 +144,7 @@
                             </Cell>
                         </LayoutGrid>
                         <h1 class="mt-30 mb-10">{advisor.userMe.displayName}</h1>
-                        <p class="mt-0 mb-45 description">{advisor.bio}</p>
+                        <p class="mt-0 mb-45 description">{@html advisor.bio}</p>
                         <h4 class="mt-0 mb-55">Advisor  |  {advisor.location.name}</h4>
                         <Button variant="outlined" class="hover-affect"><Label>Contact Me</Label></Button>
                     </div>

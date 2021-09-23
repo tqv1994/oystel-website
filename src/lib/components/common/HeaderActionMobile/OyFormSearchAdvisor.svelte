@@ -7,6 +7,8 @@
     import Select, {Option} from '@smui/select';
     import { createEventDispatcher, afterUpdate } from 'svelte';
     import { goto } from '$app/navigation';
+import { CountryModel } from '$lib/models/country';
+import { AdvisorSpecialty } from '$lib/models/advisor';
 
     const dispatch = createEventDispatcher();
     export let showSubmenu = false;
@@ -16,6 +18,8 @@
         specialty: '',
         location: ''
     };
+    export let locations: CountryModel[];
+    export let specialties: AdvisorSpecialty[];
     function onSearchSubmit(){
         dispatch('close');
     }
@@ -25,11 +29,21 @@
         <div class="form-control mb-40">
             <Select variant="outlined" bind:value={searchModel.specialty} label="By Specialty">
                 <Option value=""></Option>
+                {#if specialties}
+                    {#each specialties as item}
+                        <Option value={item.title}>{item.title}</Option>
+                    {/each}
+                {/if}
             </Select>
         </div>
         <div class="form-control mb-40">
             <Select variant="outlined" bind:value={searchModel.location} label="By Location">
                 <Option value=""></Option>
+                {#if locations}
+                    {#each locations as item}
+                        <Option value={item.name}>{item.name}</Option>
+                    {/each}
+                {/if}
             </Select>
         </div>
         <div class="form-control btn-submit-wrap">
