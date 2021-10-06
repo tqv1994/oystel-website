@@ -1,21 +1,11 @@
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import { getSessionCookieFromRequest, filterResponseHeaders } from '$lib/session';
-import { ApiConfig } from '../config';
 import { apiPrefix } from '$lib/env';
 
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const post: RequestHandler = async (request: Request<Record<string, any>,AuthForm>) => {
-  const apiConfig = new ApiConfig();
-  if (!request.body.token) {
-    return {
-      status: 400,
-      body: JSON.stringify({
-        message: 'ID token is required',
-      }),
-    };
-  }
+ export const get: RequestHandler = async (request: Request) => {
   try {
     const cookie = getSessionCookieFromRequest(request);
     if (cookie) {

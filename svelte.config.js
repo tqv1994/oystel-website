@@ -38,7 +38,8 @@ const config = {
             '@smui/list',
             '@smui/radio',
             '@smui/form-field',
-            'svelte-blurhash'
+            'svelte-blurhash',
+			'@sveltejs/kit'
         ],
       }
     },
