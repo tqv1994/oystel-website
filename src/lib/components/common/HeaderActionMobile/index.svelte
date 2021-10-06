@@ -15,7 +15,7 @@
 import { AdvisorSpecialty } from '$lib/models/advisor';
   let dispathcher = createEventDispatcher();
   export let open = false;
-  export let content;
+  export let content: string;
   export let searchModel;
   export let itemsMenu: MenuModel[];
   export let experience_types: ExperienceTypeModel[];

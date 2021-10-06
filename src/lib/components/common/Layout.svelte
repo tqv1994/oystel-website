@@ -1,16 +1,11 @@
 <script lang="ts">
-  import {
-    getAuth,
-    getRedirectResult,
-    inMemoryPersistence,
-  } from 'firebase/auth';
   import authStore from '$lib/stores/auth';
   import '$lib/firebase';
   import { goto } from '$app/navigation';
   import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
   import IconButton, { Icon } from '@smui/icon-button';
   import Button, { Label } from '@smui/button';
-  import Tooltip, { Wrapper } from '@smui/tooltip';
+  import { Wrapper } from '@smui/tooltip';
   import Textfield from '@smui/textfield';
   import A from '@smui/common/A.svelte';
   import Svg from '@smui/common/Svg.svelte';
@@ -98,33 +93,6 @@
     }
   }
 
-  let lightTheme =
-    typeof window === 'undefined' ||
-    window.matchMedia('(prefers-color-scheme: light)').matches;
-  function switchTheme() {
-    lightTheme = !lightTheme;
-    let themeLink = document.head.querySelector('#theme');
-    if (!themeLink) {
-      themeLink = document.createElement('link');
-      themeLink.rel = 'stylesheet';
-      themeLink.id = 'theme';
-    }
-    themeLink.href = `smui${lightTheme ? '' : '-dark'}.css`;
-    document.head
-      .querySelector('link[href="smui-dark.css"]')
-      .insertAdjacentElement('afterend', themeLink);
-    let siteLink = document.head.querySelector('#site');
-    if (!siteLink) {
-      siteLink = document.createElement('link');
-      siteLink.rel = 'stylesheet';
-      siteLink.id = 'site';
-    }
-    siteLink.href = `site${lightTheme ? '' : '-dark'}.css`;
-    document.head
-      .querySelector('link[href="site-dark.css"]')
-      .insertAdjacentElement('afterend', siteLink);
-  }
-
   onMount(async () => {
     onResize();
     let itemsMenuStorage = localStorage.getItem('itemsMenu');
@@ -180,7 +148,7 @@
 
 <svelte:window on:resize={onResize} />
 <div class="content-wrap page page-{config.header.page}">
-  <header>
+  <header class="full-width" style="position: relative">
     <TopAppBar
       variant="static"
       class="demo-top-app-bar {config.header.transparent
@@ -188,6 +156,7 @@
         : ''} {config.header.theme}"
       id="header"
     >
+      <div class="filter-color"></div>
       <div class="content-wrap">
         <div class="container">
           <Row>
@@ -301,8 +270,13 @@
                 <IconButton>
                   <Icon component={Svg} viewBox="-4 -4 24 24">
                     <path
-                      d="M11.453 0l-.365.014C9.859.16 8.733.773 7.943 1.725A4.83 4.83 0 0 0 4.726.142h-.147A4.48 4.48 0 0 0 0 4.466C-.086 6.7 1.441 8.6 2.6 9.826c1.545 1.57 3.286 2.933 5.18 4.057a.79.79 0 0 0 .805-.021c1.848-1.199 3.534-2.631 5.015-4.262 1.107-1.276 2.558-3.231 2.384-5.462A4.49 4.49 0 0 0 11.453 0"
+                      d="M6.684 0C3.786 0 1.218 1.867.325 4.623s.091 5.775 2.438 7.474 5.522 1.693 7.862-.016l.283-.207 3.958 3.827c.558.563 1.525-.406.965-.965l-3.956-3.83.207-.283a6.6 6.6 0 0 0 1.285-3.939h0C13.364 2.995 10.374.004 6.684 0zm0 12a5.32 5.32 0 1 1 0-10.64 5.32 5.32 0 0 1 5.32 5.32c-.003 2.937-2.383 5.317-5.32 5.32z"
                     />
+                  </Icon>
+                </IconButton>
+                <IconButton>
+                  <Icon component={Svg} viewBox="-4 -4 24 24">
+                    <path id="Heart" d="M10.341,0c-.11,0-.221,0-.33.013a4.358,4.358,0,0,0-2.84,1.545A4.36,4.36,0,0,0,4.267.128H4.134A4.042,4.042,0,0,0,0,4.032c-.08,2.021,1.3,3.73,2.343,4.839a23.091,23.091,0,0,0,4.678,3.664.715.715,0,0,0,.727-.019A23.081,23.081,0,0,0,12.28,8.67c1-1.152,2.309-2.917,2.152-4.931A4.054,4.054,0,0,0,10.341,0" transform="translate(0.625 0.625)" fill="none" stroke="#fff" stroke-width="1.25" fill-rule="evenodd"/>
                   </Icon>
                 </IconButton>
                 <IconButton
@@ -310,62 +284,15 @@
                   on:click={$authStore.user ? () => {} : callOpenSigninModal}
                 >
                   <Icon component={Svg} viewBox="-4 -4 24 24">
-                    <path
-                      d="M12.371 4.4a4.4 4.4 0 1 0-4.4 4.4c2.427-.007 4.393-1.973 4.4-4.4zm-2.66 5.32a5.55 5.55 0 0 1-3.48 0 4.47 4.47 0 0 0-4.88 1.32A7.56 7.56 0 0 0 0 15.4c0 .82.531 1 1.351 1h13.24c.82 0 1.409-.18 1.409-1a7.61 7.61 0 0 0-1.409-4.36 4.48 4.48 0 0 0-4.88-1.32z"
-                    />
-                  </Icon>
-                </IconButton>
-                <IconButton>
-                  <Icon component={Svg} viewBox="-4 -4 24 24">
-                    <path
-                      d="M6.684 0C3.786 0 1.218 1.867.325 4.623s.091 5.775 2.438 7.474 5.522 1.693 7.862-.016l.283-.207 3.958 3.827c.558.563 1.525-.406.965-.965l-3.956-3.83.207-.283a6.6 6.6 0 0 0 1.285-3.939h0C13.364 2.995 10.374.004 6.684 0zm0 12a5.32 5.32 0 1 1 0-10.64 5.32 5.32 0 0 1 5.32 5.32c-.003 2.937-2.383 5.317-5.32 5.32z"
-                    />
+                    <g id="Icon_-_Profile" data-name="Icon - Profile" transform="translate(0.625 0.625)">
+                      <path id="Path_306" data-name="Path 306" d="M32.867,10.434a3.434,3.434,0,1,0-3.434,3.434A3.444,3.444,0,0,0,32.867,10.434Z" transform="translate(-22.152 -7)" fill="none" stroke="#fff" stroke-width="1.25"/>
+                      <path id="Path_307" data-name="Path 307" d="M16.9,54.617a5.067,5.067,0,0,1-3.179,0,4.086,4.086,0,0,0-4.458,1.206,6.908,6.908,0,0,0-1.234,3.983c0,.749.485.914,1.234.914h12.1c.749,0,1.288-.165,1.288-.914a6.951,6.951,0,0,0-1.288-3.983A4.1,4.1,0,0,0,16.9,54.617Z" transform="translate(-8.029 -45.737)" fill="none" stroke="#fff" stroke-width="1.25"/>
+                    </g>
                   </Icon>
                 </IconButton>
               </Wrapper>
             </Section>
           </Row>
-          <div class="divider" />
-          <Row>
-            <Section align="start" class="m-pl-0 m-pr-0">
-              <form class="search-form">
-                <div class="form-control">
-                  <Textfield
-                    disabled
-                    variant="outlined"
-                    bind:value={searchResult}
-                    on:click={() => {
-                      openSearchResult = !openSearchResult;
-                      getTags();
-                    }}
-                    label="Start with a search"
-                    withTrailingIcon={false}
-                  >
-                    <Icon slot="trailingIcon"
-                      ><img src="/img/icons/icon-search.svg" /></Icon
-                    >
-                  </Textfield>
-                </div>
-              </form>
-            </Section>
-            <Section align="end" class="list-tags-wrap m-none">
-              <div
-                class="list-tags {!openSearchResult ? '' : 'open'}"
-                on:mouseout={() => {
-                  openSearchResult = false;
-                }}
-              >
-                {#if tags}
-                  {#each tags as tag}
-                    <Button variant="unelevated" on:click={()=>{goto(tag.link)}}
-                      ><Label>{tag.title}</Label></Button
-                    >
-                  {/each}
-                {/if}
-              </div>
-            </Section>
-          </Row>
-          <div class="divider m-none" />
         </div>
       </div>
     </TopAppBar>

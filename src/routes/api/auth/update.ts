@@ -1,5 +1,5 @@
 import { apiPrefix } from '$lib/env';
-import { sessionCookieFromResponse } from '$lib/session';
+import { filterResponseHeaders } from '$lib/session';
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import { ApiConfig } from '../config';
 
@@ -26,7 +26,7 @@ export const put: RequestHandler = async (request: Request<Record<string, any>,A
             },
             body: JSON.stringify( request.body.data)
         });
-        const headers = sessionCookieFromResponse(res);
+        const headers = filterResponseHeaders(res.headers);
         const body = await res.json();
         return {
             status: res.status,
@@ -34,6 +34,6 @@ export const put: RequestHandler = async (request: Request<Record<string, any>,A
             headers,
         };
     } catch (error) {
-        console.error('Error signing in', error);
+        console.error('Error updating user info', error);
     }
 };

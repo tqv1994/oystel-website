@@ -57,7 +57,6 @@ import { UserModel } from '$lib/models/user';
         }
         try {
           const token = await cred.user.getIdToken();
-          console.log('token', token);
           const res = await fetch('/api/auth', {
             method: 'POST',
             headers: {

@@ -6,8 +6,9 @@
   export let key;
 
   export const load: Load = async ({ fetch, session, context, page }) => {
+    console.log(page);
     console.log('load -', browser ? 'in browser' : 'ssr');
-    console.log(session);
+    console.log('session - ', session);
     authStore.set({ user: session.user });
     return {
       props: {},

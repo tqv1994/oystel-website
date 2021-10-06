@@ -1,13 +1,11 @@
 import { apiPrefix } from '$lib/env';
-import { sessionCookieFromResponse } from '$lib/session';
+import { filterResponseHeaders } from '$lib/session';
 import type { RequestHandler, Request } from '@sveltejs/kit';
-import { ApiConfig } from '../config';
 
 /**
  * @type {import('@sveltejs/kit').Post}
  */
 export const post: RequestHandler = async (request: Request<Record<string, any>,AuthForm>) => {
-  const apiConfig = new ApiConfig();
   if (!request.body.token) {
     return {
       status: 400,
@@ -24,14 +22,15 @@ export const post: RequestHandler = async (request: Request<Record<string, any>,
         Authorization: 'Bearer ' + request.body.token,
       },
     });
-    const headers = sessionCookieFromResponse(res);
+    const headers = filterResponseHeaders(res.headers);
     const body = await res.json();
+    console.log('Sign in success', `${apiPrefix}/auth/me`, body)
     return {
       status: res.status,
       body,
       headers,
     };
   } catch (error) {
-    console.error('Error signing in', error);
+    console.error('Error signing in in auth', error);
   }
 };

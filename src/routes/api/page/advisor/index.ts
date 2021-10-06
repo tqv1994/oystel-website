@@ -1,4 +1,4 @@
-import { sessionCookieFromResponse } from '$lib/session';
+import { filterResponseHeaders } from '$lib/session';
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import { ApiConfig } from '../../config';
 import { apiPrefix } from '$lib/env';
@@ -13,7 +13,7 @@ export const get: RequestHandler = async (request: Request<Record<string, any>,A
                 'Content-Type': 'application/json',
             },
         });
-        const headers = sessionCookieFromResponse(res);
+        const headers = filterResponseHeaders(res.headers);
         const body = await res.json();
         return {
             status: res.status,

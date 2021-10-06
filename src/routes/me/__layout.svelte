@@ -1,3 +1,4 @@
+
 <script lang="ts">
   import authStore from '$lib/stores/auth';
   import { onMount, afterUpdate } from 'svelte';
@@ -12,8 +13,8 @@
   import List, { Item, Text } from '@smui/list';
   import Select, { Option } from '@smui/select';
   import Layout from '$lib/components/common/Layout.svelte';
-import { UserModel } from '$lib/models/user';
-import { goto } from '$app/navigation';
+  import { UserModel } from '$lib/models/user';
+  import { goto } from '$app/navigation';
 
   let active = 'Account Details';
   let userModel: UserModel;
@@ -23,7 +24,7 @@ import { goto } from '$app/navigation';
     curatedForYou: false,
   };
   let isEditProfile = false;
-  let currentPage = ''
+  let currentPage = '';
   afterUpdate(() => {
     // console.log($authStore.user);
     // if (!$authStore.user) {
@@ -32,37 +33,37 @@ import { goto } from '$app/navigation';
     currentPage = location.pathname;
   });
 
-  onMount(async()=>{
+  onMount(async () => {
     await getData();
-  })
+  });
 
-  async function getData(){
+  async function getData() {
     const res = await fetch('/api/users/me', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: localStorage.getItem('token'),
-        }),
-      });
-      if (res.ok) {
-        const content = await res.json();
-        userModel = new UserModel(content);
-        authStore.set({ user:userModel });
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem('token'),
+      }),
+    });
+    if (res.ok) {
+      const content = await res.json();
+      userModel = new UserModel(content);
+      authStore.set({ user: userModel });
 
-        // authModel = authStore.user;
-        // doAfterSignup(user);
-        return;
-        // return goto('/me').then(auth.signOut);
-      }else{
-        const error = await res.json();
-        if(error.statusCode == 401){
-            localStorage.setItem('token','');
-            authStore.set({ user: undefined });
-        }
-        goto('/');
+      // authModel = authStore.user;
+      // doAfterSignup(user);
+      return;
+      // return goto('/me').then(auth.signOut);
+    } else {
+      const error = await res.json();
+      if (error.statusCode == 401) {
+        localStorage.setItem('token', '');
+        authStore.set({ user: undefined });
       }
+      goto('/');
+    }
   }
 
   async function onSubmitProfile() {
@@ -113,65 +114,68 @@ import { goto } from '$app/navigation';
     }
   }
 </script>
+
 {#if userModel}
   <Layout>
-  <div class="content user-dashboard light">
-    <div class="container">
-      <section class="pt-20 pb-40">
-        <LayoutGrid class="p-0">
-          <Cell span="12">
-            <div class="section-header">
-              <p>Welcome to Your Oysteo Account</p>
-              <h1 class="mb-0">
-                Good afternoon, {userModel.displayName || 'there'}.
-              </h1>
-              <a
-                      href="javascript:void(0)"
-                      on:click={signOut}
-                      class="btn-sign-out text-input">Sign Out</a
-              >
-            </div>
-            <div class="divider"></div>
-          </Cell>
-        </LayoutGrid>
-        <div class="section-body">
-          <LayoutGrid class="pl-0 pr-0 d-pt-90">
-            <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
-              <Drawer class="m-none">
-                <Content>
-                  <List>
-                    <Item href="/me" class="{currentPage == '/me' ? 'active' : ''}"><Text>Account Details</Text></Item>
-                    <Item href="/me"><Text>Trips</Text></Item>
-                    <Item href="/me"><Text>My Advisors</Text></Item>
-                    <Item href="/me"><Text>Wishlishs</Text></Item>
-                    <Item href="/me"><Text>Preferences</Text></Item>
-                    <Item href="/me"><Text>Family & Friends</Text></Item>
-                    <Item href="/me"><Text>Support</Text></Item>
-                    <Item href="/my-agency"><Text>For advisors</Text></Item>
-                  </List></Content
-                ></Drawer>
-              <div class="d-none m-block text-center mb-35">
-                <Select
-                        bind:value={currentPage}
-                        label=""
+    <div class="content user-dashboard light">
+      <div class="container">
+        <section class="pt-20 pb-40">
+          <LayoutGrid class="p-0">
+            <Cell span="12">
+              <div class="section-header">
+                <p>Welcome to Your Oysteo Account</p>
+                <h1 class="mb-0">
+                  Good afternoon, {userModel.displayName || 'there'}.
+                </h1>
+                <a
+                  href="javascript:void(0)"
+                  on:click={signOut}
+                  class="btn-sign-out text-input">Sign Out</a
                 >
-                    <Option value="/me" selected>Account Details</Option>
-                  <Option value="/trips">Trips</Option>
-                  <Option value="/my-advisors">My Advisors</Option>
-                </Select>
               </div>
-            </Cell>
-            <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}>
-              <div class="tab-content">
-                <slot />
-              </div>
+              <div class="divider" />
             </Cell>
           </LayoutGrid>
-        </div>
-      </section>
+          <div class="section-body">
+            <LayoutGrid class="pl-0 pr-0 d-pt-90">
+              <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
+                <Drawer class="m-none">
+                  <Content>
+                    <List>
+                      <Item
+                        href="/me"
+                        class={currentPage == '/me' ? 'active' : ''}
+                        ><Text>Account Details</Text></Item
+                      >
+                      <Item href="/me"><Text>Trips</Text></Item>
+                      <Item href="/me"><Text>My Advisors</Text></Item>
+                      <Item href="/me"><Text>Wishlishs</Text></Item>
+                      <Item href="/me"><Text>Preferences</Text></Item>
+                      <Item href="/me"><Text>Family & Friends</Text></Item>
+                      <Item href="/me"><Text>Support</Text></Item>
+                      <Item href="/my-agency"><Text>For advisors</Text></Item>
+                    </List></Content
+                  ></Drawer
+                >
+                <div class="d-none m-block text-center mb-35">
+                  <Select bind:value={currentPage} label="">
+                    <Option value="/me" selected>Account Details</Option>
+                    <Option value="/trips">Trips</Option>
+                    <Option value="/my-advisors">My Advisors</Option>
+                  </Select>
+                </div>
+              </Cell>
+              <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}>
+                <div class="tab-content">
+                  <slot />
+                </div>
+              </Cell>
+            </LayoutGrid>
+          </div>
+        </section>
+      </div>
     </div>
-  </div>
-  <CreateAgencyModal bind:open={openCreateAgencyModal} />
+    <CreateAgencyModal bind:open={openCreateAgencyModal} />
   </Layout>
 {/if}
 
@@ -206,7 +210,7 @@ import { goto } from '$app/navigation';
     border: 1px solid #000;
   }
 
-  .mdc-deprecated-list-item.active{
+  .mdc-deprecated-list-item.active {
     border-bottom: 1px solid #000;
   }
   @media screen and (max-width: 768px) {

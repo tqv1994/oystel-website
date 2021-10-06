@@ -1,7 +1,7 @@
 import { apiPrefix } from '$lib/env';
 import {
-  sessionCookieFromRequest,
-  sessionCookieFromResponse,
+  getSessionCookieFromRequest,
+  filterResponseHeaders,
 } from '$lib/session';
 import type { AgencyApplicationForm3 } from '$lib/types';
 import type { RequestHandler, Request } from '@sveltejs/kit';
@@ -22,7 +22,7 @@ export const post: RequestHandler = async (
     };
   }
   const apiConfig = new ApiConfig();
-  const cookie = sessionCookieFromRequest(request);
+  const cookie = getSessionCookieFromRequest(request);
   if (cookie) {
     try {
       const res = await fetch(`${apiPrefix}/agencies`, {
@@ -35,7 +35,7 @@ export const post: RequestHandler = async (
           description: request.body.description,
         }),
       });
-      const headers = sessionCookieFromResponse(res);
+      const headers = filterResponseHeaders(res.headers);
       const body = await res.json();
       return {
         status: res.status,
@@ -43,7 +43,7 @@ export const post: RequestHandler = async (
         headers,
       };
     } catch (error) {
-      console.error('Error signing in', error);
+      console.error('Error POST agency info', error);
     }
   }
 };

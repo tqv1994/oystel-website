@@ -87,7 +87,7 @@
         bottom: -15px;
     }
     .sub-menu.open{
-        top: 63px;
+        top: 90px;
         opacity: 1;
         animation: fadeIn 1s ease;
     }

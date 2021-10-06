@@ -1,3 +1,6 @@
+import { DropModel } from "./models/drop"
+import { ExperienceModel } from "./models/experience"
+
 export type UserModel = {
   username: string
   forenames?: string
@@ -86,4 +89,46 @@ export type AgencyApplicationForm1 = {
 
 export type AgencyApplicationForm3 = {
   description: string
+}
+
+export type ProductModel = {
+  id: number,
+  created_at: string,
+  updated_at: string,
+  brand: string,
+  title: string,
+  body: string,
+  price: number,
+  numberro: string,
+  published_at: string
+  gallery: UploadFileModel[]
+}
+
+export type UploadFileModel = {
+  id: number,
+  created_at: string
+  updated_at: string
+  name: string
+  alternativeText: string
+  caption: string
+  blurHash: string
+  width: number
+  height: number
+  formats: any
+  hash: string
+  ext: string
+  mime: string
+  size: number
+  url: string
+  previewUrl: string
+  provider: string
+  provider_metadata: any
+}
+
+
+
+export type HomePageModel = {
+  itemsCuratedForYou: ExperienceModel[],
+  itemsFromOurAdvisor: any[],
+  itemsFeaturedDrop: DropModel[]
 }

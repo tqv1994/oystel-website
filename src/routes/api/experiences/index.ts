@@ -1,4 +1,4 @@
-import { sessionCookieFromResponse } from '$lib/session';
+import { filterResponseHeaders } from '$lib/session';
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import {ExperienceModel} from '$lib/models/experience';
 import { StringHelper } from '$lib/helpers';
@@ -15,7 +15,7 @@ export const post: RequestHandler = async (request: Request<Record<string, any>,
                 Authorization: request.body.token != '' ? 'Bearer ' + request.body.token : "",
             },
         });
-        const headers = sessionCookieFromResponse(res);
+        const headers = filterResponseHeaders(res.headers);
         const body = await res.json();
         // if(body.itemsCuratedForYou) {
         //     let itemsCuratedForYou = body.itemsCuratedForYou;
