@@ -19,27 +19,27 @@ const config = {
 
     vite: {
       ssr:{
-        // noExternal: [
-        //     '@smui/top-app-bar',
-        //     '@smui/common',
-        //     '@smui/icon-button',
-        //     '@smui/tooltip',
-        //     '@smui/textfield',
-        //     '@smui/button',
-        //     '@smui/ripple',
-        //     '@smui/dialog',
-        //     '@smui/layout-grid',
-        //     '@smui/tab',
-        //     '@smui/tab-bar',
-        //     '@smui/checkbox',
-        //     '@smui/data-table',
-        //     '@smui/select',
-        //     '@smui/drawer',
-        //     '@smui/list',
-        //     '@smui/radio',
-        //     '@smui/form-field',
-        //     'svelte-blurhash'
-        // ],
+        noExternal: [
+            '@smui/top-app-bar',
+            '@smui/common',
+            '@smui/icon-button',
+            '@smui/tooltip',
+            '@smui/textfield',
+            '@smui/button',
+            '@smui/ripple',
+            '@smui/dialog',
+            '@smui/layout-grid',
+            '@smui/tab',
+            '@smui/tab-bar',
+            '@smui/checkbox',
+            '@smui/data-table',
+            '@smui/select',
+            '@smui/drawer',
+            '@smui/list',
+            '@smui/radio',
+            '@smui/form-field',
+            'svelte-blurhash'
+        ],
       }
     },
   },
