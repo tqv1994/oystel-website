@@ -34,7 +34,7 @@ export class DropModel{
             photo = new GalleryModel(this.gallery[0]);
         }
         if(photo.url.indexOf(apiPrefix) < 0){
-            photoUrl = photo.url;
+            photoUrl = apiPrefix+photo.url;
         }
         return {
             url: photoUrl,
@@ -75,7 +75,7 @@ export class DropModel{
             this.gallery.map((item)=>{
                 item = new GalleryModel(item);
                 if(item.url.indexOf(apiPrefix) < 0){
-                    item.url = item.url;
+                    item.url = apiPrefix+item.url;
                 }
                 photos.push({url: item.url, blurHash: item.blurHash});
             });

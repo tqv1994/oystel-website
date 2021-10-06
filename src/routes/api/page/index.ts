@@ -24,7 +24,7 @@ export const get: RequestHandler = async (request: Request<Record<string, any>, 
     if (!homePageData) {
       const cookie = getSessionCookieFromRequest(request);
       const client = createClient({
-        url: api,
+        url: 'http://localhost:1337/graphql',
         fetchOptions: () => {
           return {
             headers: {

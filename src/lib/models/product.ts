@@ -20,7 +20,7 @@ export class ProductModel{
             photo = new GalleryModel(this.gallery[0]).url;
         }
         if(photo.indexOf(apiPrefix) < 0){
-            photo = photo;
+            photo = apiPrefix+photo;
         }
         return photo;
     }
