@@ -1,5 +1,5 @@
-import { sessionCookieFromRequest } from '$lib/session';
-import type { GetSession, ServerFetch } from '@sveltejs/kit';
+import { getSessionCookieFromRequest } from '$lib/session';
+import type { GetSession, ExternalFetch } from '@sveltejs/kit';
 import { createClient } from '@urql/core';
 
 /** @type {import('@sveltejs/kit').Handle} */
@@ -16,10 +16,10 @@ import { createClient } from '@urql/core';
 
 /** @type {import('@sveltejs/kit').GetSession} */
 export const getSession: GetSession = async (request) => {
-  console.log('session', request.locals.user?.email);
+  // console.log('session', request.locals.user?.email);
   if (!request.locals.user) {
     // console.log('user not in session...');
-    const cookie = sessionCookieFromRequest(request);
+    const cookie = getSessionCookieFromRequest(request);
     if (cookie) {
       // console.log('we have session cookie...');
       try {
@@ -127,14 +127,14 @@ export const getSession: GetSession = async (request) => {
   return request.locals;
 };
 
-/** @type {import('@sveltejs/kit').ServerFetch} */
-export const serverFetch: ServerFetch = async (request) => {
-  console.log(`Server fetch`, request.url);
-  const cookie = sessionCookieFromRequest(request);
-  if (cookie) {
-    request = new Request(request);
-    request.headers.set('cookie', cookie);
-  }
-  console.log('headers', request.headers);
-  return fetch(request);
-};
+/** @type {import('@sveltejs/kit').ExternalFetch} */
+// export const serverFetch: ExternalFetch = async (request) => {
+//   console.log(`External fetch`, request.url);
+//   const cookie = getSessionCookieFromRequest(request);
+//   if (cookie) {
+//     request = new Request(request);
+//     request.headers.set('cookie', cookie);
+//   }
+//   console.log('headers', request.headers);
+//   return fetch(request);
+// };
