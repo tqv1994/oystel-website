@@ -1,9 +1,9 @@
-import { AdvisorModel } from "$lib/types";
+import { AdvisorModel } from '$lib/types';
 
-export class LanguageModel{
-    title: string;
-    advisors: AdvisorModel[];
-    constructor(values: Object = {}) {
-        Object.assign(this, values);
-    }
+export class LanguageModel {
+  name: string;
+  advisors: AdvisorModel[];
+  constructor(values: Object = {}) {
+    Object.assign(this, values);
+  }
 }

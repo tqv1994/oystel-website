@@ -1,16 +1,19 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
-import { getSessionCookieFromRequest, filterResponseHeaders } from '$lib/session';
-import { apiPrefix } from '$lib/env';
+import { RequestHandler, Request } from '@sveltejs/kit';
+import {
+  getSessionCookieFromRequest,
+  filterResponseHeaders,
+} from '$lib/session';
+import { cmsUrlPrefix } from '$lib/env';
 
 /**
  * @type {import('@sveltejs/kit').Get}
  */
- export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (request: Request) => {
   try {
     const cookie = getSessionCookieFromRequest(request);
     if (cookie) {
       // console.log('we have session cookie...');
-      const res = await fetch(`${apiPrefix}/auth/me`, {
+      const res = await fetch(`${cmsUrlPrefix}/auth/me`, {
         method: 'DELETE',
         headers: {
           Cookie: cookie,

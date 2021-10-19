@@ -1,5 +1,5 @@
 <script>
-  import authStore from '$lib/stores/auth';
+  import authStore from '$lib/api/auth/store';
   import { onMount, afterUpdate } from 'svelte';
   import Button, { Label, Icon } from '@smui/button';
   import Checkbox from '@smui/checkbox';
@@ -23,11 +23,11 @@
   let isEditProfile = false;
   let currentPage = '';
   let configPage = {
-    header:{
+    header: {
       page: 'advisor-account',
       transparent: false,
       theme: 'light',
-    }
+    },
   };
   afterUpdate(() => {
     // console.log($authStore.user);
@@ -84,7 +84,8 @@
     }
   }
 </script>
-  <Layout config={configPage}>
+
+<Layout config={configPage}>
   <div class="content user-dashboard light">
     <div class="container">
       <section class="pt-20 pb-40">
@@ -92,16 +93,14 @@
           <Cell span="12">
             <div class="section-header">
               <p>Welcome to Your Oysteo Account</p>
-              <h1 class="mb-0">
-                Good afternoon, Aureta.
-              </h1>
+              <h1 class="mb-0">Good afternoon, Aureta.</h1>
               <a
-                      href="javascript:void(0)"
-                      on:click={signOut}
-                      class="btn-sign-out text-input">Sign Out</a
+                href="javascript:void(0)"
+                on:click={signOut}
+                class="btn-sign-out text-input">Sign Out</a
               >
             </div>
-            <div class="divider"></div>
+            <div class="divider" />
           </Cell>
         </LayoutGrid>
         <div class="section-body">
@@ -110,20 +109,27 @@
               <Drawer class="m-none">
                 <Content>
                   <List>
-                    <Item href="/advisor-account" class="{currentPage == '/advisor-account' ? 'active' : ''}"><Text>Account Details</Text></Item>
-                    <Item href="/advisor-account"><Text>Destinations</Text></Item>
-                    <Item href="/advisor-account"><Text>Experiences</Text></Item>
+                    <Item
+                      href="/advisor-account"
+                      class={currentPage == '/advisor-account' ? 'active' : ''}
+                      ><Text>Account Details</Text></Item
+                    >
+                    <Item href="/advisor-account"
+                      ><Text>Destinations</Text></Item
+                    >
+                    <Item href="/advisor-account"><Text>Experiences</Text></Item
+                    >
                     <Item href="/advisor-account"><Text>Travellers</Text></Item>
                     <Item href="/advisor-account"><Text>Documents</Text></Item>
                     <Item href="/advisor-account"><Text>Support</Text></Item>
                   </List></Content
-                ></Drawer>
+                ></Drawer
+              >
               <div class="d-none m-block text-center mb-35">
-                <Select
-                        bind:value={currentPage}
-                        label=""
-                >
-                    <Option value="/advisor-account" selected>Account Details</Option>
+                <Select bind:value={currentPage} label="">
+                  <Option value="/advisor-account" selected
+                    >Account Details</Option
+                  >
                   <Option value="/destinations">Destinations</Option>
                   <Option value="/experiences">Experiences</Option>
                 </Select>
@@ -140,7 +146,7 @@
     </div>
   </div>
   <CreateAgencyModal bind:open={openCreateAgencyModal} />
-  </Layout>
+</Layout>
 
 <style type="text/css">
   a.text-input {
@@ -173,7 +179,7 @@
     border: 1px solid #000;
   }
 
-  .mdc-deprecated-list-item.active{
+  .mdc-deprecated-list-item.active {
     border-bottom: 1px solid #000;
   }
   @media screen and (max-width: 768px) {

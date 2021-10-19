@@ -1,8 +1,7 @@
-import { apiPrefix } from "$lib/env";
+import { cmsUrlPrefix } from '$lib/env';
 
-export class ApiConfig{
-
-  public getApiRoute(endpoint: string){
-    return apiPrefix+endpoint;
+export class ApiConfig {
+  public getApiRoute(endpoint: string) {
+    return cmsUrlPrefix + endpoint;
   }
-};
+}

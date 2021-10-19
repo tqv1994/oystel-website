@@ -1,29 +1,31 @@
 /* Responsive */
-$mobile-width: 840px;
-$tablet-width: 600px;
-$desktop-width: 840px;
-@mixin mobile { @media (max-width: #{$desktop-width - 1px}) {
-  @content;
-}
-}
-
-@mixin tablet { @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
-  @content;
-}
+$desktop-width: 950px;
+@mixin mobile {
+  @media (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
 }
 
-@mixin desktop {   @media (min-width: #{$desktop-width}) {
-  @content;
-}
+@mixin tablet {
+  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
 }
 
-#svelte{
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+#svelte {
+  --desktop-width: #{$desktop-width};
   font-family: Surt;
   font-weight: 400;
   --mdc-shape-small: 0;
   --mdc-layout-grid-margin-desktop: 45px;
-  --mdc-layout-grid-margin-tablet: 25px;
-  --mdc-layout-grid-margin-phone: 25px;
+  --mdc-layout-grid-margin-tablet: 24px;
+  --mdc-layout-grid-margin-phone: 24px;
   --mdc-layout-grid-gutter-desktop: 15px;
 
   /* Character styles desktop */
@@ -44,7 +46,7 @@ $desktop-width: 840px;
   --mdc-typography-headline3-font-size: 18px;
   --mdc-typography-headline3-font-weight: 300;
   --mdc-typography-headline3-line-height: 26px;
-  --mdc-typography-headline3-letter-spacing: 0.1px;
+  --mdc-typography-headline3-letter-spacing: 0;
 
   --mdc-typography-headline4-font-family: Surt;
   --mdc-typography-headline4-font-size: 16px;
@@ -83,10 +85,10 @@ $desktop-width: 840px;
   --mdc-typography-body1-letter-spacing: 0;
 
   --mdc-typography-body2-font-family: Surt;
-  --mdc-typography-body2-font-size: 14px;
+  --mdc-typography-body2-font-size: 16px;
   --mdc-typography-body2-font-weight: 400;
   --mdc-typography-body2-line-height: 24px;
-  --mdc-typography-body2-letter-spacing: 0.5;
+  --mdc-typography-body2-letter-spacing: 0.1;
 
   --mdc-typography-caption-font-family: Surt;
   --mdc-typography-caption-font-size: 16px;
@@ -106,8 +108,16 @@ $desktop-width: 840px;
   --mdc-typography-overline-font-weight: 400;
   --mdc-typography-overline-line-height: 24px;
   --mdc-typography-overline-letter-spacing: 0;
+
+  /* Nav Link */
+  --mdc-typography-navlink-font-family: Surt;
+  --mdc-typography-navlink-font-size: 14px;
+  --mdc-typography-navlink-font-weight: 400;
+  --mdc-typography-navlink-line-height: 27.5px;
+  --mdc-typography-navlink-letter-spacing: 0;
+
   /* Character styles mobile */
-  @include mobile{
+  @include mobile {
     --mdc-typography-headline1-font-size: 32px;
     --mdc-typography-headline1-line-height: 38px;
 
@@ -148,4 +158,156 @@ $desktop-width: 840px;
 
   /* Buttons */
   --mdc-button-outline-color: #fff;
+}
+
+#svelte{
+  .page-home {
+    font-family: Surt;
+    font-weight: 400;
+    --mdc-shape-small: 0;
+    --mdc-layout-grid-margin-desktop: 45px;
+    --mdc-layout-grid-margin-tablet: 24px;
+    --mdc-layout-grid-margin-phone: 24px;
+    --mdc-layout-grid-gutter-desktop: 15px;
+  
+    /* Character styles desktop */
+    --mdc-typography-font-family: Surt;
+    --mdc-typography-headline1-font-family: GTSupper;
+    --mdc-typography-headline1-font-size: 45px;
+    --mdc-typography-headline1-font-weight: 300;
+    --mdc-typography-headline1-line-height: 45px;
+    --mdc-typography-headline1-letter-spacing: 0;
+  
+    --mdc-typography-headline2-font-family: Surt;
+    --mdc-typography-headline2-font-size: 30px;
+    --mdc-typography-headline2-font-weight: 300;
+    --mdc-typography-headline2-line-height: 27.5px;
+    --mdc-typography-headline2-letter-spacing: 0;
+  
+    --mdc-typography-headline3-font-family: Surt;
+    --mdc-typography-headline3-font-size: 18px;
+    --mdc-typography-headline3-font-weight: 300;
+    --mdc-typography-headline3-line-height: 22.5px;
+    --mdc-typography-headline3-letter-spacing: 0;
+  
+    --mdc-typography-headline4-font-family: Surt;
+    --mdc-typography-headline4-font-size: 12px;
+    --mdc-typography-headline4-font-weight: 400;
+    --mdc-typography-headline4-line-height: 22px;
+    --mdc-typography-headline4-letter-spacing: 0.1px;
+  
+    --mdc-typography-headline5-font-family: Surt;
+    --mdc-typography-headline5-font-size: 14px;
+    --mdc-typography-headline5-font-weight: 400;
+    --mdc-typography-headline5-line-height: 22px;
+    --mdc-typography-headline5-letter-spacing: 0.1px;
+  
+    --mdc-typography-headline6-font-family: Surt;
+    --mdc-typography-headline6-font-size: 14px;
+    --mdc-typography-headline6-font-weight: 400;
+    --mdc-typography-headline6-line-height: 22px;
+    --mdc-typography-headline6-letter-spacing: 0.1px;
+  
+    --mdc-typography-subtitle1-font-family: Surt;
+    --mdc-typography-subtitle1-font-size: 14px;
+    --mdc-typography-subtitle1-font-weight: 400;
+    --mdc-typography-subtitle1-line-height: 22px;
+    --mdc-typography-subtitle1-letter-spacing: 0.1px;
+  
+    --mdc-typography-subtitle2-font-family: Surt;
+    --mdc-typography-subtitle2-font-size: 14px;
+    --mdc-typography-subtitle2-font-weight: 400;
+    --mdc-typography-subtitle2-line-height: 22px;
+    --mdc-typography-subtitle2-letter-spacing: 0.1px;
+  
+    --mdc-typography-body1-font-family: Surt;
+    --mdc-typography-body1-font-size: 16px;
+    --mdc-typography-body1-font-weight: 400;
+    --mdc-typography-body1-line-height: 29px;
+    --mdc-typography-body1-letter-spacing: 0;
+  
+    --mdc-typography-body2-font-family: Surt;
+    --mdc-typography-body2-font-size: 16px;
+    --mdc-typography-body2-font-weight: 300;
+    --mdc-typography-body2-line-height: 24px;
+    --mdc-typography-body2-letter-spacing: 0.1;
+  
+    --mdc-typography-caption-font-family: Surt;
+    --mdc-typography-caption-font-size: 16px;
+    --mdc-typography-caption-font-weight: 400;
+    --mdc-typography-caption-line-height: 29px;
+    --mdc-typography-caption-letter-spacing: 0;
+  
+    --mdc-typography-button-font-family: Surt;
+    --mdc-typography-button-font-size: 12px;
+    --mdc-typography-button-font-weight: 400;
+    --mdc-typography-button-line-height: 23px;
+    --mdc-typography-button-letter-spacing: 0;
+    --mdc-typography-button-text-transform: none;
+
+    --mdc-typography-button2-font-size: 14px;
+  
+    --mdc-typography-overline-font-family: Surt;
+    --mdc-typography-overline-font-size: 14px;
+    --mdc-typography-overline-font-weight: 400;
+    --mdc-typography-overline-line-height: 24px;
+    --mdc-typography-overline-letter-spacing: 0;
+  
+    /* Nav Link */
+    --mdc-typography-navlink-font-family: Surt;
+    --mdc-typography-navlink-font-size: 14px;
+    --mdc-typography-navlink-font-weight: 400;
+    --mdc-typography-navlink-line-height: 27.5px;
+    --mdc-typography-navlink-letter-spacing: 0;
+
+    /* FORM */
+    --mdc-typography-form-font-family: Surt;
+    --mdc-typography-form-font-size: 14px;
+    --mdc-typography-form-font-weight: 400;
+    --mdc-typography-form-line-height: 24px;
+    --mdc-typography-form-letter-spacing: 0.5;
+  
+    /* Character styles mobile */
+    @include mobile {
+      --mdc-typography-headline1-font-size: 32px;
+      --mdc-typography-headline1-line-height: 38px;
+  
+      --mdc-typography-headline2-font-size: 18px;
+      --mdc-typography-headline2-line-height: 23.5px;
+  
+      --mdc-typography-headline3-font-size: 14px;
+      --mdc-typography-headline3-line-height: 18px;
+  
+      --mdc-typography-headline4-font-size: 12px;
+      --mdc-typography-headline4-line-height: 22px;
+  
+      --mdc-typography-headline5-font-size: 12px;
+      --mdc-typography-headline5-line-height: 20px;
+  
+      --mdc-typography-headline6-font-size: 12px;
+      --mdc-typography-headline6-line-height: 20px;
+  
+      --mdc-typography-subtitle1-font-size: 14px;
+      --mdc-typography-subtitle1-line-height: 18px;
+  
+      --mdc-typography-subtitle1-font-size: 14px;
+      --mdc-typography-subtitle1-line-height: 18px;
+  
+      --mdc-typography-subtitle2-font-size: 9px;
+      --mdc-typography-subtitle2-line-height: 20px;
+  
+      --mdc-typography-body1-font-size: 14px;
+      --mdc-typography-body1-line-height: 27px;
+  
+      --mdc-typography-body2-font-size: 14px;
+      --mdc-typography-body2-line-height: 24px;
+  
+      --mdc-typography-button-font-size: 12px;
+      --mdc-typography-button-letter-spacing: 0;
+      --mdc-typography-button-line-height: 23px;
+    }
+  
+    /* Buttons */
+    --mdc-button-outline-color: #fff;
+  }
 }

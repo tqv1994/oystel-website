@@ -8,20 +8,18 @@
   import OyExplode from './OyExplode.svelte';
   import OyFormSearchExperience from './OyFormSearchExperience.svelte';
   import OyFormSearchAdvisor from './OyFormSearchAdvisor.svelte';
-  import { MenuModel } from '$lib/models/menu';
-  import { ExperienceTypeModel } from '$lib/models/experience_type';
-  import { DestinationTypeModel } from '$lib/models/destination_type';
   import { CountryModel } from '$lib/models/country';
-import { AdvisorSpecialty } from '$lib/models/advisor';
+  import { AdvisorSpeciality } from '$lib/models/advisor';
+import { ExperienceType } from '$lib/api/experience-type/type';
+import { DestinationType } from '$lib/api/destination-type/type';
   let dispathcher = createEventDispatcher();
   export let open = false;
   export let content: string;
   export let searchModel;
-  export let itemsMenu: MenuModel[];
-  export let experience_types: ExperienceTypeModel[];
-  export let destination_types: DestinationTypeModel[];
+  export let experience_types: ExperienceType[];
+  export let destination_types: DestinationType[];
   export let countries: CountryModel[];
-  export let specialties: AdvisorSpecialty[];
+  export let specialities: AdvisorSpeciality[];
   function callCloseHeaderActionMobile() {
     content = '';
     dispathcher('close');
@@ -76,13 +74,10 @@ import { AdvisorSpecialty } from '$lib/models/advisor';
             </div>
           </Section>
         </Row>
-        <div class="divider" />
       </TopAppBar>
       <div class="">
         {#if !content || content == 'menu'}
-          <OyMenu {itemsMenu} on:close={callCloseHeaderActionMobile}
-            >no content</OyMenu
-          >
+          <OyMenu on:close={callCloseHeaderActionMobile}>no content</OyMenu>
         {:else if content == 'explode'}
           <OyExplode on:close={callCloseHeaderActionMobile}
             >no content</OyExplode
@@ -93,14 +88,13 @@ import { AdvisorSpecialty } from '$lib/models/advisor';
             on:close={callCloseHeaderActionMobile}
             bind:experience_types
             bind:destination_types
-            bind:countries
-            >no content</OyFormSearchExperience
+            bind:countries>no content</OyFormSearchExperience
           >
         {:else if content == 'advisor-search'}
           <OyFormSearchAdvisor
             bind:searchModel
             bind:locations={countries}
-            bind:specialties
+            bind:specialities
             on:close={callCloseHeaderActionMobile}
             >no content</OyFormSearchAdvisor
           >

@@ -1,6 +1,6 @@
+import { createGraphClient } from '$lib/api/graph';
 import { getSessionCookieFromRequest } from '$lib/session';
-import type { GetSession, ExternalFetch } from '@sveltejs/kit';
-import { createClient } from '@urql/core';
+import { GetSession } from '@sveltejs/kit';
 
 /** @type {import('@sveltejs/kit').Handle} */
 // export const handle: Handle = async ({ request, resolve }) => {
@@ -23,17 +23,8 @@ export const getSession: GetSession = async (request) => {
     if (cookie) {
       // console.log('we have session cookie...');
       try {
-        const client = createClient({
-          url: 'http://localhost:1337/graphql',
-          fetchOptions: () => {
-            return {
-              headers: {
-                'Content-Type': 'application/json',
-                Cookie: cookie,
-              },
-            };
-          },
-        });
+
+        const client = createGraphClient(cookie);
         const res = await client
           .query(
             `
@@ -58,15 +49,17 @@ export const getSession: GetSession = async (request) => {
                 height
                 weight
                 destinationLikes {
+                  id
                   name
                 }
                 experienceLikes {
-                  title
+                  id
+                  name
                   intro
                 }
                 productLikes {
-                  title
-                  body
+                  name
+                  description
                   brand
                 }
                 myAdvisors {
@@ -86,7 +79,7 @@ export const getSession: GetSession = async (request) => {
                     name
                   }
                   experiences{
-                    title
+                    name
                   }
                 }
     
@@ -109,7 +102,7 @@ export const getSession: GetSession = async (request) => {
                     name
                   }
                   experiences{
-                    title
+                    name
                   }
                 }
               }
@@ -121,6 +114,7 @@ export const getSession: GetSession = async (request) => {
         // console.log(request.locals.user);
       } catch (err) {
         console.error('Error fetching profile', err);
+        request.locals.user = undefined
       }
     }
   }

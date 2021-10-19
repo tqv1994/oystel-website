@@ -1,11 +1,13 @@
-import { apiPrefix } from '$lib/env';
+import { cmsUrlPrefix } from '$lib/env';
 import { filterResponseHeaders } from '$lib/session';
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import { RequestHandler, Request } from '@sveltejs/kit';
 
 /**
  * @type {import('@sveltejs/kit').Post}
  */
-export const post: RequestHandler = async (request: Request<Record<string, any>,AuthForm>) => {
+export const post: RequestHandler = async (
+  request: Request<Record<string, any>, AuthForm>,
+) => {
   if (!request.body.token) {
     return {
       status: 400,
@@ -16,7 +18,7 @@ export const post: RequestHandler = async (request: Request<Record<string, any>,
   }
 
   try {
-    const res = await fetch(`${apiPrefix}/auth/me`, {
+    const res = await fetch(`${cmsUrlPrefix}/auth/me`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + request.body.token,
@@ -24,7 +26,7 @@ export const post: RequestHandler = async (request: Request<Record<string, any>,
     });
     const headers = filterResponseHeaders(res.headers);
     const body = await res.json();
-    console.log('Sign in success', `${apiPrefix}/auth/me`, body)
+    console.log('Sign in success', `${cmsUrlPrefix}/auth/me`, body);
     return {
       status: res.status,
       body,

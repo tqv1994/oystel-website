@@ -23,24 +23,24 @@ const productType = `
   created_at
   updated_at
   brand,
-  title,
-  body,
+  name,
+  description,
+
   price
   published_at
 `;
 
-
 const dropsType = `
     id
-    title
-    body
+    name
+    description
 `;
 
 const experience_typeType = `
     id
     created_at
     updated_at
-    title
+    name
     published_at
 `;
 
@@ -58,8 +58,8 @@ const experienceType = `
     id
     created_at
     updated_at
-    title
-    body
+    name
+    description
     intro
     published_at
 `;
@@ -68,7 +68,7 @@ const destination_typeType = `
     id
     created_at
     updated_at
-    title
+    name
     published_at
 `;
 
@@ -77,20 +77,19 @@ const destinationType = `
     created_at
     updated_at
     name
-    body
+    description
     location
     intro
     published_at
 `;
 
-
-export{
-    dropsType,
-    uploadFileType,
-    productType,
-    experience_typeType,
-    experienceType,
-    countriesType,
-    destination_typeType,
-    destinationType
-}
+export {
+  dropsType,
+  uploadFileType,
+  productType,
+  experience_typeType,
+  experienceType,
+  countriesType,
+  destination_typeType,
+  destinationType,
+};

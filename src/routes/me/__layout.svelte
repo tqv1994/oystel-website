@@ -1,6 +1,23 @@
-
+<script lang="ts" context="module">
+  import type { Load } from '@sveltejs/kit';
+  export const load: Load = async ({ fetch, session, page }) => {
+    let me: User|undefined;
+    authStore.subscribe(({user})=>{
+      me = user;
+    });
+    if(typeof me === "undefined"){
+      return {
+            status: 302,
+            redirect: "/"
+        };
+    }
+    return {
+      props: {me},
+    };
+  };
+</script>
 <script lang="ts">
-  import authStore from '$lib/stores/auth';
+  import authStore from '$lib/api/auth/store';
   import { onMount, afterUpdate } from 'svelte';
   import Button, { Label, Icon } from '@smui/button';
   import Checkbox from '@smui/checkbox';
@@ -15,9 +32,10 @@
   import Layout from '$lib/components/common/Layout.svelte';
   import { UserModel } from '$lib/models/user';
   import { goto } from '$app/navigation';
+  import { User } from '$lib/api/auth/type';
 
   let active = 'Account Details';
-  let userModel: UserModel;
+  export let me: User;
   let openCreateAgencyModal = false;
   let modelEmailPreferences = {
     neverMissADrop: false,
@@ -34,37 +52,36 @@
   });
 
   onMount(async () => {
-    await getData();
   });
 
-  async function getData() {
-    const res = await fetch('/api/users/me', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: localStorage.getItem('token'),
-      }),
-    });
-    if (res.ok) {
-      const content = await res.json();
-      userModel = new UserModel(content);
-      authStore.set({ user: userModel });
+  // async function getData() {
+  //   const res = await fetch('/api/users/me', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       token: localStorage.getItem('token'),
+  //     }),
+  //   });
+  //   if (res.ok) {
+  //     const content = await res.json();
+  //     me = new UserModel(content);
+  //     authStore.set({ user: userModel });
 
-      // authModel = authStore.user;
-      // doAfterSignup(user);
-      return;
-      // return goto('/me').then(auth.signOut);
-    } else {
-      const error = await res.json();
-      if (error.statusCode == 401) {
-        localStorage.setItem('token', '');
-        authStore.set({ user: undefined });
-      }
-      goto('/');
-    }
-  }
+  //     // authModel = authStore.user;
+  //     // doAfterSignup(user);
+  //     return;
+  //     // return goto('/me').then(auth.signOut);
+  //   } else {
+  //     const error = await res.json();
+  //     if (error.statusCode == 401) {
+  //       localStorage.setItem('token', '');
+  //       authStore.set({ user: undefined });
+  //     }
+  //     goto('/');
+  //   }
+  // }
 
   async function onSubmitProfile() {
     // await userAPIService.update(userModel).then((res)=>{
@@ -94,19 +111,14 @@
   async function signOut() {
     try {
       const res = await fetch('/api/auth/sign-out', {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          token: localStorage.getItem('token'),
-        }),
       });
       if (res.ok) {
         authStore.set({ user: undefined });
-        localStorage.setItem('token', '');
-        location.href = '/';
-        return;
+        goto('/');
       }
       console.error('Error authenticating', res);
     } catch (error) {
@@ -115,7 +127,7 @@
   }
 </script>
 
-{#if userModel}
+{#if me}
   <Layout>
     <div class="content user-dashboard light">
       <div class="container">
@@ -125,11 +137,9 @@
               <div class="section-header">
                 <p>Welcome to Your Oysteo Account</p>
                 <h1 class="mb-0">
-                  Good afternoon, {userModel.displayName || 'there'}.
+                  Good afternoon, {me.displayName || 'there'}.
                 </h1>
-                <a
-                  href="javascript:void(0)"
-                  on:click={signOut}
+                <a href="/sign-out"
                   class="btn-sign-out text-input">Sign Out</a
                 >
               </div>

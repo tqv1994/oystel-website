@@ -1,5 +1,14 @@
+<script lang="ts" context="module">
+  import type { Load } from '@sveltejs/kit';
+  export const load: Load = async ({ fetch, session, page }) => {
+    return {
+      props: {},
+    };
+  };
+</script>
+
 <script lang="ts">
-  import authStore from '$lib/stores/auth';
+  import authStore from '$lib/api/auth/store';
   import '$lib/firebase';
   import { goto } from '$app/navigation';
   import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
@@ -16,26 +25,28 @@
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
   import BottomAppBar from '$lib/components/common/BottomAppBar/index.svelte';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-  import { MenuModel } from '$lib/models/menu';
-  import { ExperienceModel } from '$lib/models/experience';
-  import { DestinationModel } from '$lib/models/destination';
-  import { TagModel } from '$lib/models/tag';
+  import { Menu } from '$lib/types';
+  import { stringHelper } from '$lib/helpers';
+  import OySearchModal from '$lib/components/modals/OySearchModal.svelte';
+  import { menus } from '$lib/const';
+  import { documentHelper } from '$lib/helpers/document';
 
   let miniWindow = false;
   let searchResult = '';
   let openSubMenu = false;
   let menuItemActive: string;
+  let urlViewAllSubmenu: string;
   let emailSubscribe = '';
   let page = '';
   let userModel = $authStore.user;
-  let openSignupModal = false;
-  let openSigninModal = false;
+  export let openSignupModal = false;
+  export let openSigninModal = false;
   let openSearchResult = false;
   let contentHeaderAction = '';
-  let itemsMenu: MenuModel[];
   let tabsSubMenu: any[];
-  let tags: TagModel[];
   const dispatch = createEventDispatcher();
+  let openSearch: boolean = false;
+
   export let refreshPage: boolean = false;
   export let config = {
     header: {
@@ -71,9 +82,9 @@
       openSignupModal = true;
       openSigninModal = false;
     } else {
-      if(event.detail.type && event.detail.type == 'refresh'){
+      if (event.detail.type && event.detail.type == 'refresh') {
         dispatch('refreshPage');
-      }else{
+      } else {
         goto('/me');
       }
     }
@@ -85,9 +96,9 @@
       openSignupModal = false;
       openSigninModal = true;
     } else {
-      if(event.detail.type && event.detail.type == 'refresh'){
+      if (event.detail.type && event.detail.type == 'refresh') {
         dispatch('refreshPage');
-      }else{
+      } else {
         goto('/me');
       }
     }
@@ -95,55 +106,19 @@
 
   onMount(async () => {
     onResize();
-    let itemsMenuStorage = localStorage.getItem('itemsMenu');
-    if (itemsMenuStorage == null) {
-      const res = await fetch('/api/menu', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (res.ok) {
-        const content = await res.json();
-        if (Array.isArray(content)) {
-          itemsMenu = [];
-          content.map((item) => {
-            itemsMenu.push(new MenuModel(item));
-          });
-          localStorage.setItem('itemsMenu', JSON.stringify(itemsMenu));
-        }
-        return;
-      }
-    } else {
-      itemsMenuStorage = JSON.parse(itemsMenuStorage);
-      if (Array.isArray(itemsMenuStorage)) {
-        itemsMenu = [];
-        itemsMenuStorage.map((item) => {
-          itemsMenu.push(new MenuModel(item));
-        });
-      }
-    }
   });
 
-  async function getTags(){
-    const res = await fetch('/api/page/home/tags', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (res.ok) {
-        const content = await res.json();
-        if (Array.isArray(content)) {
-          tags = [];
-          content.map((item) => {
-            tags.push(new TagModel(item));
-          });
-        }
-        return;
-      }
-  }
   afterUpdate(setMiniWindow);
+
+  function handleOpenSubMenu(menuItem: Menu) {
+    if (menuItem.submenu.length > 0) {
+      documentHelper.changeBackgroundHeader('#000');
+      openSubMenu = true;
+      menuItemActive = 'menu-item-' + menuItem.slug;
+      tabsSubMenu = menuItem.submenu;
+      urlViewAllSubmenu = menuItem.link;
+    }
+  }
 </script>
 
 <svelte:window on:resize={onResize} />
@@ -156,7 +131,6 @@
         : ''} {config.header.theme}"
       id="header"
     >
-      <div class="filter-color"></div>
       <div class="content-wrap">
         <div class="container">
           <Row>
@@ -178,56 +152,24 @@
               style="z-index: 2"
             >
               <ul id="main-menu" class="m-0">
-                {#if typeof itemsMenu != 'undefined' && itemsMenu.length > 0}
-                  {#each itemsMenu as item, i}
+                {#if typeof menus != 'undefined' && menus.length > 0}
+                  {#each menus as item, i}
                     <li
-                      class={config.header.currentMenu == item.slug
+                      class={(config.header.currentMenu == item.slug
                         ? 'active-static'
-                        : ''}
-                      id="menu-item-{item.id}"
-                      on:mousemove={() => {
-                        if (item.hasSubMenu) {
-                          openSubMenu = true;
-                          menuItemActive = 'menu-item-' + item.id;
-                          if (item && item.experience_types.length > 0) {
-                            tabsSubMenu = [];
-                            item.experience_types.map((itemType) => {
-                              let experience = new ExperienceModel(
-                                itemType.experiences[0],
-                              );
-                              tabsSubMenu.push({
-                                category: itemType.title,
-                                title: experience.title,
-                                link: experience.link,
-                                image: experience.featuredPhoto,
-                              });
-                            });
-                          } else if (
-                            item &&
-                            item.destination_types.length > 0
-                          ) {
-                            tabsSubMenu = [];
-                            item.destination_types.map((itemType) => {
-                              let destination = new DestinationModel(
-                                itemType.destinations[0],
-                              );
-                              tabsSubMenu.push({
-                                category: itemType.title,
-                                title: destination.name,
-                                link: destination.link,
-                                image: destination.featuredPhoto,
-                              });
-                            });
-                          }
-                        }
-                      }}
-                      on:mouseleave={() => {
-                        if (item.hasSubMenu) {
-                          openSubMenu = false;
-                        }
+                        : '') +
+                        ' ' +
+                        (item.submenu.length > 0 ? 'has-submenu' : '')}
+                      id="menu-item-{item.slug}"
+                      on:click={() => {
+                        handleOpenSubMenu(item);
                       }}
                     >
-                      <a href={item.link}>{item.title}</a>
+                      <a
+                        href={item.submenu.length
+                          ? 'javascript:void(0)'
+                          : item.link}>{item.name}</a
+                      >
                     </li>
                   {/each}
                 {/if}
@@ -238,6 +180,7 @@
                   bind:menuId={menuItemActive}
                   tabs={tabsSubMenu}
                   active={tabsSubMenu[0]}
+                  urlViewAll={urlViewAllSubmenu}
                 />
               {/if}
             </Section>
@@ -259,37 +202,72 @@
               toolbar
               style="color: var(--mdc-on-surface, #000);"
             >
-              <Wrapper>
-                <Button
-                  class="btn-plan-your-trip mr-30"
-                  type="button"
-                  variant="outlined"
-                >
-                  <Label>Plan Your Trip</Label>
-                </Button>
-                <IconButton>
-                  <Icon component={Svg} viewBox="-4 -4 24 24">
-                    <path
-                      d="M6.684 0C3.786 0 1.218 1.867.325 4.623s.091 5.775 2.438 7.474 5.522 1.693 7.862-.016l.283-.207 3.958 3.827c.558.563 1.525-.406.965-.965l-3.956-3.83.207-.283a6.6 6.6 0 0 0 1.285-3.939h0C13.364 2.995 10.374.004 6.684 0zm0 12a5.32 5.32 0 1 1 0-10.64 5.32 5.32 0 0 1 5.32 5.32c-.003 2.937-2.383 5.317-5.32 5.32z"
-                    />
-                  </Icon>
-                </IconButton>
-                <IconButton>
-                  <Icon component={Svg} viewBox="-4 -4 24 24">
-                    <path id="Heart" d="M10.341,0c-.11,0-.221,0-.33.013a4.358,4.358,0,0,0-2.84,1.545A4.36,4.36,0,0,0,4.267.128H4.134A4.042,4.042,0,0,0,0,4.032c-.08,2.021,1.3,3.73,2.343,4.839a23.091,23.091,0,0,0,4.678,3.664.715.715,0,0,0,.727-.019A23.081,23.081,0,0,0,12.28,8.67c1-1.152,2.309-2.917,2.152-4.931A4.054,4.054,0,0,0,10.341,0" transform="translate(0.625 0.625)" fill="none" stroke="#fff" stroke-width="1.25" fill-rule="evenodd"/>
-                  </Icon>
-                </IconButton>
-                <IconButton
-                  href={$authStore.user ? '/me' : ''}
-                  on:click={$authStore.user ? () => {} : callOpenSigninModal}
-                >
-                  <Icon component={Svg} viewBox="-4 -4 24 24">
-                    <g id="Icon_-_Profile" data-name="Icon - Profile" transform="translate(0.625 0.625)">
-                      <path id="Path_306" data-name="Path 306" d="M32.867,10.434a3.434,3.434,0,1,0-3.434,3.434A3.444,3.444,0,0,0,32.867,10.434Z" transform="translate(-22.152 -7)" fill="none" stroke="#fff" stroke-width="1.25"/>
-                      <path id="Path_307" data-name="Path 307" d="M16.9,54.617a5.067,5.067,0,0,1-3.179,0,4.086,4.086,0,0,0-4.458,1.206,6.908,6.908,0,0,0-1.234,3.983c0,.749.485.914,1.234.914h12.1c.749,0,1.288-.165,1.288-.914a6.951,6.951,0,0,0-1.288-3.983A4.1,4.1,0,0,0,16.9,54.617Z" transform="translate(-8.029 -45.737)" fill="none" stroke="#fff" stroke-width="1.25"/>
-                    </g>
-                  </Icon>
-                </IconButton>
+              <Wrapper >
+                  <Button
+                    class="btn-plan-your-trip mr-30"
+                    type="button"
+                    variant="outlined"
+                  >
+                    <Label class="text-button2">Plan Your Trip</Label>
+                  </Button>
+                <div class="button-actions">
+                  <IconButton
+                    on:click={() => {
+                      openSearch = true;
+                    }}
+                  >
+                    <Icon component={Svg} viewBox="-4 -4 24 24">
+                      <path
+                        d="M6.684 0C3.786 0 1.218 1.867.325 4.623s.091 5.775 2.438 7.474 5.522 1.693 7.862-.016l.283-.207 3.958 3.827c.558.563 1.525-.406.965-.965l-3.956-3.83.207-.283a6.6 6.6 0 0 0 1.285-3.939h0C13.364 2.995 10.374.004 6.684 0zm0 12a5.32 5.32 0 1 1 0-10.64 5.32 5.32 0 0 1 5.32 5.32c-.003 2.937-2.383 5.317-5.32 5.32z"
+                      />
+                    </Icon>
+                  </IconButton>
+                  <IconButton>
+                    <Icon component={Svg} viewBox="-4 -4 24 24">
+                      <path
+                        id="Heart"
+                        d="M10.341,0c-.11,0-.221,0-.33.013a4.358,4.358,0,0,0-2.84,1.545A4.36,4.36,0,0,0,4.267.128H4.134A4.042,4.042,0,0,0,0,4.032c-.08,2.021,1.3,3.73,2.343,4.839a23.091,23.091,0,0,0,4.678,3.664.715.715,0,0,0,.727-.019A23.081,23.081,0,0,0,12.28,8.67c1-1.152,2.309-2.917,2.152-4.931A4.054,4.054,0,0,0,10.341,0"
+                        transform="translate(0.625 0.625)"
+                        fill="none"
+                        stroke="#fff"
+                        stroke-width="1.25"
+                        fill-rule="evenodd"
+                      />
+                    </Icon>
+                  </IconButton>
+                  <IconButton
+                    href={$authStore.user ? '/me' : ''}
+                    on:click={$authStore.user ? () => {} : callOpenSigninModal}
+                  >
+                    <Icon component={Svg} viewBox="-4 -4 24 24">
+                      <g
+                        id="Icon_-_Profile"
+                        data-name="Icon - Profile"
+                        transform="translate(0.625 0.625)"
+                      >
+                        <path
+                          id="Path_306"
+                          data-name="Path 306"
+                          d="M32.867,10.434a3.434,3.434,0,1,0-3.434,3.434A3.444,3.444,0,0,0,32.867,10.434Z"
+                          transform="translate(-22.152 -7)"
+                          fill="none"
+                          stroke="#fff"
+                          stroke-width="1.25"
+                        />
+                        <path
+                          id="Path_307"
+                          data-name="Path 307"
+                          d="M16.9,54.617a5.067,5.067,0,0,1-3.179,0,4.086,4.086,0,0,0-4.458,1.206,6.908,6.908,0,0,0-1.234,3.983c0,.749.485.914,1.234.914h12.1c.749,0,1.288-.165,1.288-.914a6.951,6.951,0,0,0-1.288-3.983A4.1,4.1,0,0,0,16.9,54.617Z"
+                          transform="translate(-8.029 -45.737)"
+                          fill="none"
+                          stroke="#fff"
+                          stroke-width="1.25"
+                        />
+                      </g>
+                    </Icon>
+                  </IconButton>
+                </div>
+                <OySearchModal bind:openSearch />
               </Wrapper>
             </Section>
           </Row>
@@ -407,7 +385,7 @@
               </div>
               <div class="form-control mb-10 m-mb-30">
                 <Button variant="outlined" class="d-pl-60 d-pr-60">
-                  <Label>Submit</Label>
+                  <Label class="text-button2">Submit</Label>
                 </Button>
               </div>
             </form>
@@ -432,9 +410,9 @@
     contentHeaderAction = event.detail.content;
   }}>no content</BottomAppBar
 >
-<HeaderActionMobile {itemsMenu} bind:content={contentHeaderAction} />
+<HeaderActionMobile bind:content={contentHeaderAction} />
 
-<style>
+<style lang="scss">
   .wrap-menu-mobile {
     display: flex;
     flex-direction: row-reverse;
@@ -457,11 +435,39 @@
     min-width: auto;
   }
 
-  @media screen and (max-width: 839px) {
-    footer .widget-title {
-      font-size: 14px;
-      line-height: 23px;
-      letter-spacing: 0;
+  footer{
+    .widget-title{
+      font-size: 16px;
+      line-height: 34px;
+      font-weight: 300;
+    }
+    .widget-content{
+      --mdc-typography-button-font-size: 13px;
+      --mdc-typography-button-line-height: 30px;
+      --mdc-typography-button-letter-spacing: 0.2;
+    }
+  }
+
+  @media screen and (max-width: 949px) {
+    footer{ 
+      --mdc-typography-form-font-size: 12px;
+        --mdc-typography-form-line-height: 17px;
+        --mdc-typography-form-letter-spacing: 0.05;
+      .widget-title {
+        font-size: 14px;
+        line-height: 23px;
+        letter-spacing: 0;
+      }
+      .widget-content{
+        --mdc-typography-button-font-size: 14px;
+        --mdc-typography-button-line-height: 40px;
+        --mdc-typography-button-letter-spacing: 0.2;
+        p{
+          font-size: 16px;
+          line-height: 29px;
+          letter-spacing: 0;
+        }
+      }
     }
     footer :global(.mdc-button) {
       width: 170px;

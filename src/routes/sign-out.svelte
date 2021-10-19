@@ -1,5 +1,7 @@
 <script lang="ts">
-  import authStore from '$lib/stores/auth';
+  import authStore from '$lib/api/auth/store';
+import Layout from '$lib/components/common/Layout.svelte';
+import { routerHelper } from '$lib/helpers';
 
   async function signOut() {
     try {
@@ -15,15 +17,15 @@
     }
   }
 </script>
-
+<Layout>
 {#if $authStore.user}
   <h1>Really sign out?</h1>
   <ul>
-    <li><button on:click={signOut}>Yes, sign out</button></li>
+    <li><a href="javascript:void(0)" on:click={signOut}>Yes, sign out</a></li>
     <li><a href="/me">Stay signed in</a></li>
   </ul>
 {:else}
   <h1>You've successfully signed out</h1>
-  <a href="/">Go to the home page</a>
-  <a href="/sign-in">Sign in again</a>
+  <a href="javascript:void(0);" on:click={()=>{routerHelper.redirect('/')}}>Go to the home page</a>
 {/if}
+</Layout>

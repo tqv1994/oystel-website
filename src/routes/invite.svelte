@@ -2,6 +2,7 @@
   import Button, { Label, Icon } from '@smui/button';
   import Layout from '$lib/components/common/Layout.svelte';
 </script>
+
 <Layout>
   <h1>You're invited</h1>
 

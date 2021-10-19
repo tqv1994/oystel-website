@@ -1,25 +1,6 @@
-<script context="module">
-  export async function load({ page, session }) {
-    let stringHelper = new StringHelper();
-    let id = stringHelper.getSlugId(page.params.id);
-    
-    return { props: {id} };
-    // const url = `api/v1/users/${page.params.slug}`;
-    // const { response, json } = await api.get(session.API_ENDPOINT, url);
-    // if (response.status === 200) {
-    // return {
-    //     props: {
-    //     localUser: json.data,
-    //     },
-    // };
-    // } else {
-    // return { props: { localUser: [] } };
-    // }
-  }
-</script>
-
-<script type="ts">
+<script lang="ts" context="module">
   import { onMount, afterUpdate, beforeUpdate } from 'svelte';
+  import type { Load } from '@sveltejs/kit';
   import LayoutGrid, { Cell, InnerGrid } from '@smui/layout-grid';
   import { goto } from '$app/navigation';
   import Textfield from '@smui/textfield';
@@ -33,13 +14,48 @@
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
   import Layout from '$lib/components/common/Layout.svelte';
   import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
-  import { StringHelper } from '$lib/helpers';
   import { ExperienceModel } from '$lib/models/experience';
   import { ProductModel } from '$lib/models/product';
-  import authStore from '$lib/stores/auth';
+  import authStore from '$lib/api/auth/store';
+  import { ExperiencePageData, UpdateExperienceData } from '$lib/api/pages/type';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import { BlurhashImage } from 'svelte-blurhash';
-  
+
+  import { experienceStore, updateExperienceStore } from '$lib/api/experience/store';
+  import { productStore, updateProductStore } from '$lib/api/product/store'
+
+  import { Experience } from '$lib/api/experience/type';
+  import { stringHelper } from '$lib/helpers';
+  import { Product } from '$lib/api/product/type';
+
+  export const load: Load = async ({ fetch, session, page }) => {
+    let id = stringHelper.getSlugId(page.params.id);
+    const res = await fetch(`/api/pages/experience/detail?id=${id}&user_id=${session.user ? session.user.id : 0}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log('Got experiences data', res.ok);
+
+    if (res.ok) {
+      const data: ExperiencePageData = await res.json();
+      // data.experiences = data.experiences.concat(data.experience);
+      console.log(data.experiences);
+      // TODO: Convert data to classes
+      updateExperienceStore([data.experience]);
+      updateExperienceStore(data.experiences);
+      updateProductStore(data.products);
+    } else {
+      const error = await res.json();
+      console.log(error);
+    }
+    return { props: { id } };
+  };
+</script>
+
+<script type="ts">
+
   let configPage = {
     header: {
       page: 'experience-detail',
@@ -48,85 +64,37 @@
       currentMenu: 'experiences',
     },
   };
-  let experience: ExperienceModel;
-  let myFavorites: ExperienceModel[];
-  let products: ProductModel[];
+  let experience: Experience | undefined;
+  let myFavorites: Experience[];
+  let products: Product[];
   let tabActive = 'Where to Stay';
   let openProductSlide = false;
   let isMobile = false;
   let productIndex: number;
   export let id: string;
-  onMount(async() => {
-    await getData();
-  });
 
-  async function getData(){
-    const res = await fetch('/api/page/experience/detail?id='+id, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-          token: localStorage.getItem('token'),
-        }),
-    });
-    if (res.ok) {
-      const content = await res.json();
-      if(content.experience){
-        experience = new ExperienceModel(content.experience);
-      }
-      if(content.myFavorites){
-        myFavorites = [];
-        content.myFavorites.map((item: any)=>{
-          myFavorites.push(new ExperienceModel(item));
-        });
-      }
-      if(content.products){
-        products = [];
-        content.products.map((item: any)=>{
-          products.push(new ProductModel(item));
-        });
-      }
-      // authModel = authStore.user;
-      // doAfterSignup(user);
-      return;
-      // return goto('/me').then(auth.signOut);
-    }else{
-      const error = await res.json();
-        if(error.statusCode == 401){
-            localStorage.setItem('token','');
-            authStore.set({ user: undefined });
-            getData();
-        }
-    }
-    
-  }
 
-  async function likeExperience(item: ExperienceModel){
-    const res = await fetch(`/api/experiences/like?id=${item.id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-          token: localStorage.getItem('token'),
-        }),
-    });
-    if (res.ok) {
-      item.liked = !item.liked;
-      experience = item;
-    }else{
-      const error = await res.json();
-      if(error.statusCode == 401){
-        if(localStorage.getItem('token') != ''){
-          window.pushToast('Your account has expired. Please login to continue using this feature');
-        }else{
-          window.pushToast('Please login to use this feature');
+  onMount(async () => {});
+  
+  getData();
+  function getData(){
+    experienceStore.subscribe( ({items})=>{
+      myFavorites = [];
+      Object.values( items ).map((item: Experience) => {
+        if(item.id == id){
+          experience = item;
         }
-        localStorage.setItem('token','');
-        authStore.set({ user: undefined });
-      }
-    }
+        else{
+          if(item.liked){
+            myFavorites.push(item);
+          }
+        }
+      });
+    });
+
+    productStore.subscribe( ({items})=>{
+      products = Object.values( items )
+    });
   }
 
   function onScrollFixedHeader() {
@@ -151,15 +119,53 @@
       }
     }
   }
+  async function likeExperienceItem(experience: Experience){
+    if(!$authStore.user){
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    let userDataLikes: (number|string)[] | null = [];
+    if(experience.users){
+      userDataLikes = experience.users.map((item, index)=>{
+        return item.id;      
+      });
+      let indexExist = userDataLikes.findIndex((item)=>item == $authStore.user?.id);
+      if(indexExist >= 0){
+        userDataLikes.splice(indexExist,1);
+      }else{
+        userDataLikes.push($authStore.user.id);
+      }
+    }
+    if(userDataLikes.length == 0){
+        userDataLikes = null;
+      }
+    const res = await fetch(`/api/pages/experience/like?id=${experience.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userDataLikes)
+    });
+
+    if (res.ok) {
+      const data: UpdateExperienceData = await res.json();
+      experience.users = data.updateExperience.experience.users;
+      updateExperienceStore([experience]);
+      getData();
+    } else {
+      const error = await res.json();
+    }
+  }
 </script>
+
 
 <svelte:window
   on:scroll={() => {
     onScrollFixedHeader();
   }}
 />
-<Layout config={configPage} on:refreshPage={getData}>
-    {#if experience}
+<Layout config={configPage}>
+  {#if experience}
   <div class="content experience-detail">
     <section class="header-title d-pt-90 d-pb-25 m-pt-90 m-pb-25 full-width">
       <div class="content-wrap">
@@ -167,20 +173,19 @@
           <LayoutGrid class="p-0 hidden-on-sticky">
             <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
               <div class="experience-detail-image">
-
                 <div
-                  class="thumbnail image-cover"
-                  style="background-image: url({experience.featuredPhoto})"
-                >
-                  <BlurhashImage src={experience.featuredPhotoWithHash.url} hash={experience.featuredPhotoWithHash.blurHash} fadeDuration="1000"/>
-                </div>
+                  class="thumbnail"
+                  style={`background-image: url(${experience?.gallery[0].url})`}
+                />
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
               <div class="d-pt-90 d-pb-100">
-                <p class="text-eyebrow">Experience Country</p>
-                <h1>{experience.title}</h1>
-                <p class="mb-30 short-description">{experience.intro}</p>
+                <p class="text-eyebrow">{ experience?.country.name }</p>
+                <h1>{ experience?.name }</h1>
+                <p class="mb-30 short-description">
+                    { experience.intro ? experience.intro : "" }
+                </p>
                 <Button variant="outlined" class="mb-15"
                   ><Label>Find My Advisor</Label></Button
                 >
@@ -224,7 +229,7 @@
                     </g>
                   </Icon>
                 </IconButton>
-                <IconButton class="btn-favorite {experience.liked ? 'liked' : ''}" on:click={likeExperience(experience)}>
+                <IconButton class="btn-favorite {experience.liked ? 'liked' : ''}" on:click={likeExperienceItem(experience)}>
                   <Icon class="like" component={Svg} viewBox="0 0 16.249 14.588">
                     <g
                       data-name="Icon - Heart"
@@ -320,7 +325,7 @@
                   </Icon>
                 </IconButton>
               </div>
-              <h1 class="mb-0 mt-40">{experience.title}</h1>
+              <h1 class="mb-0 mt-40">{experience?.name}</h1>
             </Cell>
             <Cell spanDevices={{ desktop: 5 }} class="text-right">
               <div class="mt-100">
@@ -338,51 +343,42 @@
       <div class="container">
         <LayoutGrid class="p-0">
           <Cell spanDevices={{ desktop: 8, tablet: 8, phone: 4 }}>
-            {#each experience.bodySection as section, i}
+            {#each experience?.descriptionSections as section, i}
             <div>{@html section}</div>
-            {#if experience.imageUrlWithHashs[i+i]}
+            {#if experience.gallery[i+i+1]}
             <LayoutGrid class="p-0 d-pt-60 d-pb-40">
               <Cell spanDevices={{ desktop: 7, tablet: 8, phone: 4 }}>
                 <div class="thumbnail">
                   <div class="image-cover" style="padding-top: calc(636 / 493 * 100%);">
-                    <BlurhashImage src="{experience.imageUrlWithHashs[i+i].url}" hash={experience.imageUrlWithHashs[i+i].blurHash} alt="" />
+                    <BlurhashImage src="{experience.gallery[i+i+1].url}" hash={experience.gallery[i+i+1].blurHash} alt="" />
                   </div>
                 </div>
-                <p>
-                  Lorem ipsum dolor sit sen amet, consect adipiscing elit, sed
-                  do.
-                </p>
+                <p>{experience.gallery[i+i].alternativeText}</p>
               </Cell>
-              {#if experience.imageUrlWithHashs[i+i+1]}
+              {#if experience.gallery[i+i+2]}
               <Cell
                 spanDevices={{ desktop: 5, tablet: 8, phone: 4 }}
                 class="m-none"
               >
                 <div class="thumbnail">
                   <div class="image-cover" style="padding-top: calc(447 / 344 * 100%);">
-                    <BlurhashImage src="{experience.imageUrlWithHashs[i+i+1].url}" hash={experience.imageUrlWithHashs[i+i+1].blurHash} alt="" />
+                    <BlurhashImage src="{experience.gallery[i+i+2].url}" hash={experience.gallery[i+i+2].blurHash} alt="" />
                   </div>
                 </div>
-                <p>
-                  Lorem ipsum dolor sit sen amet, consect adipiscing elit, sed
-                  do.
-                </p>
+                <p>{experience.gallery[i+i+2].alternativeText}</p>
               </Cell>
               {/if}
             </LayoutGrid>
             {/if}
-            {#if experience.getImagesUrl()[i+i+1]}
+            {#if experience.gallery[i+i+2]}
             <div class="d-none m-block m-pt-80 m-pb-10">
                 <div class="thumbnail">
-                  <img src="{experience.getImagesUrl()[i+i+1]}" alt="" />
+                  <img src="{experience.gallery[i+i+2].url}" alt="" />
                 </div>
-                <p>
-                  Lorem ipsum dolor sit sen amet, consect adipiscing elit, sed do.
-                </p>
+                <p>{experience.gallery[i+i+2].alternativeText}</p>
               </div>
             {/if}
             {/each}
-            
           </Cell>
           <Cell
             spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}
@@ -392,60 +388,60 @@
             <div class="experiences-list">
               <LayoutGrid class="p-0">
                 {#each myFavorites as item}
-                <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 4 }}>
-                    <div class="experience-item">
-                      <div class="thumbnail">
-                        <a href="{item.link}">
-                          <div  class="image-cover" style="padding-top: calc(499 / 383 * 100%)">
-                            <BlurhashImage src="{item.featuredPhotoWithHash.url}" hash={item.featuredPhotoWithHash.blurHash} fadeDuration="1000" alt="" />
-                          </div>
+                  <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 4 }}>
+                      <div class="experience-item">
+                        <div class="thumbnail">
+                          <a href="{item.url}">
+                            <div  class="image-cover" style="padding-top: calc(499 / 383 * 100%)">
+                              <BlurhashImage src="{item.gallery[0]?.url}" hash={item.gallery[0]?.blurHash} fadeDuration="1000" alt="" />
+                            </div>
+                          </a>
+                          <IconButton class="btn-favorite {item.liked ? 'liked' : ''}">
+                            <Icon
+                              class="like"
+                              component={Svg}
+                              viewBox="-4 -4 24 24"
+                            >
+                              <path
+                                d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
+                                transform="translate(0.001)"
+                                fill="#fff"
+                                fill-rule="evenodd"
+                              />
+                            </Icon>
+                            <Icon
+                              class="liked"
+                              component={Svg}
+                              viewBox="-4 -4 24 24"
+                            >
+                              <path
+                                d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
+                                transform="translate(0)"
+                                fill="#fff"
+                                fill-rule="evenodd"
+                              />
+                            </Icon>
+                          </IconButton>
+                        </div>
+                        <a href={item.url}>
+                          <InnerGrid class="p-0">
+                            <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
+                              ><p class="text-eyebrow text-left">{item.country ? item.country.name : "Country"}</p></Cell
+                            >
+                            <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
+                              ><p class="text-eyebrow text-right">
+                                Experience
+                              </p></Cell
+                            >
+                          </InnerGrid>
+                          <div class="divider" />
+                          <h4 class="text-h2 title">{item.name}</h4>
+                          <p class="short-text m-none">
+                            {item.intro}
+                          </p>
                         </a>
-                        <IconButton class="btn-favorite {item.liked ? 'liked' : ''}">
-                          <Icon
-                            class="like"
-                            component={Svg}
-                            viewBox="-4 -4 24 24"
-                          >
-                            <path
-                              d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                              transform="translate(0.001)"
-                              fill="#fff"
-                              fill-rule="evenodd"
-                            />
-                          </Icon>
-                          <Icon
-                            class="liked"
-                            component={Svg}
-                            viewBox="-4 -4 24 24"
-                          >
-                            <path
-                              d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                              transform="translate(0)"
-                              fill="#fff"
-                              fill-rule="evenodd"
-                            />
-                          </Icon>
-                        </IconButton>
                       </div>
-                      <a href={item.link}>
-                        <InnerGrid class="p-0">
-                          <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
-                            ><p class="text-eyebrow text-left">{item.country_title}</p></Cell
-                          >
-                          <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
-                            ><p class="text-eyebrow text-right">
-                              Experience
-                            </p></Cell
-                          >
-                        </InnerGrid>
-                        <div class="divider" />
-                        <h4 class="text-h2 title">{item.title}</h4>
-                        <p class="short-text m-none">
-                          {item.excerpt}
-                        </p>
-                      </a>
-                    </div>
-                </Cell>
+                  </Cell>
                 {/each}
               </LayoutGrid>
             </div>
@@ -462,9 +458,8 @@
           <Cell spanDevices={{ desktop: 6, phone: 4, tablet: 8 }}>
             <div class="item-product">
               <div class="thumbnail">
-                <div class="image-cover" style="padding-top: calc(568 / 660 * 100%)">
-                  <BlurhashImage src="/img/experiences/product-1.jpg" alt="" fadeDuration="1000" />
-                </div>
+                <img src="/img/experiences/product-1.jpg" alt="" />
+              </div>
               <div class="title-wrap">
                 <h5>Get the Look</h5>
                 <IconButton>
@@ -500,9 +495,7 @@
               <Cell spanDevices={{ desktop: 6, phone: 4, tablet: 8 }}>
                 <div class="item-product">
                   <div class="thumbnail">
-                    <div class="image-cover" style="padding-top: calc(58 / 45 * 100%)">
-                      <BlurhashImage src="/img/experiences/product-2.jpg" alt="" fadeDuration="1000" />
-                    </div>
+                    <img src="/img/experiences/product-2.jpg" alt="" />
                   </div>
                   <div class="title-wrap">
                     <h5>Get the Look</h5>
@@ -537,9 +530,7 @@
               <Cell spanDevices={{ desktop: 6, phone: 4, tablet: 8 }}>
                 <div class="item-product">
                   <div class="thumbnail">
-                    <div class="image-cover" style="padding-top: calc(58 / 45 * 100%)">
-                      <BlurhashImage src="/img/experiences/product-3.jpg"  alt="" fadeDuration="1000" />
-                    </div>
+                    <img src="/img/experiences/product-3.jpg" alt="" />
                   </div>
                   <div class="title-wrap">
                     <h5>Get the Look</h5>
@@ -581,44 +572,46 @@
         <h1 class="mt-0">What to Pack</h1>
         <div class="products-list">
           <LayoutGrid class="p-0">
-            {#each products as item, i}
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <div
-                on:click={() => {
-                  openProductSlide = true;
-                  console.log('productIndex',i);
-                  productIndex = i;
-                }}
-                class="item-product"
-              >
-                <div
-                  class="thumbnail"
-                  style="background-image: url({item.featuredPhoto})"
-                >
-                  <IconButton class="btn-favorite">
-                    <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                      <path
-                        d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                        transform="translate(0.001)"
-                        fill="#fff"
-                        fill-rule="evenodd"
-                      />
-                    </Icon>
-                    <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                      <path
-                        d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                        transform="translate(0)"
-                        fill="#fff"
-                        fill-rule="evenodd"
-                      />
-                    </Icon>
-                  </IconButton>
-                </div>
-                <p class="text-eyebrow mt-25">{item.brand}</p>
-                <h3>{item.title}</h3>
-              </div>
-            </Cell>
-            {/each}
+            {#if products && products.length > 0}
+              {#each products as item,i}
+                <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
+                  <div
+                    on:click={() => {
+                      openProductSlide = true;
+                      console.log('productIndex', i);
+                      productIndex = i;
+                    }}
+                    class="item-product"
+                  >
+                    <div
+                      class="thumbnail"
+                      style={`background-image: url(${item.gallery[0]?.url}`}
+                    >
+                      <IconButton class="btn-favorite">
+                        <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
+                          <path
+                            d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
+                            transform="translate(0.001)"
+                            fill="#fff"
+                            fill-rule="evenodd"
+                          />
+                        </Icon>
+                        <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
+                          <path
+                            d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
+                            transform="translate(0)"
+                            fill="#fff"
+                            fill-rule="evenodd"
+                          />
+                        </Icon>
+                      </IconButton>
+                    </div>
+                    <p class="text-eyebrow mt-25">{item.brand}</p>
+                    <h3>{item.name}</h3>
+                  </div>
+                </Cell>
+              {/each}
+            {/if}
           </LayoutGrid>
         </div>
       </div>
@@ -629,51 +622,61 @@
         <div class="experiences-list">
           <LayoutGrid class="p-0">
             {#each myFavorites as item}
-            <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
-                <div class="experience-item">
-                  <div class="thumbnail">
-                    <a href={item.link} >
-                      <div  class="image-cover" style="padding-top: calc(470 / 361 * 100%)">
-                        <BlurhashImage src="{item.featuredPhotoWithHash.url}" hash={item.featuredPhotoWithHash.blurHash} fadeDuration="1000"  alt="" />
+                <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
+                    <div class="experience-item">
+                      <div class="thumbnail">
+                        <a href="{item.url}">
+                          <div  class="image-cover" style="padding-top: calc(499 / 383 * 100%)">
+                            <BlurhashImage src="{item.gallery[0]?.url}" hash={item.gallery[0]?.blurHash} fadeDuration="1000" alt="" />
+                          </div>
+                        </a>
+                        <IconButton class="btn-favorite {item.liked ? 'liked' : ''}">
+                          <Icon
+                            class="like"
+                            component={Svg}
+                            viewBox="-4 -4 24 24"
+                          >
+                            <path
+                              d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
+                              transform="translate(0.001)"
+                              fill="#fff"
+                              fill-rule="evenodd"
+                            />
+                          </Icon>
+                          <Icon
+                            class="liked"
+                            component={Svg}
+                            viewBox="-4 -4 24 24"
+                          >
+                            <path
+                              d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
+                              transform="translate(0)"
+                              fill="#fff"
+                              fill-rule="evenodd"
+                            />
+                          </Icon>
+                        </IconButton>
                       </div>
-                    </a>
-                    <IconButton class="btn-favorite {item.liked ? 'liked' : ''}">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <LayoutGrid class="p-0">
-                    <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
-                      ><p class="text-eyebrow text-left">{item.country_title}</p></Cell
-                    >
-                    <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
-                      ><p class="text-eyebrow text-right">Experience</p></Cell
-                    >
-                  </LayoutGrid>
-                  <div class="divider" />
-                  <h4 class="text-h2 title">
-                    {item.title}
-                  </h4>
-                  <p class="short-text m-none">
-                    {item.excerpt}
-                  </p>
-                </div>
-            </Cell>
-            {/each}
+                      <a href={item.url}>
+                        <InnerGrid class="p-0">
+                          <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
+                            ><p class="text-eyebrow text-left">{item.country ? item.country.name : "Country"}</p></Cell
+                          >
+                          <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
+                            ><p class="text-eyebrow text-right">
+                              Experience
+                            </p></Cell
+                          >
+                        </InnerGrid>
+                        <div class="divider" />
+                        <h4 class="text-h2 title">{item.name}</h4>
+                        <p class="short-text m-none">
+                          {item.intro}
+                        </p>
+                      </a>
+                    </div>
+                </Cell>
+              {/each}
           </LayoutGrid>
         </div>
       </div>
@@ -681,8 +684,13 @@
   </div>
   {/if}
 </Layout>
-<ProductSliderModal bind:open={openProductSlide} products={products} bind:active={productIndex}>no content</ProductSliderModal>
+<ProductSliderModal
+  bind:open={openProductSlide}
+  products={products}
+  bind:active={productIndex}>no content</ProductSliderModal
+>
 <OyNotification />
+
 <style lang="scss">
   :global(.show-on-sticky) {
     display: none;
@@ -723,6 +731,7 @@
         display: none;
       }
   }
+
 
   .experience-detail-image {
     width: 100%;
@@ -884,7 +893,7 @@
     top: 2%;
     right: 2%;
   }
-  
+
   :global(.is_sticky.header-title) {
     padding-bottom: 50px !important;
   }
@@ -897,7 +906,7 @@
     margin-top: -15px;
   }
 
-  @media screen and (max-width: 839px) {
+  @media screen and (max-width: 949px) {
     .experience-detail-image {
       position: relative;
       width: 100%;

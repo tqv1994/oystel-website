@@ -1,10 +1,10 @@
-import { apiPrefix } from '$lib/env';
+import { cmsUrlPrefix } from '$lib/env';
 import {
   getSessionCookieFromRequest,
   filterResponseHeaders,
 } from '$lib/session';
-import type { AgencyApplicationForm3 } from '$lib/types';
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import { AgencyApplicationForm3 } from '$lib/types';
+import { RequestHandler, Request } from '@sveltejs/kit';
 import { ApiConfig } from '../config';
 
 /**
@@ -25,7 +25,7 @@ export const post: RequestHandler = async (
   const cookie = getSessionCookieFromRequest(request);
   if (cookie) {
     try {
-      const res = await fetch(`${apiPrefix}/agencies`, {
+      const res = await fetch(`${cmsUrlPrefix}/agencies`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

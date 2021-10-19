@@ -7,7 +7,7 @@
     createUserWithEmailAndPassword,
     inMemoryPersistence,
   } from 'firebase/auth';
-  import authStore from '$lib/stores/auth';
+  import authStore from '$lib/api/auth/store';
   import { goto } from '$app/navigation';
 
   let email = 'tester@test.net';

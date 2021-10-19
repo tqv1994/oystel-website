@@ -1,5 +1,5 @@
 <script>
-  import authStore from '$lib/stores/auth';
+  import authStore from '$lib/api/auth/store';
   import { onMount, afterUpdate } from 'svelte';
   import Button, { Label, Icon } from '@smui/button';
   import Checkbox from '@smui/checkbox';
@@ -21,7 +21,7 @@
     curatedForYou: false,
   };
   let isEditProfile = false;
-  let currentPage = ''
+  let currentPage = '';
   afterUpdate(() => {
     currentPage = location.pathname;
   });
@@ -73,7 +73,8 @@
     }
   }
 </script>
-  <Layout>
+
+<Layout>
   <div class="content user-dashboard light">
     <div class="container">
       <section class="pt-20 pb-40">
@@ -81,16 +82,14 @@
           <Cell span="12">
             <div class="section-header">
               <p>Welcome to Your Oysteo Account</p>
-              <h1 class="mb-0">
-                Good afternoon, Aureta.
-              </h1>
+              <h1 class="mb-0">Good afternoon, Aureta.</h1>
               <a
-                      href="javascript:void(0)"
-                      on:click={signOut}
-                      class="btn-sign-out text-input">Sign Out</a
+                href="javascript:void(0)"
+                on:click={signOut}
+                class="btn-sign-out text-input">Sign Out</a
               >
             </div>
-            <div class="divider"></div>
+            <div class="divider" />
           </Cell>
         </LayoutGrid>
         <div class="section-body">
@@ -99,7 +98,11 @@
               <Drawer class="m-none">
                 <Content>
                   <List>
-                    <Item href="/me-fake" class="{currentPage == '/me-fake' ? 'active' : ''}"><Text>Account Details</Text></Item>
+                    <Item
+                      href="/me-fake"
+                      class={currentPage == '/me-fake' ? 'active' : ''}
+                      ><Text>Account Details</Text></Item
+                    >
                     <Item href="/me-fake"><Text>Trips</Text></Item>
                     <Item href="/me-fake"><Text>My Advisors</Text></Item>
                     <Item href="/me-fake"><Text>Wishlishs</Text></Item>
@@ -108,13 +111,11 @@
                     <Item href="/me-fake"><Text>Support</Text></Item>
                     <Item href="/my-agency"><Text>For advisors</Text></Item>
                   </List></Content
-                ></Drawer>
+                ></Drawer
+              >
               <div class="d-none m-block text-center mb-35">
-                <Select
-                        bind:value={currentPage}
-                        label=""
-                >
-                    <Option value="/me-fake" selected>Account Details</Option>
+                <Select bind:value={currentPage} label="">
+                  <Option value="/me-fake" selected>Account Details</Option>
                   <Option value="/trips">Trips</Option>
                   <Option value="/my-advisors">My Advisors</Option>
                 </Select>
@@ -131,7 +132,7 @@
     </div>
   </div>
   <CreateAgencyModal bind:open={openCreateAgencyModal} />
-  </Layout>
+</Layout>
 
 <style type="text/css">
   a.text-input {
@@ -164,7 +165,7 @@
     border: 1px solid #000;
   }
 
-  .mdc-deprecated-list-item.active{
+  .mdc-deprecated-list-item.active {
     border-bottom: 1px solid #000;
   }
   @media screen and (max-width: 768px) {

@@ -7,9 +7,9 @@
   import Select, { Option } from '@smui/select';
   import { createEventDispatcher, afterUpdate } from 'svelte';
   import { goto } from '$app/navigation';
-  import { DestinationTypeModel } from '$lib/models/destination_type';
-  import { ExperienceTypeModel } from '$lib/models/experience_type';
-  import { CountryModel } from '$lib/models/country';
+  import { Destination } from '$lib/api/destination/type';
+  import { Experience } from '$lib/api/experience/type';
+  import { Country } from '$lib/api/country/type';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
@@ -21,9 +21,9 @@
     country: '',
     sort_by: '',
   };
-  export let destination_types: DestinationTypeModel[];
-  export let experience_types: ExperienceTypeModel[];
-  export let countries: CountryModel[];
+  export let destination_types: Destination[];
+  export let experience_types: Experience[];
+  export let countries: Country[];
   function onSearchSubmit() {
     dispatch('close');
   }
@@ -44,7 +44,7 @@
         <Option value="" />
         {#if experience_types}
           {#each experience_types as item}
-            <Option value={item.title}>{item.title}</Option>
+            <Option value={item.name}>{item.name}</Option>
           {/each}
         {/if}
       </Select>
@@ -58,7 +58,7 @@
         <Option value="" />
         {#if destination_types}
           {#each destination_types as item}
-            <Option value={item.title}>{item.title}</Option>
+            <Option value={item.name}>{item.name}</Option>
           {/each}
         {/if}
       </Select>
