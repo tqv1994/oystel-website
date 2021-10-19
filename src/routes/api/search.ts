@@ -27,12 +27,12 @@ export const get: RequestHandler = async (request: Request) => {
   try {
       const searchExperience = await indexExperience.search(
         request.query.get('q'),
-        stringHelper.queryURLParamToJSON(request.query.get('params'))
+        // stringHelper.queryURLParamToJSON(request.query.get('params'))
       );
       results.experiences = searchExperience.hits;
       const searchDestination = await indexDestination.search(
         request.query.get('q'),
-        stringHelper.queryURLParamToJSON(request.query.get('params'))
+        // stringHelper.queryURLParamToJSON(request.query.get('params'))
       );
       results.destinations = searchDestination.hits
       return {

@@ -3,6 +3,7 @@
   import Textfield from '@smui/textfield';
   import { Icon } from '@smui/button';
   import { searchKeys } from '$lib/const';
+import { goto } from '$app/navigation';
   export let searchResult: string = '';
   // tagsStore.subscribe(({ tags }) => {
   //     tagDatas = Object.values(tags);
@@ -40,22 +41,9 @@
     }
   }
 
-  async function handleSearch(){
-    try {
-      const res = await fetch('/api/search',{
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-      if (res.ok) {
-        console.log(res.body);
-        return;
-      }
-      console.error('Error authenticating', res);
-    } catch (error) {
-      console.error('search failure', error);
-    }
+  async function handleSearch(key: string){
+    goto(`/search?name=${key}`);
+    return;
   }
 </script>
 
@@ -84,7 +72,7 @@
       <ul>
         {#if keyResult.length > 0}
           {#each keyResult as key}
-            <li class="mt-0"><a class="m-0" href="javascript:void(0);" on:click={handleSearch}>{key}</a></li>
+            <li class="mt-0"><a class="m-0" href="javascript:void(0);" on:click={()=>{handleSearch(key)}}>{key}</a></li>
           {/each}
         {/if}
       </ul>
