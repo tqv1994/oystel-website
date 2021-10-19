@@ -13,6 +13,13 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "token": "{{token}}"
+ "token": "{{token}}"
 }
 
+
+### GraphQL
+POST https://cms.oysteo.su93rheroes.com/graphql
+Accept: application/json
+Content-Type: application/json
+
+{"query": "query { countries { id name code phone } destinationTypes { id name } experienceTypes { id name } specialties { id name } }"}
