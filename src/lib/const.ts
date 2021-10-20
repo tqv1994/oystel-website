@@ -14,33 +14,33 @@ export const menus: Menu[] = [
         submenu: [
             {
                 name: 'Beach',
-                link: '#',
-                catalog: 'St. Barths, Grand Cul De Sac',
-                image: '/img/image-submenu.jpg',
+                link: '/destination/white-sans-in-goa-9',
+                catalog: 'White sans in Goa',
+                image: 'https://oysteo-cms-dev.s3.ap-southeast-1.amazonaws.com/destination_wi2_38d65ecf64.jpg',
             },
             {
                 name: 'City',
-                link: '#',
-                catalog: 'St. Barths, Grand Cul De Sac',
-                image: '/img/image-submenu.jpg',
+                link: '/destination/courtyard-splendour-in-rome-12',
+                catalog: 'Courtyard splendour in Rome',
+                image: 'https://oysteo-cms-dev.s3.ap-southeast-1.amazonaws.com/destination_ju2_e575bc6f26.jpg',
             },
             {
                 name: 'Mountain',
-                link: '#',
-                catalog: 'St. Barths, Grand Cul De Sac',
-                image: '/img/image-submenu.jpg',
+                link: '/destination/the-french-alps-24',
+                catalog: 'The French Alps',
+                image: 'https://oysteo-cms-dev.s3.ap-southeast-1.amazonaws.com/Screenshot_2021_10_19_at_13_39_27_d951f63514.png',
             },
             {
                 name: 'Sea',
-                link: '#',
-                catalog: 'St. Barths, Grand Cul De Sac',
-                image: '/img/image-submenu.jpg',
+                link: '/destination/cruising-around-sardinia-3',
+                catalog: 'Cruising around Sardinia',
+                image: 'https://oysteo-cms-dev.s3.ap-southeast-1.amazonaws.com/destination3_55a03ac308.jpg',
             },
             {
-                name: 'Wilderness',
-                link: '#',
-                catalog: 'St. Barths, Grand Cul De Sac',
-                image: '/img/image-submenu.jpg',
+                name: 'Countryside',
+                link: '/destination/loire-valley-29',
+                catalog: 'Loire Valley',
+                image: 'https://oysteo-cms-dev.s3.ap-southeast-1.amazonaws.com/Screenshot_2021_10_19_at_13_36_23_341d368105.png',
             },
         ],
     },
@@ -66,7 +66,8 @@ export const menus: Menu[] = [
 
 export const searchKeys: string[] = [
     'Sea',
+	'Beach',
     'Mountain',
-    'Jungle',
-    'Wilderness'
+    'City',
+    'Countryside'
 ]

@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import type { ExperiencesData } from '$lib/api/pages/type';
+  import type { ExperiencesData, UpdateExperienceData } from '$lib/api/pages/type';
   import {
     experienceStore,
     updateExperienceStore,
@@ -93,16 +93,22 @@
   let destinationTypes: DestinationType[] = [];
   let countries: Country[] = [];
 
-  experienceTypeStore.subscribe(({ items }) => {
+  getData();
+  
+  function getData(){
+    experienceTypeStore.subscribe(({ items }) => {
     experienceTypes =  Object.values(items).map( (experienceType: ExperienceType)=>{
-      if(experienceType.experiences){
-        experienceType.experiences = experienceType.experiences.map((experience: any)=>{
-          return new Experience(experience);
-        });
-      }
-      return experienceType;
+        if(experienceType.experiences){
+          experienceType.experiences = experienceType.experiences.map((experience: any)=>{
+            return new Experience(experience);
+          });
+        }
+        return experienceType;
+      });
     });
-  });
+  }
+
+  
 
   destinationTypeStore.subscribe(({ items }) => {
     destinationTypes =  Object.values(items);
@@ -139,6 +145,52 @@
       document
         .querySelector('.header-title')
         .classList.remove('fixed', 'is_sticky');
+    }
+  }
+
+  async function likeExperienceItem(experience: Experience, experienceType: ExperienceType){
+    if(!$authStore.user){
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    let userDataLikes: (number|string)[] | null = [];
+    if(experience.users){
+      userDataLikes = experience.users.map((item, index)=>{
+        return item.id;      
+      });
+      let indexExist = userDataLikes.findIndex((item)=>item == $authStore.user?.id);
+      if(indexExist >= 0){
+        userDataLikes.splice(indexExist,1);
+      }else{
+        userDataLikes.push($authStore.user.id);
+      }
+      if(userDataLikes.length == 0){
+        userDataLikes = null;
+      }
+    }
+    const res = await fetch(`/api/pages/experience/like?id=${experience.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userDataLikes)
+    });
+
+    if (res.ok) {
+      const data: UpdateExperienceData = await res.json();
+      experience.users = data.updateExperience.experience.users;
+      if(experienceType.experiences){
+        experienceType.experiences = experienceType.experiences.map((item: Experience)=>{
+          if(item.id === experience.id){
+            item = experience;
+          }
+          return item;
+        });
+      }
+      updateExperienceTypeStore([experienceType]);
+      getData();
+    } else {
+      const error = await res.json();
     }
   }
 </script>
@@ -304,7 +356,7 @@
                         </a>
                         <IconButton
                           class="btn-favorite {item.liked ? 'liked' : ''}"
-                          on:click={likeItem(item, indexType)}
+                          on:click={likeExperienceItem(item, indexType)}
                         >
                           <Icon
                             class="like"
@@ -354,7 +406,7 @@
                         </LayoutGrid>
                         <div class="divider" />
                         <h4 class="text-h2 title">{item.name}</h4>
-                        <p class="short-text m-none">{item.description}</p>
+                        <p class="short-text m-none">{item.intro}</p>
                       </a>
                     </div>
                   </Cell>

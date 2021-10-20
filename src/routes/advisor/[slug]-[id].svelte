@@ -366,7 +366,7 @@
                                 ><p
                                   class="text-eyebrow text-left d-mt-25 d-mb-25 m-mt-15 m-mb-15"
                                 >
-                                  {item.country?.name}
+                                  {item.country ? item.country.name : 'country'}
                                 </p></Cell
                               >
                             </LayoutGrid>
@@ -408,6 +408,7 @@
     background-repeat: no-repeat;
   }
   .contact-info {
+    --mdc-typography-button-font-size: 16px;
     top: 80px;
     position: absolute;
     left: 0;
@@ -444,7 +445,19 @@
     transform: translateY(-50%);
   }
   .contact-info .description {
+    max-height:110px;
+    overflow-y: scroll;
     width: 85%;
+    &::-webkit-scrollbar-track {
+        background-color: #d3d3d3;
+      }
+      &::-webkit-scrollbar {
+        width: 5px;
+        background-color: #d3d3d3;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: #000;
+      }
   }
 
   .trip-item :global(.mdc-layout-grid) {
@@ -543,7 +556,7 @@
       .qualifications-wrap .text-content {
         --mdc-typography-body1-font-weight: 400;
         --mdc-typography-body1-letter-spacing: 0;
-        --mdc-typography-body1-line-height: 27;
+        --mdc-typography-body1-line-height: 27px;
         --mdc-typography-body1-font-size: 14px;
       }
     }
@@ -564,7 +577,7 @@
       left: 45px;
     }
   }
-  @media (max-width: 904px) {
+  @media (max-width: 949px) {
     .destinations-wrap h5 {
       font-size: 12px;
       line-height: 20px;

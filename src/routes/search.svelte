@@ -51,22 +51,26 @@ import { Destination } from '$lib/api/destination/type';
     let searchParams: MeiliSearchQueryParams = {
       q: '',
       params: {
-        filter: {
-          experience_type: {}
-        }
+        filter: ""
       }
     };
     if (searchModel.name && searchModel.name != '') {
       searchParams.q = searchModel.name;
     }
     if (searchModel.type && searchModel.type != '') {
-      searchParams.params.filter['experience_type'] = {'name':searchModel.type};
+      searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
+      searchParams.params.filter +=  `experience_type = ${searchModel.type}`;
     }
     if (searchParams.params  && searchModel.country && searchModel.country != '') {
-      searchParams.params.filter['country'] = {'name':searchModel.country};
+      searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
+      searchParams.params.filter +=  `country = ${searchModel.country}`;
     }
     if (searchModel.destination && searchModel.destination != '') {
-      searchParams.params.filter['destination_type'] = {'name':searchModel.destination};
+      searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
+      searchParams.params.filter +=  `destination_type = ${searchModel.destination}`;
+    }
+    if(searchParams.params.filter == ""){
+      delete searchParams.params.filter;
     }
     // if (searchModel.sort_by && searchModel.sort_by != '') {
     //   searchParams._sort = searchModel.sort_by + ':desc';

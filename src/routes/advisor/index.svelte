@@ -228,13 +228,14 @@
                   <Row class="item-advisor">
                     <CellTable
                       ><a href={routerHelper.getUrl('advisor', '', item.id)}
-                        ><BlurhashImage
+                        ><div class="image-cover" style="width: 100px;padding-top: 100%"><BlurhashImage
                           class="avatar"
                           src={stringHelper.getFullUrlImage(
                             item.userMe.avatar?.url,
                           )}
                           fadeDuration="1000"
-                        /></a
+                        
+                        /></div></a
                       ></CellTable
                     >
                     <CellTable
@@ -275,6 +276,7 @@
                             spanDevices={{ phone: 1, tablet: 2, desktop: 4 }}
                           >
                             <div class="thumbnail">
+                              <div class="image-cover" style="width:100%; padding-top: 100%">
                               <BlurhashImage
                                 class="avatar"
                                 src={stringHelper.getFullUrlImage(
@@ -282,6 +284,7 @@
                                 )}
                                 fadeDuration="1000"
                               />
+                              </div>
                             </div>
                           </Cell>
                           <Cell

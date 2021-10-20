@@ -4,23 +4,64 @@ import { Speciality } from '$lib/api/specialty/type';
 import { cmsUrlPrefix } from '$lib/env';
 
 export const stringHelper = {
-  objectToQueryString: function(obj: any) {
-    var str = [];
-    for (var p in obj)
+  objectToQueryString: function(obj: any, prefix?: string): string {
+    var str = [],
+    p;
+    for (p in obj) {
       if (obj.hasOwnProperty(p)) {
-        str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
-      }
-    return str.join('&');
-  },
-
-  queryURLParamToJSON: function(entries?: any){
-    const result: any = {}
-    if(entries){
-      for(const [key, value] of entries) { // each 'entry' is a [key, value] tupple
-        result[key] = value;
+        var k = prefix ? prefix + "[" + p + "]" : p,
+          v = obj[p];
+        str.push((v !== null && typeof v === "object") ?
+          stringHelper.objectToQueryString(v, k) :
+          encodeURIComponent(k) + "=" + encodeURIComponent(v));
       }
     }
-    return result;
+    return str.join("&");
+  },
+
+  queryURLParamToJSON: (query: string) => {
+    console.log(query);
+    var re = /([^&=]+)=?([^&]*)/g;
+    var decodeRE = /\+/g;
+
+    var decode = function (str: string) {
+        return decodeURIComponent(str.replace(decodeRE, " "));
+    };
+
+    var params: any = {}, e;
+    while (e = re.exec(query)) {
+        var k = decode(e[1]), v = decode(e[2]);
+        if (k.substring(k.length - 2) === '[]') {
+            k = k.substring(0, k.length - 2);
+            (params[k] || (params[k] = [])).push(v);
+        }
+        else params[k] = v;
+    }
+
+    var assign = function (obj: any, keyPath: string, value: any) {
+        var lastKeyIndex = keyPath.length - 1;
+        for (var i = 0; i < lastKeyIndex; ++i) {
+            var key = keyPath[i];
+            if (!(key in obj))
+                obj[key] = {}
+            obj = obj[key];
+        }
+        obj[keyPath[lastKeyIndex]] = value;
+    }
+
+    for (var prop in params) {
+        var structure = prop.split('[');
+        if (structure.length > 1) {
+            var levels: any = [];
+            structure.forEach(function (item, i) {
+                var key = item.replace(/[?[\]\\ ]/g, '');
+                levels.push(key);
+            });
+            assign(params, levels, params[prop]);
+            delete(params[prop]);
+        }
+    }
+    return params;
   },
 
   stringToSlug: function(str: string) {

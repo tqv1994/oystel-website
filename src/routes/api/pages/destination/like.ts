@@ -10,6 +10,7 @@ export const put: RequestHandler = async (
     request: Request<Record<string, any>, AuthForm>) => {
   try {
     const client = createGraphClientFromRequest(request);
+    console.log(request.body);
     const query = `mutation updateDestination ($id: ID!, $users: [ID]){
         updateDestination(input:{
           where:{id: $id},
@@ -23,7 +24,7 @@ export const put: RequestHandler = async (
           }
       }    
     `;
-    const res = await client.mutation<UpdateDestinationData>(query,{id:request.query.get('id'),users: JSON.parse(request.body)}).toPromise();
+    const res = await client.mutation<UpdateDestinationData>(query,{id:request.query.get('id'),users: request.body}).toPromise();
     if(res.data){
       return {
         body: JSON.stringify(res.data),

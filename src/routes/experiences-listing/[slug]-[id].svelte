@@ -112,7 +112,7 @@
       } else {
         document.getElementById('header').classList.remove('fixed');
         document.querySelector('header').style.zIndex = 'auto';
-        document.querySelector('header').style.position = 'static';
+        document.querySelector('header').style.position = 'relative';
         document
           .querySelector('.header-title')
           .classList.remove('fixed', 'is_sticky');
@@ -167,7 +167,7 @@
 <Layout config={configPage}>
   {#if experience}
   <div class="content experience-detail">
-    <section class="header-title d-pt-90 d-pb-25 m-pt-90 m-pb-25 full-width">
+    <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-25 full-width">
       <div class="content-wrap">
         <div class="container">
           <LayoutGrid class="p-0 hidden-on-sticky">

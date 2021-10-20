@@ -41,7 +41,7 @@
 <Layout config={configPage}>
   <div class="content">
     <section
-      class="header-title full-width dark d-pt-80 d-pb-20 t-pt-80 t-pb-20 m-pt-90 m-pb-15"
+      class="header-title full-width dark d-pt-115 d-pb-20 t-pt-80 t-pb-20 m-pt-90 m-pb-15"
     >
       <div class="content-wrap">
         <div class="container">

@@ -109,13 +109,13 @@ import { User } from '$lib/api/auth/type';
     let userDataLikes: (number|string)[] | null = [];
     if(experience.users){
       userDataLikes = experience.users.map((item, index)=>{
-        return item.id;      
+        return +item.id;  
       });
       let indexExist = userDataLikes.findIndex((item)=>item == $authStore.user?.id);
       if(indexExist >= 0){
         userDataLikes.splice(indexExist,1);
       }else{
-        userDataLikes.push($authStore.user.id);
+        userDataLikes.push(+$authStore.user.id);
       }
       if(userDataLikes.length == 0){
         userDataLikes = null;

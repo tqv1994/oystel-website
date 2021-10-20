@@ -80,7 +80,7 @@
             <div>
                 <div class="post-type mb-15 text-eyebrow">Most Popular</div>
                 <h3 class="mb-40">{active.catalog}</h3>
-                <Button type="button" variant="outlined">
+                <Button type="button" variant="outlined" on:click={goto(active.link)}>
                     <Label class="text-button2">Explore Now</Label>
                 </Button>
             </div>

@@ -25,14 +25,16 @@ let results: SearchResultsPageData = {
  */
 export const get: RequestHandler = async (request: Request) => {
   try {
+      const paramsObject = stringHelper.queryURLParamToJSON(request.query.toString());
+      console.log(paramsObject);
       const searchExperience = await indexExperience.search(
-        request.query.get('q'),
-        // stringHelper.queryURLParamToJSON(request.query.get('params'))
+        paramsObject.q ? paramsObject.q : '',
+        paramsObject.params ? paramsObject.params : {}
       );
       results.experiences = searchExperience.hits;
       const searchDestination = await indexDestination.search(
-        request.query.get('q'),
-        // stringHelper.queryURLParamToJSON(request.query.get('params'))
+        paramsObject.q ? paramsObject.q : '',
+        paramsObject.params ? paramsObject.params : {}
       );
       results.destinations = searchDestination.hits
       return {
