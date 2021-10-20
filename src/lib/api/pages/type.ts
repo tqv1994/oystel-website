@@ -69,6 +69,12 @@ export type AdvisorPageData = {
   advisor: Advisor;
 };
 
+export type UpdateProductData = {
+  updateProduct: {
+    product: Product;
+  }
+}
+
 export type SearchResultsPageData = {
   destinations: Destination[]|any[];
   experiences: Experience[]|any[];

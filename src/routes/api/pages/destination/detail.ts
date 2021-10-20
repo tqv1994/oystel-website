@@ -36,6 +36,9 @@ export const get: RequestHandler = async (request: Request) => {
         gallery {
           ...uploadFileFields
         }
+        users {
+          id
+        }
       }
       experiences(sort: "published_at:desc",limit: 4) {
         id

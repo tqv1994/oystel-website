@@ -1,6 +1,7 @@
 import { Linkable } from "../linkable";
 import { FileUpload, FileUploadData } from "../file-upload/type";
 import { BaseData, PublishableBase } from "../types";
+import { User } from "../auth/type";
 
 export type ProductData = BaseData & PublishableBase & {
   name: string;
@@ -9,6 +10,8 @@ export type ProductData = BaseData & PublishableBase & {
   price: string;
   gallery: FileUploadData[];
   intro: string;
+  liked?: boolean;
+  users: User[];
 }
 
 export class Product extends PublishableBase implements ProductData, Linkable {
@@ -18,10 +21,13 @@ export class Product extends PublishableBase implements ProductData, Linkable {
   price: string;
   gallery: FileUpload[];
   intro: string;
+  liked?: boolean;
+  users: User[];
 
   constructor(data: ProductData) {
     super(data);
     Object.assign(this, data);
+    this.liked = data.liked ? data.liked : false;
   }
 
   get url() {

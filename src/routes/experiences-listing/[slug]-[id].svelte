@@ -17,7 +17,7 @@
   import { ExperienceModel } from '$lib/models/experience';
   import { ProductModel } from '$lib/models/product';
   import authStore from '$lib/api/auth/store';
-  import { ExperiencePageData, UpdateExperienceData } from '$lib/api/pages/type';
+  import { ExperiencePageData, UpdateExperienceData, UpdateProductData } from '$lib/api/pages/type';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import { BlurhashImage } from 'svelte-blurhash';
 
@@ -151,6 +151,43 @@
       const data: UpdateExperienceData = await res.json();
       experience.users = data.updateExperience.experience.users;
       updateExperienceStore([experience]);
+      getData();
+    } else {
+      const error = await res.json();
+    }
+  }
+  async function likeProductItem(product: Product){
+    if(!$authStore.user){
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    let userDataLikes: (number|string)[] | null = [];
+    if(product.users){
+      userDataLikes = product.users.map((item: User, index)=>{
+        return item.id;      
+      });
+      let indexExist = userDataLikes.findIndex((item)=>item == $authStore.user?.id);
+      if(indexExist >= 0){
+        userDataLikes.splice(indexExist,1);
+      }else{
+        userDataLikes.push($authStore.user.id);
+      }
+      if(userDataLikes.length == 0){
+        userDataLikes = null;
+      }
+    }
+    const res = await fetch(`/api/pages/product/like?id=${product.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userDataLikes)
+    });
+
+    if (res.ok) {
+      const data: UpdateProductData = await res.json();
+      product.users = data.updateProduct.product.users;
+      updateProductStore([product]);
       getData();
     } else {
       const error = await res.json();
@@ -298,7 +335,7 @@
                     </g>
                   </Icon>
                 </IconButton>
-                <IconButton class="btn-favorite {experience.liked ? 'liked' : ''}" on:click={likeExperience(experience)}>
+                <IconButton class="btn-favorite {experience.liked ? 'liked' : ''}" on:click={likeExperienceItem(experience)}>
                   <Icon class="like" component={Svg} viewBox="0 0 16.249 14.588">
                     <g
                       data-name="Icon - Heart"
@@ -587,7 +624,7 @@
                       class="thumbnail"
                       style={`background-image: url(${item.gallery[0]?.url}`}
                     >
-                      <IconButton class="btn-favorite">
+                      <IconButton class="btn-favorite {item.liked ? 'liked' : ''}" on:click={likeProductItem(item)}>
                         <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
                           <path
                             d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
@@ -857,22 +894,7 @@
   }
 
   .products-list :global(.item-product .thumbnail .btn-favorite) {
-    position: absolute;
-    top: 5%;
-    right: 2%;
     filter: brightness(0);
-  }
-  .products-list :global(.item-product .thumbnail .btn-favorite .like) {
-    display: block;
-  }
-  .products-list :global(.item-product .thumbnail .btn-favorite .liked) {
-    display: none;
-  }
-  .products-list :global(.item-product .thumbnail .btn-favorite:hover .like) {
-    display: none;
-  }
-  .products-list :global(.item-product .thumbnail .btn-favorite:hover .liked) {
-    display: block;
   }
 
   .experience-item :global(.mdc-layout-grid) {
@@ -900,10 +922,6 @@
 
   .divider:after {
     background-color: #000;
-  }
-
-  .content :global(.mdc-icon-button) {
-    margin-top: -15px;
   }
 
   @media screen and (max-width: 949px) {
