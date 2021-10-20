@@ -828,26 +828,6 @@ import { User } from '$lib/api/auth/type';
     height: 50px;
     overflow: hidden;
   }
-  .experience-item .thumbnail {
-    position: relative;
-  }
-  .experience-item .thumbnail :global(.btn-favorite) {
-    position: absolute;
-    top: 5%;
-    right: 2%;
-  }
-  .experience-item .thumbnail :global(.btn-favorite .like) {
-    display: block;
-  }
-  .experience-item .thumbnail :global(.btn-favorite .liked) {
-    display: none;
-  }
-  .experience-item .thumbnail :global(.btn-favorite:hover .like) {
-    display: none;
-  }
-  .experience-item .thumbnail :global(.btn-favorite:hover .liked) {
-    display: block;
-  }
 
   :global(.is_sticky.header-title) {
     padding-bottom: 50px !important;
@@ -857,9 +837,6 @@ import { User } from '$lib/api/auth/type';
     background-color: #000;
   }
 
-  .content :global(.mdc-icon-button) {
-    margin-top: -15px;
-  }
 
   @media screen and (max-width: 949px) {
     .experience-detail-slides :global(.carousel),

@@ -94,7 +94,7 @@
   let countries: Country[] = [];
 
   getData();
-  
+
   function getData(){
     experienceTypeStore.subscribe(({ items }) => {
     experienceTypes =  Object.values(items).map( (experienceType: ExperienceType)=>{
@@ -141,7 +141,7 @@
     } else {
       document.getElementById('header').classList.remove('fixed');
       document.querySelector('header').style.zIndex = 'auto';
-      document.querySelector('header').style.position = 'static';
+      document.querySelector('header').style.position = 'relative';
       document
         .querySelector('.header-title')
         .classList.remove('fixed', 'is_sticky');
@@ -356,7 +356,7 @@
                         </a>
                         <IconButton
                           class="btn-favorite {item.liked ? 'liked' : ''}"
-                          on:click={likeExperienceItem(item, indexType)}
+                          on:click={likeExperienceItem(item, type)}
                         >
                           <Icon
                             class="like"

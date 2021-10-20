@@ -158,7 +158,7 @@
     } else {
       document.getElementById('header').classList.remove('fixed');
       document.querySelector('header').style.zIndex = 'auto';
-      document.querySelector('header').style.position = 'static';
+      document.querySelector('header').style.position = 'relative';
       document
         .querySelector('.header-title')
         .classList.remove('fixed', 'is_sticky');
