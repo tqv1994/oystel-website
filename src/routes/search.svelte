@@ -59,15 +59,15 @@ import { Destination } from '$lib/api/destination/type';
     }
     if (searchModel.type && searchModel.type != '') {
       searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
-      searchParams.params.filter +=  `experience_type = ${searchModel.type}`;
+      searchParams.params.filter +=  `experience_type = "${searchModel.type}"`;
     }
     if (searchParams.params  && searchModel.country && searchModel.country != '') {
       searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
-      searchParams.params.filter +=  `country = ${searchModel.country}`;
+      searchParams.params.filter +=  `country = "${searchModel.country}"`;
     }
     if (searchModel.destination && searchModel.destination != '') {
       searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
-      searchParams.params.filter +=  `destination_type = ${searchModel.destination}`;
+      searchParams.params.filter +=  `destination_type = "${searchModel.destination}"`;
     }
     if(searchParams.params.filter == ""){
       delete searchParams.params.filter;

@@ -86,7 +86,7 @@
         <Option value="" />
       </Select>
     </div>
-    <div class="form-control">
+    <div class="form-control btn-submit-wrap">
       <Button variant="outlined" style="width: 100%;" type="submit"
         ><Label>Filter Your Results</Label></Button
       >
@@ -94,7 +94,19 @@
   </form>
 </div>
 
-<style>
+<style lang="scss">
+  
+  :global(.page-destinations ~ #header-action-mobile) {
+    #form-search-experience-wrap{
+      position: relative;
+      height: calc(75vh);
+      .btn-submit-wrap{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+      }
+    } 
+  }
   .search-form-experiences :global(.mdc-select) {
     width: 100%;
   }

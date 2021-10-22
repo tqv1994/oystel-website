@@ -116,6 +116,13 @@ $desktop-width: 950px;
   --mdc-typography-navlink-line-height: 27.5px;
   --mdc-typography-navlink-letter-spacing: 0;
 
+  /* FORM */
+  --mdc-typography-form-font-family: Surt;
+  --mdc-typography-form-font-size: 14px;
+  --mdc-typography-form-font-weight: 400;
+  --mdc-typography-form-line-height: 24px;
+  --mdc-typography-form-letter-spacing: 0.5;
+
   /* Character styles mobile */
   @include mobile {
     --mdc-typography-headline1-font-size: 32px;
@@ -158,6 +165,9 @@ $desktop-width: 950px;
 
   /* Buttons */
   --mdc-button-outline-color: #fff;
+
+  /* Checkbox */
+  --mdc-checkbox-ink-color: #fff;
 }
 
 #svelte{

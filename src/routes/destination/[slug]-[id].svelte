@@ -293,12 +293,12 @@ import { User } from '$lib/api/auth/type';
                     </Cell>
                     <Cell spanDevices="{{ desktop: 5,tablet: 8, phone: 4 }}">
                         <div class="d-pt-90 d-pb-100">
-                            <p class="text-eyebrow">Destination Country</p>
-                            <h1 >{destination.name}</h1>
-                            <p class="mb-30 short-description">{destination.intro}</p>
+                            <p class="text-eyebrow m-mb-0">{destination.country?.name}</p>
+                            <h1 class="m-mt-30 m-mb-15">{destination.name}</h1>
+                            <p class="mb-30 short-description mt-0">{destination.intro}</p>
                             <Button variant="outlined" class="mb-15"><Label>Find My Advisor</Label></Button>
                             <br/>
-                            <Button variant="outlined"><Label>What to Pack</Label></Button>
+                            <Button class="m-mb-35" variant="outlined"><Label>What to Pack</Label></Button>
                         </div>
                         <div class="action-buttons m-none">
                             <IconButton >
@@ -341,7 +341,7 @@ import { User } from '$lib/api/auth/type';
                 </LayoutGrid>
                 <LayoutGrid class="p-0 show-on-sticky m-none">
                     <Cell spanDevices={{desktop: 7, tablet: 4}}><div>
-                        <span class="text-eyebrow" >Destination Country</span>
+                        <span class="text-eyebrow" >{destination.country?.name}</span>
                             <IconButton >
                                 <Icon component="{Svg}" viewBox="0 0 13.246 19.134">
                                     <g id="Icon_-_Share" data-name="Icon - Share" transform="translate(0.5 1.233)">
@@ -390,7 +390,7 @@ import { User } from '$lib/api/auth/type';
             </div>
         </div>
     </section>
-    <section class="d-pt-90 d-pb-65 m-pt-40 m-pb-40">
+    <section class="d-pt-90 d-pb-65 m-pt-40 m-pb-40" id="advisors-section">
         <div class="container">
             <div class="section-title d-mb-65 m-mb-40">
                 <LayoutGrid class="p-0 m-none">
@@ -478,11 +478,11 @@ import { User } from '$lib/api/auth/type';
             <Cell span="12"><div class="divider"></div></Cell>
         </LayoutGrid>
     </div>
-    <section class="d-pt-70 d-pb-40 m-pt-50 m-pb-90">
+    <section class="d-pt-70 d-pb-40 m-pt-50 m-pb-10">
         <div class="container">
             <LayoutGrid class="p-0">
                 <Cell spanDevices={{desktop: 5,tablet: 8, phone: 4}}>
-                    <h1 class="mt-0">{destination.name}</h1>
+                    <h1 class="mt-0 m-mb-0">{destination.name}</h1>
                 </Cell>
                 <Cell spanDevices={{desktop: 7,tablet: 8, phone: 4}}>
                     <p class="mt-5">{@html destination.description}</p>
@@ -490,7 +490,7 @@ import { User } from '$lib/api/auth/type';
             </LayoutGrid>
         </div>
     </section>
-    <section class="pt-40">
+    <section class="pt-40" id="shop-by-look-section">
         <div class="container">
             <LayoutGrid class="p-0 pb-30">
                 <Cell span="12"><h1 class="mt-0 mb-0">Shop By Look</h1></Cell>
@@ -637,13 +637,16 @@ import { User } from '$lib/api/auth/type';
                                     </IconButton>
                                 </div>
                                 <a href={item.url}>
-                                  <LayoutGrid class="p-0">
+                                  <LayoutGrid class="p-0 m-none">
                                       <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left">{item.country ? item.country.name : "Country"}</p></Cell>
                                       <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-right">Experience</p></Cell>
                                   </LayoutGrid>
+                                  <LayoutGrid class="p-0 d-none m-block">
+                                      <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}><p class="text-eyebrow text-left mt-20 mb-20">Experience</p></Cell>
+                                  </LayoutGrid>
                                 </a>
                                 <div class="divider"></div>
-                                <h4 class="text-h2 title">{item.name}</h4>
+                                <h4 class="text-h2 title mt-30">{item.name}</h4>
                                 <p class="short-text m-none">{item.intro}</p>
                             </div>
                     </Cell>
@@ -663,6 +666,17 @@ import { User } from '$lib/api/auth/type';
 >
 <OyNotification />
 <style lang="scss">
+  $desktop-width: 950px;
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
+      @content;
+    }
+  }
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+      @content;
+    }
+  }
   :global(.show-on-sticky) {
     display: none;
   }
@@ -743,30 +757,43 @@ import { User } from '$lib/api/auth/type';
   }
 
   /* Advisors */
-  .item-advisor .title {
-    height: 30px;
-    overflow: hidden;
+  #advisors-section{
+    @include mobile{
+    --mdc-typography-headline2-font-size: 14px;
+    --mdc-typography-headline2-line-height: 18px;
+    }
+    .item-advisor .title {
+      height: 30px;
+      overflow: hidden;
+    }
   }
+  
+  #shop-by-look-section{
+    --mdc-typography-headline5-font-size: 14px;
+    --mdc-typography-headline5-line-height: 22px;
+    /* Products */
+    .item-product .title-wrap {
+      position: relative;
+    }
+    .item-product .title-wrap :global(.mdc-icon-button) {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+    }
 
-  /* Products */
-  .item-product .title-wrap {
-    position: relative;
-  }
-  .item-product .title-wrap :global(.mdc-icon-button) {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-  }
-
-  .item-product .title-wrap .divider:after {
-    background-color: rgba(0, 0, 0, 0.2);
+    .item-product .title-wrap .divider:after {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
   }
 
   .products-list :global(.mdc-layout-grid__inner) {
     overflow-x: auto;
     grid-auto-flow: column;
-    margin-bottom: 80px;
+    padding-bottom: 60px;
+    @include mobile{
+      padding-bottom: 40px;
+    }
   }
   .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-track) {
     background-color: #d3d3d3;
@@ -849,6 +876,10 @@ import { User } from '$lib/api/auth/type';
   .experience-item .title {
     height: 50px;
     overflow: hidden;
+    @include mobile{
+      height: auto;
+      overflow: auto;
+    }
   }
 
   :global(.is_sticky.header-title) {
@@ -880,7 +911,7 @@ import { User } from '$lib/api/auth/type';
     }
     .experience-detail-slides :global(.dots) {
       display: flex;
-      justify-content: end;
+      justify-content: start;
       margin-top: 20px;
       filter: brightness(0);
     }
@@ -888,7 +919,7 @@ import { User } from '$lib/api/auth/type';
       height: 50px;
     }
     .products-list :global(.mdc-layout-grid__inner) {
-      margin-bottom: 45px;
+      margin-bottom: 10px;
     }
   }
   /*@media  (max-width: 1239px){*/

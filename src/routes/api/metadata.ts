@@ -10,7 +10,7 @@ export const get: RequestHandler = async () => {
   try {
     const client = createGraphClient();
     const query = `query {
-      countries {
+      countries (sort: "name:asc") {
         id
         name
         code
@@ -30,7 +30,6 @@ export const get: RequestHandler = async () => {
       }
     } 
   `;
-  console.log( query )
     const res = await client.query<MetadataData>(query).toPromise();
     if (res.data) {
       return {

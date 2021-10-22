@@ -1175,7 +1175,9 @@
     display: block;
   }
   .content :global(.mdc-button) {
-    width: 220px;
+    width: 180px;
+    min-width: 180px;
+    padding: 0 15px;
   }
   /* Header title */
   .header-title {

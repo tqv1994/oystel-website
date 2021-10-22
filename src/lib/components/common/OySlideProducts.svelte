@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import Button, { Icon, Label } from '@smui/button';
   import IconButton, { Icon as Icons } from '@smui/icon-button';
-  export let images = [];
-  let featuredImage;
+  export let images: string[] = [];
+  let featuredImage: string;
   if (images.length > 0) {
     featuredImage = images[0];
   }
@@ -12,7 +12,9 @@
 <div class="slides-product-wrap">
   {#if images.length > 0}
     <div class="thumbnail featured-image">
-      <img src={featuredImage} alt="" />
+      <div class="image-cover" style="padding-top:calc(568px)">
+        <img src={featuredImage} alt="" />
+      </div>
     </div>
     <div class="slide-items">
       <LayoutGrid class="p-0 pb-0 pt-25 ">

@@ -129,8 +129,8 @@
             <OySlideProducts images={imageSlidesProduct} />
           </Cell>
           <Cell spanDevices={{ desktop: 8, mobile: 4, tablet: 8 }}>
-            <div class="d-pt-80 t-pt-0 m-pt-25 ">
-              <h5 class="d-mb-40 t-mb-40 m-mb-25 m-mt-0">3 items</h5>
+            <div class="d-pt-90 t-pt-0 m-pt-25 ">
+              <h5 class="d-mb-40 t-mb-40 m-mb-25 mt-0">3 items</h5>
               <div class="products-list">
                 <LayoutGrid class="p-0">
                   <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>

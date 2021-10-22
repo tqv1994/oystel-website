@@ -129,14 +129,14 @@
 
 {#if me}
   <Layout>
-    <div class="content user-dashboard light">
+    <div class="content user-dashboard">
       <div class="container">
         <section class="pt-20 pb-40">
           <LayoutGrid class="p-0">
-            <Cell span="12">
+            <Cell span="12" class="light">
               <div class="section-header">
-                <p>Welcome to Your Oysteo Account</p>
-                <h1 class="mb-0">
+                <p class="mb-35">Welcome to Your Oysteo Account</p>
+                <h1 class="mb-10 mt-0">
                   Good afternoon, {me.displayName || 'there'}.
                 </h1>
                 <a href="/sign-out"
@@ -159,7 +159,7 @@
                       >
                       <Item href="/me"><Text>Trips</Text></Item>
                       <Item href="/me"><Text>My Advisors</Text></Item>
-                      <Item href="/me"><Text>Wishlishs</Text></Item>
+                      <Item href="/me"><Text>Wishlists</Text></Item>
                       <Item href="/me"><Text>Preferences</Text></Item>
                       <Item href="/me"><Text>Family & Friends</Text></Item>
                       <Item href="/me"><Text>Support</Text></Item>

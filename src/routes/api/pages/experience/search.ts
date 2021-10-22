@@ -49,7 +49,7 @@ export const get: RequestHandler = async (request: Request) => {
       previewUrl
     }       
     `;
-    const res = await client.query<ExperiencesSearchData>(query,{where:stringHelper.queryURLParamToJSON(request.query)}).toPromise();
+    const res = await client.query<ExperiencesSearchData>(query,{where:stringHelper.queryURLParamToJSON(request.query.toString())}).toPromise();
     if(res.data){
       return {
         body: JSON.stringify(res.data),

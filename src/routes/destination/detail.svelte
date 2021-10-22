@@ -1197,7 +1197,7 @@
     }
     .experience-detail-slides :global(.dots) {
       display: flex;
-      justify-content: end;
+      justify-content: start;
       margin-top: 20px;
       filter: brightness(0);
     }

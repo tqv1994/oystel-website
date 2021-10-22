@@ -81,7 +81,7 @@
                   </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25">Gucci</p>
-                <h3>Papier Wide Brim Hat</h3>
+                <h3 class="mb-0">Papier Wide Brim Hat</h3>
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 2, table: 4, phone: 2 }}>
@@ -115,7 +115,7 @@
                   </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25">Bottega Veneta</p>
-                <h3>Oversized Acetate Sunglasses</h3>
+                <h3 class="mb-0">Oversized Acetate Sunglasses</h3>
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 2, table: 4, phone: 2 }}>
@@ -149,7 +149,7 @@
                   </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25">Carolina Herrera</p>
-                <h3>Asymmetric Tiered Organza Gown</h3>
+                <h3 class="mb-0">Asymmetric Tiered Organza Gown</h3>
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 2, table: 4, phone: 2 }}>
@@ -183,7 +183,7 @@
                   </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25">Matteau</p>
-                <h3>Square-Neck One-Piece Swimsuit</h3>
+                <h3 class="mb-0">Square-Neck One-Piece Swimsuit</h3>
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 2, table: 4, phone: 2 }}>
@@ -217,7 +217,7 @@
                   </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25">Balenciaga</p>
-                <h3>Mallorca Platform Rubber Sandals</h3>
+                <h3 class="mb-0">Mallorca Platform Rubber Sandals</h3>
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 2, table: 4, phone: 2 }}>
@@ -251,7 +251,7 @@
                   </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25">Johanna Ortiz</p>
-                <h3>Heroica Printed Cotton Sarong</h3>
+                <h3 class="mb-0">Heroica Printed Cotton Sarong</h3>
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 2, table: 4, phone: 2 }}>
@@ -285,7 +285,7 @@
                   </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25">Johanna Ortiz</p>
-                <h3>Heroica Printed Cotton Sarong</h3>
+                <h3 class="mb-0">Heroica Printed Cotton Sarong</h3>
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 2, table: 4, phone: 2 }}>
@@ -319,7 +319,7 @@
                   </IconButton>
                 </div>
                 <p class="text-eyebrow mt-25">Johanna Ortiz</p>
-                <h3>Heroica Printed Cotton Sarong</h3>
+                <h3 class="mb-0">Heroica Printed Cotton Sarong</h3>
               </div>
             </Cell>
           </LayoutGrid>
@@ -377,7 +377,7 @@
     overflow-x: auto;
     grid-auto-flow: column;
 
-    padding-bottom: 80px;
+    padding-bottom: 90px;
   }
   .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-track) {
     background-color: #d3d3d3;

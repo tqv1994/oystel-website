@@ -11,6 +11,7 @@
   import { User } from '$lib/api/auth/type';
   import { goto } from '$app/navigation';
   import { stringHelper } from '$lib/helpers';
+import { dateTimeHelper } from '$lib/helpers/datetime';
 
   let me: User | undefined = $authStore.user;
   let modelEmailPreferences = {
@@ -70,7 +71,7 @@
 {#if me}
   <LayoutGrid class="p-0">
     <Cell spanDevices={{ desktop: 4, phone: 4, tablet: 8 }}>
-      <div class="thumbnail user-profile-image">
+      <div class="thumbnail user-profile-image dark">
         <div class="image-cover" style="padding-top: 100%">
           <BlurhashImage
             src={stringHelper.getFullUrlImage(me.avatar?.url)}
@@ -159,7 +160,7 @@
             ><h5 class="mt-0 mb-0 font-weight-bold">Birthdate</h5></Cell
           >
           <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}
-            >{me.birthday || 'Please update'}</Cell
+            >{dateTimeHelper.formatDate(me.birthday) || 'Please update'}</Cell
           >
         </LayoutGrid>
         <LayoutGrid class="p-0 pb-15">

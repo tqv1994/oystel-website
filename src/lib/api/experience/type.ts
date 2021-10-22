@@ -57,4 +57,19 @@ export class Experience
       return [];
     }
   }
+
+  get excerpt() {
+    const maxLength = 90; // maximum number of characters to extract
+    if(this.intro.length <= maxLength) return this.intro;
+    //trim the string to the maximum length
+    const trimmedString = this.intro
+      .replace(/<[^>]*>?/gm, '')
+      .substr(0, maxLength);
+    return (
+      trimmedString.substring(
+        0,
+        Math.min(trimmedString.length, trimmedString.lastIndexOf(' ')),
+      ) + '...'
+    );
+  }
 }

@@ -27,6 +27,7 @@
   import { Experience } from '$lib/api/experience/type';
   import { stringHelper } from '$lib/helpers';
   import { Product } from '$lib/api/product/type';
+import { User } from '$lib/api/auth/type';
 
   export const load: Load = async ({ fetch, session, page }) => {
     let id = stringHelper.getSlugId(page.params.id);
@@ -204,7 +205,7 @@
 <Layout config={configPage}>
   {#if experience}
   <div class="content experience-detail">
-    <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-25 full-width">
+    <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-60 full-width">
       <div class="content-wrap">
         <div class="container">
           <LayoutGrid class="p-0 hidden-on-sticky">
@@ -217,10 +218,10 @@
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
-              <div class="d-pt-90 d-pb-100">
-                <p class="text-eyebrow">{ experience?.country.name }</p>
-                <h1>{ experience?.name }</h1>
-                <p class="mb-30 short-description">
+              <div class="d-pt-90 m-pt-55 d-pb-100">
+                <p class="text-eyebrow m-m-0">{ experience?.country.name }</p>
+                <h1 class="m-mt-30 m-mb-15">{ experience?.name }</h1>
+                <p class="mb-30 short-description m-mt-0">
                     { experience.intro ? experience.intro : "" }
                 </p>
                 <Button variant="outlined" class="mb-15"
@@ -296,9 +297,9 @@
             </Cell>
           </LayoutGrid>
           <LayoutGrid class="p-0 show-on-sticky m-none">
-            <Cell spanDevices={{ desktop: 7 }}
+            <Cell spanDevices={{ desktop: 8 }}
               ><div>
-                <span class="text-eyebrow">Destination Country</span>
+                <span class="text-eyebrow">{experience.country?.name}</span>
                 <IconButton>
                   <Icon component={Svg} viewBox="0 0 13.246 19.134">
                     <g
@@ -364,9 +365,9 @@
               </div>
               <h1 class="mb-0 mt-40">{experience?.name}</h1>
             </Cell>
-            <Cell spanDevices={{ desktop: 5 }} class="text-right">
+            <Cell spanDevices={{ desktop: 4 }} class="text-right">
               <div class="mt-100">
-                <Button variant="outlined"
+                <Button variant="outlined" class="d-mr-20"
                   ><Label>Find My Advisor</Label></Button
                 >
                 <Button variant="outlined"><Label>What to Pack</Label></Button>
@@ -604,7 +605,7 @@
         </LayoutGrid>
       </div>
     </section>
-    <section class="d-pt-55 d-pb-95 m-pt-40">
+    <section class="d-pt-55 d-pb-95 m-pt-40" id="what-to-pack-section">
       <div class="container">
         <h1 class="mt-0">What to Pack</h1>
         <div class="products-list">
@@ -695,7 +696,7 @@
                         </IconButton>
                       </div>
                       <a href={item.url}>
-                        <InnerGrid class="p-0">
+                        <InnerGrid class="p-0 m-none">
                           <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
                             ><p class="text-eyebrow text-left">{item.country ? item.country.name : "Country"}</p></Cell
                           >
@@ -705,9 +706,16 @@
                             </p></Cell
                           >
                         </InnerGrid>
+                        <InnerGrid class="p-0 d-none m-block">
+                          <Cell spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
+                            ><p class="text-eyebrow text-left mt-20 mb-20">
+                              Experience
+                            </p></Cell
+                          >
+                        </InnerGrid>
                         <div class="divider" />
-                        <h4 class="text-h2 title">{item.name}</h4>
-                        <p class="short-text m-none">
+                        <h4 class="text-h2 title m-mt-30 m-mb-20">{item.name}</h4>
+                        <p class="short-text m-mt-0">
                           {item.intro}
                         </p>
                       </a>
@@ -729,6 +737,17 @@
 <OyNotification />
 
 <style lang="scss">
+  $desktop-width: 950px;
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
+      @content;
+    }
+  }
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+      @content;
+    }
+  }
   :global(.show-on-sticky) {
     display: none;
   }
@@ -736,7 +755,9 @@
     display: block;
   }
   .content :global(.mdc-button) {
-    width: 220px;
+    width: 180px;
+    min-width: 180px;
+    padding: 0 15px;
   }
   /* Header title */
   .header-title {
@@ -785,7 +806,9 @@
     right: 100px;
   }
   .header-title .short-description {
-    width: 80%;
+    @include desktop{
+      width: 80%;
+    }
   }
 
   .section-title :global(.mdc-tab) {
@@ -806,6 +829,10 @@
   }
 
   /* Products */
+  #what-to-pack-section{
+    --mdc-layout-grid-gutter-phone: 24px;
+    --mdc-layout-grid-gutter-tablet: 24px;
+  }
   .item-product .title-wrap {
     position: relative;
   }
@@ -904,8 +931,10 @@
     background-color: rgba(0, 0, 0, 0.2);
   }
   .experience-item .title {
-    height: 50px;
-    overflow: hidden;
+    @include desktop{
+      height: 50px;
+      overflow: hidden;
+    }
   }
   .experience-item .thumbnail {
     position: relative;

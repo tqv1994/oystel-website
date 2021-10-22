@@ -50,8 +50,7 @@ export const get: RequestHandler = async (request: Request) => {
       previewUrl
     }
     `;
-    console.log( stringHelper.queryURLParamToJSON(request.query) )
-    const res = await client.query<DestinationData>(query,{where:stringHelper.queryURLParamToJSON(request.query)}).toPromise();
+    const res = await client.query<DestinationData>(query,{where:stringHelper.queryURLParamToJSON(request.query.toString())}).toPromise();
     if(res.data){
       return {
         body: JSON.stringify(res.data),

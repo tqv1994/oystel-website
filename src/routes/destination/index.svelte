@@ -207,7 +207,7 @@
 />
 <Layout config={configPage} on:refreshPage={()=>{}}>
   <div class="content">
-    <section class="header-title d-pt-120 d-pb-95 m-pt-90 m-pb-25 full-width">
+    <section class="header-title d-pt-120 d-pb-95 m-pt-80 m-pb-25 full-width">
       <div class="content-wrap">
         <div class="container m-none">
           <form
@@ -216,7 +216,7 @@
             on:submit|preventDefault={onSearchSubmit}
           >
             <LayoutGrid class="p-0">
-              <Cell span="5">
+              <Cell span="4">
                 <div class="form-control">
                   <Textfield
                     variant="outlined"
@@ -278,7 +278,7 @@
                   </Select>
                 </div>
               </Cell>
-              <Cell span="1">
+              <Cell span="2">
                 <div class="form-control">
                   <Select
                     variant="outlined"
@@ -400,14 +400,14 @@
                         </LayoutGrid>
                         <LayoutGrid class="p-0 m-block d-none">
                           <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                            ><p class="text-eyebrow text-left">
+                            ><p class="text-eyebrow text-left mt-20 mb-20">
                               Destination
                             </p></Cell
                           >
                         </LayoutGrid>
                         <div class="divider" />
-                        <h4 class="text-h2 title">{item?.name}</h4>
-                        <p class="short-text m-none">{item?.intro}</p>
+                        <h4 class="text-h2 title m-mt-30">{item?.name}</h4>
+                        <p class="short-text m-none">{item?.excerpt}</p>
                       </a>
                     </div>
                   </Cell>
@@ -504,8 +504,8 @@
     }
 
     .experience-item .title {
-      height: 70px;
-      overflow: hidden;
+      height: auto;
+      overflow: auto;
     }
   }
 </style>

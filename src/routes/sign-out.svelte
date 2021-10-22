@@ -8,6 +8,8 @@ import { routerHelper } from '$lib/helpers';
       const res = await fetch('/api/auth/sign-out');
       authStore.set({ user: undefined });
       if (res.ok) {
+        document.cookie = `session=; Path=/; Expires=${new Date()};`;
+        document.cookie = `session.sig=; Path=/; Expires=${new Date()};`;
         authStore.set({ user: undefined });
         return;
       }
