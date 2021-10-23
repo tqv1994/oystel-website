@@ -2,33 +2,36 @@ import { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/api/graph';
 import { makeErrorResponse } from '$lib/api/utils';
 import { ExperiencesData } from '$lib/api/pages/type';
+import { ExperienceType } from '$lib/api/experience-type/type';
 
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const post: RequestHandler = async (request: Request<Record<string, any>, AuthForm>) => {
+  let experienceTypes: ExperienceType[] = request.body || [];
+  let queryString = '';
+  for(let experienceType of experienceTypes){
+    queryString += ` experienceType_${experienceType.id}: experiences (limit: 3, sort: "published_at:desc", where: {experience_type: {id: ${experienceType.id}}})
+      {
+        id
+        name
+        description
+        intro
+        gallery {
+          ...uploadFileFields
+        }
+        country {
+          ...countryFields
+        }
+        users{
+          id
+        }
+      }`;
+  }
   try {
     const client = createGraphClientFromRequest(request);
     const query = `query {
-      experienceTypes (where: {experiences_null:false}) {
-        id
-        name
-        experiences(limit: 3, sort: "published_at:desc") {
-          id
-          name
-          description
-          intro
-          gallery {
-            ...uploadFileFields
-          }
-          country {
-            ...countryFields
-          }
-          users{
-            id
-          }
-        }
-      }
+      ${queryString}
     }
     fragment countryFields on Country {
       id
@@ -51,8 +54,10 @@ export const get: RequestHandler = async (request: Request) => {
       previewUrl
     }       
     `;
+    console.log(query);
     const res = await client.query<ExperiencesData>(query).toPromise();
     if(res.data){
+      
       return {
         body: JSON.stringify(res.data),
       };

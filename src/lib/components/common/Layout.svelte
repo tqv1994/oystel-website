@@ -204,7 +204,7 @@
             >
               <Wrapper >
                   <Button
-                    class="btn-plan-your-trip mr-30"
+                    class="btn-plan-your-trip mr-10"
                     type="button"
                     variant="outlined"
                   >
@@ -212,6 +212,7 @@
                   </Button>
                 <div class="button-actions">
                   <IconButton
+                  unbounded=false
                     on:click={() => {
                       openSearch = true;
                     }}
@@ -408,7 +409,7 @@
 <BottomAppBar
   on:openHeaderActionMobile={(event) => {
     contentHeaderAction = event.detail.content;
-  }}>no content</BottomAppBar
+  }} bind:openSigninModal>no content</BottomAppBar
 >
 <HeaderActionMobile bind:content={contentHeaderAction} />
 

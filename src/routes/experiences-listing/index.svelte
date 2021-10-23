@@ -46,19 +46,28 @@
   import { Experience } from '$lib/api/experience/type';
 
   export const load: Load = async ({ fetch, session, page }) => {
+    let experienceTypes: ExperienceType[] = [];
+    experienceTypeStore.subscribe(({items})=>{
+      experienceTypes = Object.values(items);
+    });
     const res = await fetch('/api/pages/experience', {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify(experienceTypes)
     });
-    console.log('Got experiences data', res.ok);
 
     if (res.ok) {
       const data: ExperiencesData = await res.json();
-      console.log(data);
+      experienceTypes = experienceTypes.map((experienceType: ExperienceType)=>{
+        if(data[`experienceType_${experienceType.id}`]){
+          experienceType.experiences = data[`experienceType_${experienceType.id}`];
+        }
+        return experienceType;
+      });
       // TODO: Convert data to classes
-      updateExperienceTypeStore(data.experienceTypes || []);
+      updateExperienceTypeStore(experienceTypes || []);
     } else {
       const error = await res.json();
       console.log(error);

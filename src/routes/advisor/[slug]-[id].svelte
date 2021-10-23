@@ -250,11 +250,11 @@
                       {#each advisor.countries as country, index}
                         {#if index < 3}
                           <div
-                            class={index + 1 < advisor.countries.length
+                            class={index + 1 < 3
                               ? 'mb-30'
                               : 'mb-0'}
                           >
-                            <h5 class="mb-15 mt-0">{country.name}</h5>
+                            <h5 class="mb-10 mt-0">{country.name}</h5>
                           </div>
                         {/if}
                       {/each}

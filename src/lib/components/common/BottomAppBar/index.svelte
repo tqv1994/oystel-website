@@ -5,7 +5,10 @@
   import Svg from '@smui/common/Svg.svelte';
   import HeaderActionMobile from './../HeaderActionMobile/index.svelte';
   import { createEventDispatcher } from 'svelte';
+  import authStore from '$lib/api/auth/store';
+import { routerHelper } from '$lib/helpers';
   export let params;
+  export let openSigninModal = false;
   let type;
   let openHeaderActionMobile = false;
   let dispathcher = createEventDispatcher();
@@ -124,7 +127,8 @@
     <Cell spanDevices={{ phone: 1, desktop: 3, tablet: 2 }} class="text-center">
       <Button
         on:click={() => {
-          openLink('#');
+          $authStore.user ? goto('/me') : openSigninModal = true;
+          
         }}
       >
         <div class="wrap-item">

@@ -84,7 +84,6 @@ export const get: RequestHandler = async (request: Request) => {
     `;
     const res = await client.query<HomePageData>(query).toPromise();
     if (res.data) {
-      console.log(res.data);
       return {
         body: JSON.stringify(res.data),
       };

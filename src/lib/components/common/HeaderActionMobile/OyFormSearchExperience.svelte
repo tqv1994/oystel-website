@@ -96,7 +96,7 @@
 
 <style lang="scss">
   
-  :global(.page-destinations ~ #header-action-mobile) {
+  :global(.page-destinations ~ #header-action-mobile), :global(.page-destinations-search ~ #header-action-mobile) {
     #form-search-experience-wrap{
       position: relative;
       height: calc(75vh);

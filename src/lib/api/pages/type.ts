@@ -21,9 +21,7 @@ export type HomePageData = {
   destinations: Destination[];
 };
 
-export type ExperiencesData = {
-  experienceTypes: ExperienceType[];
-}
+export type ExperiencesData = any;
 
 export type ExperiencesSearchData = {
   experiences: Experience[];
@@ -41,9 +39,7 @@ export type UpdateExperienceData = {
   }
 }
 
-export type DestinationData = {
-  destinationTypes: DestinationType[];
-}
+export type DestinationData = any
 
 export type DestinationsSearchData = {
   destinations: Destination[];

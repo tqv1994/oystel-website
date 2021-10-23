@@ -144,7 +144,7 @@
                   <h4 class="text-h2 mt-0 d-mb-30 t-mb-30 m-mb-25 title">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </h4>
-                  <p class="mt-0 mb-0">Curated by: Jan Wohl | Oysteo Advisor</p>
+                  <p class="mt-0 mb-0 m-none">Curated by: Jan Wohl | Oysteo Advisor</p>
                 </div>
               </a>
             </Cell>
@@ -161,7 +161,7 @@
                   <h4 class="text-h2 mt-0 d-mb-30 t-mb-30 m-mb-25 title">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </h4>
-                  <p class="mt-0 mb-0">
+                  <p class="mt-0 mb-0 m-none">
                     Curated by: Shea Marie | Oysteo Partner
                   </p>
                 </div>
@@ -180,7 +180,7 @@
                   <h4 class="text-h2 mt-0 d-mb-30 t-mb-30 m-mb-25 title">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </h4>
-                  <p class="mt-0 mb-0">
+                  <p class="mt-0 mb-0 m-none">
                     Curated by: Charles Moore | Oysteo Advisor
                   </p>
                 </div>
@@ -199,7 +199,7 @@
                   <h4 class="text-h2 mt-0 d-mb-30 t-mb-30 m-mb-25 title">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </h4>
-                  <p class="mt-0 mb-0">
+                  <p class="mt-0 mb-0 m-none">
                     Curated by: Janet Wohl | Oysteo Advisor
                   </p>
                 </div>
@@ -218,7 +218,7 @@
                   <h4 class="text-h2 mt-0 d-mb-30 t-mb-30 m-mb-25 title">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </h4>
-                  <p class="mt-0 mb-0">
+                  <p class="mt-0 mb-0 m-none">
                     Curated by: Elise Cook | Oysteo Partner
                   </p>
                 </div>
@@ -237,7 +237,7 @@
                   <h4 class="text-h2 mt-0 d-mb-30 t-mb-30 m-mb-25 title">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </h4>
-                  <p class="mt-0 mb-0">
+                  <p class="mt-0 mb-0 m-none">
                     Curated by: Pierre Schuester | Oysteo Partner
                   </p>
                 </div>
@@ -256,7 +256,7 @@
                   <h4 class="text-h2 mt-0 d-mb-30 t-mb-30 m-mb-25 title">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </h4>
-                  <p class="mt-0 mb-0">
+                  <p class="mt-0 mb-0 m-none">
                     Curated by: Chelsea Yamase | Oysteo Partner
                   </p>
                 </div>
@@ -275,7 +275,7 @@
                   <h4 class="text-h2 mt-0 d-mb-30 t-mb-30 m-mb-25 title">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </h4>
-                  <p class="mt-0 mb-0">Curated by: Jan Wohl | Oysteo Advisor</p>
+                  <p class="mt-0 mb-0 m-none">Curated by: Jan Wohl | Oysteo Advisor</p>
                 </div>
               </a>
             </Cell>
@@ -296,7 +296,18 @@
   on:close={callOpenSignupModal}
 />
 
-<style>
+<style lang="scss">
+  $desktop-width: 950px;
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
+      @content;
+    }
+  }
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+      @content;
+    }
+  }
   .header-title {
     background-color: #f0f7f8;
   }
@@ -313,7 +324,9 @@
     padding-bottom: 70px;
   }
   .header-title .short-description {
-    width: 80%;
+    @include desktop{
+      width: 80%;
+    }
   }
 
   .header-title .divider:after,
@@ -332,8 +345,10 @@
   }
 
   .products-list .product-item .title {
-    height: 50px;
-    overflow: hidden;
+    @include desktop{
+      height: 50px;
+      overflow: hidden;
+    }
   }
 
   .products-list .product-item {

@@ -2,36 +2,36 @@ import type { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/api/graph';
 import { makeErrorResponse } from '$lib/api/utils';
 import { DestinationData } from '$lib/api/pages/type';
+import { DestinationType } from '$lib/api/destination-type/type';
 
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const post: RequestHandler = async (request: Request<Record<string, any>, AuthForm>) => {
+  let destinationTypes: DestinationType[] = request.body || [];
+  let queryString = '';
+  for(let destinationType of destinationTypes){
+    queryString += ` destinationType_${destinationType.id}: destinations (limit: 3, sort: "published_at:desc", where: {destination_type: {id: ${destinationType.id}}})
+      {
+        id
+        name
+        description
+        intro
+        gallery {
+          ...uploadFileFields
+        }
+        country {
+          ...countryFields
+        }
+        users{
+          id
+        }
+      }`;
+  }
   try {
     const client = createGraphClientFromRequest(request);
     const query = `query {
-      destinationTypes(where: { destinations_null: false }) {
-        id
-        name
-        destinations(limit: 3, sort: "published_at:desc") {
-          id
-          name
-          description
-          intro
-          gallery {
-            ...uploadFileFields
-          }
-          country {
-            ...countryFields
-          }
-          users{
-            id
-          }
-        }
-      }
-      countries {
-        ...countryFields
-      }
+        ${queryString}
     }
     fragment countryFields on Country {
       id

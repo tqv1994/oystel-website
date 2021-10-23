@@ -11,6 +11,7 @@ import { routerHelper } from '$lib/helpers';
         document.cookie = `session=; Path=/; Expires=${new Date()};`;
         document.cookie = `session.sig=; Path=/; Expires=${new Date()};`;
         authStore.set({ user: undefined });
+        routerHelper.redirect('/');
         return;
       }
       console.error('Error authenticating', res);
@@ -20,14 +21,19 @@ import { routerHelper } from '$lib/helpers';
   }
 </script>
 <Layout>
-{#if $authStore.user}
-  <h1>Really sign out?</h1>
-  <ul>
-    <li><a href="javascript:void(0)" on:click={signOut}>Yes, sign out</a></li>
-    <li><a href="/me">Stay signed in</a></li>
-  </ul>
-{:else}
-  <h1>You've successfully signed out</h1>
-  <a href="javascript:void(0);" on:click={()=>{routerHelper.redirect('/')}}>Go to the home page</a>
-{/if}
+  <div class="content">
+    <div class="container">
+      {#if $authStore.user}
+        <h1>Really sign out?</h1>
+        <ul>
+          <li><a href="javascript:void(0)" on:click={signOut}>Yes, sign out</a></li>
+          <li><a href="/me">Stay signed in</a></li>
+        </ul>
+      {:else}
+        <h1>You've successfully signed out</h1>
+        <a href="javascript:void(0);" on:click={()=>{routerHelper.redirect('/')}}>Go to the home page</a>
+      {/if}
+    </div>
+    
+  </div>
 </Layout>

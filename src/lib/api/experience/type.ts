@@ -28,7 +28,7 @@ export class Experience
   type: string;
   gallery: FileUpload[];
   videos: FileUpload[];
-  country: CountryData;
+  country: Country;
   liked: boolean;
   users: User[];
 

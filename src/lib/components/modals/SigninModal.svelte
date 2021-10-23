@@ -299,6 +299,16 @@ import { routerHelper } from '$lib/helpers';
 </Dialog>
 
 <style lang="scss">
+  @media screen and (max-width: 999px) {
+  :global(#signin-modal){
+    
+      :global(button.mdc-button){
+        min-width: auto;
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
+  }
   .title-with-line {
     position: relative;
     -js-display: flex;

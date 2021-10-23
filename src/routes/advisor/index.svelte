@@ -33,8 +33,11 @@
       location: page.query.get('location'),
     };
     let searchParams: any = {};
-    if (searchModel.name && searchModel.name != '') {
+    if (searchModel.name && searchModel.name !== "null") {
+      console.log(typeof searchModel.name);
       searchParams['userMe.displayName_contains'] = searchModel.name;
+    }else{
+      searchModel.name = "";
     }
     if (searchModel.specialty && searchModel.specialty != '') {
       searchParams['specialities.name_eq'] = searchModel.specialty;

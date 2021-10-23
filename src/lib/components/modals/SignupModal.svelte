@@ -345,6 +345,16 @@
 </Dialog>
 
 <style lang="scss">
+  @media screen and (max-width: 999px) {
+  :global(#signup-modal){
+    
+      :global(button.mdc-button){
+        min-width: auto;
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+    }
+  }
   .title-with-line {
     position: relative;
     -js-display: flex;

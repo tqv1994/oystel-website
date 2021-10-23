@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import type { ExperiencesData, ExperiencesSearchData, SearchResultsPageData, UpdateExperienceData } from '$lib/api/pages/type';
+  import type { ExperiencesData, ExperiencesSearchData, SearchResultsPageData, UpdateDestinationData, UpdateExperienceData } from '$lib/api/pages/type';
   import {
     experienceStore,
     updateExperienceStore,
@@ -37,7 +37,7 @@
   import { DestinationType } from '$lib/api/destination-type/type';
   import { Country } from '$lib/api/country/type';
   import type { MeiliSearchQueryParams } from '$lib/api/meilisearch/type';
-import { Destination } from '$lib/api/destination/type';
+  import { Destination } from '$lib/api/destination/type';
   export const load: Load = async ({ fetch, session, page }) => {
     experienceStore.set({items:{}});
     destinationStore.set({items: {}});
@@ -59,15 +59,15 @@ import { Destination } from '$lib/api/destination/type';
     }
     if (searchModel.type && searchModel.type != '') {
       searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
-      searchParams.params.filter +=  `experience_type = "${searchModel.type}"`;
+      searchParams.params.filter +=  `experience_type = ${searchModel.type}`;
     }
     if (searchParams.params  && searchModel.country && searchModel.country != '') {
       searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
-      searchParams.params.filter +=  `country = "${searchModel.country}"`;
+      searchParams.params.filter +=  `country = ${searchModel.country}`;
     }
     if (searchModel.destination && searchModel.destination != '') {
       searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
-      searchParams.params.filter +=  `destination_type = "${searchModel.destination}"`;
+      searchParams.params.filter +=  `destination_type = ${searchModel.destination}`;
     }
     if(searchParams.params.filter == ""){
       delete searchParams.params.filter;
@@ -150,12 +150,26 @@ import { Destination } from '$lib/api/destination/type';
 
   function getData() {
     experienceStore.subscribe(({ items }) => {
-      results = Object.values(items);
+      results = Object.values(items).map((experience: any)=>{
+        const countryId = typeof experience.country == "number" ? experience.country : null;
+        if(countryId != null){
+          experience.country = countries.find((country: Country)=> country.id == countryId);
+        }
+        experience.type = 'experience';
+        return experience;
+      });
     });
 
     destinationStore.subscribe(({items})=>{
       if(results && Array.isArray(results)){
-        results = results.concat(Object.values(items));
+        results = results.concat(Object.values(items).map((destination: any)=>{
+          const countryId = typeof destination.country == "number" ? destination.country : null;
+          if(countryId != null){
+            destination.country = countries.find((country: Country)=> country.id == countryId);
+          }
+          destination.type = 'destination';
+          return destination;
+        }));
       }
     })
   }
@@ -193,14 +207,14 @@ import { Destination } from '$lib/api/destination/type';
     
   });
 
-  async function likeItem(experience: Experience|Destination){
+  async function likeItem(dataItem: Experience|Destination){
     if(!$authStore.user){
       window.pushToast('Please login to use this feature');
       return;
     }
     let userDataLikes: (number|string)[] | null = [];
-    if(experience.users){
-      userDataLikes = experience.users.map((item, index)=>{
+    if(dataItem.users){
+      userDataLikes = dataItem.users.map((item, index)=>{
         return item.id;      
       });
       let indexExist = userDataLikes.findIndex((item)=>item == $authStore.user?.id);
@@ -213,19 +227,26 @@ import { Destination } from '$lib/api/destination/type';
         userDataLikes = null;
       }
     }
-    const res = await fetch(`/api/pages/experience/like?id=${experience.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userDataLikes)
-    });
+    
+      const res = await fetch(`/api/pages/${dataItem.type == 'experience' ? 'experience' : 'destination'}/like?id=${dataItem.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userDataLikes)
+      });
 
     if (res.ok) {
-      const data: UpdateExperienceData = await res.json();
-      experience.users = data.updateExperience.experience.users;
-      console.log('user like',experience.users);
-      updateExperienceStore([experience]);
+      if(dataItem.type == 'experience'){
+        const data: UpdateExperienceData = await res.json();
+        dataItem.users = data.updateExperience.experience.users;
+        updateExperienceStore([dataItem]);
+      }else{
+        const data: UpdateDestinationData = await res.json();
+        dataItem.users = data.updateDestination.destination.users;
+        updateDestinationStore([dataItem]);
+      }
+      
       getData();
     } else {
       const error = await res.json();
@@ -253,7 +274,7 @@ import { Destination } from '$lib/api/destination/type';
             on:submit|preventDefault={onSearchSubmit}
           >
             <LayoutGrid class="p-0">
-              <Cell span="5">
+              <Cell span="4">
                 <div class="form-control">
                   <Textfield
                     variant="outlined"
@@ -278,7 +299,7 @@ import { Destination } from '$lib/api/destination/type';
                     <Option on:click={onSearchSubmit} value="" />
                     {#if experienceTypes}
                       {#each experienceTypes as item}
-                        <Option on:click={onSearchSubmit} value={item.name}>{item.name}</Option>
+                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
                       {/each}
                     {/if}
                   </Select>
@@ -294,7 +315,7 @@ import { Destination } from '$lib/api/destination/type';
                     <Option on:click={onSearchSubmit} value="" />
                     {#if destinationTypes}
                       {#each destinationTypes as item}
-                        <Option on:click={onSearchSubmit} value={item.name}>{item.name}</Option>
+                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
                       {/each}
                     {/if}
                   </Select>
@@ -310,13 +331,13 @@ import { Destination } from '$lib/api/destination/type';
                     <Option on:click={onSearchSubmit} value="" />
                     {#if countries}
                       {#each countries as item}
-                        <Option on:click={onSearchSubmit} value={item.name}>{item.name}</Option>
+                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
                       {/each}
                     {/if}
                   </Select>
                 </div>
               </Cell>
-              <Cell span="1">
+              <Cell span="2">
                 <div class="form-control">
                   <Select
                     variant="outlined"
@@ -406,20 +427,20 @@ import { Destination } from '$lib/api/destination/type';
                         >
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
                           ><p class="text-eyebrow text-right">
-                            Experience
+                            {item.type == 'experience' ? "Experience" : "Destination"}
                           </p></Cell
                         >
                       </LayoutGrid>
                       <LayoutGrid class="p-0 d-none m-block">
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
                           ><p class="text-eyebrow text-left">
-                            Experience
+                            {item.type == 'experience' ? "Experience" : "Destination"}
                           </p></Cell
                         >
                       </LayoutGrid>
                       <div class="divider" />
                       <h4 class="text-h2 title">{item.name}</h4>
-                      <p class="short-text m-none">{item.intro}</p>
+                      <p class="short-text m-none">{item.excerpt}</p>
                     </a>
                   </div>
                 </Cell>

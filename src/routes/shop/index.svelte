@@ -224,7 +224,7 @@
               content, and bespoke travel itineraries.
             </h3>
             <div class="d-pb-100 m-pb-0" />
-            <h5>Become an Oysteo Member now</h5>
+            <h5 class="mb-0">Become an Oysteo Member now</h5>
             <h2 class="text-h1 mt-30 d-mb-40 m-mb-15">Never Miss a Drop</h2>
             <Button
               variant="outlined"
@@ -427,7 +427,18 @@
   on:close={callOpenSignupModal}
 />
 
-<style>
+<style lang="scss">
+  $desktop-width: 950px;
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
+      @content;
+    }
+  }
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+      @content;
+    }
+  }
   .header-title {
     background-color: #000;
   }
@@ -458,7 +469,9 @@
     padding-bottom: 70px;
   }
   .header-title .short-description {
-    width: 80%;
+    @include desktop{
+      width: 80%;
+    }
   }
   .trips-list-wrap {
     padding-bottom: 110px;
@@ -587,7 +600,7 @@
     }
     .shop-slides :global(.dots) {
       display: flex;
-      justify-content: end;
+      justify-content: start;
       margin-top: 20px;
     }
     .header-title :global(.mdc-layout-grid__cell:first-child) {

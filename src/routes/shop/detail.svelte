@@ -56,7 +56,7 @@
             class="content-left"
           >
             <div class="get-the-look-item mb-30">
-              <div class="thumbnail mb-50">
+              <div class="thumbnail d-mb-50 m-mb-25">
                 <img src="/img/products/detail-1.jpg" />
               </div>
               <LayoutGrid class="p-0">
@@ -572,12 +572,23 @@
 </Layout>
 <QuickShopModal bind:open={openQuickShopModal} />
 
-<style>
+<style lang="scss">
+  $desktop-width: 950px;
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
+      @content;
+    }
+  }
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+      @content;
+    }
+  }
   .header-title {
     background-color: #f0f7f8;
     z-index: 2;
   }
-  @media screen and (min-width: 950px) {
+  @include desktop {
     .header-title {
       padding-right: var(--mdc-layout-grid-margin-desktop);
     }
@@ -666,7 +677,10 @@
     animation: fadeIn 2s ease;
   }
 
-  @media screen and (max-width: 949px) {
+  @include mobile {
+    .content {
+      --mdc-typography-headline5-font-size: 14px;
+    }
     :global(.page-shop-detail .content-right) {
       order: 2;
     }

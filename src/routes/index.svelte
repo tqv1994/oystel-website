@@ -608,13 +608,14 @@ import { User } from '$lib/api/auth/type';
 <OyNotification />
 
 <style lang="scss">
-  @mixin desktop {
-    @media (min-width: 950px) {
+  $desktop-width: 950px;
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
       @content;
     }
   }
-  @mixin mobile {
-    @media (max-width: 949px) {
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
       @content;
     }
   }

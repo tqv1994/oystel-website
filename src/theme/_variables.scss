@@ -19,6 +19,7 @@ $desktop-width: 950px;
 }
 
 #svelte {
+  --mdc-ripple-color: transparent;
   --desktop-width: #{$desktop-width};
   font-family: Surt;
   font-weight: 400;
@@ -282,8 +283,8 @@ $desktop-width: 950px;
       --mdc-typography-headline1-font-size: 32px;
       --mdc-typography-headline1-line-height: 38px;
   
-      --mdc-typography-headline2-font-size: 18px;
-      --mdc-typography-headline2-line-height: 23.5px;
+      --mdc-typography-headline2-font-size: 20px;
+      --mdc-typography-headline2-line-height: 27.5px;
   
       --mdc-typography-headline3-font-size: 14px;
       --mdc-typography-headline3-line-height: 18px;

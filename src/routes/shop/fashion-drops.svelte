@@ -108,7 +108,7 @@
                     </IconButton>
                   </Cell>
                 </LayoutGrid>
-                <h1>Louis Vuitton Resort Collection Summer</h1>
+                <h1 class="m-mt-50">Louis Vuitton Resort Collection Summer</h1>
                 <p class="short-description">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
                   ac volutpat neque. Suspendisse varius vitae sem in elementum.
@@ -123,7 +123,7 @@
     </section>
     <section class="has-padding d-pb-0 m-pt-40 m-pb-70" id="shop-by-look-wrap">
       <div class="container">
-        <h1 class="mt-0 mb-55">Shop By Look</h1>
+        <h1 class="mt-0 d-mb-55 m-mb-25">Shop By Look</h1>
         <LayoutGrid class="p-0">
           <Cell spanDevices={{ desktop: 4, mobile: 4, tablet: 8 }}>
             <OySlideProducts images={imageSlidesProduct} />
@@ -641,7 +641,18 @@
   </div>
 </Layout>
 
-<style>
+<style lang="scss">
+  $desktop-width: 950px;
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
+      @content;
+    }
+  }
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+      @content;
+    }
+  }
   .header-title {
     background-color: #000;
   }
@@ -678,6 +689,14 @@
     width: 80%;
   }
 
+  :global(.products-list .item-product){
+    @include mobile{
+      h3{
+        --mdc-typography-headline3-font-size: 14px;
+      }
+    }
+  }
+
   .products-list .item-product .thumbnail {
     width: 100%;
     padding-bottom: 145%;
@@ -696,6 +715,10 @@
     top: 2%;
     right: 2%;
     filter: brightness(0);
+    @include mobile{
+      top: -2%;
+      right: -3%;
+    }
   }
   .products-list .item-product .thumbnail :global(.btn-favorite .like) {
     display: block;
@@ -710,7 +733,7 @@
     display: block;
   }
 
-  @media screen and (max-width: 949px) {
+  @include mobile {
     .shop-slides :global(.carousel),
     .shop-slides :global(.slides),
     .shop-slides :global(.slides div) {
@@ -725,17 +748,14 @@
     .shop-slides :global(.wrap-control) {
       display: none;
     }
-    .shop-slides {
-      margin-bottom: 20px;
-    }
     .shop-slides :global(.dots) {
       display: flex;
-      justify-content: end;
-      margin-top: 20px;
+      justify-content: start;
+      margin-top: 80px;
     }
 
     .header-title .content-left {
-      padding-top: 15px;
+      padding-top: 10px;
       padding-bottom: 20px;
     }
 
@@ -753,7 +773,7 @@
     }
   }
 
-  @media screen and (max-width: 949px) {
+  @include mobile {
     #shop-by-look-wrap h5 {
       text-align: center;
     }

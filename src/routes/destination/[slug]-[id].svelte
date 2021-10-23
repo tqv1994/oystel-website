@@ -763,8 +763,10 @@ import { User } from '$lib/api/auth/type';
     --mdc-typography-headline2-line-height: 18px;
     }
     .item-advisor .title {
-      height: 30px;
-      overflow: hidden;
+      @include desktop{
+        height: 30px;
+        overflow: hidden;
+      }
     }
   }
   
@@ -777,7 +779,7 @@ import { User } from '$lib/api/auth/type';
     }
     .item-product .title-wrap :global(.mdc-icon-button) {
       position: absolute;
-      top: 50%;
+      top: 20%;
       right: 0;
       transform: translateY(-50%);
     }
@@ -804,6 +806,14 @@ import { User } from '$lib/api/auth/type';
   }
   .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
     background-color: #91421c;
+  }
+
+  :global(.products-list .item-product){
+    @include mobile{
+      h3{
+        --mdc-typography-headline3-font-size: 14px;
+      }
+    }
   }
 
   .products-list :global(.item-product .thumbnail) {

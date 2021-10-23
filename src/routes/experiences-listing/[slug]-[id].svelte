@@ -487,7 +487,7 @@ import { User } from '$lib/api/auth/type';
         </LayoutGrid>
       </div>
     </section>
-    <section class="pt-40">
+    <section class="d-pt-40 m-pt-25">
       <div class="container">
         <LayoutGrid class="p-0 pb-30">
           <Cell span="12"><h1 class="mt-0 mb-0">Shop By Look</h1></Cell>
@@ -645,7 +645,7 @@ import { User } from '$lib/api/auth/type';
                       </IconButton>
                     </div>
                     <p class="text-eyebrow mt-25">{item.brand}</p>
-                    <h3>{item.name}</h3>
+                    <h3 class="mb-0">{item.name}</h3>
                   </div>
                 </Cell>
               {/each}
@@ -838,7 +838,7 @@ import { User } from '$lib/api/auth/type';
   }
   .item-product .title-wrap :global(.mdc-icon-button) {
     position: absolute;
-    top: 50%;
+    top: 20%;
     right: 0;
     transform: translateY(-50%);
   }
@@ -918,6 +918,14 @@ import { User } from '$lib/api/auth/type';
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
+  }
+
+  :global(.products-list .item-product){
+    @include mobile{
+      h3{
+        --mdc-typography-headline3-font-size: 14px;
+      }
+    }
   }
 
   .products-list :global(.item-product .thumbnail .btn-favorite) {

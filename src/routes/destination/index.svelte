@@ -46,19 +46,31 @@
 
 
   export const load: Load = async ({ fetch, session, page }) => {
+    let destinationTypes: DestinationType[] = [];
+    destinationTypeStore.subscribe(({items})=>{
+      destinationTypes = Object.values(items);
+    });
     const res = await fetch('/api/pages/destination', {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify(destinationTypes)
     });
     console.log('Got destinations data', res.ok);
 
     if (res.ok) {
       const data: DestinationData = await res.json();
       // TODO: Convert data to classes
-      console.log( data )
-      updateDestinationTypeStore(data.destinationTypes || []);
+      if(data){
+        destinationTypes = destinationTypes.map((destinationType: DestinationType) => {
+          if(data[`destinationType_${destinationType.id}`]){
+            destinationType.destinations = data[`destinationType_${destinationType.id}`];
+          }
+          return destinationType;
+        });
+      }
+      updateDestinationTypeStore(destinationTypes || []);
     } else {
       const error = await res.json();
       console.log(error);
@@ -443,12 +455,25 @@
 />
 <OyNotification />
 
-<style>
+<style lang="scss">
+  $desktop-width: 950px;
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
+      @content;
+    }
+  }
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+      @content;
+    }
+  }
   .header-title {
     background-color: #f0f7f8;
   }
   .header-title:global(.is_sticky) {
-    padding-bottom: 55px !important;
+    @include desktop{
+      padding-bottom: 55px !important;
+    }
   }
 
   /* Section title */
@@ -498,7 +523,7 @@
     top: 5px;
   }
 
-  @media screen and (max-width: 949px) {
+  @include mobile {
     .section-title .title:after {
       margin-left: 20px;
     }
