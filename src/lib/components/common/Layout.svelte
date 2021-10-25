@@ -67,13 +67,17 @@
   }
 
   function onResize() {
-    if (typeof window !== 'undefined') {
-      miniWindow = window.innerWidth < 768;
-    }
-    document.documentElement.style.setProperty(
-      '--wrap-width',
-      window.innerWidth + 'px',
-    );
+    setTimeout(()=>{
+      if (typeof window !== 'undefined') {
+        miniWindow = window.innerWidth < 768;
+      }
+      console.log('width',window.innerWidth);
+      document.documentElement.style.setProperty(
+        '--wrap-width',
+        window.innerWidth + 'px',
+      );
+    },0);
+    
   }
 
   function callOpenSignupModal(event: any) {
