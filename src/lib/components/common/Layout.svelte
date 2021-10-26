@@ -46,6 +46,7 @@
   let tabsSubMenu: any[];
   const dispatch = createEventDispatcher();
   let openSearch: boolean = false;
+  let outerWidth: number;
 
   export let refreshPage: boolean = false;
   export let config = {
@@ -72,11 +73,15 @@
         miniWindow = window.innerWidth < 768;
       }
       console.log('width',window.innerWidth);
-      document.documentElement.style.setProperty(
+      // document.documentElement.style.setProperty(
+      //   '--wrap-width',
+      //   innerWidth  + 'px',
+      // );
+    },200);
+    document.documentElement.style.setProperty(
         '--wrap-width',
-        window.innerWidth + 'px',
+        outerWidth  + 'px',
       );
-    },0);
     
   }
 
@@ -125,8 +130,8 @@
   }
 </script>
 
-<svelte:window on:resize={onResize} />
-<div class="content-wrap page page-{config.header.page}">
+<svelte:window on:resize={onResize} bind:outerWidth={outerWidth} />
+<div class="content-wrap page page-{config.header.page}" >
   <header class="full-width" style="position: relative">
     <TopAppBar
       variant="static"
