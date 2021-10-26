@@ -127,7 +127,7 @@ import { routerHelper } from '$lib/helpers';
     <Cell spanDevices={{ phone: 1, desktop: 3, tablet: 2 }} class="text-center">
       <Button
         on:click={() => {
-          $authStore.user ? goto('/me') : openSigninModal = true;
+          $authStore.user ? goto('/me') : openSigninModal = !openSigninModal;
           
         }}
       >
@@ -165,7 +165,7 @@ import { routerHelper } from '$lib/helpers';
   </LayoutGrid>
 </div>
 
-<style>
+<style lang="scss">
   #bottom-app-bar {
     z-index: 20;
     position: fixed;
@@ -174,19 +174,20 @@ import { routerHelper } from '$lib/helpers';
     width: 100%;
     background: #fff;
     border-top: 1px solid #000;
-  }
-  #bottom-app-bar .wrap-item {
-    text-align: center;
-  }
-  #bottom-app-bar .wrap-item :global(.mdc-button__icon) {
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-  #bottom-app-bar :global(.mdc-button) {
-    padding: 0 8px 0 8px;
-  }
-  #bottom-app-bar :global(.mdc-button) {
-    min-width: auto;
-    overflow: visible;
+    .wrap-item {
+      text-align: center;
+      :global(.mdc-button__icon) {
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+    }
+    :global(.mdc-button) {
+      padding: 0 8px 0 8px;
+      height: auto;
+    }
+    :global(.mdc-button) {
+      min-width: auto;
+      overflow: visible;
+    }
   }
 </style>
