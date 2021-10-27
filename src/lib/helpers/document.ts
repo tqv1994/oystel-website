@@ -1,21 +1,21 @@
 export const documentHelper = {
     changeBackgroundHeader: function(color = 'transparent'){
         var headerEl = document.getElementById('header');
-        console.log(headerEl);
-        if (typeof headerEl != 'undefined' && headerEl != null) {
-            if(headerEl.classList.contains('light')){
-                headerEl.classList.remove('light');
-                headerEl.classList.add('dark');
-                headerEl.classList.add('changed');
-            }else{
-                if(headerEl.classList.contains('changed')){
-                    headerEl.classList.remove('dark');
-                    headerEl.classList.remove('changed');
-                    headerEl.classList.add('light');
-                }
-            }
         
-        headerEl.style.backgroundColor = color;
+        if (typeof headerEl != 'undefined' && headerEl != null) {
+                if(headerEl.classList.contains('light')){
+                    headerEl.classList.remove('light');
+                    headerEl.classList.add('dark');
+                    headerEl.classList.add('changed');
+                }else{
+                    if(headerEl.classList.contains('changed')){
+                        headerEl.classList.remove('dark');
+                        headerEl.classList.remove('changed');
+                        headerEl.classList.add('light');
+                    }
+                }
+            
+                headerEl.style.backgroundColor = color;
         }
     },
 

@@ -46,14 +46,16 @@
       sort_by: page.query.get('sort_by'),
     };
     let searchParams: any = {};
-    if (searchModel.name && searchModel.name != '') {
+    if (searchModel.name && searchModel.name != 'null') {
       searchParams.name_contains = searchModel.name;
+    }else{
+      searchParams.name_contains = "";
     }
     if (searchModel.type && searchModel.type != '') {
-      searchParams['experience_type.name_eq'] = searchModel.type;
+      searchParams['experience_type.id'] = searchModel.type;
     }
     if (searchModel.country && searchModel.country != '') {
-      searchParams['country.name_eq'] = searchModel.country;
+      searchParams['country.id'] = searchModel.country;
     }
     // if (searchModel.sort_by && searchModel.sort_by != '') {
     //   searchParams._sort = searchModel.sort_by + ':desc';
@@ -145,23 +147,25 @@
   }
 
   function onScrollFixedHeader() {
-    if (
-      document.body.scrollTop > 50 ||
-      document.documentElement.scrollTop > 50
-    ) {
-      document.getElementById('header').classList.add('fixed');
-      document.querySelector('header').style.zIndex = 8;
-      document.querySelector('header').style.position = 'relative';
-      document
-        .querySelector('.header-title')
-        .classList.add('fixed', 'is_sticky');
-    } else {
-      document.getElementById('header').classList.remove('fixed');
-      document.querySelector('header').style.zIndex = 'auto';
-      document.querySelector('header').style.position = 'relative';
-      document
-        .querySelector('.header-title')
-        .classList.remove('fixed', 'is_sticky');
+    if (document.documentElement.clientWidth > 949) {
+      if (
+        document.body.scrollTop > 50 ||
+        document.documentElement.scrollTop > 50
+      ) {
+        document.getElementById('header').classList.add('fixed');
+        document.querySelector('header').style.zIndex = 8;
+        document.querySelector('header').style.position = 'relative';
+        document
+          .querySelector('.header-title')
+          .classList.add('fixed', 'is_sticky');
+      } else {
+        document.getElementById('header').classList.remove('fixed');
+        document.querySelector('header').style.zIndex = 'auto';
+        document.querySelector('header').style.position = 'relative';
+        document
+          .querySelector('.header-title')
+          .classList.remove('fixed', 'is_sticky');
+      }
     }
   }
 
@@ -254,7 +258,7 @@
                     <Option on:click={onSearchSubmit} value="" />
                     {#if experienceTypes}
                       {#each experienceTypes as item}
-                        <Option on:click={onSearchSubmit} value={item.name}>{item.name}</Option>
+                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
                       {/each}
                     {/if}
                   </Select>
@@ -270,7 +274,7 @@
                     <Option on:click={onSearchSubmit} value="" />
                     {#if destinationTypes}
                       {#each destinationTypes as item}
-                        <Option on:click={onSearchSubmit} value={item.name}>{item.name}</Option>
+                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
                       {/each}
                     {/if}
                   </Select>
@@ -286,7 +290,7 @@
                     <Option on:click={onSearchSubmit} value="" />
                     {#if countries}
                       {#each countries as item}
-                        <Option on:click={onSearchSubmit} value={item.name}>{item.name}</Option>
+                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
                       {/each}
                     {/if}
                   </Select>

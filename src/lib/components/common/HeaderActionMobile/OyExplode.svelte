@@ -73,6 +73,11 @@
     document.getElementById('header-action-mobile').style.backgroundColor =
       '#fff';
   });
+
+  async function handleSearch(key: string){
+    goto(`/search?name=${key}`);
+    return;
+  }
 </script>
 
 <div id="explode-wrap" class="mt-25">
@@ -95,7 +100,7 @@
         <ul class="mt-0">
           {#each results as result}
             <li>
-              <a href="#"
+              <a href="javascript:void(0)" on:click={()=>{handleSearch(result)}}
                 >{result}</a
               >
             </li>
@@ -113,10 +118,10 @@
   }
   .wrap-search-result ul {
     list-style: none;
-    padding-left: 0;
+    padding-left: 25px;
   }
   .wrap-search-result ul ul {
-    padding-left: 24px;
+    padding-left: 50px;
   }
   .wrap-search-result ul li {
     margin-bottom: 30px;

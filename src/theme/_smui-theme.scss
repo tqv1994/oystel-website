@@ -371,6 +371,23 @@ button.mdc-button {
   padding-right: 2px;
 }
 
+/* MDC Table */
+.mdc-data-table{ 
+  .mdc-data-table__table-container{
+    &::-webkit-scrollbar-track {
+      background-color: #d3d3d3;
+    }
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+      background-color: #d3d3d3;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #000;
+    }
+  }
+}
+
 *,
 .thumbnail {
   .image-cover {

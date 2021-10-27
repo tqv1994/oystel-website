@@ -44,7 +44,7 @@
         <Option value="" />
         {#if experience_types}
           {#each experience_types as item}
-            <Option value={item.name}>{item.name}</Option>
+            <Option value={item.id}>{item.name}</Option>
           {/each}
         {/if}
       </Select>
@@ -58,7 +58,7 @@
         <Option value="" />
         {#if destination_types}
           {#each destination_types as item}
-            <Option value={item.name}>{item.name}</Option>
+            <Option value={item.id}>{item.name}</Option>
           {/each}
         {/if}
       </Select>
@@ -99,10 +99,10 @@
   :global(.page-destinations ~ #header-action-mobile), :global(.page-destinations-search ~ #header-action-mobile) {
     #form-search-experience-wrap{
       position: relative;
-      height: calc(75vh);
+      height: calc(100vh - 206px);
       .btn-submit-wrap{
         position: absolute;
-        bottom: 0;
+        bottom: 30px;
         width: 100%;
       }
     } 

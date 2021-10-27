@@ -128,7 +128,7 @@ import { User } from '$lib/api/auth/type';
   //   }
   // }
   function onScrollFixedHeader() {
-    if (document.documentElement.clientWidth > 839) {
+    if (document.documentElement.clientWidth > 949) {
       if (
         document.body.scrollTop > 900 ||
         document.documentElement.scrollTop > 900

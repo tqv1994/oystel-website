@@ -85,11 +85,11 @@
   }
   .search-form-advisor {
     position: relative;
-    height: calc(100vh / 667 * 455);
+    height: calc(100vh - 206px);
   }
   .search-form-advisor .btn-submit-wrap {
     position: absolute;
-    bottom: 0;
+    bottom: 30px;
     width: 100%;
   }
 </style>

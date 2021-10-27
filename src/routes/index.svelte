@@ -4,6 +4,7 @@
     destinationStore,
     updateDestinationStore,
   } from '$lib/api/destination/store';
+  import { onDestroy } from 'svelte'
   import { documentHelper, stringHelper } from '$lib/helpers';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
   import Svg from '@smui/common/Svg.svelte';
@@ -26,7 +27,7 @@
     updateExperienceStore,
   } from '$lib/api/experience/store';
   import authStore from '$lib/api/auth/store';
-import { User } from '$lib/api/auth/type';
+  import { User } from '$lib/api/auth/type';
 
   export const load: Load = async ({ fetch, session, page }) => {
     const res = await fetch('/api/pages/home', {
@@ -192,6 +193,37 @@ import { User } from '$lib/api/auth/type';
         '#experience-section .list-experiences',
       ]);
     }
+    onScrollFixedHeader();
+  }
+
+  function onScrollFixedHeader() {
+    if (document.documentElement.clientWidth > 949) {
+      if (
+        document.body.scrollTop > 200 ||
+        document.documentElement.scrollTop > 200
+      ) {
+        document.getElementById('header').classList.add('fixed');
+        document.getElementById('header').classList.add('scrolling');
+        document.querySelector('header').style.zIndex = 100;
+        document.querySelector('header').style.position = 'relative';
+        documentHelper.changeBackgroundHeader('#000');
+      } else {
+        document.getElementById('header').classList.remove('fixed');
+        document.getElementById('header').classList.remove('scrolling');
+        document.querySelector('header').style.zIndex = 'auto';
+        document.querySelector('header').style.position = 'static';
+        documentHelper.changeBackgroundHeader('transparent');
+      }
+    }else{
+      document.getElementById('header').classList.remove('fixed');
+      document.getElementById('header').classList.remove('scrolling');
+      document.querySelector('header').style.zIndex = 'auto';
+      document.querySelector('header').style.position = 'static';
+      documentHelper.changeBackgroundHeader('transparent');
+    }
+  }
+  function onDestroy(){
+
   }
 </script>
 
@@ -659,6 +691,10 @@ import { User } from '$lib/api/auth/type';
         @include mobile{
           height: 26px;
         }
+      }
+      :global(.thumbnail .btn-favorite){
+        top: 0;
+        right: 0;
       }
     }
   }

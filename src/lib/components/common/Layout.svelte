@@ -30,6 +30,7 @@
   import OySearchModal from '$lib/components/modals/OySearchModal.svelte';
   import { menus } from '$lib/const';
   import { documentHelper } from '$lib/helpers/document';
+  import loadingStore from '$lib/api/loading/store';
 
   let miniWindow = false;
   let searchResult = '';
@@ -68,16 +69,9 @@
   }
 
   function onResize() {
-    setTimeout(()=>{
-      if (typeof window !== 'undefined') {
-        miniWindow = window.innerWidth < 768;
+    if (typeof window !== 'undefined') {
+        miniWindow = outerWidth < 768;
       }
-      console.log('width',window.innerWidth);
-      // document.documentElement.style.setProperty(
-      //   '--wrap-width',
-      //   innerWidth  + 'px',
-      // );
-    },200);
     document.documentElement.style.setProperty(
         '--wrap-width',
         outerWidth  + 'px',
@@ -121,15 +115,16 @@
 
   function handleOpenSubMenu(menuItem: Menu) {
     if (menuItem.submenu.length > 0) {
-      documentHelper.changeBackgroundHeader('#000');
-      openSubMenu = true;
-      menuItemActive = 'menu-item-' + menuItem.slug;
-      tabsSubMenu = menuItem.submenu;
-      urlViewAllSubmenu = menuItem.link;
+      if(!openSubMenu){
+        documentHelper.changeBackgroundHeader('#000');
+        openSubMenu = true;
+        menuItemActive = 'menu-item-' + menuItem.slug;
+        tabsSubMenu = menuItem.submenu;
+        urlViewAllSubmenu = menuItem.link;
+      }
     }
   }
 </script>
-
 <svelte:window on:resize={onResize} bind:outerWidth={outerWidth} />
 <div class="content-wrap page page-{config.header.page}" >
   <header class="full-width" style="position: relative">

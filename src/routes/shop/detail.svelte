@@ -644,8 +644,6 @@
 
   .products-list :global(.product-item .thumbnail .btn-favorite) {
     position: absolute;
-    top: 2%;
-    right: 2%;
     filter: brightness(1);
   }
   .products-list :global(.product-item .thumbnail .btn-favorite .like) {

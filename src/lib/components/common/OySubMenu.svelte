@@ -46,6 +46,16 @@
     }
   });
 
+  function handleCloseSubMenu(){
+    open = false;
+    var headerEl = document.getElementById('header');
+    if (typeof headerEl != 'undefined' && headerEl != null) {
+      if(!headerEl.classList.contains('scrolling')){
+        documentHelper.changeBackgroundHeader();
+      }
+    }
+  }
+
   function reset(){
     menuId = "";
     active = undefined;
@@ -94,7 +104,7 @@
     </LayoutGrid>
     {/if}
 </div>
-<div class="backdrop" on:click={()=>{open = false; documentHelper.changeBackgroundHeader()}}></div>
+<div class="backdrop" on:click={handleCloseSubMenu}></div>
 <style lang="scss">
     .sub-menu, .backdrop{
         opacity: 0;

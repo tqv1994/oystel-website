@@ -24,6 +24,7 @@
   import { BlurhashImage } from 'svelte-blurhash';
   import { Advisor } from '$lib/api/advisor/type';
   import { AdvisorsPageData } from '$lib/api/pages/type';
+  import loadingStore from '$lib/api/loading/store';
 
   export const load: Load = async ({ fetch, session, page }) => {
     advisorStore.set({items:{}});
@@ -54,6 +55,7 @@
     if (res.ok) {
       const data: AdvisorsPageData = await res.json();
       updateAdvisorStore(data.advisors);
+      loadingStore.set({loading:false});
     } else {
       const error = await res.json();
       console.log(error);
@@ -294,7 +296,7 @@
                             spanDevices={{ phone: 3, tablet: 6, desktop: 8 }}
                           >
                             <h2 class="mt-0 mb-15">
-                              {item.userMe.displayName}
+                              {item.userMe.displayName || item.userMe.email}
                             </h2>
                             <p class="mt-0 mb-30">
                               {item.countriesString}
