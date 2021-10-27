@@ -24,7 +24,6 @@
   import { BlurhashImage } from 'svelte-blurhash';
   import { Advisor } from '$lib/api/advisor/type';
   import { AdvisorsPageData } from '$lib/api/pages/type';
-  import loadingStore from '$lib/api/loading/store';
 
   export const load: Load = async ({ fetch, session, page }) => {
     advisorStore.set({items:{}});
@@ -55,7 +54,6 @@
     if (res.ok) {
       const data: AdvisorsPageData = await res.json();
       updateAdvisorStore(data.advisors);
-      loadingStore.set({loading:false});
     } else {
       const error = await res.json();
       console.log(error);

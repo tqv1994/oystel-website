@@ -30,7 +30,6 @@
   import OySearchModal from '$lib/components/modals/OySearchModal.svelte';
   import { menus } from '$lib/const';
   import { documentHelper } from '$lib/helpers/document';
-  import loadingStore from '$lib/api/loading/store';
 
   let miniWindow = false;
   let searchResult = '';
