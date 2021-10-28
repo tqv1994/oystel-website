@@ -47,11 +47,11 @@
           <LayoutGrid class="p-0 mb-15">
             <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
               <div class="content-left">
-                <div>
-                  <span class="text-h3">Featured Article</span>
+                <div class="d-mb-55 m-mb-40">
+                  <span class="text-h3 m-0">Featured Article</span>
                 </div>
-                <h1>Best Beach Looks for a Post-Covid Summer</h1>
-                <p class="d-mb-30 t-mb-30 m-mb-0 short-description">
+                <h1 class="m-0 d-mb-15 m-mb-20">Best Beach Looks for a Post-Covid Summer</h1>
+                <p class="mt-0 d-mb-30 t-mb-30 m-mb-0 short-description">
                   Curated by: Aureta Thomollari | Oysteo Partner
                 </p>
               </div>

@@ -805,7 +805,7 @@ import { User } from '$lib/api/auth/type';
     background-color: #d3d3d3;
   }
   .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-    background-color: #91421c;
+    background-color: #5078BC;
   }
 
   :global(.products-list .item-product){

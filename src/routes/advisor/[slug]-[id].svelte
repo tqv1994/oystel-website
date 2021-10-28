@@ -119,6 +119,125 @@
         class="header-title full-width"
         style="background-image: url(/img/advisors/detail-advisor-banner.jpg)"
       >
+        <div class="content-wrap m-none">
+          <div class="container">
+            <div
+              class="contact-info d-p-45 d-pt-80 d-pb-85 t-pt-80 t-pb-85 m-pt-30 m-pb-45"
+            >
+              <IconButton class="btn-share d-none t-none m-block">
+                <Icon component={Svg} viewBox="0 0 16.833 24.384">
+                  <g
+                    id="Group_439"
+                    data-name="Group 439"
+                    transform="translate(-1661.127 -152.323)"
+                  >
+                    <path
+                      id="Path_319"
+                      data-name="Path 319"
+                      d="M156.364-5869.48l4.489-4.489,4.489,4.489"
+                      transform="translate(1508.69 6027)"
+                      fill="none"
+                      stroke="#000"
+                      stroke-width="1"
+                    />
+                    <g id="Group_438" data-name="Group 438">
+                      <path
+                        id="Path_318"
+                        data-name="Path 318"
+                        d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
+                        transform="translate(1510.927 6027.899)"
+                        fill="none"
+                        stroke="#000"
+                        stroke-width="1"
+                      />
+                      <path
+                        id="Path_320"
+                        data-name="Path 320"
+                        d="M161.543-5858.913v-14.377"
+                        transform="translate(1508 6027)"
+                        fill="none"
+                        stroke="#000"
+                        stroke-width="1"
+                      />
+                    </g>
+                  </g>
+                </Icon>
+              </IconButton>
+              <LayoutGrid class="p-0">
+                <Cell
+                  spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
+                  class="text-left"
+                >
+                  <div class="thumbnail">
+                    <BlurhashImage
+                      src={stringHelper.getFullUrlImage(
+                        advisor.userMe.avatar?.url,
+                      )}
+                      fadeDuration="1000"
+                      alt=""
+                    />
+                  </div>
+                </Cell>
+                <Cell
+                  spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
+                  class="text-center t-block m-none"
+                >
+                  <IconButton class="btn-share">
+                    <Icon component={Svg} viewBox="0 0 16.833 24.384">
+                      <g
+                        id="Group_439"
+                        data-name="Group 439"
+                        transform="translate(-1661.127 -152.323)"
+                      >
+                        <path
+                          id="Path_319"
+                          data-name="Path 319"
+                          d="M156.364-5869.48l4.489-4.489,4.489,4.489"
+                          transform="translate(1508.69 6027)"
+                          fill="none"
+                          stroke="#000"
+                          stroke-width="1"
+                        />
+                        <g id="Group_438" data-name="Group 438">
+                          <path
+                            id="Path_318"
+                            data-name="Path 318"
+                            d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
+                            transform="translate(1510.927 6027.899)"
+                            fill="none"
+                            stroke="#000"
+                            stroke-width="1"
+                          />
+                          <path
+                            id="Path_320"
+                            data-name="Path 320"
+                            d="M161.543-5858.913v-14.377"
+                            transform="translate(1508 6027)"
+                            fill="none"
+                            stroke="#000"
+                            stroke-width="1"
+                          />
+                        </g>
+                      </g>
+                    </Icon>
+                  </IconButton>
+                </Cell>
+              </LayoutGrid>
+              <h1 class="mt-30 mb-10">{advisor.userMe.displayName}</h1>
+              <p class="mt-0 d-mb-25 m-mb-20 description">
+                {@html advisor.bio}
+              </p>
+              <h4 class="mt-0 d-mb-55 m-mb-40">
+                Advisor | {advisor.address ? advisor.address.line1 : ''}
+              </h4>
+              <Button variant="outlined" class="hover-affect"
+                ><Label>Contact Me</Label></Button
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="contact-info-mobile" class="d-none m-block">
         <div class="content-wrap">
           <div class="container">
             <div
@@ -237,7 +356,7 @@
           </div>
         </div>
       </section>
-      <section class="d-pt-80 d-pb-100 m-pt-50 m-pb-80">
+      <section class="d-pt-80 d-pb-100 m-pt-55 m-pb-80">
         <div class="container">
           <LayoutGrid class="p-0 d-pl-115 d-pr-115 t-pl-0 t-pr-0">
             <Cell spanDevices={{ desktop: 6 }} class="m-none t-block" />
@@ -401,6 +520,17 @@
 </Layout>
 
 <style lang="scss">
+  $desktop-width: 950px;
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
+      @content;
+    }
+  }
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+      @content;
+    }
+  }
   .header-title {
     height: 810px;
     background-size: cover;
@@ -411,6 +541,11 @@
     --mdc-typography-button-font-size: 16px;
     top: 80px;
     position: absolute;
+    @include mobile{
+      position: relative;
+      top: auto;
+      left: auto;
+    }
     left: 0;
     background-color: #f0f7f8;
     width: 475px;
@@ -504,32 +639,29 @@
     --mdc-typography-body1-font-size: 17px;
   }
 
-  @media screen and (max-width: 949px) {
-    .contact-info {
-      position: absolute;
-    }
-    .contact-info .description {
-      width: 100%;
-    }
+  @include mobile {
     .header-title {
       height: auto;
       padding-bottom: 82.67%;
-      margin-bottom: 120px;
     }
     .contact-info {
       text-align: center !important;
       width: calc(100vw - 90px);
-      left: 50%;
-      transform: translateX(-50%);
-      top: 230px;
-    }
-    .contact-info .thumbnail {
-      margin: 0 auto;
-    }
-    .contact-info :global(.btn-share) {
-      position: absolute;
-      right: 0;
-      top: 30px;
+      margin: auto;
+      margin-top: -90px;
+      padding-left: 8px;
+      padding-right: 8px;
+      .description {
+        width: 100%;
+      }
+      .thumbnail {
+        margin: 0 auto;
+      }
+      :global(.btn-share) {
+        position: absolute;
+        right: 0;
+        top: 30px;
+      }
     }
     :global(.page-advisor-detail .content) {
       :global(button) {
@@ -559,11 +691,6 @@
         --mdc-typography-body1-line-height: 27px;
         --mdc-typography-body1-font-size: 14px;
       }
-    }
-  }
-  @media screen and (max-width: 559px) {
-    .header-title {
-      margin-bottom: 450px;
     }
   }
   .destinations-wrap h5 {

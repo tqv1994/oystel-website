@@ -205,13 +205,11 @@
         document.getElementById('header').classList.add('fixed');
         document.getElementById('header').classList.add('scrolling');
         document.querySelector('header').style.zIndex = 100;
-        document.querySelector('header').style.position = 'relative';
         documentHelper.changeBackgroundHeader('#000');
       } else {
         document.getElementById('header').classList.remove('fixed');
         document.getElementById('header').classList.remove('scrolling');
         document.querySelector('header').style.zIndex = 'auto';
-        document.querySelector('header').style.position = 'static';
         documentHelper.changeBackgroundHeader('transparent');
       }
     }else{

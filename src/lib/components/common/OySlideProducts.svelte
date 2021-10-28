@@ -57,7 +57,7 @@
     background-color: #d3d3d3;
   }
   .slide-items :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-    background-color: #91421c;
+    background-color: #5078bc;
   }
   @media (min-width: 1240px) {
     .slide-items :global(.mdc-layout-grid__inner) {

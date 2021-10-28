@@ -328,7 +328,7 @@
             class="content-right"
           >
             <div
-              class="header-title d-pt-120 d-pb-100 d-pl-120 t-pt-60 t-pb-50 t-pl-60"
+              class="header-title d-pt-100 d-pb-100 d-pl-120 t-pt-60 t-pb-50 t-pl-60"
             >
               <LayoutGrid class="p-0">
                 <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
@@ -379,8 +379,8 @@
                   </IconButton>
                 </Cell>
               </LayoutGrid>
-              <h1>Best Beach Looks for a Post-Covid</h1>
-              <p class="text-input">
+              <h1 class="d-mb-30 m-mb-20">Best Beach Looks for a Post-Covid Summer</h1>
+              <p class="text-input d-mb-30 m-mb-25">
                 Curated by: Aureta Thomollari | Oysteo Partner
               </p>
               <Button
@@ -663,11 +663,11 @@
     background-color: #000;
   }
 
-  :global(.mdc-icon-button) {
+  :global(.page.page-shop-detail .mdc-icon-button) {
     top: 5px;
   }
 
-  :global(.header-title) {
+  :global(.page.page-shop-detail .header-title) {
     top: -200px;
     transition: top 2s ease;
   }

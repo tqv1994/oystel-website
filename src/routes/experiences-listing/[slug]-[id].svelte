@@ -218,7 +218,7 @@ import { User } from '$lib/api/auth/type';
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
-              <div class="d-pt-90 m-pt-55 d-pb-100">
+              <div class="d-pt-90 m-pt-45 d-pb-100">
                 <p class="text-eyebrow m-m-0">{ experience?.country.name }</p>
                 <h1 class="m-mt-30 m-mb-15">{ experience?.name }</h1>
                 <p class="mb-30 short-description m-mt-0">
@@ -860,7 +860,7 @@ import { User } from '$lib/api/auth/type';
     background-color: #d3d3d3;
   }
   .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-    background-color: #91421c;
+    background-color: #5078BC;
   }
   @media (min-width: 1240px) {
     .products-list :global(.mdc-layout-grid__inner) {

@@ -137,25 +137,23 @@
   }
   
   function onScrollFixedHeader() {
-    if (document.documentElement.clientWidth > 949) {
-      if (
-        document.body.scrollTop > 50 ||
-        document.documentElement.scrollTop > 50
-      ) {
-        document.getElementById('header').classList.add('fixed');
-        document.querySelector('header').style.zIndex = 8;
-        document.querySelector('header').style.position = 'relative';
-        document
-          .querySelector('.header-title')
-          .classList.add('fixed', 'is_sticky');
-      } else {
-        document.getElementById('header').classList.remove('fixed');
-        document.querySelector('header').style.zIndex = 'auto';
-        document.querySelector('header').style.position = 'relative';
-        document
-          .querySelector('.header-title')
-          .classList.remove('fixed', 'is_sticky');
-      }
+    if (
+      document.body.scrollTop > 50 ||
+      document.documentElement.scrollTop > 50
+    ) {
+      document.getElementById('header').classList.add('fixed');
+      document.querySelector('header').style.zIndex = 8;
+      document.querySelector('header').style.position = 'relative';
+      document
+        .querySelector('.header-title')
+        .classList.add('fixed', 'is_sticky');
+    } else {
+      document.getElementById('header').classList.remove('fixed');
+      document.querySelector('header').style.zIndex = 'auto';
+      document.querySelector('header').style.position = 'relative';
+      document
+        .querySelector('.header-title')
+        .classList.remove('fixed', 'is_sticky');
     }
   }
 
@@ -303,8 +301,8 @@
           </form>
           <LayoutGrid class="p-0 hidden-on-sticky">
             <Cell span="12">
-              <h1 class="text-center mb-30">Curate Your Experiences</h1>
-              <p class="text-center">
+              <h1 class="text-center d-mt-115 d-mb-20">Curate Your Experiences</h1>
+              <p class="text-center m-0">
                 Bespoke itineraries created by our leading tastemakers.
               </p>
             </Cell>

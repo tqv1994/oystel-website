@@ -489,7 +489,7 @@
     position: absolute;
     bottom: -20px;
     width: calc(100% - 25px);
-    background-color: #91421c;
+    background-color: #5078bc;
     left: 50%;
     transform: translateX(-50%);
     padding: 10px 0;
@@ -529,6 +529,12 @@
   #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
     overflow-x: auto;
     grid-auto-flow: column;
+  }
+
+  #featured-drops .list-featured-drop{
+      :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
+        background-color: #5078bc;
+      }
   }
 
   @media (min-width: 1240px) {

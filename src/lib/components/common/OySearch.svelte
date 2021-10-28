@@ -84,8 +84,8 @@ import { goto } from '$app/navigation';
   .search-form :global(.mdc-text-field) {
     height: 44px;
     width: 457px;
-    // -webkit-backdrop-filter: blur(7px) brightness(0.85);
-    // backdrop-filter: blur(7px) brightness(0.85);
+    -webkit-backdrop-filter: blur(7px) brightness(0.85);
+    backdrop-filter: blur(7px) brightness(0.85);
     background-color: rgba(255, 255, 255, 0.65);
     border-radius: 0;
 

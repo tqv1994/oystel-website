@@ -564,6 +564,25 @@ button.mdc-button {
   }
 }
 
+.clearfix{
+  display: inline-block;
+  &:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+html[xmlns] .clearfix {
+  display: block;
+}
+
+* html .clearfix {
+  height: 1%;
+}
+
 section {
   &.has-padding {
     padding-top: 90px;
@@ -573,8 +592,13 @@ section {
 
 #logo {
   min-width: 170px;
-  @include desktop {
-    margin-left: 95px;
+  padding-left: 0;
+}
+@include desktop {
+  .page.page-home{
+    #logo{
+      margin-left: 100px;
+    }
   }
 }
 
@@ -911,6 +935,7 @@ header {
 
 /* Signup Modal */
 #signup-modal.mdc-dialog {
+  --mdc-dialog-z-index: 10;
   @include mobile{
     button.mdc-button.mdc-button {
       min-width: auto;
@@ -1029,6 +1054,7 @@ header {
 
 /* Signin Modal */
 #signin-modal.mdc-dialog {
+  --mdc-dialog-z-index: 10;
   @include mobile{
     button.mdc-button.mdc-button {
       min-width: auto;
