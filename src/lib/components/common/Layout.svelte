@@ -409,11 +409,7 @@
   bind:authModel={userModel}
   on:close={callOpenSignupModal}
 />
-<BottomAppBar
-  on:openHeaderActionMobile={(event) => {
-    contentHeaderAction = event.detail.content;
-  }} bind:openSigninModal>no content</BottomAppBar
->
+
 <HeaderActionMobile bind:content={contentHeaderAction} />
 
 <style lang="scss">
