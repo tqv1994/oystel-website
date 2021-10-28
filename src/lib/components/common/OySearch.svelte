@@ -56,7 +56,6 @@ import { goto } from '$app/navigation';
     on:click_outside={handleCloseSearchComplete}
   >
     <Textfield
-      on:click={handleOpenSearchComplete}
       variant="outlined"
       {label}
       withTrailingIcon={false}
