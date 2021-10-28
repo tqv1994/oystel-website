@@ -52,7 +52,8 @@ import { goto } from '$app/navigation';
     class="form-control {openSearchComplete == true
       ? 'open-search-complete'
       : false}"
-    
+    use:clickOutside
+    on:click_outside={handleCloseSearchComplete}
   >
     <Textfield
       on:click={handleOpenSearchComplete}

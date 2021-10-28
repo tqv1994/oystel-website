@@ -8,6 +8,7 @@
   import { updateExperienceTypeStore } from '$lib/api/experience-type/store';
   import { updateSpecialityStore } from '$lib/api/specialty/store';
   import { updateProductStore } from '$lib/api/product/store';
+import { onMount } from 'svelte';
   export let key;
 
   export const load: Load = async ({ fetch, session, page }) => {
@@ -34,7 +35,27 @@
     };
   };
 </script>
-
+<script lang="ts">
+  let innerHeight: number;
+  function runScript(){
+    var bodyEl = document.querySelector('body');    
+    if (typeof bodyEl != 'undefined' && bodyEl != null) {
+      bodyEl.style.height = innerHeight+'px';
+    }
+  }
+  onMount(async()=>{
+    runScript();
+  });
+</script>
+<svelte:window
+  on:load={() => {
+    runScript();
+  }}
+  on:scroll={() => {
+    runScript();
+  }}
+  bind:innerHeight
+/>
 <!-- __layout.svelte -->
 <PageTransition refresh={key}>
   <slot />
