@@ -591,7 +591,7 @@
         background-color: #d3d3d3;
       }
       &::-webkit-scrollbar-thumb {
-        background-color: #000;
+        background-color: #5078BC;
       }
   }
 

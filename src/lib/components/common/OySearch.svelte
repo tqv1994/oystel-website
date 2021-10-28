@@ -3,12 +3,15 @@
   import Textfield from '@smui/textfield';
   import { Icon } from '@smui/button';
   import { searchKeys } from '$lib/const';
-import { goto } from '$app/navigation';
+  import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
+import { documentHelper } from '$lib/helpers';
   export let searchResult: string = '';
   // tagsStore.subscribe(({ tags }) => {
   //     tagDatas = Object.values(tags);
   // });
   let keyResult: string[] = [];
+  let disabled: boolean = false;
   export let label: string = 'Start with a search';
 
   export let openSearchComplete: boolean = false;
@@ -45,6 +48,14 @@ import { goto } from '$app/navigation';
     goto(`/search?name=${key}`);
     return;
   }
+
+  onMount(async()=>{
+    if(documentHelper.getMobileOperatingSystem() == "Android"){
+      disabled = true;
+    }else{
+      disabled = false;
+    }
+  });
 </script>
 
 <form class="search-form">
@@ -62,6 +73,7 @@ import { goto } from '$app/navigation';
       withTrailingIcon={false}
       bind:value={searchResult}
       on:keyup={handleSearchTags}
+      disabled={disabled}
     >
       <Icon slot="trailingIcon"><img src="/img/icons/icon-search.svg" /></Icon>
     </Textfield>

@@ -383,7 +383,7 @@ button.mdc-button {
       background-color: #d3d3d3;
     }
     &::-webkit-scrollbar-thumb {
-      background-color: #000;
+      background-color: $blueColor;
     }
   }
 }
@@ -858,7 +858,7 @@ header {
       width: 60%;
       top: 41.5%;
       left: 8%;
-      position: absolute;
+      position: relative;
       z-index: 2;
       @include tablet-large {
         width: 85%;
