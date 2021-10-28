@@ -11,7 +11,7 @@ import { documentHelper } from '$lib/helpers';
   //     tagDatas = Object.values(tags);
   // });
   let keyResult: string[] = [];
-  let disabled: boolean = false;
+  let disabled: boolean;
   export let label: string = 'Start with a search';
 
   export let openSearchComplete: boolean = false;
