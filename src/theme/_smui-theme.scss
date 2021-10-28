@@ -71,9 +71,9 @@ $blackColor: #000;
 $brownColor: #91421c;
 $blueColor: #5078bc;
 /* Responsive */
-$mobile-width: 950px;
+$mobile-width: #{v.$desktop-width - 1px};
 $tablet-width: 600px;
-$desktop-width: 950px;
+$desktop-width: v.$desktop-width;
 @mixin mobile {
   @media (max-width: #{ v.$desktop-width - 1px}) {
     @content;
@@ -450,7 +450,7 @@ button.mdc-button {
     margin-left: var(--mdc-layout-grid-margin-desktop);
     margin-right: var(--mdc-layout-grid-margin-desktop);
   }
-  @media screen and (max-width: 839px) {
+  @media screen and (max-width: $mobile-width) {
     .container {
       margin-left: var(--mdc-layout-grid-margin-phone);
       margin-right: var(--mdc-layout-grid-margin-phone);

@@ -223,7 +223,7 @@
                   </IconButton>
                 </Cell>
               </LayoutGrid>
-              <h1 class="mt-30 mb-10">{advisor.userMe.displayName}</h1>
+              <h1 class="mt-30 mb-10">{advisor.userMe.displayName || advisor.userMe.email}</h1>
               <p class="mt-0 d-mb-25 m-mb-20 description">
                 {@html advisor.bio}
               </p>
@@ -342,7 +342,7 @@
                   </IconButton>
                 </Cell>
               </LayoutGrid>
-              <h1 class="mt-30 mb-10">{advisor.userMe.displayName}</h1>
+              <h1 class="mt-30 mb-10">{advisor.userMe.displayName || advisor.userMe.email}</h1>
               <p class="mt-0 d-mb-25 m-mb-20 description">
                 {@html advisor.bio}
               </p>

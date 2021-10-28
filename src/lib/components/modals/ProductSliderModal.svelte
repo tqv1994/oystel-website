@@ -69,7 +69,7 @@
                     <div class="thumbnail">
                       <div
                         class="image-cover"
-                        style="padding-top: calc(615 / 383 * 100%)"
+                        style="padding-top: calc(305 / 191 * 100%)"
                       >
                         <img src={item.gallery[0]?.url} alt="" />
                       </div>
@@ -101,7 +101,25 @@
   {/if}
 </div>
 
-<style>
+<style lang="scss">
+  $desktop-width: 950px;
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
+      @content;
+    }
+  }
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+      @content;
+    }
+  }
+  @include mobile{
+    .slide-item{
+      .thumbnail{
+        margin: auto calc(100px - var(--mdc-layout-grid-margin-phone));
+      }
+    }
+  }
   section {
     --mdc-layout-grid-gutter-desktop: 100px;
     background-color: #fff;

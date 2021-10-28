@@ -134,10 +134,10 @@
     <section class="header-title d-pt-120 d-pb-95 m-pt-100 m-pb-25 full-width">
       <div class="content-wrap">
         <div class="container">
-          <h1 class="text-center d-mb-30 m-mb-25 mt-0">
+          <h1 class="text-center mb-20 m-mt-0 d-mt-70">
             Crafted from Experience
           </h1>
-          <p class="text-center mt-0 m-pl-40 m-pr-40 m-mb-45">
+          <p class="text-center mt-0 m-pl-40 m-pr-40 m-mb-40 d-mb-0">
             First hand experience, ready to craft your perfect vacation.
           </p>
           <div class="d-none m-block">
