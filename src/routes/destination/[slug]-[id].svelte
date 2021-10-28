@@ -766,8 +766,6 @@ import { User } from '$lib/api/auth/type';
     }
     .item-advisor .title {
       @include desktop{
-        height: 30px;
-        overflow: hidden;
       }
     }
   }

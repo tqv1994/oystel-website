@@ -50,14 +50,26 @@ import { documentHelper } from '$lib/helpers';
   }
 
   onMount(async()=>{
-    if(documentHelper.getMobileOperatingSystem() == "Android"){
-      disabled = true;
-    }else{
+    checkDeviceToDisableInput();
+  });
+  function checkDeviceToDisableInput(){
+    if (document.documentElement.clientWidth <= 949) {
+      if(documentHelper.getMobileOperatingSystem() == "Android"){
+        disabled = true;
+      }else{
+        disabled = false;
+      }
+    }
+    else{
       disabled = false;
     }
-  });
+  }
 </script>
-
+<svelte:window
+  on:resize={() => {
+    checkDeviceToDisableInput();
+  }}
+/>
 <form class="search-form">
   <div
     class="form-control {openSearchComplete == true
