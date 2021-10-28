@@ -278,6 +278,7 @@ import { User } from '$lib/api/auth/type';
                 <LayoutGrid class="p-0 hidden-on-sticky">
                     <Cell spanDevices={{ desktop: 7,tablet: 8, phone: 4 }}>
                         <div class="experience-detail-slides">
+                            {#if destination.gallery.length > 0}
                             <OyCarousel perPage={{ 800: 1 }} draggable={false}>
                               <span class="control" slot="left-control">
                                 <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon>
@@ -289,6 +290,7 @@ import { User } from '$lib/api/auth/type';
                                 <Icon><img src="/img/icons/icon-right-arrow.svg" /></Icon>
                               </span>
                             </OyCarousel>
+                            {/if}
                         </div>
                     </Cell>
                     <Cell spanDevices="{{ desktop: 5,tablet: 8, phone: 4 }}">
