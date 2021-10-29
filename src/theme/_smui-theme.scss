@@ -372,7 +372,10 @@ button.mdc-button {
 }
 
 /* MDC Table */
-.mdc-data-table{ 
+.mdc-data-table{
+  .mdc-data-table__table{
+    white-space: pre-wrap;
+  }
   .mdc-data-table__table-container{
     &::-webkit-scrollbar-track {
       background-color: #d3d3d3;
@@ -1438,6 +1441,9 @@ header {
     }
     .title{
       height: 45px;
+      @include mobile{
+        height: 38px;
+      }
       overflow: hidden;
     }
   }
@@ -1494,6 +1500,9 @@ header {
     }
     .title{
       height: 45px;
+      @include mobile{
+        height: 38px;
+      }
       overflow: hidden;
     }
   }

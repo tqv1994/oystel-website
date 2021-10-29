@@ -180,41 +180,44 @@
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 8 }} class="form-inline text-right">
-              <div class="form-control">
-                <label class="text-h3">Filter by Speciality</label>
-                <Select
-                  bind:value={searchModel.specialty}
-                  label=""
-                  naturalMenuWidth="300px"
-                  class="text-left"
-                >
-                  <Option on:click={onSearchSubmit}>All</Option>
-                  {#if specialities && specialities.length > 0}
-                    {#each specialities as specialty}
-                      <Option on:click={onSearchSubmit} value={specialty.name}
-                        >{specialty.name}</Option
-                      >
-                    {/each}
-                  {/if}
-                </Select>
+              <div >
+                <div class="form-control">
+                  <label class="text-h3">Filter by Speciality</label>
+                  <Select
+                    bind:value={searchModel.specialty}
+                    label=""
+                    naturalMenuWidth="300px"
+                    class="text-left"
+                  >
+                    <Option on:click={onSearchSubmit}>All</Option>
+                    {#if specialities && specialities.length > 0}
+                      {#each specialities as specialty}
+                        <Option on:click={onSearchSubmit} value={specialty.name}
+                          >{specialty.name}</Option
+                        >
+                      {/each}
+                    {/if}
+                  </Select>
+                </div>
+                <div class="form-control">
+                  <label class="text-h3">Location</label>
+                  <Select
+                    bind:value={searchModel.location}
+                    label=""
+                    class="text-left"
+                  >
+                    <Option on:click={onSearchSubmit} value="">All</Option>
+                    {#if countries && countries.length > 0}
+                      {#each countries as country}
+                        <Option on:click={onSearchSubmit} value={country.name}
+                          >{country.name}</Option
+                        >
+                      {/each}
+                    {/if}
+                  </Select>
+                </div>
               </div>
-              <div class="form-control">
-                <label class="text-h3">Location</label>
-                <Select
-                  bind:value={searchModel.location}
-                  label=""
-                  class="text-left"
-                >
-                  <Option on:click={onSearchSubmit} value="">All</Option>
-                  {#if countries && countries.length > 0}
-                    {#each countries as country}
-                      <Option on:click={onSearchSubmit} value={country.name}
-                        >{country.name}</Option
-                      >
-                    {/each}
-                  {/if}
-                </Select>
-              </div>
+              
             </Cell>
           </LayoutGrid>
         </form>
