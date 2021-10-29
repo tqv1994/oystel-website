@@ -7,11 +7,11 @@
   import Textfield from '@smui/textfield';
   import IconButton from '@smui/icon-button';
   import Svg from '@smui/common/Svg.svelte';
-  import { BlurhashImage } from 'svelte-blurhash';
+  import BlurImage from '$lib/components/blur-image.svelte';
   import { User } from '$lib/api/auth/type';
   import { goto } from '$app/navigation';
   import { stringHelper } from '$lib/helpers';
-import { dateTimeHelper } from '$lib/helpers/datetime';
+  import { dateTimeHelper } from '$lib/helpers/datetime';
 
   let me: User | undefined = $authStore.user;
   let modelEmailPreferences = {
@@ -73,12 +73,7 @@ import { dateTimeHelper } from '$lib/helpers/datetime';
     <Cell spanDevices={{ desktop: 4, phone: 4, tablet: 8 }}>
       <div class="thumbnail user-profile-image dark">
         <div class="image-cover" style="padding-top: 100%">
-          <BlurhashImage
-            src={stringHelper.getFullUrlImage(me.avatar?.url)}
-            hash={me.avatar?.blurHash}
-            fadeDuration="1000"
-            alt=""
-          />
+          <BlurImage data={me.avatar} />
         </div>
 
         <IconButton class="btn-update-avatar">

@@ -1,10 +1,12 @@
 <script lang="ts" context="module">
+  export const prerender = true;
+
   import type { Load } from '@sveltejs/kit';
   import {
     destinationStore,
     updateDestinationStore,
   } from '$lib/api/destination/store';
-  import { onDestroy } from 'svelte'
+  import { onDestroy } from 'svelte';
   import { documentHelper, stringHelper } from '$lib/helpers';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
   import Svg from '@smui/common/Svg.svelte';
@@ -13,13 +15,17 @@
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import Layout from '$lib/components/common/Layout.svelte';
   import { goto } from '$app/navigation';
-  import { BlurhashImage } from 'svelte-blurhash';
+  import BlurImage from '$lib/components/blur-image.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import { Drop } from '$lib/api/drop/type';
   import { Experience } from '$lib/api/experience/type';
   import OySearch from '$lib/components/common/OySearch.svelte';
   import { Destination } from '$lib/api/destination/type';
-  import { HomePageData, UpdateDestinationData, UpdateExperienceData } from '$lib/api/pages/type';
+  import {
+    HomePageData,
+    UpdateDestinationData,
+    UpdateExperienceData,
+  } from '$lib/api/pages/type';
   import { routerHelper } from '$lib/helpers/router';
   import { dropStore, updateDropStore } from '$lib/api/drop/store';
   import {
@@ -68,11 +74,11 @@
   let featureDestinations: Destination[] = [];
   let featureExperiences: Experience[] = [];
   getData();
-  function getData(){
+  function getData() {
     dropStore.subscribe(({ items }) => {
       featureDrops = Object.values(items);
     });
-    
+
     destinationStore.subscribe(({ items }) => {
       featureDestinations = Object.values(items);
       featureDestinations.map((destination) => {
@@ -81,7 +87,7 @@
         itemFormOurAdvisors.push(item);
       });
     });
-    
+
     experienceStore.subscribe(({ items }) => {
       featureExperiences = Object.values(items);
       featureExperiences.map((experience) => {
@@ -102,23 +108,25 @@
     itemFormOurAdvisors = itemFormOurAdvisors.splice(0, 4);
   }
 
-  async function likeExperienceItem(experience: Experience){
-    if(!$authStore.user){
+  async function likeExperienceItem(experience: Experience) {
+    if (!$authStore.user) {
       window.pushToast('Please login to use this feature');
       return;
     }
-    let userDataLikes: (number|string)[] | null = [];
-    if(experience.users){
-      userDataLikes = experience.users.map((item, index)=>{
-        return +item.id;  
+    let userDataLikes: (number | string)[] | null = [];
+    if (experience.users) {
+      userDataLikes = experience.users.map((item, index) => {
+        return +item.id;
       });
-      let indexExist = userDataLikes.findIndex((item)=>item == $authStore.user?.id);
-      if(indexExist >= 0){
-        userDataLikes.splice(indexExist,1);
-      }else{
+      let indexExist = userDataLikes.findIndex(
+        (item) => item == $authStore.user?.id,
+      );
+      if (indexExist >= 0) {
+        userDataLikes.splice(indexExist, 1);
+      } else {
         userDataLikes.push(+$authStore.user.id);
       }
-      if(userDataLikes.length == 0){
+      if (userDataLikes.length == 0) {
         userDataLikes = null;
       }
     }
@@ -127,13 +135,13 @@
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(userDataLikes)
+      body: JSON.stringify(userDataLikes),
     });
 
     if (res.ok) {
       const data: UpdateExperienceData = await res.json();
       experience.users = data.updateExperience.experience.users;
-      console.log('user like',experience.users);
+      console.log('user like', experience.users);
       updateExperienceStore([experience]);
       getData();
     } else {
@@ -141,38 +149,43 @@
     }
   }
 
-  async function likeDestinationItem(destination: Destination){
-    if(!$authStore.user){
+  async function likeDestinationItem(destination: Destination) {
+    if (!$authStore.user) {
       window.pushToast('Please login to use this feature');
       return;
     }
-    let userDataLikes: (number|string)[] | null = [];
-    if(destination.users){
-      userDataLikes = destination.users.map((item: User, index)=>{
-        return item.id;      
+    let userDataLikes: (number | string)[] | null = [];
+    if (destination.users) {
+      userDataLikes = destination.users.map((item: User, index) => {
+        return item.id;
       });
-      let indexExist = userDataLikes.findIndex((item)=>item == $authStore.user?.id);
-      if(indexExist >= 0){
-        userDataLikes.splice(indexExist,1);
-      }else{
+      let indexExist = userDataLikes.findIndex(
+        (item) => item == $authStore.user?.id,
+      );
+      if (indexExist >= 0) {
+        userDataLikes.splice(indexExist, 1);
+      } else {
         userDataLikes.push($authStore.user.id);
       }
-      if(userDataLikes.length == 0){
+      if (userDataLikes.length == 0) {
         userDataLikes = null;
       }
     }
-    const res = await fetch(`/api/pages/destination/like?id=${destination.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
+    const res = await fetch(
+      `/api/pages/destination/like?id=${destination.id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userDataLikes),
       },
-      body: JSON.stringify(userDataLikes)
-    });
+    );
 
     if (res.ok) {
       const data: UpdateDestinationData = await res.json();
       destination.users = data.updateDestination.destination.users;
-      console.log('user like',destination.users);
+      console.log('user like', destination.users);
       updateDestinationStore([destination]);
       getData();
     } else {
@@ -212,7 +225,7 @@
         document.querySelector('header').style.zIndex = 'auto';
         documentHelper.changeBackgroundHeader('transparent');
       }
-    }else{
+    } else {
       document.getElementById('header').classList.remove('fixed');
       document.getElementById('header').classList.remove('scrolling');
       document.querySelector('header').style.zIndex = 'auto';
@@ -220,9 +233,7 @@
       documentHelper.changeBackgroundHeader('transparent');
     }
   }
-  function onDestroy(){
-
-  }
+  function onDestroy() {}
 </script>
 
 <svelte:window
@@ -304,13 +315,7 @@
                   class="image-cover"
                   style="padding-top: calc(474/420 * 100%)"
                 >
-                  <BlurhashImage
-                    fadeDuration="1000"
-                    src={stringHelper.getFullUrlImage(
-                      featureDrops[0].gallery[0]?.url,
-                    )}
-                    hash={featureDrops[0].gallery[0]?.blurHash}
-                  />
+                  <BlurImage data={featureDrops[0].gallery[0]} />
                 </div>
                 <div class="caption">
                   <span>{featureDrops[0].products?.length} Packages left</span>
@@ -348,15 +353,7 @@
                             class="image-cover"
                             style="padding-top: calc(410/311 * 100%)"
                           >
-                            <BlurhashImage
-                              class=""
-                              fadeDuration="1000"
-                              alt=""
-                              src={stringHelper.getFullUrlImage(
-                                drop.gallery[0].url,
-                              )}
-                              hash={drop.gallery[0].blurHash}
-                            />
+                            <BlurImage data={drop.gallery[0]} />
                           </div>
                           <div class="caption">
                             <span>{drop.products.length} Packages left</span>
@@ -441,13 +438,7 @@
                     class="image-cover"
                     style="padding-top: calc(768/529 * 100%)"
                   >
-                    <BlurhashImage
-                      src={stringHelper.getFullUrlImage(
-                        featureExperiences[0].gallery[0].url,
-                      )}
-                      hash={featureExperiences[0].gallery[0].blurHash}
-                      fadeDuration="1000"
-                    />
+                    <BlurImage data={featureExperiences[0].gallery[0]} />
                   </div>
                 </a>
                 <IconButton
@@ -508,13 +499,7 @@
                             class="image-cover"
                             style="padding-top: calc(410/311 * 100%)"
                           >
-                            <BlurhashImage
-                              src={stringHelper.getFullUrlImage(
-                                experience.gallery[0]?.url,
-                              )}
-                              hash={experience.gallery[0]?.blurHash}
-                              fadeDuration="1000"
-                            />
+                            <BlurImage data={experience.gallery[0]} />
                           </div>
                         </a>
                         <IconButton
@@ -589,16 +574,16 @@
                       class="image-cover"
                       style="padding-top: calc(410/315 * 100%)"
                     >
-                      <BlurhashImage
-                        src={stringHelper.getFullUrlImage(item.gallery[0]?.url)}
-                        hash={item.gallery[0]?.blurHash}
-                        fadeDuration="1000"
-                      />
+                      <BlurImage data={item.gallery[0]} />
                     </div>
                   </a>
                   <IconButton
                     class="btn-favorite {item.liked ? 'liked' : ''}"
-                    on:click={() => {item.type === 'experience' ? likeExperienceItem(item) : likeDestinationItem(item)}}
+                    on:click={() => {
+                      item.type === 'experience'
+                        ? likeExperienceItem(item)
+                        : likeDestinationItem(item);
+                    }}
                   >
                     <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
                       <path
@@ -662,35 +647,35 @@
     background: #181919;
     background: linear-gradient(180deg, #181919 0%, rgba(0, 0, 0, 0) 100%);
   }
-  #slider{
-    h1{
-      @include mobile{
+  #slider {
+    h1 {
+      @include mobile {
         width: 200px;
       }
     }
   }
-  #signup-section{
-    .thumbnail{
-      .caption{
-          font-size: 12px;
-          line-height: 22px;
-          letter-spacing: 0.1;
+  #signup-section {
+    .thumbnail {
+      .caption {
+        font-size: 12px;
+        line-height: 22px;
+        letter-spacing: 0.1;
       }
     }
-    h4{
+    h4 {
       text-transform: uppercase;
     }
   }
-  #experience-section{
-    .item-experience.featured{
-      .title{
+  #experience-section {
+    .item-experience.featured {
+      .title {
         height: 28px;
         overflow: hidden;
-        @include mobile{
+        @include mobile {
           height: 26px;
         }
       }
-      :global(.thumbnail .btn-favorite){
+      :global(.thumbnail .btn-favorite) {
         top: 0;
         right: 0;
       }

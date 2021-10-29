@@ -22,9 +22,6 @@ export const get: RequestHandler = async (request: Request) => {
         country {
           ...countryFields
         }
-        users {
-          id
-        }
       }
       products(sort: "published_at:desc", limit: 10) {
         id
@@ -36,9 +33,6 @@ export const get: RequestHandler = async (request: Request) => {
         gallery {
           ...uploadFileFields
         }
-        users {
-          id
-        }
       }
       experiences(sort: "published_at:desc",limit: 4) {
         id
@@ -49,9 +43,6 @@ export const get: RequestHandler = async (request: Request) => {
         }
         country {
           ...countryFields
-        }
-        users {
-          id
         }
       }
     }

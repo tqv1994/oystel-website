@@ -1,6 +1,9 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import type { ExperiencesData, UpdateExperienceData } from '$lib/api/pages/type';
+  import type {
+    ExperiencesData,
+    UpdateExperienceData,
+  } from '$lib/api/pages/type';
   import {
     experienceStore,
     updateExperienceStore,
@@ -38,7 +41,7 @@
   import { CountryModel } from '$lib/models/country';
   import authStore from '$lib/api/auth/store';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import { BlurhashImage } from 'svelte-blurhash';
+  import BlurImage from '$lib/components/blur-image.svelte';
   import { HomePageData } from '$lib/api/pages/type';
   import { ExperienceType } from '$lib/api/experience-type/type';
   import { DestinationType } from '$lib/api/destination-type/type';
@@ -47,7 +50,7 @@
 
   export const load: Load = async ({ fetch, session, page }) => {
     let experienceTypes: ExperienceType[] = [];
-    experienceTypeStore.subscribe(({items})=>{
+    experienceTypeStore.subscribe(({ items }) => {
       experienceTypes = Object.values(items);
     });
     const res = await fetch('/api/pages/experience', {
@@ -55,17 +58,20 @@
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(experienceTypes)
+      body: JSON.stringify(experienceTypes),
     });
 
     if (res.ok) {
       const data: ExperiencesData = await res.json();
-      experienceTypes = experienceTypes.map((experienceType: ExperienceType)=>{
-        if(data[`experienceType_${experienceType.id}`]){
-          experienceType.experiences = data[`experienceType_${experienceType.id}`];
-        }
-        return experienceType;
-      });
+      experienceTypes = experienceTypes.map(
+        (experienceType: ExperienceType) => {
+          if (data[`experienceType_${experienceType.id}`]) {
+            experienceType.experiences =
+              data[`experienceType_${experienceType.id}`];
+          }
+          return experienceType;
+        },
+      );
       // TODO: Convert data to classes
       updateExperienceTypeStore(experienceTypes || []);
     } else {
@@ -96,50 +102,50 @@
   };
   let contentHeaderActionMobile = '';
 
-  onMount(async () => {
-  });
+  onMount(async () => {});
   let experienceTypes: ExperienceType[] = [];
   let destinationTypes: DestinationType[] = [];
   let countries: Country[] = [];
 
   getData();
 
-  function getData(){
+  function getData() {
     experienceTypeStore.subscribe(({ items }) => {
-    experienceTypes =  Object.values(items).map( (experienceType: ExperienceType)=>{
-        if(experienceType.experiences){
-          experienceType.experiences = experienceType.experiences.map((experience: any)=>{
-            return new Experience(experience);
-          });
-        }
-        return experienceType;
-      });
+      experienceTypes = Object.values(items).map(
+        (experienceType: ExperienceType) => {
+          if (experienceType.experiences) {
+            experienceType.experiences = experienceType.experiences.map(
+              (experience: any) => {
+                return new Experience(experience);
+              },
+            );
+          }
+          return experienceType;
+        },
+      );
     });
   }
 
-  
-
   destinationTypeStore.subscribe(({ items }) => {
-    destinationTypes =  Object.values(items);
+    destinationTypes = Object.values(items);
   });
 
   countryStore.subscribe(({ items }) => {
-      countries = Object.values(items);
+    countries = Object.values(items);
   });
 
-
   function onSearchSubmit() {
-    setTimeout(()=>{
+    setTimeout(() => {
       const queryString = stringHelper.objectToQueryString(searchModel);
-      console.log(queryString)
+      console.log(queryString);
       goto('/experiences-listing/search?' + queryString);
-    },0);
+    }, 0);
   }
-  
+
   function onScrollFixedHeader() {
     if (
-      document.body.scrollTop > 50 ||
-      document.documentElement.scrollTop > 50
+      document.body.scrollTop > 200 ||
+      document.documentElement.scrollTop > 200
     ) {
       document.getElementById('header').classList.add('fixed');
       document.querySelector('header').style.zIndex = 8;
@@ -157,23 +163,28 @@
     }
   }
 
-  async function likeExperienceItem(experience: Experience, experienceType: ExperienceType){
-    if(!$authStore.user){
+  async function likeExperienceItem(
+    experience: Experience,
+    experienceType: ExperienceType,
+  ) {
+    if (!$authStore.user) {
       window.pushToast('Please login to use this feature');
       return;
     }
-    let userDataLikes: (number|string)[] | null = [];
-    if(experience.users){
-      userDataLikes = experience.users.map((item, index)=>{
-        return item.id;      
+    let userDataLikes: (number | string)[] | null = [];
+    if (experience.users) {
+      userDataLikes = experience.users.map((item, index) => {
+        return item.id;
       });
-      let indexExist = userDataLikes.findIndex((item)=>item == $authStore.user?.id);
-      if(indexExist >= 0){
-        userDataLikes.splice(indexExist,1);
-      }else{
+      let indexExist = userDataLikes.findIndex(
+        (item) => item == $authStore.user?.id,
+      );
+      if (indexExist >= 0) {
+        userDataLikes.splice(indexExist, 1);
+      } else {
         userDataLikes.push($authStore.user.id);
       }
-      if(userDataLikes.length == 0){
+      if (userDataLikes.length == 0) {
         userDataLikes = null;
       }
     }
@@ -182,19 +193,21 @@
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(userDataLikes)
+      body: JSON.stringify(userDataLikes),
     });
 
     if (res.ok) {
       const data: UpdateExperienceData = await res.json();
       experience.users = data.updateExperience.experience.users;
-      if(experienceType.experiences){
-        experienceType.experiences = experienceType.experiences.map((item: Experience)=>{
-          if(item.id === experience.id){
-            item = experience;
-          }
-          return item;
-        });
+      if (experienceType.experiences) {
+        experienceType.experiences = experienceType.experiences.map(
+          (item: Experience) => {
+            if (item.id === experience.id) {
+              item = experience;
+            }
+            return item;
+          },
+        );
       }
       updateExperienceTypeStore([experienceType]);
       getData();
@@ -213,7 +226,7 @@
     onScrollFixedHeader();
   }}
 />
-<Layout config={configPage} on:refreshPage={()=>{}}>
+<Layout config={configPage} on:refreshPage={() => {}}>
   <div class="content">
     <section class="header-title d-pt-120 d-pb-95 m-pt-80 m-pb-25 full-width">
       <div class="content-wrap">
@@ -281,6 +294,8 @@
                     {#if countries}
                       {#each countries as item}
                         <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
+                        <Option on:click={onSearchSubmit} value={item.name}
+                          >{item.name}</Option> develop
                       {/each}
                     {/if}
                   </Select>
@@ -327,114 +342,109 @@
       {#if experienceTypes && experienceTypes.length > 0}
         {#each experienceTypes as type, indexType}
           {#if type.experiences && type.experiences.length > 0}
-          <!-- {#if type.experiences.length > 0} -->
-          <div class="container">
-            <div class="section-title">
-              <LayoutGrid class="p-0">
-                <Cell span="12"
-                  ><h2
-                    class="text-h1 title {indexType == 0 ? 'mt-0' : ''} d-mb-30"
-                  >
-                    {type.name}
-                  </h2></Cell
-                >
-              </LayoutGrid>
-            </div>
-            <div class="section-content">
-              <LayoutGrid class="p-0">
-                {#each type.experiences as item, i}
-                  <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-                    <div class="experience-item">
-                      <div class="thumbnail">
-                        <a href={item.url}>
-                          <div
-                            class="image-cover"
-                            style="padding-top: calc(410 / 315 * 100%)"
-                          >
-                            <BlurhashImage
-                              src={item.gallery.length > 0
-                                ? item.gallery[0].url
-                                : ''}
-                              hash={item.gallery.length > 0
-                                ? item.gallery[0].blurHash
-                                : ''}
-                              fadeDuration="1000"
-                              alt=""
-                            />
-                          </div>
-                        </a>
-                        <IconButton
-                          class="btn-favorite {item.liked ? 'liked' : ''}"
-                          on:click={likeExperienceItem(item, type)}
-                        >
-                          <Icon
-                            class="like"
-                            component={Svg}
-                            viewBox="-4 -4 24 24"
-                          >
-                            <path
-                              d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                              transform="translate(0.001)"
-                              fill="#fff"
-                              fill-rule="evenodd"
-                            />
-                          </Icon>
-                          <Icon
-                            class="liked"
-                            component={Svg}
-                            viewBox="-4 -4 24 24"
-                          >
-                            <path
-                              d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                              transform="translate(0)"
-                              fill="#fff"
-                              fill-rule="evenodd"
-                            />
-                          </Icon>
-                        </IconButton>
-                      </div>
-                      <a href={item.url}>
-                        <LayoutGrid class="p-0 d-block m-none">
-                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                            ><p class="text-eyebrow text-left">
-                              {item.country.name}
-                            </p></Cell
-                          >
-                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                            ><p class="text-eyebrow text-right">
-                              Experience
-                            </p></Cell
-                          >
-                        </LayoutGrid>
-                        <LayoutGrid class="p-0 m-block d-none">
-                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                            ><p class="text-eyebrow text-left mt-20 mb-20">
-                              Experience
-                            </p></Cell
-                          >
-                        </LayoutGrid>
-                        <div class="divider" />
-                        <h4 class="text-h2 title m-mt-30">{item.name}</h4>
-                        <p class="short-text m-none">{item.excerpt}</p>
-                      </a>
-                    </div>
-                  </Cell>
-                {/each}
-                <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-                  <a href={type.url}>
-                    <div
-                      class="experience-read-more item-read-more"
-                      style="padding-top: calc(410 / 315 * 100%)"
+            <!-- {#if type.experiences.length > 0} -->
+            <div class="container">
+              <div class="section-title">
+                <LayoutGrid class="p-0">
+                  <Cell span="12"
+                    ><h2
+                      class="text-h1 title {indexType == 0
+                        ? 'mt-0'
+                        : ''} d-mb-30"
                     >
-                      <p class="text-h3 label">
-                        See more <i class="material-icons">chevron_right</i>
-                      </p>
-                    </div>
-                  </a>
-                </Cell>
-              </LayoutGrid>
+                      {type.name}
+                    </h2></Cell
+                  >
+                </LayoutGrid>
+              </div>
+              <div class="section-content">
+                <LayoutGrid class="p-0">
+                  {#each type.experiences as item, i}
+                    <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
+                      <div class="experience-item">
+                        <div class="thumbnail">
+                          <a href={item.url}>
+                            <div
+                              class="image-cover"
+                              style="padding-top: calc(410 / 315 * 100%)"
+                            >
+                              <BlurImage
+                                data={item.gallery && item.gallery[0]}
+                              />
+                            </div>
+                          </a>
+                          <IconButton
+                            class="btn-favorite {item.liked ? 'liked' : ''}"
+                            on:click={likeExperienceItem(item, type)}
+                          >
+                            <Icon
+                              class="like"
+                              component={Svg}
+                              viewBox="-4 -4 24 24"
+                            >
+                              <path
+                                d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
+                                transform="translate(0.001)"
+                                fill="#fff"
+                                fill-rule="evenodd"
+                              />
+                            </Icon>
+                            <Icon
+                              class="liked"
+                              component={Svg}
+                              viewBox="-4 -4 24 24"
+                            >
+                              <path
+                                d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
+                                transform="translate(0)"
+                                fill="#fff"
+                                fill-rule="evenodd"
+                              />
+                            </Icon>
+                          </IconButton>
+                        </div>
+                        <a href={item.url}>
+                          <LayoutGrid class="p-0 d-block m-none">
+                            <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                              ><p class="text-eyebrow text-left">
+                                {item.country.name}
+                              </p></Cell
+                            >
+                            <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                              ><p class="text-eyebrow text-right">
+                                Experience
+                              </p></Cell
+                            >
+                          </LayoutGrid>
+                          <LayoutGrid class="p-0 m-block d-none">
+                            <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                              ><p class="text-eyebrow text-left mt-20 mb-20">
+                                Experience
+                              </p></Cell
+                            >
+                          </LayoutGrid>
+                          <div class="divider" />
+                          <h4 class="text-h2 title m-mt-30">{item.name}</h4>
+                          <p class="short-text m-none">{item.excerpt}</p>
+                        </a>
+                      </div>
+                    </Cell>
+                  {/each}
+                  <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
+                    <a href={type.url}>
+                      <div
+                        class="experience-read-more item-read-more"
+                        style="padding-top: calc(410 / 315 * 100%)"
+                      >
+                        <p class="text-h3 label">
+                          See more <i class="material-icons">chevron_right</i>
+                        </p>
+                      </div>
+                    </a>
+                  </Cell>
+                </LayoutGrid>
+              </div>
             </div>
-          </div>
           {/if}
         {/each}
       {/if}
@@ -467,7 +477,7 @@
     background-color: #f0f7f8;
   }
   .header-title:global(.is_sticky) {
-    @include desktop{
+    @include desktop {
       padding-bottom: 55px !important;
     }
   }

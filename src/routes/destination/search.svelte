@@ -1,6 +1,11 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import type { DestinationsSearchData, ExperiencesData, ExperiencesSearchData, UpdateDestinationData } from '$lib/api/pages/type';
+  import type {
+    DestinationsSearchData,
+    ExperiencesData,
+    ExperiencesSearchData,
+    UpdateDestinationData,
+  } from '$lib/api/pages/type';
   import {
     experienceStore,
     updateExperienceStore,
@@ -18,7 +23,7 @@
     updateDestinationTypeStore,
   } from '$lib/api/destination-type/store';
   import { countryStore, updateCountryStore } from '$lib/api/country/store';
-  import { onMount} from 'svelte';
+  import { onMount } from 'svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import { goto } from '$app/navigation';
   import Textfield from '@smui/textfield';
@@ -31,15 +36,15 @@
   import Layout from '$lib/components/common/Layout.svelte';
   import authStore from '$lib/api/auth/store';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import { BlurhashImage } from 'svelte-blurhash';
+  import BlurImage from '$lib/components/blur-image.svelte';
   import { Experience } from '$lib/api/experience/type';
   import { ExperienceType } from '$lib/api/experience-type/type';
   import { DestinationType } from '$lib/api/destination-type/type';
   import { Country } from '$lib/api/country/type';
   import { Destination } from '$lib/api/destination/type';
-  
+
   export const load: Load = async ({ fetch, session, page }) => {
-    destinationStore.set({items:{}});
+    destinationStore.set({ items: {} });
     updateDestinationStore([]);
 
     let searchModel = {
@@ -62,7 +67,7 @@
     if (searchModel.country && searchModel.country != '') {
       searchParams['country.id'] = searchModel.country;
     }
-    
+
     const res = await fetch(
       '/api/pages/destination/search?' +
         stringHelper.objectToQueryString(searchParams),
@@ -85,7 +90,7 @@
     }
     return {
       props: {
-        searchModel
+        searchModel,
       },
     };
   };
@@ -108,18 +113,17 @@
       currentMenu: 'destinations',
     },
   };
-  let destinations: Destination[] = []
+  let destinations: Destination[] = [];
   let experiences: Experience[] = [];
   let experienceTypes: ExperienceType[] = [];
   let destinationTypes: DestinationType[] = [];
   let countries: Country[];
 
   async function onSearchSubmit() {
-    setTimeout(()=>{
+    setTimeout(() => {
       let queryString = stringHelper.objectToQueryString(searchModel);
       goto('/destination/search?' + queryString);
-    },0);
-    
+    }, 0);
   }
 
   function onScrollFixedHeader() {
@@ -143,16 +147,15 @@
     }
   }
 
-  onMount(async () => {  });
+  onMount(async () => {});
 
-  
   getData();
-  function getData(){
-    destinationStore.subscribe ( ({items})=>{
+  function getData() {
+    destinationStore.subscribe(({ items }) => {
       destinations = Object.values(items);
     });
   }
-  
+
   experienceStore.subscribe(({ items }) => {
     experiences = Object.values(items);
   });
@@ -169,39 +172,43 @@
     countries = Object.values(items);
   });
 
-
-  async function likeDestinationItem(destination: Destination){
-    if(!$authStore.user){
+  async function likeDestinationItem(destination: Destination) {
+    if (!$authStore.user) {
       window.pushToast('Please login to use this feature');
       return;
     }
-    let userDataLikes: (number|string)[] | null = [];
-    if(destination.users){
-      userDataLikes = destination.users.map((item: User, index)=>{
-        return item.id;      
+    let userDataLikes: (number | string)[] | null = [];
+    if (destination.users) {
+      userDataLikes = destination.users.map((item: User, index) => {
+        return item.id;
       });
-      let indexExist = userDataLikes.findIndex((item)=>item == $authStore.user?.id);
-      if(indexExist >= 0){
-        userDataLikes.splice(indexExist,1);
-      }else{
+      let indexExist = userDataLikes.findIndex(
+        (item) => item == $authStore.user?.id,
+      );
+      if (indexExist >= 0) {
+        userDataLikes.splice(indexExist, 1);
+      } else {
         userDataLikes.push($authStore.user.id);
       }
-      if(userDataLikes.length == 0){
+      if (userDataLikes.length == 0) {
         userDataLikes = null;
       }
     }
-    const res = await fetch(`/api/pages/destination/like?id=${destination.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
+    const res = await fetch(
+      `/api/pages/destination/like?id=${destination.id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userDataLikes),
       },
-      body: JSON.stringify(userDataLikes)
-    });
+    );
 
     if (res.ok) {
       const data: UpdateDestinationData = await res.json();
       destination.users = data.updateDestination.destination.users;
-      console.log('user like',destination.users);
+      console.log('user like', destination.users);
       updateDestinationStore([destination]);
       getData();
     } else {
@@ -344,13 +351,7 @@
                           class="image-cover"
                           style="padding-top: calc(410 / 315 * 100%)"
                         >
-                          <BlurhashImage
-                            src={item.gallery.length > 0 ? item.gallery[0].url : ''}
-                            hash={item.gallery.length > 0 ? item.gallery[0].blurHash : ''}
-                            blur
-                            alt=""
-                            fadeDuration={1000}
-                          />
+                          <BlurImage data={item.gallery && item.gallery[0]} />
                         </div>
                       </a>
                       <IconButton
@@ -387,7 +388,7 @@
                       <LayoutGrid class="p-0 m-none">
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
                           ><p class="text-eyebrow text-left">
-                            {item.country ? item.country.name : "Country"}
+                            {item.country ? item.country.name : 'Country'}
                           </p></Cell
                         >
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
@@ -443,7 +444,7 @@
     background-color: #f0f7f8;
   }
   .header-title:global(.is_sticky) {
-    @include desktop{
+    @include desktop {
       padding-bottom: 55px !important;
     }
   }
@@ -501,7 +502,7 @@
   .experience-item .title {
     height: 50px;
     overflow: hidden;
-    @include mobile{
+    @include mobile {
       height: auto;
       overflow: auto;
     }

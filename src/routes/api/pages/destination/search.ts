@@ -24,9 +24,6 @@ export const get: RequestHandler = async (request: Request) => {
         country {
           ...countryFields
         }
-        users{
-          id
-        }
       }
     }
     fragment countryFields on Country {

@@ -7,7 +7,7 @@
   import Svg from '@smui/common/Svg.svelte';
   import { stringHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
-  import { BlurhashImage } from 'svelte-blurhash';
+  import BlurImage from '$lib/components/blur-image.svelte';
   import { Advisor } from '$lib/api/advisor/type';
   import { advisorStore, updateAdvisorStore } from '$lib/api/advisor/store';
   import { AdvisorPageData } from '$lib/api/pages/type';
@@ -169,13 +169,11 @@
                   class="text-left"
                 >
                   <div class="thumbnail">
-                    <BlurhashImage
-                      src={stringHelper.getFullUrlImage(
-                        advisor.userMe.avatar?.url,
-                      )}
-                      fadeDuration="1000"
-                      alt=""
+                    <div class="image-cover" style="padding-top: 100%">
+                    <BlurImage
+                      data={advisor.userMe.avatar}
                     />
+                  </div>
                   </div>
                 </Cell>
                 <Cell
@@ -288,13 +286,9 @@
                   class="text-left"
                 >
                   <div class="thumbnail">
-                    <BlurhashImage
-                      src={stringHelper.getFullUrlImage(
-                        advisor.userMe.avatar?.url,
-                      )}
-                      fadeDuration="1000"
-                      alt=""
-                    />
+                    <div class="image-cover" style="padding-top: 100%">
+                      <BlurImage data={advisor.userMe.avatar} />
+                    </div>
                   </div>
                 </Cell>
                 <Cell
@@ -368,11 +362,7 @@
                     <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
                       {#each advisor.countries as country, index}
                         {#if index < 3}
-                          <div
-                            class={index + 1 < 3
-                              ? 'mb-30'
-                              : 'mb-0'}
-                          >
+                          <div class={index + 1 < 3 ? 'mb-30' : 'mb-0'}>
                             <h5 class="mb-10 mt-0">{country.name}</h5>
                           </div>
                         {/if}
@@ -465,14 +455,7 @@
                                 class="image-cover"
                                 style="padding-top: calc(335 / 258 * 100%)"
                               >
-                                <BlurhashImage
-                                  src={stringHelper.getFullUrlImage(
-                                    item.gallery[0]?.url,
-                                  )}
-                                  hash={item.gallery[0]?.blurHash}
-                                  fadeDuration="1000"
-                                  alt=""
-                                />
+                                <BlurImage data={item.gallery[0]} />
                               </div>
                             </div>
                             <LayoutGrid class="p-0">
@@ -572,7 +555,7 @@
   .contact-info .thumbnail {
     width: 100px;
   }
-  .contact-info .thumbnail :global(img) {
+  .contact-info .thumbnail .image-cover {
     border-radius: 50%;
   }
   .contact-info :global(.btn-share) {
@@ -580,7 +563,7 @@
     transform: translateY(-50%);
   }
   .contact-info .description {
-    max-height:110px;
+    max-height: 110px;
     overflow-y: scroll;
     width: 85%;
     &::-webkit-scrollbar-track {

@@ -1,6 +1,9 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import type { DestinationData, UpdateDestinationData } from '$lib/api/pages/type';
+  import type {
+    DestinationData,
+    UpdateDestinationData,
+  } from '$lib/api/pages/type';
   import {
     experienceStore,
     updateExperienceStore,
@@ -37,17 +40,16 @@
   import { ExperienceModel } from '$lib/models/experience';
   import authStore from '$lib/api/auth/store';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import { BlurhashImage } from 'svelte-blurhash';
+  import BlurImage from '$lib/components/blur-image.svelte';
   import { ExperienceType } from '$lib/api/experience-type/type';
   import { Experience } from '$lib/api/experience/type';
   import { DestinationType } from '$lib/api/destination-type/type';
   import { Country } from '$lib/api/country/type';
   import { Destination } from '$lib/api/destination/type';
 
-
   export const load: Load = async ({ fetch, session, page }) => {
     let destinationTypes: DestinationType[] = [];
-    destinationTypeStore.subscribe(({items})=>{
+    destinationTypeStore.subscribe(({ items }) => {
       destinationTypes = Object.values(items);
     });
     const res = await fetch('/api/pages/destination', {
@@ -55,20 +57,23 @@
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(destinationTypes)
+      body: JSON.stringify(destinationTypes),
     });
     console.log('Got destinations data', res.ok);
 
     if (res.ok) {
       const data: DestinationData = await res.json();
       // TODO: Convert data to classes
-      if(data){
-        destinationTypes = destinationTypes.map((destinationType: DestinationType) => {
-          if(data[`destinationType_${destinationType.id}`]){
-            destinationType.destinations = data[`destinationType_${destinationType.id}`];
-          }
-          return destinationType;
-        });
+      if (data) {
+        destinationTypes = destinationTypes.map(
+          (destinationType: DestinationType) => {
+            if (data[`destinationType_${destinationType.id}`]) {
+              destinationType.destinations =
+                data[`destinationType_${destinationType.id}`];
+            }
+            return destinationType;
+          },
+        );
       }
       updateDestinationTypeStore(destinationTypes || []);
     } else {
@@ -99,42 +104,44 @@
     },
   };
 
-  onMount(async () => {
-  });
+  onMount(async () => {});
 
   let experienceTypes: ExperienceType[] = [];
   let destinationTypes: DestinationType[] = [];
   let countries: Country[] = [];
 
   experienceTypeStore.subscribe(({ items }) => {
-    experienceTypes =  Object.values(items);
+    experienceTypes = Object.values(items);
   });
 
   getData();
 
-  function getData(){
+  function getData() {
     destinationTypeStore.subscribe(({ items }) => {
-      destinationTypes =  Object.values(items).map((destinationType: DestinationType)=>{
-        if(destinationType.destinations){
-          destinationType.destinations = destinationType.destinations.map((destination: any)=>{
-            return new Destination(destination);
-          });
-        }
-        return destinationType;
-      })
+      destinationTypes = Object.values(items).map(
+        (destinationType: DestinationType) => {
+          if (destinationType.destinations) {
+            destinationType.destinations = destinationType.destinations.map(
+              (destination: any) => {
+                return new Destination(destination);
+              },
+            );
+          }
+          return destinationType;
+        },
+      );
     });
   }
 
-  
   countryStore.subscribe(({ items }) => {
     countries = Object.values(items);
   });
 
   function onSearchSubmit() {
-    setTimeout(()=>{
+    setTimeout(() => {
       let queryString = stringHelper.objectToQueryString(searchModel);
       goto('/destination/search?' + queryString);
-    },0);
+    }, 0);
   }
 
   function onScrollFixedHeader() {
@@ -142,8 +149,8 @@
       '.header-title .hidden-on-sticky',
     );
     if (
-      document.body.scrollTop > 50 ||
-      document.documentElement.scrollTop > 50
+      document.body.scrollTop > 200 ||
+      document.documentElement.scrollTop > 200
     ) {
       document.getElementById('header').classList.add('fixed');
       document.querySelector('header').style.zIndex = 8;
@@ -161,44 +168,54 @@
     }
   }
 
-  async function likeDestinationItem(destination: Destination, destinationType: DestinationType){
-    if(!$authStore.user){
+  async function likeDestinationItem(
+    destination: Destination,
+    destinationType: DestinationType,
+  ) {
+    if (!$authStore.user) {
       window.pushToast('Please login to use this feature');
       return;
     }
-    let userDataLikes: (number|string)[] | null = [];
-    if(destination.users){
-      userDataLikes = destination.users.map((item, index)=>{
-        return item.id;      
+    let userDataLikes: (number | string)[] | null = [];
+    if (destination.users) {
+      userDataLikes = destination.users.map((item, index) => {
+        return item.id;
       });
-      let indexExist = userDataLikes.findIndex((item)=>item == $authStore.user?.id);
-      if(indexExist >= 0){
-        userDataLikes.splice(indexExist,1);
-      }else{
+      let indexExist = userDataLikes.findIndex(
+        (item) => item == $authStore.user?.id,
+      );
+      if (indexExist >= 0) {
+        userDataLikes.splice(indexExist, 1);
+      } else {
         userDataLikes.push($authStore.user.id);
       }
-      if(userDataLikes.length == 0){
+      if (userDataLikes.length == 0) {
         userDataLikes = null;
       }
     }
-    const res = await fetch(`/api/pages/destination/like?id=${destination.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
+    const res = await fetch(
+      `/api/pages/destination/like?id=${destination.id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userDataLikes),
       },
-      body: JSON.stringify(userDataLikes)
-    });
+    );
 
     if (res.ok) {
       const data: UpdateDestinationData = await res.json();
       destination.users = data.updateDestination.destination.users;
-      if(destinationType.destinations){
-        destinationType.destinations = destinationType.destinations.map((item: Destination)=>{
-          if(item.id === destination.id){
-            item = destination;
-          }
-          return item;
-        });
+      if (destinationType.destinations) {
+        destinationType.destinations = destinationType.destinations.map(
+          (item: Destination) => {
+            if (item.id === destination.id) {
+              item = destination;
+            }
+            return item;
+          },
+        );
       }
       updateDestinationTypeStore([destinationType]);
       getData();
@@ -217,7 +234,7 @@
     onScrollFixedHeader();
   }}
 />
-<Layout config={configPage} on:refreshPage={()=>{}}>
+<Layout config={configPage} on:refreshPage={() => {}}>
   <div class="content">
     <section class="header-title d-pt-120 d-pb-95 m-pt-80 m-pb-25 full-width">
       <div class="content-wrap">
@@ -331,114 +348,109 @@
       {#if destinationTypes && destinationTypes.length > 0}
         {#each destinationTypes as type, indexType}
           {#if type.destinations && type.destinations.length > 0}
-          <!-- {#if type.experiences.length > 0} -->
-          <div class="container">
-            <div class="section-title">
-              <LayoutGrid class="p-0">
-                <Cell span="12"
-                  ><h2
-                    class="text-h1 title {indexType == 0 ? 'mt-0' : ''} d-mb-30"
-                  >
-                    {type?.name}
-                  </h2></Cell
-                >
-              </LayoutGrid>
-            </div>
-            <div class="section-content">
-              <LayoutGrid class="p-0">
-                {#each type.destinations as item, i}
-                  <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-                    <div class="experience-item">
-                      <div class="thumbnail">
-                        <a href={item.url}>
-                          <div
-                            class="image-cover"
-                            style="padding-top: calc(410 / 315 * 100%)"
-                          >
-                            <BlurhashImage
-                              src={item.gallery.length > 0
-                                ? item.gallery[0].url
-                                : ''}
-                              hash={item.gallery.length > 0
-                                ? item.gallery[0].blurHash
-                                : ''}
-                              fadeDuration="1000"
-                              alt=""
-                            />
-                          </div>
-                        </a>
-                        <IconButton
-                          class="btn-favorite {item.liked ? 'liked' : ''}"
-                          on:click={likeDestinationItem(item, type)}
-                        >
-                          <Icon
-                            class="like"
-                            component={Svg}
-                            viewBox="-4 -4 24 24"
-                          >
-                            <path
-                              d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                              transform="translate(0.001)"
-                              fill="#fff"
-                              fill-rule="evenodd"
-                            />
-                          </Icon>
-                          <Icon
-                            class="liked"
-                            component={Svg}
-                            viewBox="-4 -4 24 24"
-                          >
-                            <path
-                              d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                              transform="translate(0)"
-                              fill="#fff"
-                              fill-rule="evenodd"
-                            />
-                          </Icon>
-                        </IconButton>
-                      </div>
-                      <a href={item.url}>
-                        <LayoutGrid class="p-0 d-block m-none">
-                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                            ><p class="text-eyebrow text-left">
-                              {item.country ? item.country.name : "Country"}
-                            </p></Cell
-                          >
-                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                            ><p class="text-eyebrow text-right">
-                              Destination
-                            </p></Cell
-                          >
-                        </LayoutGrid>
-                        <LayoutGrid class="p-0 m-block d-none">
-                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                            ><p class="text-eyebrow text-left mt-20 mb-20">
-                              Destination
-                            </p></Cell
-                          >
-                        </LayoutGrid>
-                        <div class="divider" />
-                        <h4 class="text-h2 title m-mt-30">{item?.name}</h4>
-                        <p class="short-text m-none">{item?.excerpt}</p>
-                      </a>
-                    </div>
-                  </Cell>
-                {/each}
-                <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-                  <a href={type.url}>
-                    <div
-                      class="experience-read-more item-read-more"
-                      style="padding-top: calc(410 / 315 * 100%)"
+            <!-- {#if type.experiences.length > 0} -->
+            <div class="container">
+              <div class="section-title">
+                <LayoutGrid class="p-0">
+                  <Cell span="12"
+                    ><h2
+                      class="text-h1 title {indexType == 0
+                        ? 'mt-0'
+                        : ''} d-mb-30"
                     >
-                      <p class="text-h3 label">
-                        See more <i class="material-icons">chevron_right</i>
-                      </p>
-                    </div>
-                  </a>
-                </Cell>
-              </LayoutGrid>
+                      {type?.name}
+                    </h2></Cell
+                  >
+                </LayoutGrid>
+              </div>
+              <div class="section-content">
+                <LayoutGrid class="p-0">
+                  {#each type.destinations as item, i}
+                    <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
+                      <div class="experience-item">
+                        <div class="thumbnail">
+                          <a href={item.url}>
+                            <div
+                              class="image-cover"
+                              style="padding-top: calc(410 / 315 * 100%)"
+                            >
+                              <BlurImage
+                                data={item.gallery && item.gallery[0]}
+                              />
+                            </div>
+                          </a>
+                          <IconButton
+                            class="btn-favorite {item.liked ? 'liked' : ''}"
+                            on:click={likeDestinationItem(item, type)}
+                          >
+                            <Icon
+                              class="like"
+                              component={Svg}
+                              viewBox="-4 -4 24 24"
+                            >
+                              <path
+                                d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
+                                transform="translate(0.001)"
+                                fill="#fff"
+                                fill-rule="evenodd"
+                              />
+                            </Icon>
+                            <Icon
+                              class="liked"
+                              component={Svg}
+                              viewBox="-4 -4 24 24"
+                            >
+                              <path
+                                d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
+                                transform="translate(0)"
+                                fill="#fff"
+                                fill-rule="evenodd"
+                              />
+                            </Icon>
+                          </IconButton>
+                        </div>
+                        <a href={item.url}>
+                          <LayoutGrid class="p-0 d-block m-none">
+                            <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                              ><p class="text-eyebrow text-left">
+                                {item.country ? item.country.name : 'Country'}
+                              </p></Cell
+                            >
+                            <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                              ><p class="text-eyebrow text-right">
+                                Destination
+                              </p></Cell
+                            >
+                          </LayoutGrid>
+                          <LayoutGrid class="p-0 m-block d-none">
+                            <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                              ><p class="text-eyebrow text-left mt-20 mb-20">
+                                Destination
+                              </p></Cell
+                            >
+                          </LayoutGrid>
+                          <div class="divider" />
+                          <h4 class="text-h2 title m-mt-30">{item?.name}</h4>
+                          <p class="short-text m-none">{item?.excerpt}</p>
+                        </a>
+                      </div>
+                    </Cell>
+                  {/each}
+                  <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
+                    <a href={type.url}>
+                      <div
+                        class="experience-read-more item-read-more"
+                        style="padding-top: calc(410 / 315 * 100%)"
+                      >
+                        <p class="text-h3 label">
+                          See more <i class="material-icons">chevron_right</i>
+                        </p>
+                      </div>
+                    </a>
+                  </Cell>
+                </LayoutGrid>
+              </div>
             </div>
-          </div>
           {/if}
         {/each}
       {/if}
@@ -471,7 +483,7 @@
     background-color: #f0f7f8;
   }
   .header-title:global(.is_sticky) {
-    @include desktop{
+    @include desktop {
       padding-bottom: 55px !important;
     }
   }

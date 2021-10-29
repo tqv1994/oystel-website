@@ -31,9 +31,6 @@ export const get: RequestHandler = async (request: Request) => {
         }
         country {
           ...countryFields
-        },
-        users{
-          id
         }
       }
       destinations(limit: 4, sort: "published_at:desc"){
@@ -47,9 +44,6 @@ export const get: RequestHandler = async (request: Request) => {
         }
         country {
           ...countryFields
-        }
-        users{
-          id
         }
       }
     }

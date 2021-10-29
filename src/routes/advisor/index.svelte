@@ -21,23 +21,23 @@
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
   import { stringHelper, routerHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
-  import { BlurhashImage } from 'svelte-blurhash';
+  import BlurImage from '$lib/components/blur-image.svelte';
   import { Advisor } from '$lib/api/advisor/type';
   import { AdvisorsPageData } from '$lib/api/pages/type';
 
   export const load: Load = async ({ fetch, session, page }) => {
-    advisorStore.set({items:{}});
+    advisorStore.set({ items: {} });
     let searchModel = {
       name: page.query.get('name'),
       specialty: page.query.get('specialty'),
       location: page.query.get('location'),
     };
     let searchParams: any = {};
-    if (searchModel.name && searchModel.name !== "null") {
+    if (searchModel.name && searchModel.name !== 'null') {
       console.log(typeof searchModel.name);
       searchParams['userMe.displayName_contains'] = searchModel.name;
-    }else{
-      searchModel.name = "";
+    } else {
+      searchModel.name = '';
     }
     if (searchModel.specialty && searchModel.specialty != '') {
       searchParams['specialities.name_eq'] = searchModel.specialty;
@@ -45,12 +45,15 @@
     if (searchModel.location && searchModel.location != '') {
       searchParams['countries.name_eq'] = searchModel.location;
     }
-    const res = await fetch(`/api/pages/advisor?${stringHelper.objectToQueryString(searchParams)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    const res = await fetch(
+      `/api/pages/advisor?${stringHelper.objectToQueryString(searchParams)}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
     if (res.ok) {
       const data: AdvisorsPageData = await res.json();
       updateAdvisorStore(data.advisors);
@@ -59,7 +62,7 @@
       console.log(error);
     }
     return {
-      props: {searchModel},
+      props: { searchModel },
     };
   };
 </script>
@@ -96,10 +99,10 @@
   });
 
   function onSearchSubmit() {
-    setTimeout(()=>{
+    setTimeout(() => {
       let queryString = stringHelper.objectToQueryString(searchModel);
       goto('/advisor?' + queryString);
-    },0);
+    }, 0);
   }
 
   function onScrollFixedHeader() {
@@ -231,14 +234,12 @@
                   <Row class="item-advisor">
                     <CellTable
                       ><a href={routerHelper.getUrl('advisor', '', item.id)}
-                        ><div class="image-cover" style="width: 100px;padding-top: 100%"><BlurhashImage
-                          class="avatar"
-                          src={stringHelper.getFullUrlImage(
-                            item.userMe.avatar?.url,
-                          )}
-                          fadeDuration="1000"
-                        
-                        /></div></a
+                        ><div
+                          class="image-cover"
+                          style="width: 100px;padding-top: 100%"
+                        >
+                          <BlurImage data={item.userMe.avatar} />
+                        </div></a
                       ></CellTable
                     >
                     <CellTable
@@ -279,14 +280,11 @@
                             spanDevices={{ phone: 1, tablet: 2, desktop: 4 }}
                           >
                             <div class="thumbnail">
-                              <div class="image-cover" style="width:100%; padding-top: 100%">
-                              <BlurhashImage
-                                class="avatar"
-                                src={stringHelper.getFullUrlImage(
-                                  item.userMe.avatar?.url,
-                                )}
-                                fadeDuration="1000"
-                              />
+                              <div
+                                class="image-cover"
+                                style="width:100%; padding-top: 100%"
+                              >
+                                <BlurImage data={item.userMe.avatar} />
                               </div>
                             </div>
                           </Cell>
@@ -380,7 +378,7 @@
     text-transform: uppercase;
   }
 
-  :global(.page-advisors .item-advisor img) {
+  :global(.page-advisors .item-advisor .image-cover) {
     border-radius: 50%;
     vertical-align: middle;
   }

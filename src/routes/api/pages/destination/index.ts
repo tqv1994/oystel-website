@@ -23,9 +23,6 @@ export const post: RequestHandler = async (request: Request<Record<string, any>,
         country {
           ...countryFields
         }
-        users{
-          id
-        }
       }`;
   }
   try {

@@ -14,14 +14,14 @@ export const updateDestinationStore = (items: DestinationData[]): void => {
     me = user;
   });
   updateStore(destinationStore, items, (item) => {
-    if(me && item.users){
-      let indexExist = item.users.findIndex((user: User)=>user.id === me?.id);
-      if(indexExist >= 0){
-        item.liked = true;
-      }else{
-        item.liked = false;
-      }
-    }
+    // if(me && item.users){
+    //   let indexExist = item.users.findIndex((user: User)=>user.id === me?.id);
+    //   if(indexExist >= 0){
+    //     item.liked = true;
+    //   }else{
+    //     item.liked = false;
+    //   }
+    // }
     return new Destination(item)
   });
 };

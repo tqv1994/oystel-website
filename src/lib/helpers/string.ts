@@ -89,8 +89,11 @@ export const stringHelper = {
     return strArr[strArr.length - 1];
   },
 
-  getFullUrlImage: function(url:string){
+  getFullUrlImage: function(url:string,is_static?: boolean){
     if(typeof url != "undefined"){
+      if(is_static){
+        return url;
+      }
       if (url.indexOf('https') < 0) {
         url = cmsUrlPrefix + url;
       }

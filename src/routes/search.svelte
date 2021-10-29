@@ -1,6 +1,12 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import type { ExperiencesData, ExperiencesSearchData, SearchResultsPageData, UpdateDestinationData, UpdateExperienceData } from '$lib/api/pages/type';
+  import type {
+    ExperiencesData,
+    ExperiencesSearchData,
+    SearchResultsPageData,
+    UpdateDestinationData,
+    UpdateExperienceData,
+  } from '$lib/api/pages/type';
   import {
     experienceStore,
     updateExperienceStore,
@@ -18,7 +24,7 @@
     updateDestinationTypeStore,
   } from '$lib/api/destination-type/store';
   import { countryStore, updateCountryStore } from '$lib/api/country/store';
-  import { onMount} from 'svelte';
+  import { onMount } from 'svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import { goto } from '$app/navigation';
   import Textfield from '@smui/textfield';
@@ -31,7 +37,7 @@
   import Layout from '$lib/components/common/Layout.svelte';
   import authStore from '$lib/api/auth/store';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import { BlurhashImage } from 'svelte-blurhash';
+  import BlurImage from '$lib/components/blur-image.svelte';
   import { Experience } from '$lib/api/experience/type';
   import { ExperienceType } from '$lib/api/experience-type/type';
   import { DestinationType } from '$lib/api/destination-type/type';
@@ -39,8 +45,8 @@
   import type { MeiliSearchQueryParams } from '$lib/api/meilisearch/type';
   import { Destination } from '$lib/api/destination/type';
   export const load: Load = async ({ fetch, session, page }) => {
-    experienceStore.set({items:{}});
-    destinationStore.set({items: {}});
+    experienceStore.set({ items: {} });
+    destinationStore.set({ items: {} });
     let searchModel = {
       name: page.query.get('name'),
       type: page.query.get('type'),
@@ -51,25 +57,32 @@
     let searchParams: MeiliSearchQueryParams = {
       q: '',
       params: {
-        filter: ""
-      }
+        filter: '',
+      },
     };
     if (searchModel.name && searchModel.name != '') {
       searchParams.q = searchModel.name;
     }
     if (searchModel.type && searchModel.type != '') {
-      searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
-      searchParams.params.filter +=  `experience_type = ${searchModel.type}`;
+      searchParams.params.filter +=
+        searchParams.params.filter == '' ? '' : ' AND ';
+      searchParams.params.filter += `experience_type = ${searchModel.type}`;
     }
-    if (searchParams.params  && searchModel.country && searchModel.country != '') {
-      searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
-      searchParams.params.filter +=  `country = ${searchModel.country}`;
+    if (
+      searchParams.params &&
+      searchModel.country &&
+      searchModel.country != ''
+    ) {
+      searchParams.params.filter +=
+        searchParams.params.filter == '' ? '' : ' AND ';
+      searchParams.params.filter += `country = ${searchModel.country}`;
     }
     if (searchModel.destination && searchModel.destination != '') {
-      searchParams.params.filter += searchParams.params.filter == "" ? "" : " AND "; 
-      searchParams.params.filter +=  `destination_type = ${searchModel.destination}`;
+      searchParams.params.filter +=
+        searchParams.params.filter == '' ? '' : ' AND ';
+      searchParams.params.filter += `destination_type = ${searchModel.destination}`;
     }
-    if(searchParams.params.filter == ""){
+    if (searchParams.params.filter == '') {
       delete searchParams.params.filter;
     }
     // if (searchModel.sort_by && searchModel.sort_by != '') {
@@ -78,8 +91,7 @@
     //   searchParams._sort = 'published_at:desc';
     // }
     const res = await fetch(
-      '/api/search?' +
-        stringHelper.objectToQueryString(searchParams),
+      '/api/search?' + stringHelper.objectToQueryString(searchParams),
       {
         method: 'GET',
         headers: {
@@ -100,19 +112,19 @@
     }
     return {
       props: {
-        searchModel
+        searchModel,
       },
     };
   };
 </script>
 
 <script type="ts">
-  export let searchModel:{
-    name: string,
-    type: string,
-    destination: string,
-    country: string,
-    sort_by: string
+  export let searchModel: {
+    name: string;
+    type: string;
+    destination: string;
+    country: string;
+    sort_by: string;
   } = {
     name: '',
     type: '',
@@ -150,36 +162,45 @@
 
   function getData() {
     experienceStore.subscribe(({ items }) => {
-      results = Object.values(items).map((experience: any)=>{
-        const countryId = typeof experience.country == "number" ? experience.country : null;
-        if(countryId != null){
-          experience.country = countries.find((country: Country)=> country.id == countryId);
+      results = Object.values(items).map((experience: any) => {
+        const countryId =
+          typeof experience.country == 'number' ? experience.country : null;
+        if (countryId != null) {
+          experience.country = countries.find(
+            (country: Country) => country.id == countryId,
+          );
         }
         experience.type = 'experience';
         return experience;
       });
     });
 
-    destinationStore.subscribe(({items})=>{
-      if(results && Array.isArray(results)){
-        results = results.concat(Object.values(items).map((destination: any)=>{
-          const countryId = typeof destination.country == "number" ? destination.country : null;
-          if(countryId != null){
-            destination.country = countries.find((country: Country)=> country.id == countryId);
-          }
-          destination.type = 'destination';
-          return destination;
-        }));
+    destinationStore.subscribe(({ items }) => {
+      if (results && Array.isArray(results)) {
+        results = results.concat(
+          Object.values(items).map((destination: any) => {
+            const countryId =
+              typeof destination.country == 'number'
+                ? destination.country
+                : null;
+            if (countryId != null) {
+              destination.country = countries.find(
+                (country: Country) => country.id == countryId,
+              );
+            }
+            destination.type = 'destination';
+            return destination;
+          }),
+        );
       }
-    })
+    });
   }
 
   async function onSearchSubmit() {
-    await setTimeout(async()=>{
+    await setTimeout(async () => {
       const queryString = stringHelper.objectToQueryString(searchModel);
       goto('/search?' + queryString);
-    },0);
-    
+    }, 0);
   }
 
   function onScrollFixedHeader() {
@@ -205,56 +226,60 @@
     }
   }
 
-  onMount(async () => {
-    
-  });
+  onMount(async () => {});
 
-  async function likeItem(dataItem: Experience|Destination){
-    if(!$authStore.user){
+  async function likeItem(dataItem: Experience | Destination) {
+    if (!$authStore.user) {
       window.pushToast('Please login to use this feature');
       return;
     }
-    let userDataLikes: (number|string)[] | null = [];
-    if(dataItem.users){
-      userDataLikes = dataItem.users.map((item, index)=>{
-        return item.id;      
+    let userDataLikes: (number | string)[] | null = [];
+    if (dataItem.users) {
+      userDataLikes = dataItem.users.map((item, index) => {
+        return item.id;
       });
-      let indexExist = userDataLikes.findIndex((item)=>item == $authStore.user?.id);
-      if(indexExist >= 0){
-        userDataLikes.splice(indexExist,1);
-      }else{
+      let indexExist = userDataLikes.findIndex(
+        (item) => item == $authStore.user?.id,
+      );
+      if (indexExist >= 0) {
+        userDataLikes.splice(indexExist, 1);
+      } else {
         userDataLikes.push($authStore.user.id);
       }
-      if(userDataLikes.length == 0){
+      if (userDataLikes.length == 0) {
         userDataLikes = null;
       }
     }
-    
-      const res = await fetch(`/api/pages/${dataItem.type == 'experience' ? 'experience' : 'destination'}/like?id=${dataItem.id}`, {
+
+    const res = await fetch(
+      `/api/pages/${
+        dataItem.type == 'experience' ? 'experience' : 'destination'
+      }/like?id=${dataItem.id}`,
+      {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userDataLikes)
-      });
+        body: JSON.stringify(userDataLikes),
+      },
+    );
 
     if (res.ok) {
-      if(dataItem.type == 'experience'){
+      if (dataItem.type == 'experience') {
         const data: UpdateExperienceData = await res.json();
         dataItem.users = data.updateExperience.experience.users;
         updateExperienceStore([dataItem]);
-      }else{
+      } else {
         const data: UpdateDestinationData = await res.json();
         dataItem.users = data.updateDestination.destination.users;
         updateDestinationStore([dataItem]);
       }
-      
+
       getData();
     } else {
       const error = await res.json();
     }
   }
-
 </script>
 
 <svelte:window
@@ -301,7 +326,9 @@
                     <Option on:click={onSearchSubmit} value="" />
                     {#if experienceTypes}
                       {#each experienceTypes as item}
-                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
+                        <Option on:click={onSearchSubmit} value={item.id}
+                          >{item.name}</Option
+                        >
                       {/each}
                     {/if}
                   </Select>
@@ -317,7 +344,9 @@
                     <Option on:click={onSearchSubmit} value="" />
                     {#if destinationTypes}
                       {#each destinationTypes as item}
-                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
+                        <Option on:click={onSearchSubmit} value={item.id}
+                          >{item.name}</Option
+                        >
                       {/each}
                     {/if}
                   </Select>
@@ -333,7 +362,9 @@
                     <Option on:click={onSearchSubmit} value="" />
                     {#if countries}
                       {#each countries as item}
-                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
+                        <Option on:click={onSearchSubmit} value={item.id}
+                          >{item.name}</Option
+                        >
                       {/each}
                     {/if}
                   </Select>
@@ -382,12 +413,7 @@
                           class="image-cover"
                           style="padding-top: calc(410 / 315 * 100%)"
                         >
-                          <BlurhashImage
-                            src={item.gallery[0]?.url}
-                            hash={item.gallery[0]?.blurHash}
-                            alt=""
-                            fadeDuration="1000"
-                          />
+                          <BlurImage data={item.gallery[0]} />
                         </div>
                       </a>
                       <IconButton
@@ -424,19 +450,23 @@
                       <LayoutGrid class="p-0 d-block m-none">
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
                           ><p class="text-eyebrow text-left">
-                            {item.country? item.country.name : "Country"}
+                            {item.country ? item.country.name : 'Country'}
                           </p></Cell
                         >
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
                           ><p class="text-eyebrow text-right">
-                            {item.type == 'experience' ? "Experience" : "Destination"}
+                            {item.type == 'experience'
+                              ? 'Experience'
+                              : 'Destination'}
                           </p></Cell
                         >
                       </LayoutGrid>
                       <LayoutGrid class="p-0 d-none m-block">
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
                           ><p class="text-eyebrow text-left">
-                            {item.type == 'experience' ? "Experience" : "Destination"}
+                            {item.type == 'experience'
+                              ? 'Experience'
+                              : 'Destination'}
                           </p></Cell
                         >
                       </LayoutGrid>
