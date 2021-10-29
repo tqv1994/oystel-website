@@ -22,19 +22,19 @@ export class Experience
   extends PublishableBase
   implements ExperienceData, Linkable
 {
-  name: string;
+  name?: string;
   description: string;
   intro: string;
   type: string;
   gallery: FileUpload[];
   videos: FileUpload[];
-  country: Country;
+  country: CountryData;
   liked: boolean;
   users: User[];
 
   constructor(data: ExperienceData) {
     super(data);
-    this.name = data.name;
+    this.name = data?.name || '';
     this.description = data.description;
     this.intro = data.intro ? data.intro : '';
     this.type = data.type;

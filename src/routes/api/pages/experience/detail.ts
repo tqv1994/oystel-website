@@ -9,7 +9,7 @@ import { ExperiencePageData } from '$lib/api/pages/type';
 export const get: RequestHandler = async (request: Request) => {
   try {
     const client = createGraphClientFromRequest(request);
-    const query = `query($id: ID!, $user_id: ID) {
+    const query = `query($id: ID!) {
       experience(id: $id) {
         id
         name
@@ -31,17 +31,6 @@ export const get: RequestHandler = async (request: Request) => {
         intro
         gallery {
           ...uploadFileFields
-        }
-      }
-      experiences(sort: "published_at:desc",limit: 3, where: {id_ne: $id, users: {id: $user_id}}) {
-        id
-        name
-        intro
-        gallery {
-          ...uploadFileFields
-        }
-        country {
-          ...countryFields
         }
       }
     }
@@ -66,7 +55,7 @@ export const get: RequestHandler = async (request: Request) => {
       previewUrl
     }    
     `;
-    const res = await client.query<ExperiencePageData>(query,{id:request.query.get('id'),user_id: request.query.get('user_id')}).toPromise();
+    const res = await client.query<ExperiencePageData>(query,{id:request.query.get('id')}).toPromise();
     if(res.data){
       return {
         body: JSON.stringify(res.data),

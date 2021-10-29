@@ -30,7 +30,6 @@ export type ExperiencesSearchData = {
 export type  ExperiencePageData = {
   products: Product[];
   experience:  Experience;
-  experiences: Experience[];
 };
 
 export type UpdateExperienceData = {
