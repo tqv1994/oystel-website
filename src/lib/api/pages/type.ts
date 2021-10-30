@@ -74,3 +74,7 @@ export type SearchResultsPageData = {
   destinations: Destination[]|any[];
   experiences: Experience[]|any[];
 }
+
+export type ProductListsData = {
+  products: Product[];
+}

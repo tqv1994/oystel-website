@@ -1,4 +1,5 @@
-<script>
+<script lang="ts" context="module">
+  import type { Load } from '@sveltejs/kit';
   import authStore from '$lib/api/auth/store';
   import Layout from '$lib/components/common/Layout.svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
@@ -6,11 +7,39 @@
   import Button, { Icon, Label } from '@smui/button';
   import IconButton, { Icon as Icon2 } from '@smui/icon-button';
   import Svg from '@smui/common/Svg.svelte';
-  import SignupModal from '$lib/components/modals/SignupModal.svelte';
-  import SigninModal from '$lib/components/modals/SigninModal.svelte';
   import OySlideProducts from '$lib/components/common/OySlideProducts.svelte';
   import Select, { Option } from '@smui/select';
-  let openSignupModal, openSigninModal;
+  
+  import { stringHelper } from '$lib/helpers';
+  import { Product } from '$lib/api/product/type';
+  import { User } from '$lib/api/auth/type';
+  import { ProductListsData } from '$lib/api/pages/type';
+  import { productStore, updateProductStore } from '$lib/api/product/store';
+
+  export const load: Load = async ({ fetch, session, page }) => {
+    const res = await fetch(
+      `/api/pages/product/product-list`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    if (res.ok) {
+      const data: ProductListsData = await res.json();
+      // data.experiences = data.experiences.concat(data.experience);
+      // TODO: Convert data to classes
+      updateProductStore(data.products);
+    } else {
+      const error = await res.json();
+      console.log(error);
+    }
+    return { props: { } };
+  };
+</script>
+<script lang="ts">
   let userModel = $authStore.user;
   let imageSlidesProduct = [
     '/img/shop/slide-1.jpg',
@@ -31,21 +60,11 @@
       currentMenu: 'shop',
     },
   };
-  function callOpenSignupModal() {
-    if (!userModel) {
-      openSignupModal = true;
-      openSigninModal = false;
-    }
-    openSignupModal = true;
-    openSigninModal = false;
-  }
 
-  function callOpenSigninModal() {
-    if (!userModel) {
-      openSignupModal = false;
-      openSigninModal = true;
-    }
-  }
+  let products: Product[] = [];
+  productStore.subscribe(({items})=>{
+    products = Object.values(items);
+  });
 </script>
 
 <Layout config={configPage}>
@@ -262,378 +281,41 @@
         <h1 class="mt-0">Shop the Collection</h1>
         <div class="products-list">
           <LayoutGrid class="p-0">
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-1.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Gucci</p>
-                  <h3 class="">Papier Wide Brim Hat</h3>
-                </div>
-              </a>
-            </Cell>
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-2.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Bottega Veneta</p>
-                  <h3>Oversized Acetate Sunglasses</h3>
-                </div>
-              </a>
-            </Cell>
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-3.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Carolina Herrera</p>
-                  <h3>Asymmetric Tiered Organza Gown</h3>
-                </div>
-              </a>
-            </Cell>
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-4.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Matteau</p>
-                  <h3>Square-Neck One-Piece Swimsuit</h3>
-                </div>
-              </a>
-            </Cell>
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-5.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Balenciaga</p>
-                  <h3>Mallorca Platform Rubber Sandals</h3>
-                </div>
-              </a>
-            </Cell>
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-6.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Johanna Ortiz</p>
-                  <h3>Heroica Printed Cotton Sarong</h3>
-                </div>
-              </a>
-            </Cell>
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-1.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Gucci</p>
-                  <h3>Papier Wide Brim Hat</h3>
-                </div>
-              </a>
-            </Cell>
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-2.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Bottega Veneta</p>
-                  <h3>Oversized Acetate Sunglasses</h3>
-                </div>
-              </a>
-            </Cell>
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-3.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Carolina Herrera</p>
-                  <h3>Asymmetric Tiered Organza Gown</h3>
-                </div>
-              </a>
-            </Cell>
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-4.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Matteau</p>
-                  <h3>Square-Neck One-Piece Swimsuit</h3>
-                </div>
-              </a>
-            </Cell>
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-5.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Balenciaga</p>
-                  <h3>Mallorca Platform Rubber Sandals</h3>
-                </div>
-              </a>
-            </Cell>
-            <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-              <a href="#">
-                <div class="item-product">
-                  <div
-                    class="thumbnail"
-                    style="background-image: url(/img/products/product-6.png)"
-                  >
-                    <IconButton class="btn-favorite">
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <p class="text-eyebrow mt-25">Johanna Ortiz</p>
-                  <h3>Heroica Printed Cotton Sarong</h3>
-                </div>
-              </a>
-            </Cell>
+            {#if products && products.length > 0}
+              {#each products as product}
+                <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
+                  <a href="#">
+                    <div class="item-product">
+                      <div
+                        class="thumbnail"
+                        style="background-image: url({product.gallery[0]?.url})"
+                      >
+                        <IconButton class="btn-favorite">
+                          <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
+                            <path
+                              d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
+                              transform="translate(0.001)"
+                              fill="#fff"
+                              fill-rule="evenodd"
+                            />
+                          </Icon>
+                          <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
+                            <path
+                              d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
+                              transform="translate(0)"
+                              fill="#fff"
+                              fill-rule="evenodd"
+                            />
+                          </Icon>
+                        </IconButton>
+                      </div>
+                      <p class="text-eyebrow mt-25">{product.brand}</p>
+                      <h3 class="">{product.name}</h3>
+                    </div>
+                  </a>
+                </Cell>
+              {/each}
+            {/if}
           </LayoutGrid>
         </div>
       </div>

@@ -1,4 +1,5 @@
-<script>
+<script lang="ts" context="module">
+  import type { Load } from '@sveltejs/kit';
   import { onMount, afterUpdate, beforeUpdate } from 'svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import { goto } from '$app/navigation';
@@ -14,6 +15,38 @@
   import Layout from '$lib/components/common/Layout.svelte';
   import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
   import QuickShopModal from '$lib/components/modals/QuickShopModal.svelte';
+  
+  import { stringHelper } from '$lib/helpers';
+  import { Product } from '$lib/api/product/type';
+  import { User } from '$lib/api/auth/type';
+  import { ProductListsData } from '$lib/api/pages/type';
+  import { updateProductStore } from '$lib/api/product/store';
+
+  export const load: Load = async ({ fetch, session, page }) => {
+    const res = await fetch(
+      `/api/pages/product/product-list`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    if (res.ok) {
+      const data: ProductListsData = await res.json();
+      // data.experiences = data.experiences.concat(data.experience);
+      // TODO: Convert data to classes
+      updateProductStore(data.products);
+    } else {
+      const error = await res.json();
+      console.log(error);
+    }
+    return { props: { } };
+  };
+</script>
+<script lang="ts">
+  
   let tabActive = 'Where to Stay';
   let openQuickShopModal = false;
   let configPage = {
@@ -26,18 +59,18 @@
   };
 
   function onScrollFixedTitleHeader() {
-    // if (document.documentElement.clientWidth > 839) {
-    //   if (
-    //     document.body.scrollTop > 100 ||
-    //     document.documentElement.scrollTop > 100
-    //   ) {
-    //     document.querySelector('.header-title').classList.add('fixed');
-    //   } else {
-    //     document.querySelector('.header-title').classList.remove('fixed');
-    //   }
-    // } else {
-    //   document.querySelector('.header-title').classList.remove('fixed');
-    // }
+    if (document.documentElement.clientWidth > 949) {
+      if (
+        document.body.scrollTop > 100 ||
+        document.documentElement.scrollTop > 100
+      ) {
+        document.querySelector('.header-title').classList.add('fixed');
+      } else {
+        document.querySelector('.header-title').classList.remove('fixed');
+      }
+    } else {
+      document.querySelector('.header-title').classList.remove('fixed');
+    }
   }
 </script>
 
