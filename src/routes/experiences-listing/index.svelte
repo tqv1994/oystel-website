@@ -144,8 +144,8 @@
 
   function onScrollFixedHeader() {
     if (
-      document.body.scrollTop > 200 ||
-      document.documentElement.scrollTop > 200
+      document.body.scrollTop > 300 ||
+      document.documentElement.scrollTop > 300
     ) {
       document.getElementById('header').classList.add('fixed');
       document.querySelector('header').style.zIndex = 8;

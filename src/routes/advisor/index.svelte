@@ -107,7 +107,7 @@
 
   function onScrollFixedHeader() {
     if(document.documentElement.clientWidth < 950) {
-        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
             document.getElementById("header").classList.add("fixed");
             document.querySelector('header').style.zIndex = 7;
             document.querySelector('header').style.position = 'relative';

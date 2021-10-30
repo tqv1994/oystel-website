@@ -149,6 +149,10 @@ import { Product } from '$lib/api/product/type';
     z-index: 7;
   }
 
+  .popup-quick-shop :global(.wrap-control){
+    top: 40%;
+  }
+
   @media screen and (max-width: 1239px) and (min-width: 600px) {
     .popup-quick-shop :global(.btn-close) {
       right: var(--mdc-layout-grid-margin-tablet);

@@ -150,6 +150,11 @@
     right: 0;
     z-index: 7;
   }
+  
+
+  .popup-products :global(.wrap-control){
+    top: 38%;
+  }
   .popup-products :global(.carousel .wrap-control button.left .control),
   .popup-products :global(.carousel .wrap-control button.right .control) {
     position: relative;

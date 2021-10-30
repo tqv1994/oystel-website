@@ -92,7 +92,7 @@
         <Cell span="12"><h3 class="text-h1 mt-0 mb-0">Featured Drops</h3></Cell>
       </LayoutGrid>
       <LayoutGrid class="pt-0">
-        <Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }} class="m-mb-45">
+        <Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }} class="m-mb-45">
           <div class="item-featured-drop new">
             <div class="thumbnail dark d-mb-70 m-mb-40">
               <img class="" src="/img/feature-drops/item-1.jpg" alt="" />
@@ -111,12 +111,12 @@
           </div>
         </Cell>
         <Cell
-          spanDevices={{ desktop: 8, tablet: 8, phone: 4 }}
+          spanDevices={{ desktop: 7, tablet: 8, phone: 4 }}
           class="d-mr--30 m-mr-0"
         >
           <div class="list-featured-drop">
             <LayoutGrid class="p-0">
-              <Cell spanDevices={{ desktop: 4, tablet: 4, phone: 4 }}>
+              <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
                 <div class="item-featured-drop">
                   <div class="thumbnail dark d-mb-60 m-mb-40">
                     <img class="" src="/img/feature-drops/item-2.jpg" alt="" />
@@ -137,7 +137,7 @@
                   >
                 </div>
               </Cell>
-              <Cell spanDevices={{ desktop: 4, tablet: 4, phone: 4 }}>
+              <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
                 <div class="item-featured-drop coming">
                   <div class="thumbnail dark d-mb-60 m-mb-40">
                     <img class="" src="/img/feature-drops/item-3.jpg" alt="" />
@@ -156,7 +156,7 @@
                   >
                 </div>
               </Cell>
-              <Cell spanDevices={{ desktop: 4, tablet: 4, phone: 4 }}>
+              <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
                 <div class="item-featured-drop">
                   <div class="thumbnail dark d-mb-60 m-mb-40">
                     <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
@@ -175,7 +175,7 @@
                   >
                 </div>
               </Cell>
-              <Cell spanDevices={{ desktop: 4, tablet: 4, phone: 4 }}>
+              <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
                 <div class="item-featured-drop">
                   <div class="thumbnail dark d-mb-60 m-mb-40">
                     <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
@@ -211,7 +211,7 @@
               <img src="/img/signup-img.jpg" alt="" />
               <img src="/img/signup-img-2.jpg" alt="" />
               <div class="caption">
-                <span>Channel Resort ‘21</span>
+                <span class="">Channel Resort ‘21</span>
               </div>
             </div>
           </Cell>
@@ -219,17 +219,18 @@
             spanDevices={{ desktop: 7, tablet: 8, phone: 4 }}
             class="light d-pl-100 d-pr-70"
           >
-            <h3 class="d-mb-100 d-mt-100 m-mt-40 m-mb-40">
+            <p class="text-body2 d-mb-100 d-mt-145 m-mt-40 m-mb-40">
               Join now for exclusive biweekly travel promotional drops, special
               content, and bespoke travel itineraries.
-            </h3>
-            <div class="d-pb-100 m-pb-0" />
-            <h5 class="mb-0">Become an Oysteo Member now</h5>
-            <h2 class="text-h1 mt-30 d-mb-40 m-mb-15">Never Miss a Drop</h2>
+            </p>
+            <div class="d-pb-35 m-pb-0" />
+            <h4 class="mt-0 mb-20">Become an Oysteo Member now</h4>
+            <h2 class="text-h1 mt-0 d-mb-40 m-mb-15">Never Miss a Drop</h2>
             <Button
               variant="outlined"
               class="hover-affect"
-              on:click={callOpenSignupModal}><Label>Sign Up Now</Label></Button
+              on:click={callOpenSignupModal}
+              ><Label class="text-button2">Sign Up Now</Label></Button
             >
           </Cell>
         </LayoutGrid>
@@ -448,6 +449,10 @@
     --wrap-width: 100%;
   }
 
+  #featured-drops{
+    --mdc-layout-grid-gutter-desktop: 15px;
+  }
+
   .shop-slides :global(.dots) {
     display: none;
   }
@@ -465,7 +470,7 @@
     background-position: center;
   }
   .header-title .content-left {
-    padding-top: 315px;
+    padding-top: 245px;
     padding-bottom: 70px;
   }
   .header-title .short-description {
@@ -584,6 +589,10 @@
         minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
       );
     }
+  }
+
+  #signup-section{
+    --mdc-layout-grid-gutter-desktop: 15px;
   }
 
   @media screen and (max-width: 949px) {
