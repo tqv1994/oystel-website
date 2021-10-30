@@ -388,6 +388,9 @@ button.mdc-button {
     &::-webkit-scrollbar-thumb {
       background-color: $blueColor;
     }
+    td{
+      word-break: break-word;
+    }
   }
 }
 
@@ -1346,10 +1349,18 @@ header {
     }
   }
   button.mdc-button:not(:disabled) {
-    @include button.outline-width(0, 0);
-    border-bottom-width: 1px;
+    @include button.outline-width(1px, 0);
     .mdc-button__label {
       text-transform: uppercase;
+    }
+  }
+}
+
+.page-home{
+  #featured-drops{
+    button.mdc-button:not(:disabled) {
+      @include button.outline-width(0, 0);
+      border-bottom-width: 1px;
     }
   }
 }

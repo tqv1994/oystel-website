@@ -106,7 +106,7 @@
   }
 
   function onScrollFixedHeader() {
-    /*if(document.documentElement.clientWidth < 839) {
+    if(document.documentElement.clientWidth < 950) {
             if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
                 document.getElementById("header").classList.add("fixed");
                 document.querySelector('header').style.zIndex = 7;
@@ -118,7 +118,7 @@
                 document.querySelector('header').style.position = 'static';
                 document.querySelector('.header-title').classList.remove('fixed', 'is_sticky');
             }
-        }*/
+        }
   }
 
   onMount(async () => {});
@@ -137,10 +137,10 @@
     <section class="header-title d-pt-120 d-pb-95 m-pt-100 m-pb-25 full-width">
       <div class="content-wrap">
         <div class="container">
-          <h1 class="text-center mb-20 m-mt-0 d-mt-70">
+          <h1 class="text-center mb-20 m-mt-0 d-mt-70 hidden-on-sticky">
             Crafted from Experience
           </h1>
-          <p class="text-center mt-0 m-pl-40 m-pr-40 m-mb-40 d-mb-0">
+          <p class="text-center mt-0 m-pl-40 m-pr-40 m-mb-40 d-mb-0 hidden-on-sticky">
             First hand experience, ready to craft your perfect vacation.
           </p>
           <div class="d-none m-block">
@@ -179,7 +179,7 @@
                 </Textfield>
               </div>
             </Cell>
-            <Cell spanDevices={{ desktop: 8 }} class="form-inline text-right">
+            <Cell spanDevices={{ desktop: 8 }} class="form-inline d-desktop text-right">
               <div >
                 <div class="form-control">
                   <label class="text-h3">Filter by Speciality</label>
@@ -219,6 +219,49 @@
               </div>
               
             </Cell>
+            <Cell spanDevices={{ desktop: 4 }} class="form-inline d-tablet text-right">
+              <div >
+                <div class="form-control">
+                  <Select
+                    bind:value={searchModel.specialty}
+                    label="Filter by Speciality"
+                    naturalMenuWidth="300px"
+                    class="text-left"
+                  >
+                    <Option on:click={onSearchSubmit}></Option>
+                    {#if specialities && specialities.length > 0}
+                      {#each specialities as specialty}
+                        <Option on:click={onSearchSubmit} value={specialty.name}
+                          >{specialty.name}</Option
+                        >
+                      {/each}
+                    {/if}
+                  </Select>
+                </div>
+              </div>
+              
+            </Cell>
+            <Cell spanDevices={{ desktop: 4 }} class="form-inline d-tablet text-right">
+              <div >
+                <div class="form-control">
+                  <Select
+                    bind:value={searchModel.location}
+                    label="Location"
+                    class="text-left"
+                  >
+                    <Option on:click={onSearchSubmit} value=""></Option>
+                    {#if countries && countries.length > 0}
+                      {#each countries as country}
+                        <Option on:click={onSearchSubmit} value={country.name}
+                          >{country.name}</Option
+                        >
+                      {/each}
+                    {/if}
+                  </Select>
+                </div>
+              </div>
+              
+            </Cell>
           </LayoutGrid>
         </form>
         <div class="d-pl-100 d-pr-100 m-d-0 m-none">
@@ -235,7 +278,7 @@
               {#if advisors && advisors.length > 0}
                 {#each advisors as item}
                   <Row class="item-advisor">
-                    <CellTable
+                    <CellTable style="width: 10%"
                       ><a href={routerHelper.getUrl('advisor', '', item.id)}
                         ><div
                           class="image-cover"
@@ -245,7 +288,7 @@
                         </div></a
                       ></CellTable
                     >
-                    <CellTable
+                    <CellTable style="width: 35%;"
                       ><a href={routerHelper.getUrl('advisor', '', item.id)}
                         ><p class="name text-h2">
                           {item.userMe?.displayName
@@ -254,12 +297,12 @@
                         </p></a
                       ></CellTable
                     >
-                    <CellTable
+                    <CellTable style="width: 35%;"
                       ><p>
                         {item.specialitiesString}
                       </p></CellTable
                     >
-                    <CellTable
+                    <CellTable style="width: 20%;"
                       ><p>
                         {item.countriesString}
                       </p></CellTable
@@ -301,7 +344,7 @@
                               {item.countriesString}
                             </p>
                             <p class="m-0">
-                              {item.specialitiesString}
+                              {stringHelper.getExcerpt(item.specialitiesString)}
                             </p>
                           </Cell>
                         </LayoutGrid>
@@ -325,15 +368,16 @@
   on:close={onSearchSubmit}
 />
 
-<style>
+<style lang="scss">
   .header-title {
     background-color: #f0f7f8;
   }
-  :global(.is_sticky .hidden-on-sticky) {
+  :global(.page-advisors .is_sticky .hidden-on-sticky) {
     display: none;
   }
   .header-title:global(.is_sticky) {
-    padding-bottom: 55px !important;
+    padding-bottom: 24px !important;
+    padding-top: 70px !important;
   }
   .search-form-advisor :global(.mdc-layout-grid) {
     --mdc-select-idle-line-color: #000;
@@ -434,6 +478,29 @@
         .mdc-layout-grid__cell:last-child
         .item-advisor) {
       border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  @media screen and (min-width: 1223px){
+    :global(.d-tablet){
+      display: none;
+    }
+    :global(.d-desktop){
+      display: block;
+    }
+  }
+  @media screen and (max-width: 1222px){
+    :global(.d-desktop){
+      display: none;
+    }
+    :global(.d-tablet){
+      display: block;
+    }
+  }
+
+  :global(.page-advisors .content){
+    :global(.mdc-select__anchor){
+      overflow: inherit;
     }
   }
 

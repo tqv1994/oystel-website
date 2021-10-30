@@ -116,37 +116,52 @@ export const stringHelper = {
       return emptyValue;
     }
     return result;
-},
+  },
 
-getCountriesString: function(countries?: Country[], emptyValue?: string){
-    let result = '';
-    if (countries && countries.length > 0) {
-        countries.map((item: Country, index) => {
-            if (index == 0) {
-                result = item.name;
-            } else {
-                result += ', ' + item.name;
-            }
-        });
-    }else if(emptyValue){
-      return emptyValue;
-    }
-    return result;
-},
+  getCountriesString: function(countries?: Country[], emptyValue?: string){
+      let result = '';
+      if (countries && countries.length > 0) {
+          countries.map((item: Country, index) => {
+              if (index == 0) {
+                  result = item.name;
+              } else {
+                  result += ', ' + item.name;
+              }
+          });
+      }else if(emptyValue){
+        return emptyValue;
+      }
+      return result;
+  },
 
-getLanguagesString: function(languages?: Language[], emptyValue?: string){
-    let result = '';
-    if (languages && languages.length > 0) {
-        languages.map((item: Language, index) => {
-            if (index == 0) {
-                result = item.name;
-            } else {
-                result += ', ' + item.name;
-            }
-        });
-    }else if(emptyValue){
-      return emptyValue;
-    }
-    return result;
-}
+  getLanguagesString: function(languages?: Language[], emptyValue?: string){
+      let result = '';
+      if (languages && languages.length > 0) {
+          languages.map((item: Language, index) => {
+              if (index == 0) {
+                  result = item.name;
+              } else {
+                  result += ', ' + item.name;
+              }
+          });
+      }else if(emptyValue){
+        return emptyValue;
+      }
+      return result;
+  },
+
+  getExcerpt: function(str: string){
+    const maxLength = 70; // maximum number of characters to extract
+    if(str.length <= maxLength) return str;
+    //trim the string to the maximum length
+    const trimmedString = str
+      .replace(/<[^>]*>?/gm, '')
+      .substr(0, maxLength);
+    return (
+      trimmedString.substring(
+        0,
+        Math.min(trimmedString.length, trimmedString.lastIndexOf(' ')),
+      ) + '...'
+    );
+  }
 }
