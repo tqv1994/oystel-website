@@ -344,6 +344,19 @@
     background-color: rgba(0, 0, 0, 0.2);
   }
 
+  .products-list-wrap{
+    .product-item{
+      @include mobile{
+        --mdc-typography-headline2-font-size: 14px;
+        --mdc-typography-headline2-line-height: 18px;
+        .text-eyebrow{
+          font-size: 11px !important;
+          line-height: 16px !important;
+        }
+      }
+    }
+  }
+
   .products-list .product-item .title {
     @include desktop{
       height: 50px;
