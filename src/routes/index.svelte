@@ -393,7 +393,7 @@
               <img src="/img/signup-img.jpg" alt="" />
               <img src="/img/signup-img-2.jpg" alt="" />
               <div class="caption">
-                <span>Channel Resort ‘21</span>
+                <span class="">Channel Resort ‘21</span>
               </div>
             </div>
           </Cell>

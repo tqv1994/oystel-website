@@ -1406,6 +1406,8 @@ header {
     position: relative;
     .caption {
       text-transform: uppercase;
+      font-size: 12px;
+      line-height: 22px;
       position: absolute;
       bottom: -20px;
       width: calc(100% - 25px);
@@ -1419,7 +1421,6 @@ header {
         text-align: center;
       }
       text-transform: uppercase;
-      line-height: 32px;
       letter-spacing: 0.1px;
     }
   }
