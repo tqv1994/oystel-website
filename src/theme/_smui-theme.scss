@@ -1191,12 +1191,18 @@ header {
     width: var(--wrap-width);
     max-width: var(--wrap-width);
     background-color: #5078bc;
+    @include mobile{
+      height: auto;
+    }
     .mdc-dialog__content {
       max-width: $contentMaxWidth;
       margin: auto;
       width: 100%;
       padding-top: 80px;
       padding-bottom: 90px;
+      @include mobile{
+        padding-bottom: 120px;
+      }
       position: relative;
       .mdc-layout-grid {
         padding: 0;
