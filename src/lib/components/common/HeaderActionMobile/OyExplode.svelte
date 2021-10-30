@@ -91,12 +91,15 @@
         withTrailingIcon={false}
       >
         <Icon slot="trailingIcon"
-          ><img src="./img/icons/icon-search.svg" /></Icon
+          ><img src="/img/icons/icon-search.svg" /></Icon
         >
       </Textfield>
     </div>
     <div class="wrap-search-result mt-40">
       {#if results}
+        {#if searchResultString == ''}
+          <p class="m-0 mt-0 mb-30">Trending Searches</p>
+        {/if}
         <ul class="mt-0">
           {#each results as result}
             <li>

@@ -26,18 +26,18 @@
   };
 
   function onScrollFixedTitleHeader() {
-    if (document.documentElement.clientWidth > 839) {
-      if (
-        document.body.scrollTop > 100 ||
-        document.documentElement.scrollTop > 100
-      ) {
-        document.querySelector('.header-title').classList.add('fixed');
-      } else {
-        document.querySelector('.header-title').classList.remove('fixed');
-      }
-    } else {
-      document.querySelector('.header-title').classList.remove('fixed');
-    }
+    // if (document.documentElement.clientWidth > 839) {
+    //   if (
+    //     document.body.scrollTop > 100 ||
+    //     document.documentElement.scrollTop > 100
+    //   ) {
+    //     document.querySelector('.header-title').classList.add('fixed');
+    //   } else {
+    //     document.querySelector('.header-title').classList.remove('fixed');
+    //   }
+    // } else {
+    //   document.querySelector('.header-title').classList.remove('fixed');
+    // }
   }
 </script>
 

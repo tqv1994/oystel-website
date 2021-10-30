@@ -85,7 +85,7 @@
                   <h4 class="text-h2 mt-0 d-mb-30 title t-mb-30 m-mb-25">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </h4>
-                  <p class="mt-0 d-mb-0">
+                  <p class="mt-0 d-mb-0 m-none">
                     Lorem ipsum dolor sit sen amet, consect adipiscing elit, sed
                     do.
                   </p>
@@ -105,7 +105,7 @@
                   <h4 class="text-h2 mt-0 d-mb-30 t-mb-30 m-mb-25 title">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </h4>
-                  <p class="mt-0 d-mb-0">
+                  <p class="mt-0 d-mb-0 m-none">
                     Lorem ipsum dolor sit sen amet, consect adipiscing elit, sed
                     do.
                   </p>
