@@ -7,6 +7,7 @@
   import { goto } from '$app/navigation';
   import { Menu } from '$lib/types';
   import { menus } from '$lib/const';
+import { routerHelper } from '$lib/helpers/router';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
@@ -15,7 +16,7 @@
     menuActive = menu;
   }
   function openLink(menu: any) {
-    goto(menu.link);
+    routerHelper.redirect(menu.link);
     dispatch('close');
   }
 </script>
