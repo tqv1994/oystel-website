@@ -149,8 +149,8 @@
       '.header-title .hidden-on-sticky',
     );
     if (
-      document.body.scrollTop > 350 ||
-      document.documentElement.scrollTop > 350
+      document.body.scrollTop > 450 ||
+      document.documentElement.scrollTop > 450
     ) {
       document.getElementById('header').classList.add('fixed');
       document.querySelector('header').style.zIndex = 8;

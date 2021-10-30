@@ -1013,6 +1013,12 @@
     background-color: #000;
   }
 
+  @media (max-width: 1222px){
+    .detail-content .container > :global(.mdc-layout-grid){
+      --mdc-layout-grid-gutter-desktop: 30px;
+    }
+  }
+
   @media screen and (max-width: 949px) {
     .experience-detail-image {
       position: relative;

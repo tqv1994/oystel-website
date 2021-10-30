@@ -394,8 +394,8 @@
 
   .products-list .item-product .thumbnail :global(.btn-favorite) {
     position: absolute;
-    top: 2%;
-    right: 2%;
+    top: 0%;
+    right: 0%;
     filter: brightness(0);
     @include mobile{
       top: -2%;
