@@ -28,7 +28,6 @@
     ORDER_BY_PUBLISH_DATE_ASC,
     ORDER_BY_PUBLISH_DATE_DESC,
   } from '$lib/store/order';
-  import { debounce } from 'lodash';
   import {
     COUNTRY,
     LIMIT,
@@ -146,12 +145,11 @@
       ...params,
     });
   }
-  const goSlow = debounce(go, 1000);
 
   function onQueryInput(event: InputEvent) {
     const q = (event.target as HTMLInputElement).value.trim();
     if (q.length > 2) {
-      goSlow({ q });
+      go({ q });
     }
   }
 
