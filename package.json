@@ -59,7 +59,6 @@
     "blurhash": "^1.1.4",
     "cookie": "^0.4.1",
     "graphql": "^15.6.1",
-    "lodash.debounce": "^4.0.8",
     "meilisearch": "^0.22.3",
     "siema": "^1.5.1",
     "slugify": "^1.6.1",
