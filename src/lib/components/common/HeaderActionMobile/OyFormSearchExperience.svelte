@@ -7,9 +7,9 @@
   import Select, { Option } from '@smui/select';
   import { createEventDispatcher, afterUpdate } from 'svelte';
   import { goto } from '$app/navigation';
-  import { Destination } from '$lib/api/destination/type';
-  import { Experience } from '$lib/api/experience/type';
-  import { Country } from '$lib/api/country/type';
+  import { Destination } from '$lib/store/destination';
+  import { Experience } from '$lib/store/experience';
+  import { Country } from '$lib/store/country';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
@@ -22,7 +22,7 @@
     sort_by: '',
   };
   export let destination_types: Destination[];
-  export let experience_types: Experience[];
+  export let types: Experience[];
   export let countries: Country[];
   function onSearchSubmit() {
     dispatch('close');
@@ -42,8 +42,8 @@
         label="By Experience Type"
       >
         <Option value="" />
-        {#if experience_types}
-          {#each experience_types as item}
+        {#if types}
+          {#each types as item}
             <Option value={item.id}>{item.name}</Option>
           {/each}
         {/if}
@@ -95,17 +95,17 @@
 </div>
 
 <style lang="scss">
-  
-  :global(.page-destinations ~ #header-action-mobile), :global(.page-destinations-search ~ #header-action-mobile) {
-    #form-search-experience-wrap{
+  :global(.page-destinations ~ #header-action-mobile),
+  :global(.page-destinations-search ~ #header-action-mobile) {
+    #form-search-experience-wrap {
       position: relative;
       height: calc(100vh - 206px);
-      .btn-submit-wrap{
+      .btn-submit-wrap {
         position: absolute;
         bottom: 30px;
         width: 100%;
       }
-    } 
+    }
   }
   .search-form-experiences :global(.mdc-select) {
     width: 100%;

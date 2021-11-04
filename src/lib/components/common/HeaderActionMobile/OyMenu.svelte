@@ -1,13 +1,9 @@
 <script lang="ts">
-  import TopAppBar, { Section, Row, Title } from '@smui/top-app-bar';
   import Button, { Icon } from '@smui/button';
   import Svg from '@smui/common/Svg.svelte';
-  import IconButton from '@smui/icon-button';
-  import { createEventDispatcher, afterUpdate } from 'svelte';
-  import { goto } from '$app/navigation';
-  import { Menu } from '$lib/types';
+  import { createEventDispatcher } from 'svelte';
   import { menus } from '$lib/const';
-import { routerHelper } from '$lib/helpers/router';
+  import { routerHelper } from '$lib/helpers/router';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
@@ -29,10 +25,11 @@ import { routerHelper } from '$lib/helpers/router';
           <a
             href="javascript:void(0)"
             on:click={() => {
-              (menu.submenu.length > 0) ? doOpenSubmenu(menu) : openLink(menu);
+              menu.submenu.length > 0 ? doOpenSubmenu(menu) : openLink(menu);
             }}
             >{menu.name}
-            {#if menu.submenu.length > 0}<i class="material-icons">chevron_right</i
+            {#if menu.submenu.length > 0}<i class="material-icons"
+                >chevron_right</i
               >{/if}</a
           >
         </li>

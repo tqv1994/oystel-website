@@ -10,7 +10,7 @@
   import Svg from '@smui/common/Svg.svelte';
   import OyCarousel from '../common/OyCarousel.svelte';
   import { each } from 'svelte/internal';
-  import { Product } from '$lib/api/product/type';
+  import { Product } from '$lib/store/product';
 
   export let open = false;
   export let products: Product[];
@@ -113,9 +113,9 @@
       @content;
     }
   }
-  @include mobile{
-    .slide-item{
-      .thumbnail{
+  @include mobile {
+    .slide-item {
+      .thumbnail {
         margin: auto calc(100px - var(--mdc-layout-grid-margin-phone));
       }
     }
@@ -150,9 +150,8 @@
     right: 0;
     z-index: 7;
   }
-  
 
-  .popup-products :global(.wrap-control){
+  .popup-products :global(.wrap-control) {
     top: 38%;
   }
   .popup-products :global(.carousel .wrap-control button.left .control),

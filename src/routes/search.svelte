@@ -1,29 +1,15 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
   import type {
-    ExperiencesData,
-    ExperiencesSearchData,
     SearchResultsPageData,
-    UpdateDestinationData,
-    UpdateExperienceData,
-  } from '$lib/api/pages/type';
-  import {
-    experienceStore,
-    updateExperienceStore,
-  } from '$lib/api/experience/store';
-  import {
-    experienceTypeStore,
-    updateExperienceTypeStore,
-  } from '$lib/api/experience-type/store';
-  import {
-    destinationStore,
-    updateDestinationStore,
-  } from '$lib/api/destination/store';
-  import {
-    destinationTypeStore,
-    updateDestinationTypeStore,
-  } from '$lib/api/destination-type/store';
-  import { countryStore, updateCountryStore } from '$lib/api/country/store';
+    UpdateDestination,
+    UpdateExperience,
+  } from '$lib/store/pages';
+  import { experienceStore } from '$lib/store/experience';
+  import { experienceTypeStore } from '$lib/store/experience-type';
+  import { destinationStore } from '$lib/store/destination';
+  import { destinationTypeStore } from '$lib/store/destination-type';
+  import { countryStore, updateCountryStore } from '$lib/store/country';
   import { onMount } from 'svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import { goto } from '$app/navigation';
@@ -35,15 +21,15 @@
   import Svg from '@smui/common/Svg.svelte';
   import { stringHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
-  import authStore from '$lib/api/auth/store';
+  import { authStore } from '$lib/store/auth';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import { Experience } from '$lib/api/experience/type';
-  import { ExperienceType } from '$lib/api/experience-type/type';
-  import { DestinationType } from '$lib/api/destination-type/type';
-  import { Country } from '$lib/api/country/type';
-  import type { MeiliSearchQueryParams } from '$lib/api/meilisearch/type';
-  import { Destination } from '$lib/api/destination/type';
+  import { Experience } from '$lib/store/experience';
+  import { ExperienceType } from '$lib/store/experience-type';
+  import { DestinationType } from '$lib/store/destination-type';
+  import { Country } from '$lib/store/country';
+  import type { MeiliSearchQueryParams } from '$lib/store/meilisearch';
+  import { Destination } from '$lib/store/destination';
   export const load: Load = async ({ fetch, session, page }) => {
     experienceStore.set({ items: {} });
     destinationStore.set({ items: {} });
@@ -66,7 +52,7 @@
     if (searchModel.type && searchModel.type != '') {
       searchParams.params.filter +=
         searchParams.params.filter == '' ? '' : ' AND ';
-      searchParams.params.filter += `experience_type = ${searchModel.type}`;
+      searchParams.params.filter += `type = ${searchModel.type}`;
     }
     if (
       searchParams.params &&
@@ -104,8 +90,8 @@
       const data: SearchResultsPageData = await res.json();
       // console.log(data);
       // TODO: Convert data to classes
-      updateExperienceStore(data.experiences || []);
-      updateDestinationStore(data.destinations || []);
+      insertToStore(experienceStore, data.experiences || []);
+      insertToStore(destinationStore, data.destinations || []);
     } else {
       const error = await res.json();
       console.log(error);
@@ -204,7 +190,7 @@
   }
 
   function onScrollFixedHeader() {
-    if(document.documentElement.clientWidth > 949) {
+    if (document.documentElement.clientWidth > 949) {
       if (
         document.body.scrollTop > 50 ||
         document.documentElement.scrollTop > 50
@@ -266,13 +252,13 @@
 
     if (res.ok) {
       if (dataItem.type == 'experience') {
-        const data: UpdateExperienceData = await res.json();
+        const data: UpdateExperience = await res.json();
         dataItem.users = data.updateExperience.experience.users;
-        updateExperienceStore([dataItem]);
+        insertToStore(experienceStore, [dataItem]);
       } else {
-        const data: UpdateDestinationData = await res.json();
+        const data: UpdateDestination = await res.json();
         dataItem.users = data.updateDestination.destination.users;
-        updateDestinationStore([dataItem]);
+        insertToStore(destinationStore, [dataItem]);
       }
 
       getData();
@@ -487,7 +473,7 @@
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
   bind:searchModel
-  bind:experience_types={experienceTypes}
+  bind:types={experienceTypes}
   bind:destination_types={destinationTypes}
   bind:countries
   on:close={onSearchSubmit}

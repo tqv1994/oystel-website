@@ -1,38 +1,33 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
   export const load: Load = async ({ fetch, session, page }) => {
-    let me: User|undefined;
-    authStore.subscribe(({user})=>{
+    let me: User | undefined;
+    authStore.subscribe(({ user }) => {
       me = user;
     });
-    if(typeof me === "undefined"){
+    if (typeof me === 'undefined') {
       return {
-            status: 302,
-            redirect: "/"
-        };
+        status: 302,
+        redirect: '/',
+      };
     }
     return {
-      props: {me},
+      props: { me },
     };
   };
 </script>
+
 <script lang="ts">
-  import authStore from '$lib/api/auth/store';
+  import { authStore } from '$lib/store/auth';
   import { onMount, afterUpdate } from 'svelte';
-  import Button, { Label, Icon } from '@smui/button';
-  import Checkbox from '@smui/checkbox';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Tab from '@smui/tab';
-  import TabBar from '@smui/tab-bar';
-  import Textfield from '@smui/textfield';
   import CreateAgencyModal from '$lib/components/modals/CreateAgencyModal.svelte';
   import Drawer, { AppContent, Content } from '@smui/drawer';
   import List, { Item, Text } from '@smui/list';
   import Select, { Option } from '@smui/select';
   import Layout from '$lib/components/common/Layout.svelte';
-  import { UserModel } from '$lib/models/user';
   import { goto } from '$app/navigation';
-  import { User } from '$lib/api/auth/type';
+  import { User } from '$lib/store/auth';
 
   let active = 'Account Details';
   export let me: User;
@@ -51,11 +46,10 @@
     currentPage = location.pathname;
   });
 
-  onMount(async () => {
-  });
+  onMount(async () => {});
 
   // async function getData() {
-  //   const res = await fetch('/api/users/me', {
+  //   const res = await fetch('/users/me.json', {
   //     method: 'POST',
   //     headers: {
   //       'Content-Type': 'application/json',
@@ -88,7 +82,7 @@
     //     console.log(res);
     // });
     try {
-      const res = await fetch('/api/auth/update', {
+      const res = await fetch('/auth/update.json', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +104,7 @@
 
   async function signOut() {
     try {
-      const res = await fetch('/api/auth/sign-out', {
+      const res = await fetch('/auth/sign-out.json', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -137,11 +131,9 @@
               <div class="section-header">
                 <p class="mb-35">Welcome to Your Oysteo Account</p>
                 <h1 class="mb-10 mt-0">
-                  Good afternoon, {me.displayName || 'there'}.
+                  Good afternoon, {me.name || 'there'}.
                 </h1>
-                <a href="/sign-out"
-                  class="btn-sign-out text-input">Sign Out</a
-                >
+                <a href="/sign-out" class="btn-sign-out text-input">Sign Out</a>
               </div>
               <div class="divider" />
             </Cell>

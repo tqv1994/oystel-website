@@ -271,7 +271,7 @@ select,
 .mdc-select .mdc-floating-label.mdc-floating-label {
   font-style: normal;
 }
-button.mdc-button {
+button.mdc-button, a.mdc-button {
   --mdc-theme-primary: $blackColor;
   @include button.outline-color(#000);
   @include button.outline-width(1px, 45px);
@@ -944,7 +944,7 @@ header {
 #signup-modal.mdc-dialog {
   --mdc-dialog-z-index: 10;
   @include mobile{
-    button.mdc-button.mdc-button {
+    .mdc-button.mdc-button  {
       min-width: auto;
     }
   }
@@ -1063,7 +1063,7 @@ header {
 #signin-modal.mdc-dialog {
   --mdc-dialog-z-index: 10;
   @include mobile{
-    button.mdc-button.mdc-button {
+    .mdc-button.mdc-button {
       min-width: auto;
     }
   }
@@ -1224,10 +1224,10 @@ header {
   .btn-favorite {
     position: absolute;
     top: 0;
-    right: 2%;
+    right: -2px;
     @include mobile{
-      top: -2%;
-      right: -3%;
+      top: -2px;
+      right: -4px;
     }
     .like {
       display: block;
@@ -1354,7 +1354,7 @@ header {
       width: 80%;
     }
   }
-  button.mdc-button:not(:disabled) {
+  .mdc-button:not(:disabled) {
     @include button.outline-width(1px, 0);
     .mdc-button__label {
       text-transform: uppercase;
@@ -1364,7 +1364,7 @@ header {
 
 .page-home{
   #featured-drops{
-    button.mdc-button:not(:disabled) {
+    .mdc-button:not(:disabled) {
       @include button.outline-width(0, 0);
       border-bottom-width: 1px;
     }
@@ -1635,15 +1635,29 @@ footer {
   }
 }
 .hidden-on-sticky {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s, opacity 1.5s linear,  max-height 1s linear;
+}
+.show-on-sticky {
+  visibility: hidden;
+  opacity: 0;
+  max-height: 0;
+  transition: visibility 0s, opacity 1s linear,  max-height 0.5s ease-in;
   height: auto;
-  overflow: hidden;
+  background-color: #f0f7f8;
 }
 .is_sticky .hidden-on-sticky {
-  /*display: none;*/
   opacity: 0;
-  transition: opacity 0.3s ease;
+  visibility: hidden;
+  max-height: 0;
   /*transition: height 0.3s ease 0.3s;*/
-  animation: hidden-on-sticky 0.3s ease 0.3s forwards;
+  // animation: hidden-on-sticky 0.3s ease 0.3s forwards;
+}
+.is_sticky .show-on-sticky {
+  opacity: 1;
+  visibility: visible;
+  max-height: 500px;
 }
 
 form {
@@ -1652,6 +1666,22 @@ form {
   .mdc-notched-outline__trailing,
   .mdc-button {
     border-radius: 0 !important;
+  }
+  .mdc-select{
+    .mdc-select__menu{
+      max-height: 300px;
+      &::-webkit-scrollbar-track {
+        background-color: #d3d3d3;
+      }
+      &::-webkit-scrollbar {
+        width: 7px;
+  
+        background-color: #d3d3d3;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: $blackColor;
+      }
+    }
   }
 }
 

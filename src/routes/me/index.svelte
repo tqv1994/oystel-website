@@ -1,5 +1,5 @@
 <script lang="ts">
-  import authStore from '$lib/api/auth/store';
+  import { authStore } from '$lib/store/auth';
   import { onMount, afterUpdate } from 'svelte';
   import Button, { Label, Icon } from '@smui/button';
   import Checkbox from '@smui/checkbox';
@@ -8,7 +8,7 @@
   import IconButton from '@smui/icon-button';
   import Svg from '@smui/common/Svg.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import { User } from '$lib/api/auth/type';
+  import { User } from '$lib/store/auth';
   import { goto } from '$app/navigation';
   import { stringHelper } from '$lib/helpers';
   import { dateTimeHelper } from '$lib/helpers/datetime';
@@ -25,7 +25,7 @@
     //     console.log(res);
     // });
     // try {
-    //   const res = await fetch('/api/auth/update', {
+    //   const res = await fetch('/auth/update.json', {
     //     method: 'PUT',
     //     headers: {
     //       'Content-Type': 'application/json',
@@ -47,7 +47,7 @@
 
   async function signOut() {
     try {
-      const res = await fetch('/api/auth/sign-out', {
+      const res = await fetch('/auth/sign-out.json', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -133,11 +133,11 @@
         <LayoutGrid class="p-0 pb-15">
           <Cell span="12">Personal Information</Cell>
         </LayoutGrid>
-        {#if me.displayName != '' && me.displayName != null}
+        {#if me.name != '' && me.name != null}
           <LayoutGrid class="p-0 pb-15">
             <Cell span="12"
               ><h1 class="mt-0 mb-10">
-                {me.displayName}
+                {me.name}
               </h1></Cell
             >
           </LayoutGrid>
@@ -184,7 +184,7 @@
           <div class="form-control mb-8">
             <Textfield
               style="width: 100%;"
-              bind:value={me.displayName}
+              bind:value={me.name}
               label="Full name"
               type="text"
             />

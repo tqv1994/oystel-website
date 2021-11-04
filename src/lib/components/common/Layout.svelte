@@ -1,15 +1,5 @@
-<script lang="ts" context="module">
-  import type { Load } from '@sveltejs/kit';
-  export const load: Load = async ({ fetch, session, page }) => {
-    return {
-      props: {},
-    };
-  };
-</script>
-
 <script lang="ts">
-  import authStore from '$lib/api/auth/store';
-  import '$lib/firebase';
+  import { authStore } from '$lib/store/auth';
   import { goto } from '$app/navigation';
   import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
   import IconButton, { Icon } from '@smui/icon-button';
@@ -25,8 +15,6 @@
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
   import BottomAppBar from '$lib/components/common/BottomAppBar/index.svelte';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-  import { Menu } from '$lib/types';
-  import { stringHelper } from '$lib/helpers';
   import OySearchModal from '$lib/components/modals/OySearchModal.svelte';
   import { menus } from '$lib/const';
   import { documentHelper } from '$lib/helpers/document';
@@ -69,13 +57,12 @@
 
   function onResize() {
     if (typeof window !== 'undefined') {
-        miniWindow = outerWidth < 768;
-      }
+      miniWindow = outerWidth < 768;
+    }
     document.documentElement.style.setProperty(
-        '--wrap-width',
-        outerWidth  + 'px',
-      );
-    
+      '--wrap-width',
+      outerWidth + 'px',
+    );
   }
 
   function callOpenSignupModal(event: any) {
@@ -114,7 +101,7 @@
 
   function handleOpenSubMenu(menuItem: Menu) {
     if (menuItem.submenu.length > 0) {
-      if(!openSubMenu){
+      if (!openSubMenu) {
         documentHelper.changeBackgroundHeader('#000');
         openSubMenu = true;
         menuItemActive = 'menu-item-' + menuItem.slug;
@@ -124,8 +111,9 @@
     }
   }
 </script>
-<svelte:window on:resize={onResize} bind:outerWidth={outerWidth} />
-<div class="content-wrap page page-{config.header.page}" >
+
+<svelte:window on:resize={onResize} bind:outerWidth />
+<div class="content-wrap page page-{config.header.page}">
   <header class="full-width" style="position: relative">
     <TopAppBar
       variant="static"
@@ -205,17 +193,17 @@
               toolbar
               style="color: var(--mdc-on-surface, #000);"
             >
-              <Wrapper >
-                  <Button
-                    class="btn-plan-your-trip mr-10"
-                    type="button"
-                    variant="outlined"
-                  >
-                    <Label class="text-button2">Plan Your Trip</Label>
-                  </Button>
+              <Wrapper>
+                <Button
+                  class="btn-plan-your-trip mr-10"
+                  type="button"
+                  variant="outlined"
+                >
+                  <Label class="text-button2">Plan Your Trip</Label>
+                </Button>
                 <div class="button-actions">
                   <IconButton
-                  unbounded=false
+                    unbounded="false"
                     on:click={() => {
                       openSearch = true;
                     }}
@@ -412,7 +400,8 @@
 <BottomAppBar
   on:openHeaderActionMobile={(event) => {
     contentHeaderAction = event.detail.content;
-  }} bind:openSigninModal>no content</BottomAppBar
+  }}
+  bind:openSigninModal>no content</BottomAppBar
 >
 <HeaderActionMobile bind:content={contentHeaderAction} />
 
@@ -439,13 +428,13 @@
     min-width: auto;
   }
 
-  footer{
-    .widget-title{
+  footer {
+    .widget-title {
       font-size: 16px;
       line-height: 34px;
       font-weight: 300;
     }
-    .widget-content{
+    .widget-content {
       --mdc-typography-button-font-size: 13px;
       --mdc-typography-button-line-height: 30px;
       --mdc-typography-button-letter-spacing: 0.2;
@@ -453,20 +442,20 @@
   }
 
   @media screen and (max-width: 949px) {
-    footer{ 
+    footer {
       --mdc-typography-form-font-size: 12px;
-        --mdc-typography-form-line-height: 17px;
-        --mdc-typography-form-letter-spacing: 0.05;
+      --mdc-typography-form-line-height: 17px;
+      --mdc-typography-form-letter-spacing: 0.05;
       .widget-title {
         font-size: 14px;
         line-height: 23px;
         letter-spacing: 0;
       }
-      .widget-content{
+      .widget-content {
         --mdc-typography-button-font-size: 14px;
         --mdc-typography-button-line-height: 40px;
         --mdc-typography-button-letter-spacing: 0.2;
-        p{
+        p {
           font-size: 16px;
           line-height: 29px;
           letter-spacing: 0;

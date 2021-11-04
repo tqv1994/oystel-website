@@ -1,28 +1,11 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import type {
-    ExperiencesData,
-    UpdateExperienceData,
-  } from '$lib/api/pages/type';
-  import {
-    experienceStore,
-    updateExperienceStore,
-  } from '$lib/api/experience/store';
-  import {
-    experienceTypeStore,
-    updateExperienceTypeStore,
-  } from '$lib/api/experience-type/store';
-  import {
-    destinationStore,
-    updateDestinationStore,
-  } from '$lib/api/destination/store';
-  import {
-    destinationTypeStore,
-    updateDestinationTypeStore,
-  } from '$lib/api/destination-type/store';
-  import { countryStore, updateCountryStore } from '$lib/api/country/store';
+  import type { ExperiencesData, UpdateExperience } from '$lib/store/pages';
+  import { experienceTypeStore } from '$lib/store/experience-type';
+  import { destinationTypeStore } from '$lib/store/destination-type';
+  import { countryStore } from '$lib/store/country';
 
-  import { onMount, afterUpdate, beforeUpdate } from 'svelte';
+  import { onMount } from 'svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import { goto } from '$app/navigation';
   import Textfield from '@smui/textfield';
@@ -33,27 +16,16 @@
   import Svg from '@smui/common/Svg.svelte';
   import { stringHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
-  import { ExperienceTypeModel } from '$lib/models/experience_type';
-  import { DestinationTypeModel } from '$lib/models/destination_type';
-  import { DestinationModel } from '$lib/models/destination';
-  import { ExperienceModel } from '$lib/models/experience';
-
-  import { CountryModel } from '$lib/models/country';
-  import authStore from '$lib/api/auth/store';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import { HomePageData } from '$lib/api/pages/type';
-  import { ExperienceType } from '$lib/api/experience-type/type';
-  import { DestinationType } from '$lib/api/destination-type/type';
-  import { Country } from '$lib/api/country/type';
-  import { Experience } from '$lib/api/experience/type';
+  import { Country } from '$lib/store/country';
 
   export const load: Load = async ({ fetch, session, page }) => {
     let experienceTypes: ExperienceType[] = [];
     experienceTypeStore.subscribe(({ items }) => {
       experienceTypes = Object.values(items);
     });
-    const res = await fetch('/api/pages/experience', {
+    const res = await fetch('/experience.json', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -162,59 +134,6 @@
         .classList.remove('fixed', 'is_sticky');
     }
   }
-
-  async function likeExperienceItem(
-    experience: Experience,
-    experienceType: ExperienceType,
-  ) {
-    if (!$authStore.user) {
-      window.pushToast('Please login to use this feature');
-      return;
-    }
-    let userDataLikes: (number | string)[] | null = [];
-    if (experience.users) {
-      userDataLikes = experience.users.map((item, index) => {
-        return item.id;
-      });
-      let indexExist = userDataLikes.findIndex(
-        (item) => item == $authStore.user?.id,
-      );
-      if (indexExist >= 0) {
-        userDataLikes.splice(indexExist, 1);
-      } else {
-        userDataLikes.push($authStore.user.id);
-      }
-      if (userDataLikes.length == 0) {
-        userDataLikes = null;
-      }
-    }
-    const res = await fetch(`/api/pages/experience/like?id=${experience.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userDataLikes),
-    });
-
-    if (res.ok) {
-      const data: UpdateExperienceData = await res.json();
-      experience.users = data.updateExperience.experience.users;
-      if (experienceType.experiences) {
-        experienceType.experiences = experienceType.experiences.map(
-          (item: Experience) => {
-            if (item.id === experience.id) {
-              item = experience;
-            }
-            return item;
-          },
-        );
-      }
-      updateExperienceTypeStore([experienceType]);
-      getData();
-    } else {
-      const error = await res.json();
-    }
-  }
 </script>
 
 <svelte:window
@@ -231,97 +150,196 @@
     <section class="header-title d-pt-120 d-pb-95 m-pt-80 m-pb-25 full-width">
       <div class="content-wrap">
         <div class="container m-none">
-          <form
-            class="search-form-experiences"
-            action="/"
-            on:submit|preventDefault={onSearchSubmit}
-          >
-            <LayoutGrid class="p-0">
-              <Cell span="4">
-                <div class="form-control">
-                  <Textfield
-                    variant="outlined"
-                    bind:value={searchModel.name}
-                    label="Start with a search"
-                    withTrailingIcon={false}
-                  >
-                    <Icon slot="trailingIcon"
-                      ><img src="/img/icons/icon-search.svg" /></Icon
+          <div class="hidden-on-sticky">
+            <form
+              class="search-form-experiences"
+              action="/"
+              on:submit|preventDefault={onSearchSubmit}
+            >
+              <LayoutGrid class="p-0">
+                <Cell span="4">
+                  <div class="form-control">
+                    <Textfield
+                      variant="outlined"
+                      bind:value={searchModel.name}
+                      label="Start with a search"
+                      withTrailingIcon={false}
                     >
-                  </Textfield>
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Select
-                    variant="outlined"
-                    bind:value={searchModel.type}
-                    label="By Experience Type"
-                  >
-                    <Option value="" />
-                    {#if experienceTypes}
-                      {#each experienceTypes as item}
-                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
-                      {/each}
-                    {/if}
-                  </Select>
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Select
-                    variant="outlined"
-                    bind:value={searchModel.destination}
-                    label="By Destination"
-                  >
-                    <Option value="" />
-                    {#if destinationTypes}
-                      {#each destinationTypes as item}
-                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
-                      {/each}
-                    {/if}
-                  </Select>
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Select
-                    variant="outlined"
-                    bind:value={searchModel.country}
-                    label="By Country"
-                  >
-                    <Option value="" />
-                    {#if countries}
-                      {#each countries as item}
-                        <Option on:click={onSearchSubmit} value={item.id}>{item.name}</Option>
-                        <Option on:click={onSearchSubmit} value={item.name}
-                          >{item.name}</Option> develop
-                      {/each}
-                    {/if}
-                  </Select>
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Select
-                    variant="outlined"
-                    bind:value={searchModel.sort_by}
-                    label="Sort By"
-                  >
-                    <Option on:click={onSearchSubmit} value="" />
-                  </Select>
-                </div>
-              </Cell>
-            </LayoutGrid>
-          </form>
-          <LayoutGrid class="p-0 hidden-on-sticky">
-            <Cell span="12">
-              <h1 class="text-center d-mt-115 d-mb-20">Curate Your Experiences</h1>
-              <p class="text-center m-0">
-                Bespoke itineraries created by our leading tastemakers.
-              </p>
-            </Cell>
-          </LayoutGrid>
+                      <Icon slot="trailingIcon"
+                        ><img src="/img/icons/icon-search.svg" /></Icon
+                      >
+                    </Textfield>
+                  </div>
+                </Cell>
+                <Cell span="2">
+                  <div class="form-control">
+                    <Select
+                      variant="outlined"
+                      bind:value={searchModel.type}
+                      label="By Experience Type"
+                    >
+                      <Option value="" />
+                      {#if experienceTypes}
+                        {#each experienceTypes as item}
+                          <Option on:click={onSearchSubmit} value={item.id}
+                            >{item.name}</Option
+                          >
+                        {/each}
+                      {/if}
+                    </Select>
+                  </div>
+                </Cell>
+                <Cell span="2">
+                  <div class="form-control">
+                    <Select
+                      variant="outlined"
+                      bind:value={searchModel.destination}
+                      label="By Destination"
+                    >
+                      <Option value="" />
+                      {#if destinationTypes}
+                        {#each destinationTypes as item}
+                          <Option on:click={onSearchSubmit} value={item.id}
+                            >{item.name}</Option
+                          >
+                        {/each}
+                      {/if}
+                    </Select>
+                  </div>
+                </Cell>
+                <Cell span="2">
+                  <div class="form-control">
+                    <Select
+                      variant="outlined"
+                      bind:value={searchModel.country}
+                      label="By Country"
+                    >
+                      <Option value="" />
+                      {#if countries}
+                        {#each countries as item}
+                          <Option on:click={onSearchSubmit} value={item.id}
+                            >{item.name}</Option
+                          >
+                          <Option on:click={onSearchSubmit} value={item.name}
+                            >{item.name}</Option
+                          > develop
+                        {/each}
+                      {/if}
+                    </Select>
+                  </div>
+                </Cell>
+                <Cell span="2">
+                  <div class="form-control">
+                    <Select
+                      variant="outlined"
+                      bind:value={searchModel.sort_by}
+                      label="Sort By"
+                    >
+                      <Option on:click={onSearchSubmit} value="" />
+                    </Select>
+                  </div>
+                </Cell>
+              </LayoutGrid>
+            </form>
+            <h1 class="text-center d-mt-115 d-mb-20">
+              Curate Your Experiences
+            </h1>
+            <p class="text-center m-0">
+              Bespoke itineraries created by our leading tastemakers.
+            </p>
+          </div>
+          <div class="show-on-sticky">
+            <form
+              class="search-form-experiences"
+              action="/"
+              on:submit|preventDefault={onSearchSubmit}
+            >
+              <LayoutGrid class="p-0">
+                <Cell span="4">
+                  <div class="form-control">
+                    <Textfield
+                      variant="outlined"
+                      bind:value={searchModel.name}
+                      label="Start with a search"
+                      withTrailingIcon={false}
+                    >
+                      <Icon slot="trailingIcon"
+                        ><img src="/img/icons/icon-search.svg" /></Icon
+                      >
+                    </Textfield>
+                  </div>
+                </Cell>
+                <Cell span="2">
+                  <div class="form-control">
+                    <Select
+                      variant="outlined"
+                      bind:value={searchModel.type}
+                      label="By Experience Type"
+                    >
+                      <Option value="" />
+                      {#if experienceTypes}
+                        {#each experienceTypes as item}
+                          <Option on:click={onSearchSubmit} value={item.id}
+                            >{item.name}</Option
+                          >
+                        {/each}
+                      {/if}
+                    </Select>
+                  </div>
+                </Cell>
+                <Cell span="2">
+                  <div class="form-control">
+                    <Select
+                      variant="outlined"
+                      bind:value={searchModel.destination}
+                      label="By Destination"
+                    >
+                      <Option value="" />
+                      {#if destinationTypes}
+                        {#each destinationTypes as item}
+                          <Option on:click={onSearchSubmit} value={item.id}
+                            >{item.name}</Option
+                          >
+                        {/each}
+                      {/if}
+                    </Select>
+                  </div>
+                </Cell>
+                <Cell span="2">
+                  <div class="form-control">
+                    <Select
+                      variant="outlined"
+                      bind:value={searchModel.country}
+                      label="By Country"
+                    >
+                      <Option value="" />
+                      {#if countries}
+                        {#each countries as item}
+                          <Option on:click={onSearchSubmit} value={item.id}
+                            >{item.name}</Option
+                          >
+                          <Option on:click={onSearchSubmit} value={item.name}
+                            >{item.name}</Option
+                          > develop
+                        {/each}
+                      {/if}
+                    </Select>
+                  </div>
+                </Cell>
+                <Cell span="2">
+                  <div class="form-control">
+                    <Select
+                      variant="outlined"
+                      bind:value={searchModel.sort_by}
+                      label="Sort By"
+                    >
+                      <Option on:click={onSearchSubmit} value="" />
+                    </Select>
+                  </div>
+                </Cell>
+              </LayoutGrid>
+            </form>
+          </div>
         </div>
         <div class="container m-block d-none">
           <LayoutGrid class="p-0">
@@ -455,7 +473,7 @@
   bind:content={contentHeaderActionMobile}
   bind:searchModel
   bind:destination_types={destinationTypes}
-  bind:experience_types={experienceTypes}
+  bind:types={experienceTypes}
   bind:countries
   on:close={onSearchSubmit}
 />

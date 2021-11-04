@@ -1,4 +1,5 @@
 <script>
+  import '$lib/firebase';
   import Dialog, { Header, Title, Content, Actions } from '@smui/dialog';
   import IconButton from '@smui/icon-button';
   import Button, { Label, Icon } from '@smui/button';
@@ -13,13 +14,11 @@
     signInWithPopup,
     GoogleAuthProvider,
     FacebookAuthProvider,
-    AuthErrorCodes
+    AuthErrorCodes,
   } from 'firebase/auth';
-  import authStore from '$lib/api/auth/store';
+  import { authStore } from '$lib/store/auth';
   import { createEventDispatcher } from 'svelte';
-  import { goto } from '$app/navigation';
-  import { UserModel } from '$lib/models/user';
-  import * as yup from "yup";
+  import * as yup from 'yup';
   export let open;
   export let authModel;
   const dispatch = createEventDispatcher();
@@ -64,7 +63,7 @@
         try {
           const token = await cred.user.getIdToken();
           console.log('token', token);
-          const res = await fetch('/api/auth', {
+          const res = await fetch('/auth.json', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -111,7 +110,7 @@
           console.log('facebook login', cred.user);
           const token = await cred.user.getIdToken();
           console.log('token', token);
-          const res = await fetch('/api/auth', {
+          const res = await fetch('/auth.json', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -175,7 +174,7 @@
       );
       if (cred && cred.user) {
         const token = await cred.user.getIdToken();
-        const res = await fetch('/api/auth', {
+        const res = await fetch('/auth.json', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -197,26 +196,25 @@
           errors = {};
           return;
           // return goto('/me').then(auth.signOut);
-        }else{
+        } else {
           const error = await res.json();
           console.log(error);
         }
         console.error('Error authenticating', res);
       }
     } catch (err) {
-      if(err.code === AuthErrorCodes.EMAIL_EXISTS){
+      if (err.code === AuthErrorCodes.EMAIL_EXISTS) {
         errors.email = 'You have already signed up. Please sign in instead.';
-      }else{
+      } else {
         console.error('Error registering', err);
-        if(typeof err == "object"){
-          if(err.inner){
+        if (typeof err == 'object') {
+          if (err.inner) {
             errors = err.inner.reduce((acc, err) => {
-                return { ...acc, [err.path]: err.message };
-              }, {});
+              return { ...acc, [err.path]: err.message };
+            }, {});
           }
         }
       }
-      
     }
   }
 </script>
@@ -299,7 +297,9 @@
                       variant="outlined"
                     />
                     {#if errors.email}
-                      <span class="text-danger text-eyebrow">{errors.email}</span>
+                      <span class="text-danger text-eyebrow"
+                        >{errors.email}</span
+                      >
                     {/if}
                   </div>
                 </Cell>
@@ -313,7 +313,9 @@
                       variant="outlined"
                     />
                     {#if errors.password}
-                      <span class="text-danger text-eyebrow">{errors.password}</span>
+                      <span class="text-danger text-eyebrow"
+                        >{errors.password}</span
+                      >
                     {/if}
                   </div>
                 </Cell>
@@ -346,9 +348,8 @@
 
 <style lang="scss">
   @media screen and (max-width: 999px) {
-  :global(#signup-modal){
-    
-      :global(button.mdc-button){
+    :global(#signup-modal) {
+      :global(button.mdc-button) {
         min-width: auto;
         padding-left: 15px;
         padding-right: 15px;

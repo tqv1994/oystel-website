@@ -3,10 +3,8 @@
   import { goto } from '$app/navigation';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import Svg from '@smui/common/Svg.svelte';
-  import HeaderActionMobile from './../HeaderActionMobile/index.svelte';
   import { createEventDispatcher } from 'svelte';
-  import authStore from '$lib/api/auth/store';
-import { routerHelper } from '$lib/helpers';
+  import { authStore } from '$lib/store/auth';
   export let params;
   export let openSigninModal = false;
   let type;
@@ -127,8 +125,7 @@ import { routerHelper } from '$lib/helpers';
     <Cell spanDevices={{ phone: 1, desktop: 3, tablet: 2 }} class="text-center">
       <Button
         on:click={() => {
-          $authStore.user ? goto('/me') : openSigninModal = !openSigninModal;
-          
+          $authStore.user ? goto('/me') : (openSigninModal = !openSigninModal);
         }}
       >
         <div class="wrap-item">

@@ -1,142 +1,243 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import { countryStore } from '$lib/api/country/store';
-  import { specialityStore } from '$lib/api/specialty/store';
-  import { advisorStore, updateAdvisorStore } from '$lib/api/advisor/store';
-  import { Country } from '$lib/api/country/type';
-  import { Speciality } from '$lib/api/specialty/type';
-  import { onMount } from 'svelte';
+  import { countryStore } from '$lib/store/country';
+  import { specialityStore } from '$lib/store/speciality';
+  import { AdvisorBase } from '$lib/store/advisor';
+  import { Country } from '$lib/store/country';
+  import { Speciality } from '$lib/store/speciality';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import { goto } from '$app/navigation';
   import Textfield from '@smui/textfield';
   import Button, { Label } from '@smui/button';
   import { Icon } from '@smui/icon-button';
-  import Select, { Option } from '@smui/select';
   import DataTable, {
     Head,
     Body,
     Row,
     Cell as CellTable,
   } from '@smui/data-table';
-  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-  import { stringHelper, routerHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import { Advisor } from '$lib/api/advisor/type';
-  import { AdvisorsPageData } from '$lib/api/pages/type';
+  import { Advisor } from '$lib/store/advisor';
+  import { get } from 'svelte/store';
+  import { SearchResultGroup } from '$lib/store/search';
+  import { debounce } from 'lodash';
+  import { Ordering, orderings, ORDER_BY_NAME_ASC } from '$lib/store/order';
+  import {
+    COUNTRY,
+    DESTINATION_TYPE,
+    EXPERIENCE_TYPE,
+    LANGUAGE,
+    LIMIT,
+    ORDERING,
+    QUERY,
+    search,
+    SearchParams,
+    SPECIALITY,
+    TYPE,
+  } from '$lib/store/search';
+  import Dropdown, { DropdownValue } from '$lib/components/dropdown.svelte';
+  import { sortByName } from '$lib/utils/sort';
+  import { destinationTypeStore } from '$lib/store/destination-type';
+  import { experienceTypeStore } from '$lib/store/experience-type';
+  import { Language, languageStore } from '$lib/store/language';
+  import { Category } from '$lib/store/category';
+  import { makeLink } from '$lib/utils/link';
+  import InviteMembersModal from '$lib/components/modals/InviteMembersModal.svelte';
+  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
 
-  export const load: Load = async ({ fetch, session, page }) => {
-    advisorStore.set({ items: {} });
-    let searchModel = {
-      name: page.query.get('name'),
-      specialty: page.query.get('specialty'),
-      location: page.query.get('location'),
-    };
-    let searchParams: any = {};
-    if (searchModel.name && searchModel.name !== 'null') {
-      console.log(typeof searchModel.name);
-      searchParams['userMe.displayName_contains'] = searchModel.name;
-    } else {
-      searchModel.name = '';
-    }
-    if (searchModel.specialty && searchModel.specialty != '') {
-      searchParams['specialities.name_eq'] = searchModel.specialty;
-    }
-    if (searchModel.location && searchModel.location != '') {
-      searchParams['countries.name_eq'] = searchModel.location;
-    }
-    const res = await fetch(
-      `/api/pages/advisor?${stringHelper.objectToQueryString(searchParams)}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+  type SearchResultItem = AdvisorBase & {
+    country: string;
+    destinationType1: string;
+    destinationType2: string;
+    destinationType3: string;
+    experienceType1: string;
+    experienceType2: string;
+    experienceType3: string;
+    speciality1: string;
+    speciality2: string;
+    speciality3: string;
+    language1: string;
+    language2: string;
+    language3: string;
+  };
+
+  export const load: Load = async ({ fetch, page }) => {
+    page.query.set(LIMIT, page.query.get(TYPE) ? '20' : '3');
+    const res = await fetch(`/advisor.json?${page.query.toString()}`);
     if (res.ok) {
-      const data: AdvisorsPageData = await res.json();
-      updateAdvisorStore(data.advisors);
-    } else {
-      const error = await res.json();
-      console.log(error);
+      const searchData: SearchResultGroup<SearchResultItem> = await res.json();
+      const destinationTypes = get(destinationTypeStore);
+      const experienceTypes = get(experienceTypeStore);
+      const countries = get(countryStore);
+      const specialities = get(specialityStore);
+      const languages = get(languageStore);
+      const items: Advisor[] = [];
+      for (const item of searchData.items) {
+        items.push({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          accept: item.accept,
+          planningFee: item.planningFee,
+          instagram: item.instagram,
+          twitter: item.twitter,
+          facebook: item.facebook,
+          linkedin: item.linkedin,
+          pinterest: item.pinterest,
+          website: item.website,
+          timezone: item.timezone,
+          created_at: item.created_at,
+          updated_at: item.updated_at,
+          published_at: item.published_at,
+          country: countries.items[item.country],
+          avatar: item.avatar,
+          gallery: item.gallery,
+          experienceType1: experienceTypes.items[item.experienceType1],
+          experienceType2: experienceTypes.items[item.experienceType2],
+          experienceType3: experienceTypes.items[item.experienceType3],
+          destinationType1: destinationTypes.items[item.destinationType1],
+          destinationType2: destinationTypes.items[item.destinationType2],
+          destinationType3: destinationTypes.items[item.destinationType3],
+          speciality1: specialities.items[item.speciality1],
+          speciality2: specialities.items[item.speciality2],
+          speciality3: specialities.items[item.speciality3],
+          language1: languages.items[item.language1],
+          language2: languages.items[item.language2],
+          language3: languages.items[item.language3],
+        });
+      }
+      return {
+        props: {
+          advisors: { hasMore: searchData.hasMore, items },
+          query: page.query.get(QUERY),
+          experienceType:
+            experienceTypes.items[page.query.get(EXPERIENCE_TYPE) || ''],
+          destinationType:
+            destinationTypes.items[page.query.get(DESTINATION_TYPE) || ''],
+          speciality: specialities.items[page.query.get(SPECIALITY) || ''],
+          language: languages.items[page.query.get(LANGUAGE) || ''],
+          country: countries.items[page.query.get(COUNTRY) || ''],
+          ordering:
+            orderings[page.query.get(ORDERING) || ''] || ORDER_BY_NAME_ASC,
+        },
+      };
     }
-    return {
-      props: { searchModel },
-    };
   };
 </script>
 
 <script lang="ts">
-  export let searchModel = {
-    name: '',
-    specialty: '',
-    location: '',
+  export let advisors: SearchResultGroup<Advisor> = {
+    hasMore: true,
+    items: [],
   };
-  let contentHeaderActionMobile = '';
+  export let query: string = '';
+  export let experiencetype: Category | undefined;
+  export let destinationtype: Category | undefined;
+  export let speciality: Speciality | undefined;
+  export let language: Language | undefined;
+  export let country: Country | undefined;
+  export let ordering: Ordering;
+  let contentHeaderActionMobile: string = '';
+
   let configPage = {
     header: {
       page: 'advisors',
       transparent: true,
       theme: 'light',
-      currentMenu: 'travel-advisors',
+      currentMenu: 'advisors',
     },
   };
-  let advisors: Advisor[];
-  let specialities: Speciality[];
+
+  // let experienceTypes: Category[];
+  // experienceTypeStore.subscribe(
+  //   (store) => (experienceTypes = sortByName(Object.values(store.items))),
+  // );
+
   let countries: Country[];
-
-  countryStore.subscribe(({ items }) => {
-    countries = Object.values(items);
+  countryStore.subscribe((store) => {
+    countries = sortByName(Object.values(store.items));
   });
 
-  specialityStore.subscribe(({ items }) => {
-    specialities = Object.values(items);
-  });
-
-  advisorStore.subscribe(({ items }) => {
-    advisors = Object.values(items);
-  });
-
-  function onSearchSubmit() {
-    setTimeout(() => {
-      let queryString = stringHelper.objectToQueryString(searchModel);
-      goto('/advisor?' + queryString);
-    }, 0);
+  function go(params: SearchParams) {
+    search({
+      [QUERY]: query,
+      [SPECIALITY]: speciality?.id,
+      [DESTINATION_TYPE]: destinationtype?.id,
+      [EXPERIENCE_TYPE]: experiencetype?.id,
+      [LANGUAGE]: language?.id,
+      [COUNTRY]: country?.id,
+      [ORDERING]: ordering.key,
+      ...params,
+    });
   }
+  const goSlow = debounce(go, 1000);
 
-  function onScrollFixedHeader() {
-    if(document.documentElement.clientWidth < 950) {
-        if (document.body.scrollTop > 450 || document.documentElement.scrollTop > 450) {
-            document.getElementById("header").classList.add("fixed");
-            document.querySelector('header').style.zIndex = 7;
-            document.querySelector('header').style.position = 'relative';
-            document.querySelector('.header-title').classList.add('fixed', 'is_sticky');
-        } else {
-            document.getElementById("header").classList.remove("fixed");
-            document.querySelector('header').style.zIndex = 'auto';
-            document.querySelector('header').style.position = 'static';
-            document.querySelector('.header-title').classList.remove('fixed', 'is_sticky');
-        }
-    }else{
-      document.getElementById("header").classList.remove("fixed");
-      document.querySelector('header').style.zIndex = 'auto';
-      document.querySelector('header').style.position = 'static';
-      document.querySelector('.header-title').classList.remove('fixed', 'is_sticky');
+  function onQueryInput(event: InputEvent) {
+    const q = (event.target as HTMLInputElement).value.trim();
+    if (q.length > 2) {
+      goSlow({ q });
     }
   }
 
-  onMount(async () => {});
+  function onSpecialityChange(event: CustomEvent<DropdownValue<Category>>) {
+    go({ t: event.detail.value.id });
+  }
+
+  function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
+    go({ c: event.detail.value.id });
+  }
+
+  function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
+    go({ o: event.detail.value.key });
+  }
+
+  function onSearchSubmitMobile(event: CustomEvent){
+    contentHeaderActionMobile = '';
+    console.log(event.detail);
+    go({c: event.detail.country?.id || '', t: event.detail.speciality?.id || ''});
+  }
+
+  function onScrollFixedHeader() {
+    if (document.documentElement.clientWidth < 950) {
+      if (
+        document.body.scrollTop > 450 ||
+        document.documentElement.scrollTop > 450
+      ) {
+        document.getElementById('header').classList.add('fixed');
+        document.querySelector('header').style.zIndex = 7;
+        document.querySelector('header').style.position = 'relative';
+        document
+          .querySelector('.header-title')
+          .classList.add('fixed', 'is_sticky');
+      } else {
+        document.getElementById('header').classList.remove('fixed');
+        document.querySelector('header').style.zIndex = 'auto';
+        document.querySelector('header').style.position = 'static';
+        document
+          .querySelector('.header-title')
+          .classList.remove('fixed', 'is_sticky');
+      }
+    } else {
+      document.getElementById('header').classList.remove('fixed');
+      document.querySelector('header').style.zIndex = 'auto';
+      document.querySelector('header').style.position = 'static';
+      document
+        .querySelector('.header-title')
+        .classList.remove('fixed', 'is_sticky');
+    }
+  }
+
+  // onMount(async () => {});
 </script>
 
-<svelte:window
+<!-- <svelte:window
   on:load={() => {
     onScrollFixedHeader();
   }}
   on:scroll={() => {
     onScrollFixedHeader();
   }}
-/>
+/> -->
 <Layout config={configPage}>
   <div class="content">
     <section class="header-title d-pt-120 d-pb-95 m-pt-100 m-pb-25 full-width">
@@ -145,7 +246,9 @@
           <h1 class="text-center mb-20 m-mt-0 d-mt-70 hidden-on-sticky">
             Crafted from Experience
           </h1>
-          <p class="text-center mt-0 m-pl-40 m-pr-40 m-mb-40 d-mb-0 hidden-on-sticky">
+          <p
+            class="text-center mt-0 m-pl-40 m-pr-40 m-mb-40 d-mb-0 hidden-on-sticky"
+          >
             First hand experience, ready to craft your perfect vacation.
           </p>
           <div class="d-none m-block">
@@ -163,20 +266,16 @@
     </section>
     <section class="d-pt-80 d-pb-200 m-pt-40 m-pb-95">
       <div class="container">
-        <form
-          class="m-none search-form-advisor mb-50"
-          action="/"
-          on:submit|preventDefault={onSearchSubmit}
-        >
+        <form class="m-none search-form-advisor mb-50" action="/">
           <LayoutGrid class="p-0">
             <Cell spanDevices={{ desktop: 4 }}>
               <div class="form-control">
                 <Textfield
                   variant="outlined"
-                  bind:value={searchModel.name}
+                  bind:value={query}
+                  on:input={onQueryInput}
                   label="Search by name"
                   withTrailingIcon={false}
-                  on:change={onSearchSubmit}
                 >
                   <Icon slot="trailingIcon"
                     ><img src="/img/icons/icon-search.svg" /></Icon
@@ -184,88 +283,62 @@
                 </Textfield>
               </div>
             </Cell>
-            <Cell spanDevices={{ desktop: 8 }} class="form-inline d-desktop text-right">
-              <div >
+            <Cell
+              spanDevices={{ desktop: 8 }}
+              class="form-inline d-desktop text-right"
+            >
+              <div>
                 <div class="form-control">
-                  <label class="text-h3">Filter by Speciality</label>
-                  <Select
-                    bind:value={searchModel.specialty}
-                    label=""
-                    naturalMenuWidth="300px"
-                    class="text-left"
-                  >
-                    <Option on:click={onSearchSubmit}>All</Option>
-                    {#if specialities && specialities.length > 0}
-                      {#each specialities as specialty}
-                        <Option on:click={onSearchSubmit} value={specialty.name}
-                          >{specialty.name}</Option
-                        >
-                      {/each}
-                    {/if}
-                  </Select>
-                </div>
-                <div class="form-control">
-                  <label class="text-h3">Location</label>
-                  <Select
-                    bind:value={searchModel.location}
-                    label=""
-                    class="text-left"
-                  >
-                    <Option on:click={onSearchSubmit} value="">All</Option>
-                    {#if countries && countries.length > 0}
-                      {#each countries as country}
-                        <Option on:click={onSearchSubmit} value={country.name}
-                          >{country.name}</Option
-                        >
-                      {/each}
-                    {/if}
-                  </Select>
-                </div>
-              </div>
-              
-            </Cell>
-            <Cell spanDevices={{ desktop: 4 }} class="form-inline d-tablet text-right">
-              <div >
-                <div class="form-control">
-                  <Select
-                    bind:value={searchModel.specialty}
+                  <Dropdown
                     label="Filter by Speciality"
-                    naturalMenuWidth="300px"
-                    class="text-left"
-                  >
-                    <Option on:click={onSearchSubmit}></Option>
-                    {#if specialities && specialities.length > 0}
-                      {#each specialities as specialty}
-                        <Option on:click={onSearchSubmit} value={specialty.name}
-                          >{specialty.name}</Option
-                        >
-                      {/each}
-                    {/if}
-                  </Select>
+                    blankItem="All"
+                    items={sortByName(Object.values($specialityStore.items))}
+                    value={speciality}
+                    on:MDCSelect:change={onCountryChange}
+                  />
                 </div>
-              </div>
-              
-            </Cell>
-            <Cell spanDevices={{ desktop: 4 }} class="form-inline d-tablet text-right">
-              <div >
                 <div class="form-control">
-                  <Select
-                    bind:value={searchModel.location}
-                    label="Location"
-                    class="text-left"
-                  >
-                    <Option on:click={onSearchSubmit} value=""></Option>
-                    {#if countries && countries.length > 0}
-                      {#each countries as country}
-                        <Option on:click={onSearchSubmit} value={country.name}
-                          >{country.name}</Option
-                        >
-                      {/each}
-                    {/if}
-                  </Select>
+                  <Dropdown
+                    label="By Country"
+                    blankItem="All"
+                    items={countries}
+                    value={country}
+                    on:MDCSelect:change={onCountryChange}
+                  />
                 </div>
               </div>
-              
+            </Cell>
+            <Cell
+              spanDevices={{ desktop: 4 }}
+              class="form-inline d-tablet text-right"
+            >
+              <div>
+                <div class="form-control">
+                  <Dropdown
+                    label="Filter by Speciality"
+                    blankItem="All"
+                    items={sortByName(Object.values($specialityStore.items))}
+                    value={speciality}
+                    on:MDCSelect:change={onCountryChange}
+                  />
+                </div>
+              </div>
+            </Cell>
+            <Cell
+              spanDevices={{ desktop: 4 }}
+              class="form-inline d-tablet text-right"
+            >
+              <div>
+                <div class="form-control">
+                  <Dropdown
+                    label="By Country"
+                    blankItem="All"
+                    items={countries}
+                    value={country}
+                    on:MDCSelect:change={onCountryChange}
+                  />
+                </div>
+              </div>
             </Cell>
           </LayoutGrid>
         </form>
@@ -280,36 +353,38 @@
               </Row>
             </Head>
             <Body>
-              {#if advisors && advisors.length > 0}
-                {#each advisors as item}
+              {#if advisors && advisors.items.length}
+                {#each advisors.items as item}
                   <Row class="item-advisor">
                     <CellTable style="width: 10%"
-                      ><a href={routerHelper.getUrl('advisor', '', item.id)}
+                      ><a href={makeLink('/advisor', item)}
                         ><div
                           class="image-cover"
                           style="width: 100px;padding-top: 100%"
                         >
-                          <BlurImage data={item.userMe.avatar} />
+                          <BlurImage data={item.avatar} />
                         </div></a
                       ></CellTable
                     >
                     <CellTable style="width: 35%;"
-                      ><a href={routerHelper.getUrl('advisor', '', item.id)}
+                      ><a href={makeLink('/advisor', item)}
                         ><p class="name text-h2">
-                          {item.userMe?.displayName
-                            ? item.userMe.displayName
-                            : item.userMe.email}
+                          {item.name}
                         </p></a
                       ></CellTable
                     >
                     <CellTable style="width: 35%;"
                       ><p>
-                        {item.specialitiesString}
+                        {item.speciality1?.name || ''}{#if item.speciality2},
+                          {item.speciality2?.name}
+                        {/if}{#if item.speciality3},
+                          {item.speciality3?.name}
+                        {/if}
                       </p></CellTable
                     >
                     <CellTable style="width: 20%;"
                       ><p>
-                        {item.countriesString}
+                        {item.country?.name || ''}
                       </p></CellTable
                     >
                   </Row>
@@ -322,10 +397,10 @@
           <div class="advisors-list">
             <LayoutGrid class="p-0">
               <Cell span={12}>
-                {#if advisors && advisors.length > 0}
-                  {#each advisors as item}
+                {#if advisors && advisors.items.length}
+                  {#each advisors.items as item}
                     <div class="item-advisor">
-                      <a href={item.url}>
+                      <a href={makeLink('/advisor', item)}>
                         <LayoutGrid class="p-0">
                           <Cell
                             spanDevices={{ phone: 1, tablet: 2, desktop: 4 }}
@@ -335,7 +410,7 @@
                                 class="image-cover"
                                 style="width:100%; padding-top: 100%"
                               >
-                                <BlurImage data={item.userMe.avatar} />
+                                <BlurImage data={item.avatar} />
                               </div>
                             </div>
                           </Cell>
@@ -343,13 +418,13 @@
                             spanDevices={{ phone: 3, tablet: 6, desktop: 8 }}
                           >
                             <h2 class="mt-0 mb-15">
-                              {item.userMe.displayName || item.userMe.email}
+                              {item.name}
                             </h2>
                             <p class="mt-0 mb-30">
-                              {item.countriesString}
+                              {item.country?.name || ''}
                             </p>
                             <p class="m-0">
-                              {stringHelper.getExcerpt(item.specialitiesString)}
+                              {(item.description || '')?.substr(0, 80)}
                             </p>
                           </Cell>
                         </LayoutGrid>
@@ -365,14 +440,14 @@
     </section>
   </div>
 </Layout>
+
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  bind:searchModel
-  bind:countries
-  bind:specialities
-  on:close={onSearchSubmit}
+  specialities={sortByName(Object.values($specialityStore.items))}
+  countries={sortByName(Object.values($countryStore.items))}
+  on:close={onSearchSubmitMobile}
+  searchModel={{speciality: speciality,country: country}}
 />
-
 <style lang="scss">
   .header-title {
     background-color: #f0f7f8;
@@ -486,25 +561,25 @@
     }
   }
 
-  @media screen and (min-width: 1223px){
-    :global(.d-tablet){
+  @media screen and (min-width: 1223px) {
+    :global(.d-tablet) {
       display: none;
     }
-    :global(.d-desktop){
+    :global(.d-desktop) {
       display: block;
     }
   }
-  @media screen and (max-width: 1222px){
-    :global(.d-desktop){
+  @media screen and (max-width: 1222px) {
+    :global(.d-desktop) {
       display: none;
     }
-    :global(.d-tablet){
+    :global(.d-tablet) {
       display: block;
     }
   }
 
-  :global(.page-advisors .content){
-    :global(.mdc-select__anchor){
+  :global(.page-advisors .content) {
+    :global(.mdc-select__anchor) {
       overflow: inherit;
     }
   }

@@ -1,31 +1,28 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
   import PageTransition from '$lib/components/common/PageTransition.svelte';
-  import { MetadataData } from '$lib/api/pages/type';
-  import authStore from '$lib/api/auth/store';
-  import { updateCountryStore } from '$lib/api/country/store';
-  import { updateDestinationTypeStore } from '$lib/api/destination-type/store';
-  import { updateExperienceTypeStore } from '$lib/api/experience-type/store';
-  import { updateSpecialityStore } from '$lib/api/specialty/store';
-  import { updateProductStore } from '$lib/api/product/store';
-import { onMount } from 'svelte';
+  import { authStore } from '$lib/store/auth';
+  import { onMount } from 'svelte';
+  import { insertToStore } from '$lib/store/types';
+  import { destinationTypeStore } from '$lib/store/destination-type';
+  import { experienceTypeStore } from '$lib/store/experience-type';
+  import { specialityStore } from '$lib/store/speciality';
+  import { countryStore } from '$lib/store/country';
+  import { languageStore } from '$lib/store/language';
+  import { Metadata } from './metadata.json';
   export let key;
 
   export const load: Load = async ({ fetch, session, page }) => {
-    const res = await fetch('/api/metadata', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (res.ok) {
-      const data: MetadataData = await res.json();
-      updateCountryStore(data.countries || []);
-      updateExperienceTypeStore(data.experienceTypes || []);
-      updateDestinationTypeStore(data.destinationTypes || []);
-      updateSpecialityStore(data.specialties || []);
+    const metaRes = await fetch('/metadata.json');
+    if (metaRes.ok) {
+      const data: Metadata = await metaRes.json();
+      insertToStore(destinationTypeStore, data.destinationTypes, false);
+      insertToStore(experienceTypeStore, data.experienceTypes, false);
+      insertToStore(specialityStore, data.specialities, false);
+      insertToStore(countryStore, data.countries, false);
+      insertToStore(languageStore, data.languages, false);
     } else {
-      const error = await res.json();
+      const error = await metaRes.json();
       console.log(error);
     }
     authStore.set({ user: session.user });
@@ -35,18 +32,20 @@ import { onMount } from 'svelte';
     };
   };
 </script>
+
 <script lang="ts">
   let innerHeight: number;
-  function runScript(){
-    var bodyEl = document.querySelector('body');    
+  function runScript() {
+    var bodyEl = document.querySelector('body');
     if (typeof bodyEl != 'undefined' && bodyEl != null) {
-      bodyEl.style.height = innerHeight+'px';
+      bodyEl.style.height = innerHeight + 'px';
     }
   }
-  onMount(async()=>{
+  onMount(async () => {
     runScript();
   });
 </script>
+
 <svelte:window
   on:load={() => {
     runScript();

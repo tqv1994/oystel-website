@@ -1,17 +1,19 @@
 <script lang="ts">
-  import { FileUpload } from '$lib/api/file-upload/type';
-  import { stringHelper } from '$lib/helpers';
-
+  import { UploadFile } from '$lib/store/upload-file';
   import { BlurhashImage } from 'svelte-blurhash';
 
-  export let data: FileUpload;
-  export let is_static: boolean = false;
+  let className: string = '';
+  export { className as class };
+  export let data: UploadFile;
 </script>
 
-<BlurhashImage
-  fadeDuration="1000"
-  src={(data && typeof data.url != "undefined" && data.url) ? stringHelper.getFullUrlImage(data.url,is_static) : ""}
-  width={(data && data.width) || 100}
-  height={(data && data.height) || 100}
-  hash={(data && data.blurHash) || null}
-/>
+{#if data}
+  <BlurhashImage
+    class={className}
+    fadeDuration={1000}
+    src={data.url}
+    width={data.width || 100}
+    height={data.height || 100}
+    hash={data.blurHash}
+  />
+{/if}

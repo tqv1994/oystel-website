@@ -7,21 +7,29 @@
   import Select, { Option } from '@smui/select';
   import { createEventDispatcher, afterUpdate } from 'svelte';
   import { goto } from '$app/navigation';
-  import { Country } from '$lib/api/country/type';
-  import { Speciality } from '$lib/api/specialty/type';
+  import { Country } from '$lib/store/country';
+  import { Speciality } from '$lib/store/speciality';
+  import Dropdown, { DropdownValue } from '$lib/components/dropdown.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
   let menuActive;
-  export let searchModel = {
-    name: '',
-    specialty: '',
-    location: '',
+  export let searchModel: {
+    speciality: Speciality | undefined,
+    country: Country | undefined
+  } = {
+    speciality: undefined,
+    country: undefined,
   };
   export let locations: Country[];
   export let specialities: Speciality[];
+  let country: Country | undefined = searchModel.country;
+  let speciality: Speciality | undefined = searchModel.speciality;
   function onSearchSubmit() {
-    dispatch('close');
+    setTimeout(()=>{
+      dispatch('close',{country, speciality});
+    },0);
+    
   }
 </script>
 
@@ -32,32 +40,20 @@
     on:submit|preventDefault={onSearchSubmit}
   >
     <div class="form-control mb-40">
-      <Select
-        variant="outlined"
-        bind:value={searchModel.specialty}
-        label="By Speciality"
-      >
-        <Option value="" />
-        {#if specialities}
-          {#each specialities as item}
-            <Option value={item.name}>{item.name}</Option>
-          {/each}
-        {/if}
-      </Select>
+      <Dropdown
+                    label="By Speciality"
+                    blankItem="All"
+                    items={specialities}
+                    value={speciality}
+                  />
     </div>
     <div class="form-control mb-40">
-      <Select
-        variant="outlined"
-        bind:value={searchModel.location}
-        label="By Location"
-      >
-        <Option value="" />
-        {#if locations}
-          {#each locations as item}
-            <Option value={item.name}>{item.name}</Option>
-          {/each}
-        {/if}
-      </Select>
+      <Dropdown
+                    label="By Location"
+                    blankItem="All"
+                    items={locations}
+                    bind:value={country}
+                  />
     </div>
     <div class="form-control btn-submit-wrap">
       <Button variant="outlined" style="width: 100%;" type="submit"

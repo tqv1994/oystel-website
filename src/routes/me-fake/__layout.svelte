@@ -1,5 +1,5 @@
 <script>
-  import authStore from '$lib/api/auth/store';
+  import { authStore } from '$lib/store/auth';
   import { onMount, afterUpdate } from 'svelte';
   import Button, { Label, Icon } from '@smui/button';
   import Checkbox from '@smui/checkbox';
@@ -31,7 +31,7 @@
     //     console.log(res);
     // });
     try {
-      const res = await fetch('/api/auth/update', {
+      const res = await fetch('/auth/update.json', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +53,7 @@
 
   async function signOut() {
     try {
-      const res = await fetch('/api/auth/sign-out', {
+      const res = await fetch('/auth/sign-out.json', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

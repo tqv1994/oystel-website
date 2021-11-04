@@ -1,6 +1,6 @@
-import { Country } from '$lib/api/country/type';
-import { Language } from '$lib/api/language/type';
-import { Speciality } from '$lib/api/specialty/type';
+import { Country } from '$lib/store/country';
+import { Language } from '$lib/store//language';
+import { Speciality } from '$lib/store/speciality';
 import { cmsUrlPrefix } from '$lib/env';
 
 export const stringHelper = {

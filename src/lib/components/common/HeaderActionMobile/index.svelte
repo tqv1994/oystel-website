@@ -8,21 +8,19 @@
   import OyExplode from './OyExplode.svelte';
   import OyFormSearchExperience from './OyFormSearchExperience.svelte';
   import OyFormSearchAdvisor from './OyFormSearchAdvisor.svelte';
-  import { CountryModel } from '$lib/models/country';
-  import { AdvisorSpeciality } from '$lib/models/advisor';
-import { ExperienceType } from '$lib/api/experience-type/type';
-import { DestinationType } from '$lib/api/destination-type/type';
+  import { Country } from '$lib/store/country';
+  import { Speciality } from '$lib/store/speciality';
+import { Category } from '$lib/store/category';
   let dispathcher = createEventDispatcher();
   export let open = false;
   export let content: string;
-  export let searchModel;
-  export let experience_types: ExperienceType[];
-  export let destination_types: DestinationType[];
-  export let countries: CountryModel[];
-  export let specialities: AdvisorSpeciality[];
-  function callCloseHeaderActionMobile() {
-    content = '';
-    dispathcher('close');
+  export let searchModel: any = {};
+  export let experience_types: Category[] = [];
+  export let destination_types: Category[] = [];
+  export let countries: Country[] = [];
+  export let specialities: Speciality[] = [];
+  function callCloseHeaderActionMobile(event: CustomEvent) {
+    dispathcher('close',event.detail);
   }
 </script>
 

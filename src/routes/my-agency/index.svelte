@@ -1,5 +1,5 @@
 <script>
-  import authStore from '$lib/api/auth/store';
+  import { authStore } from '$lib/store/auth';
   import { onMount, afterUpdate } from 'svelte';
   import Button, { Label, Icon } from '@smui/button';
   import Checkbox from '@smui/checkbox';
@@ -30,7 +30,7 @@
   async function signOut() {
     try {
       console.log($authStore.user);
-      const res = await fetch('/api/auth/sign-out', {
+      const res = await fetch('/auth/sign-out.json', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +52,7 @@
 
   async function onSubmitApplication(e) {
     try {
-      const res = await fetch('/api/agency', {
+      const res = await fetch('/agency.json', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

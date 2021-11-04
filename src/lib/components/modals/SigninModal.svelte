@@ -1,10 +1,11 @@
 <script>
+  import '$lib/firebase';
   import Dialog, { Header, Title, Content, Actions } from '@smui/dialog';
   import IconButton from '@smui/icon-button';
   import Button, { Label, Icon } from '@smui/button';
   import LayoutGrid, { Cell, InnerGrid } from '@smui/layout-grid';
   import Textfield from '@smui/textfield';
-  import HelperText from '@smui/textfield/helper-text/index';
+  import '$lib/firebase';
   import Svg from '@smui/common/Svg.svelte';
   import {
     signInWithEmailAndPassword,
@@ -13,14 +14,10 @@
     signInWithPopup,
     GoogleAuthProvider,
     FacebookAuthProvider,
-    AuthErrorCodes,
   } from 'firebase/auth';
-  import authStore from '$lib/api/auth/store';
   import { createEventDispatcher } from 'svelte';
-  import { goto } from '$app/navigation';
-  import { UserModel } from '$lib/models/user';
-  import * as yup from "yup";
-import { routerHelper } from '$lib/helpers';
+  import * as yup from 'yup';
+  import { routerHelper } from '$lib/helpers';
   export let open;
   export let authModel;
   const dispatch = createEventDispatcher();
@@ -66,7 +63,7 @@ import { routerHelper } from '$lib/helpers';
         }
         try {
           const token = await cred.user.getIdToken();
-          const res = await fetch('/api/auth', {
+          const res = await fetch('/auth.json', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -106,7 +103,7 @@ import { routerHelper } from '$lib/helpers';
           console.log('facebook login', cred.user);
           const token = await cred.user.getIdToken();
           console.log('token', token);
-          const res = await fetch('/api/auth', {
+          const res = await fetch('/auth.json', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -148,7 +145,7 @@ import { routerHelper } from '$lib/helpers';
       if (cred && cred.user) {
         const token = await cred.user.getIdToken();
         console.log(token);
-        const res = await fetch('/api/auth', {
+        const res = await fetch('/auth.json', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -162,15 +159,15 @@ import { routerHelper } from '$lib/helpers';
         }
       }
     } catch (err) {
-      if(err.code === "auth/user-not-found"){
+      if (err.code === 'auth/user-not-found') {
         errors.email = 'Email or password is incorrect';
-      }else{
+      } else {
         console.error('Error registering', err);
-        if(typeof err == "object"){
-          if(err.inner){
+        if (typeof err == 'object') {
+          if (err.inner) {
             errors = err.inner.reduce((acc, err) => {
-                return { ...acc, [err.path]: err.message };
-              }, {});
+              return { ...acc, [err.path]: err.message };
+            }, {});
           }
         }
       }
@@ -254,7 +251,9 @@ import { routerHelper } from '$lib/helpers';
                         />
                       </div>
                       {#if errors.email}
-                        <span class="text-danger text-eyebrow">{errors.email}</span>
+                        <span class="text-danger text-eyebrow"
+                          >{errors.email}</span
+                        >
                       {/if}
                     </Cell>
                     <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
@@ -268,7 +267,9 @@ import { routerHelper } from '$lib/helpers';
                         />
                       </div>
                       {#if errors.password}
-                        <span class="text-danger text-eyebrow">{errors.password}</span>
+                        <span class="text-danger text-eyebrow"
+                          >{errors.password}</span
+                        >
                       {/if}
                     </Cell>
                   </LayoutGrid>
@@ -300,9 +301,8 @@ import { routerHelper } from '$lib/helpers';
 
 <style lang="scss">
   @media screen and (max-width: 999px) {
-  :global(#signin-modal){
-    
-      :global(button.mdc-button){
+    :global(#signin-modal) {
+      :global(button.mdc-button) {
         min-width: auto;
         padding-left: 15px;
         padding-right: 15px;

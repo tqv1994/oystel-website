@@ -10,7 +10,7 @@
 
   async function onSubmit() {
     try {
-      const res = await fetch('/api/agency', {
+      const res = await fetch('/agency.json', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

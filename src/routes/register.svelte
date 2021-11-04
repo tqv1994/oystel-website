@@ -1,4 +1,5 @@
 <script lang="ts">
+  import '$lib/firebase';
   import Textfield from '@smui/textfield';
   import Icon from '@smui/textfield/icon';
   import Button, { Label } from '@smui/button';
@@ -7,7 +8,7 @@
     createUserWithEmailAndPassword,
     inMemoryPersistence,
   } from 'firebase/auth';
-  import authStore from '$lib/api/auth/store';
+  import { authStore } from '$lib/store/auth';
   import { goto } from '$app/navigation';
 
   let email = 'tester@test.net';
@@ -20,7 +21,7 @@
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       if (cred && cred.user) {
         const token = await cred.user.getIdToken();
-        const res = await fetch('/api/auth', {
+        const res = await fetch('/auth.json', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

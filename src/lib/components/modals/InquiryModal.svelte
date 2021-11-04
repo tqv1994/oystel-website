@@ -1,21 +1,10 @@
 <script>
-  import Dialog, { Header, Title, Content, Actions } from '@smui/dialog';
+  import '$lib/firebase';
+  import Dialog, { Content } from '@smui/dialog';
   import IconButton from '@smui/icon-button';
   import Button, { Label, Icon } from '@smui/button';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Textfield from '@smui/textfield';
-  import HelperText from '@smui/textfield/helper-text/index';
-  import {
-    signInWithEmailAndPassword,
-    getAuth,
-    inMemoryPersistence,
-    signInWithPopup,
-    GoogleAuthProvider,
-    FacebookAuthProvider,
-  } from 'firebase/auth';
-  import authStore from '$lib/api/auth/store';
   import { createEventDispatcher } from 'svelte';
-  import { goto } from '$app/navigation';
   export let open;
   export let authModel;
   const dispatch = createEventDispatcher();

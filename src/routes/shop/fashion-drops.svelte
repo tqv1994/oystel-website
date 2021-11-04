@@ -1,31 +1,23 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import authStore from '$lib/api/auth/store';
+  import { authStore } from '$lib/store/auth';
   import Layout from '$lib/components/common/Layout.svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
-  import Button, { Icon, Label } from '@smui/button';
+  import { Icon } from '@smui/button';
   import IconButton, { Icon as Icon2 } from '@smui/icon-button';
   import Svg from '@smui/common/Svg.svelte';
   import OySlideProducts from '$lib/components/common/OySlideProducts.svelte';
-  import Select, { Option } from '@smui/select';
-  
-  import { stringHelper } from '$lib/helpers';
-  import { Product } from '$lib/api/product/type';
-  import { User } from '$lib/api/auth/type';
-  import { ProductListsData } from '$lib/api/pages/type';
-  import { productStore, updateProductStore } from '$lib/api/product/store';
+  import { Product } from '$lib/store/product';
+  import { productStore } from '$lib/store/product';
 
   export const load: Load = async ({ fetch, session, page }) => {
-    const res = await fetch(
-      `/api/pages/product/product-list`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const res = await fetch(`/page/product/product-list`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (res.ok) {
       const data: ProductListsData = await res.json();
@@ -36,9 +28,10 @@
       const error = await res.json();
       console.log(error);
     }
-    return { props: { } };
+    return { props: {} };
   };
 </script>
+
 <script lang="ts">
   let userModel = $authStore.user;
   let imageSlidesProduct = [
@@ -62,7 +55,7 @@
   };
 
   let products: Product[] = [];
-  productStore.subscribe(({items})=>{
+  productStore.subscribe(({ items }) => {
     products = Object.values(items);
   });
 </script>
@@ -291,7 +284,11 @@
                         style="background-image: url({product.gallery[0]?.url})"
                       >
                         <IconButton class="btn-favorite">
-                          <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
+                          <Icon
+                            class="like"
+                            component={Svg}
+                            viewBox="-4 -4 24 24"
+                          >
                             <path
                               d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
                               transform="translate(0.001)"
@@ -299,7 +296,11 @@
                               fill-rule="evenodd"
                             />
                           </Icon>
-                          <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
+                          <Icon
+                            class="liked"
+                            component={Svg}
+                            viewBox="-4 -4 24 24"
+                          >
                             <path
                               d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
                               transform="translate(0)"
@@ -371,9 +372,9 @@
     width: 80%;
   }
 
-  :global(.products-list .item-product){
-    @include mobile{
-      h3{
+  :global(.products-list .item-product) {
+    @include mobile {
+      h3 {
         --mdc-typography-headline3-font-size: 14px;
       }
     }
@@ -393,26 +394,7 @@
   }
 
   .products-list .item-product .thumbnail :global(.btn-favorite) {
-    position: absolute;
-    top: 0%;
-    right: 0%;
     filter: brightness(0);
-    @include mobile{
-      top: -2%;
-      right: -3%;
-    }
-  }
-  .products-list .item-product .thumbnail :global(.btn-favorite .like) {
-    display: block;
-  }
-  .products-list .item-product .thumbnail :global(.btn-favorite .liked) {
-    display: none;
-  }
-  .products-list .item-product .thumbnail :global(.btn-favorite:hover .like) {
-    display: none;
-  }
-  .products-list .item-product .thumbnail :global(.btn-favorite:hover .liked) {
-    display: block;
   }
 
   @include mobile {

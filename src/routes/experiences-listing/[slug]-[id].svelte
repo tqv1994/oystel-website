@@ -1,52 +1,32 @@
 <script lang="ts" context="module">
-  import { onMount, afterUpdate, beforeUpdate } from 'svelte';
+  import { onMount, afterUpdate, beforeUpdate, onDestroy } from 'svelte';
   import type { Load } from '@sveltejs/kit';
   import LayoutGrid, { Cell, InnerGrid } from '@smui/layout-grid';
-  import { goto } from '$app/navigation';
-  import Textfield from '@smui/textfield';
   import Button, { Label } from '@smui/button';
   import IconButton, { Icon } from '@smui/icon-button';
-  import Select, { Option } from '@smui/select';
-  import Tab from '@smui/tab';
-  import TabBar from '@smui/tab-bar';
-  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
   import Svg from '@smui/common/Svg.svelte';
-  import OyCarousel from '$lib/components/common/OyCarousel.svelte';
   import Layout from '$lib/components/common/Layout.svelte';
   import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
-  import { ExperienceModel } from '$lib/models/experience';
-  import { ProductModel } from '$lib/models/product';
-  import authStore from '$lib/api/auth/store';
-  import {
-    ExperiencePageData,
-    UpdateExperienceData,
-    UpdateProductData,
-  } from '$lib/api/pages/type';
+  import { authStore } from '$lib/store/auth';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
 
-  import {
-    experienceStore,
-    updateExperienceStore,
-  } from '$lib/api/experience/store';
-  import { productStore, updateProductStore } from '$lib/api/product/store';
+  import { experienceStore } from '$lib/store/experience';
+  import { productStore } from '$lib/store/product';
 
-  import { Experience } from '$lib/api/experience/type';
+  import { Experience } from '$lib/store/experience';
   import { stringHelper } from '$lib/helpers';
-  import { Product } from '$lib/api/product/type';
-  import { User } from '$lib/api/auth/type';
+  import { Product } from '$lib/store/product';
+  import { User } from '$lib/store/auth';
 
   export const load: Load = async ({ fetch, session, page }) => {
     let id = stringHelper.getSlugId(page.params.id);
-    const res = await fetch(
-      `/api/pages/experience/detail?id=${id}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const res = await fetch(`/page/experience/detail?id=${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
     console.log('Got experiences data', res.ok);
 
     if (res.ok) {
@@ -81,7 +61,13 @@
   let productIndex: number;
   export let id: string;
 
-  onMount(async () => {});
+  onMount(async () => {
+    onScrollFixedHeader();
+  });
+
+  onDestroy(async () => {
+    document.body.style.paddingTop = '0px';
+  });
 
   getData();
   function getData() {
@@ -105,24 +91,24 @@
 
   function onScrollFixedHeader() {
     if (document.documentElement.clientWidth > 949) {
+      document.getElementById('header')?.classList.add('fixed');
+      document.querySelector('header').style.zIndex = 100;
+      document.querySelector('.header-title')?.classList.add('fixed');
+      document.body.style.paddingTop = '659px';
       if (
-        document.body.scrollTop > 900 ||
-        document.documentElement.scrollTop > 900
+        document.body.scrollTop > 100 ||
+        document.documentElement.scrollTop > 100
       ) {
-        document.getElementById('header').classList.add('fixed');
-        document.querySelector('header').style.zIndex = 100;
-        document.querySelector('header').style.position = 'relative';
-        document
-          .querySelector('.header-title')
-          .classList.add('fixed', 'is_sticky');
+        document.querySelector('.header-title').classList.add('is_sticky');
       } else {
-        document.getElementById('header').classList.remove('fixed');
-        document.querySelector('header').style.zIndex = 'auto';
-        document.querySelector('header').style.position = 'relative';
-        document
-          .querySelector('.header-title')
-          .classList.remove('fixed', 'is_sticky');
+        document.querySelector('.header-title').classList.remove('is_sticky');
       }
+    } else {
+      document.getElementById('header')?.classList.remove('fixed');
+      document.querySelector('header').style.zIndex = 'auto';
+      document.querySelector('header').style.position = 'static';
+      document.querySelector('.header-title')?.classList.remove('fixed');
+      document.body.style.paddingTop = '0px';
     }
   }
   async function likeExperienceItem(experience: Experience) {
@@ -147,7 +133,7 @@
     if (userDataLikes.length == 0) {
       userDataLikes = null;
     }
-    const res = await fetch(`/api/pages/experience/like?id=${experience.id}`, {
+    const res = await fetch(`/page/experience/like?id=${experience.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -156,7 +142,7 @@
     });
 
     if (res.ok) {
-      const data: UpdateExperienceData = await res.json();
+      const data: UpdateExperience = await res.json();
       experience.users = data.updateExperience.experience.users;
       updateExperienceStore([experience]);
       getData();
@@ -186,7 +172,7 @@
         userDataLikes = null;
       }
     }
-    const res = await fetch(`/api/pages/product/like?id=${product.id}`, {
+    const res = await fetch(`/page/product/like?id=${product.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -195,7 +181,7 @@
     });
 
     if (res.ok) {
-      const data: UpdateProductData = await res.json();
+      const data: UpdateProduct = await res.json();
       product.users = data.updateProduct.product.users;
       updateProductStore([product]);
       getData();
@@ -212,96 +198,108 @@
 />
 <Layout config={configPage}>
   {#if experience}
-  <div class="content experience-detail">
-    <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-60 full-width">
-      <div class="content-wrap">
-        <div class="container">
-          <LayoutGrid class="p-0 hidden-on-sticky">
-            <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
-              <div class="experience-detail-image">
-                <div
-                  class="thumbnail"
-                  style={`background-image: url(${experience?.gallery[0].url})`}
-                />
-              </div>
-            </Cell>
-            <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
-              <div class="d-pt-90 m-pt-45 d-pb-100">
-                <p class="text-eyebrow m-m-0">{ experience?.country.name }</p>
-                <h1 class="m-mt-30 m-mb-15">{ experience?.name }</h1>
-                <p class="mb-30 short-description m-mt-0">
-                    { experience.intro ? experience.intro : "" }
-                </p>
-                <Button variant="outlined" class="mb-15"
-                  ><Label>Find My Advisor</Label></Button
-                >
-                <br />
-                <Button variant="outlined"><Label>What to Pack</Label></Button>
-              </div>
-              <div class="action-buttons m-none">
-                <IconButton>
-                  <Icon component={Svg} viewBox="0 0 13.246 19.134">
-                    <g
-                      id="Icon_-_Share"
-                      data-name="Icon - Share"
-                      transform="translate(0.5 1.233)"
+    <div class="content experience-detail">
+      <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-60 full-width">
+        <div class="content-wrap">
+          <div class="container">
+            <LayoutGrid class="p-0 hidden-on-sticky">
+              <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
+                <div class="experience-detail-image">
+                  <div
+                    class="thumbnail"
+                    style={`background-image: url(${experience?.gallery[0].url})`}
+                  />
+                </div>
+              </Cell>
+              <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
+                <div class="d-pt-90 m-pt-45 d-pb-100">
+                  <p class="text-eyebrow m-m-0">{experience?.country.name}</p>
+                  <h1 class="m-mt-30 m-mb-15">{experience?.name}</h1>
+                  <p class="mb-30 short-description m-mt-0">
+                    {experience.intro ? experience.intro : ''}
+                  </p>
+                  <Button variant="outlined" class="mb-15"
+                    ><Label>Find My Advisor</Label></Button
+                  >
+                  <br />
+                  <Button variant="outlined"><Label>What to Pack</Label></Button
+                  >
+                </div>
+                <div class="action-buttons m-none">
+                  <IconButton>
+                    <Icon component={Svg} viewBox="0 0 13.246 19.134">
+                      <g
+                        id="Icon_-_Share"
+                        data-name="Icon - Share"
+                        transform="translate(0.5 1.233)"
+                      >
+                        <path
+                          id="Path_318"
+                          data-name="Path 318"
+                          d="M153.689-5867H150.7v11.841h12.246V-5867h-2.889"
+                          transform="translate(-150.699 5872.56)"
+                          fill="none"
+                          stroke="#000"
+                          stroke-width="1"
+                        />
+                        <path
+                          id="Path_320"
+                          data-name="Path 320"
+                          d="M161.543-5862.169v-11.12"
+                          transform="translate(-155.42 5873.29)"
+                          fill="none"
+                          stroke="#000"
+                          stroke-width="1"
+                        />
+                        <path
+                          id="Line"
+                          d="M156.364-5870.5l3.472-3.473,3.472,3.473"
+                          transform="translate(-153.713 5873.443)"
+                          fill="none"
+                          stroke="#000"
+                          stroke-width="1"
+                        />
+                      </g>
+                    </Icon>
+                  </IconButton>
+                  <IconButton
+                    class="btn-favorite {experience.liked ? 'liked' : ''}"
+                    on:click={likeExperienceItem(experience)}
+                  >
+                    <Icon
+                      class="like"
+                      component={Svg}
+                      viewBox="0 0 16.249 14.588"
+                    >
+                      <g
+                        data-name="Icon - Heart"
+                        transform="translate(0.125 0.125)"
+                      >
+                        <path
+                          id="Heart_Off"
+                          data-name="Heart Off"
+                          d="M11.453,0c-.121,0-.245,0-.365.014A4.8,4.8,0,0,0,7.943,1.769,4.789,4.789,0,0,0,4.726.146H4.579A4.528,4.528,0,0,0,0,4.579c-.089,2.3,1.438,4.236,2.6,5.5A25.674,25.674,0,0,0,7.78,14.236a.775.775,0,0,0,.805-.021A25.736,25.736,0,0,0,13.6,9.846c1.107-1.308,2.558-3.313,2.384-5.6A4.536,4.536,0,0,0,11.453,0m0,1.367a3.2,3.2,0,0,1,3.2,2.985c.135,1.776-1.113,3.474-2.062,4.6a24.721,24.721,0,0,1-4.44,3.924A24.207,24.207,0,0,1,3.569,9.138c-.991-1.081-2.3-2.724-2.234-4.506a3.161,3.161,0,0,1,3.237-3.12h.115a3.48,3.48,0,0,1,2.3,1.209l1,1.053.955-1.093a3.485,3.485,0,0,1,2.261-1.3c.084-.008.17-.01.255-.01"
+                          transform="translate(0.001)"
+                          stroke="#f0f7f8"
+                          stroke-width="0.25"
+                          fill-rule="evenodd"
+                        />
+                      </g>
+                    </Icon>
+                    <Icon
+                      class="liked"
+                      component={Svg}
+                      viewBox="0 0 16.249 14.588"
                     >
                       <path
-                        id="Path_318"
-                        data-name="Path 318"
-                        d="M153.689-5867H150.7v11.841h12.246V-5867h-2.889"
-                        transform="translate(-150.699 5872.56)"
-                        fill="none"
-                        stroke="#000"
-                        stroke-width="1"
-                      />
-                      <path
-                        id="Path_320"
-                        data-name="Path 320"
-                        d="M161.543-5862.169v-11.12"
-                        transform="translate(-155.42 5873.29)"
-                        fill="none"
-                        stroke="#000"
-                        stroke-width="1"
-                      />
-                      <path
-                        id="Line"
-                        d="M156.364-5870.5l3.472-3.473,3.472,3.473"
-                        transform="translate(-153.713 5873.443)"
-                        fill="none"
-                        stroke="#000"
-                        stroke-width="1"
-                      />
-                    </g>
-                  </Icon>
-                </IconButton>
-                <IconButton class="btn-favorite {experience.liked ? 'liked' : ''}" on:click={likeExperienceItem(experience)}>
-                  <Icon class="like" component={Svg} viewBox="0 0 16.249 14.588">
-                    <g
-                      data-name="Icon - Heart"
-                      transform="translate(0.125 0.125)"
-                    >
-                      <path
-                        id="Heart_Off"
-                        data-name="Heart Off"
-                        d="M11.453,0c-.121,0-.245,0-.365.014A4.8,4.8,0,0,0,7.943,1.769,4.789,4.789,0,0,0,4.726.146H4.579A4.528,4.528,0,0,0,0,4.579c-.089,2.3,1.438,4.236,2.6,5.5A25.674,25.674,0,0,0,7.78,14.236a.775.775,0,0,0,.805-.021A25.736,25.736,0,0,0,13.6,9.846c1.107-1.308,2.558-3.313,2.384-5.6A4.536,4.536,0,0,0,11.453,0m0,1.367a3.2,3.2,0,0,1,3.2,2.985c.135,1.776-1.113,3.474-2.062,4.6a24.721,24.721,0,0,1-4.44,3.924A24.207,24.207,0,0,1,3.569,9.138c-.991-1.081-2.3-2.724-2.234-4.506a3.161,3.161,0,0,1,3.237-3.12h.115a3.48,3.48,0,0,1,2.3,1.209l1,1.053.955-1.093a3.485,3.485,0,0,1,2.261-1.3c.084-.008.17-.01.255-.01"
-                        transform="translate(0.001)"
-                        stroke="#f0f7f8"
-                        stroke-width="0.25"
-                        fill-rule="evenodd"
-                      />
-                    </g>
-                  </Icon>
-                  <Icon class="liked" component={Svg} viewBox="0 0 16.249 14.588">
-                    <path
                         d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
                         transform="translate(0)"
                         fill="#000"
                         fill-rule="evenodd"
                       />
-                  </Icon>
-                </IconButton>
-              </div>
+                    </Icon>
+                  </IconButton>
+                </div>
               </Cell>
             </LayoutGrid>
             <LayoutGrid class="p-0 show-on-sticky m-none">
@@ -801,12 +799,6 @@
       @content;
     }
   }
-  :global(.show-on-sticky) {
-    display: none;
-  }
-  :global(.is_sticky .show-on-sticky) {
-    display: block;
-  }
   .content :global(.mdc-button) {
     width: 180px;
     min-width: 180px;
@@ -815,6 +807,25 @@
   /* Header title */
   .header-title {
     background-color: #f0f7f8;
+  }
+
+  @media screen and (max-width: 1304px) {
+    :global(.page.page-experience-detail
+        .header-title
+        .show-on-sticky
+        button.mdc-button) {
+      width: auto;
+      min-width: auto;
+    }
+  }
+
+  @media screen and (max-width: 999px) {
+    :global(.page.page-experience-detail
+        .header-title
+        .show-on-sticky
+        button.mdc-button) {
+      padding: 10px;
+    }
   }
 
   :global(.experience-detail .header-title .btn-favorite) {
@@ -912,7 +923,7 @@
     background-color: #d3d3d3;
   }
   .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-    background-color: #5078BC;
+    background-color: #5078bc;
   }
   @media (min-width: 1240px) {
     .products-list :global(.mdc-layout-grid__inner) {
@@ -1013,8 +1024,8 @@
     background-color: #000;
   }
 
-  @media (max-width: 1222px){
-    .detail-content .container > :global(.mdc-layout-grid){
+  @media (max-width: 1222px) {
+    .detail-content .container > :global(.mdc-layout-grid) {
       --mdc-layout-grid-gutter-desktop: 30px;
     }
   }
