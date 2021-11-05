@@ -9,6 +9,7 @@
   import { get } from 'svelte/store';
   import { parseId } from '$lib/utils/fetch';
   import { Product } from '$lib/store/product';
+  import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
 
   export const load: Load = async ({ fetch, page }) => {
     const id = parseId(page.params.slug);
@@ -33,6 +34,8 @@
 <script type="ts">
   export let title: string;
   export let items: Product[];
+  let openProductSlide: boolean = false;
+  let productIndex: number;
 </script>
 
 <section class="d-pt-55 m-pt-40">
@@ -84,3 +87,108 @@
     </div>
   </div>
 </section>
+<ProductSliderModal
+  bind:open={openProductSlide}
+  products={items}
+  bind:active={productIndex}>no content</ProductSliderModal
+>
+<style lang="scss">
+  $desktop-width: 950px;
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
+      @content;
+    }
+  }
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+      @content;
+    }
+  }
+  .products-list :global(.mdc-layout-grid__inner) {
+    overflow-x: auto;
+    grid-auto-flow: column;
+    padding-bottom: 60px;
+    @include mobile {
+      padding-bottom: 40px;
+    }
+  }
+  .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-track) {
+    background-color: #d3d3d3;
+  }
+  .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar) {
+    height: 10px;
+    background-color: #d3d3d3;
+  }
+  .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
+    background-color: #5078bc;
+  }
+
+  :global(.products-list .item-product) {
+    @include mobile {
+      h3 {
+        --mdc-typography-headline3-font-size: 14px;
+      }
+    }
+  }
+
+  .products-list :global(.item-product .thumbnail) {
+    width: 100%;
+    padding-bottom: 145%;
+    background-color: #f2f2f2;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+  }
+
+  .products-list :global(.item-product .thumbnail .btn-favorite) {
+    filter: brightness(0);
+  }
+  @media (min-width: 1240px) {
+    .products-list :global(.mdc-layout-grid__inner) {
+      grid-auto-columns: minmax(
+        calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)),
+        1fr
+      );
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr)
+      );
+    }
+  }
+  @media (max-width: 1239px) and (min-width: 905px) {
+    .products-list :global(.mdc-layout-grid__inner) {
+      grid-auto-columns: minmax(
+        calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)),
+        1fr
+      );
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)), 1fr)
+      );
+    }
+  }
+  @media (max-width: 904px) and (min-width: 600px) {
+    .products-list :global(.mdc-layout-grid__inner) {
+      grid-auto-columns: minmax(
+        calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
+        1fr
+      );
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
+      );
+    }
+  }
+  @media (max-width: 599px) {
+    .products-list :global(.mdc-layout-grid__inner) {
+      grid-auto-columns: minmax(
+        calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
+        1fr
+      );
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
+      );
+    }
+  }
+</style>

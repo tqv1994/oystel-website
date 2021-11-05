@@ -134,3 +134,23 @@
     </LayoutGrid>
   </div>
 </section>
+<style lang="scss">
+  #shop-by-look-section {
+    --mdc-typography-headline5-font-size: 14px;
+    --mdc-typography-headline5-line-height: 22px;
+    /* Products */
+    .item-product .title-wrap {
+      position: relative;
+    }
+    .item-product .title-wrap :global(.mdc-icon-button) {
+      position: absolute;
+      top: 20%;
+      right: 0;
+      transform: translateY(-50%);
+    }
+
+    .item-product .title-wrap .divider:after {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
+</style>
