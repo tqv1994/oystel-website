@@ -15,8 +15,8 @@ import {
   SearchResultGroup,
 } from '$lib/store/search';
 import { orderings, ORDER_BY_NAME_ASC } from '$lib/store/order';
+import { Rec } from '@sveltejs/kit/types/helper';
 
-const tIndex = searchClient.index('destination-type');
 const dIndex = searchClient.index('destination');
 
 /**
@@ -29,11 +29,17 @@ export const get: RequestHandler = async (request: Request) => {
     if (params[TYPE]) {
       destinations[params[TYPE] as string] = await search<Destination>(params);
     } else {
-      const tRes = await tIndex.search<Category>();
-      if (tRes.nbHits) {
-        for (const t of tRes.hits) {
-          params[TYPE] = t.id;
-          destinations[t.id] = await search<Destination>(params);
+      const limit = params[LIMIT] || 3;
+      const res = await search<Destination>(params);
+      const map: Rec<Destination[]> = {};
+      for (const item of res.items) {
+        const cat = item.type.id;
+        if (!destinations[cat]) {
+          destinations[cat] = { hasMore: false, items: [item] };
+        } else if (destinations[cat].items.length < limit) {
+          map[item.type.id].push(item);
+        } else if (destinations[cat].items.length === limit) {
+          destinations[cat].hasMore = true;
         }
       }
     }
@@ -49,7 +55,10 @@ export const get: RequestHandler = async (request: Request) => {
 async function search<T extends Identifiable>(
   params: SearchParams,
 ): Promise<SearchResultGroup<T>> {
-  const filter: string[] = [`type = '${params[TYPE]}'`];
+  const filter: string[] = [];
+  if (params[TYPE]) {
+    filter.push(`type = ${params[TYPE]}`);
+  }
   if (params[COUNTRY]) {
     filter.push(`country = ${params[COUNTRY]}`);
   }

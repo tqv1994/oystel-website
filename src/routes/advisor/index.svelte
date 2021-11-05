@@ -20,6 +20,7 @@
   import { Advisor } from '$lib/store/advisor';
   import { get } from 'svelte/store';
   import { SearchResultGroup } from '$lib/store/search';
+  import _ from 'lodash';
   import { Ordering, orderings, ORDER_BY_NAME_ASC } from '$lib/store/order';
   import {
     COUNTRY,
@@ -41,6 +42,7 @@
   import { Language, languageStore } from '$lib/store/language';
   import { Category } from '$lib/store/category';
   import { makeLink } from '$lib/utils/link';
+  import { implodeString } from '$lib/utils/string';
   import InviteMembersModal from '$lib/components/modals/InviteMembersModal.svelte';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
 
@@ -138,6 +140,8 @@
   export let ordering: Ordering;
   let contentHeaderActionMobile: string = '';
 
+  const specialities = sortByName(Object.values($specialityStore.items));
+
   let configPage = {
     header: {
       page: 'advisors',
@@ -169,11 +173,12 @@
       ...params,
     });
   }
+  const goSlow = _.debounce(go, 1000);
 
   function onQueryInput(event: InputEvent) {
     const q = (event.target as HTMLInputElement).value.trim();
     if (q.length > 2) {
-      go({ q });
+      goSlow({ q });
     }
   }
 
@@ -189,10 +194,13 @@
     go({ o: event.detail.value.key });
   }
 
-  function onSearchSubmitMobile(event: CustomEvent){
+  function onSearchSubmitMobile(event: CustomEvent) {
     contentHeaderActionMobile = '';
     console.log(event.detail);
-    go({c: event.detail.country?.id || '', t: event.detail.speciality?.id || ''});
+    go({
+      c: event.detail.country?.id || '',
+      t: event.detail.speciality?.id || '',
+    });
   }
 
   function onScrollFixedHeader() {
@@ -286,16 +294,16 @@
               class="form-inline d-desktop text-right"
             >
               <div>
-                <div class="form-control">
+                <div class="form-control text-left">
                   <Dropdown
                     label="Filter by Speciality"
                     blankItem="All"
-                    items={sortByName(Object.values($specialityStore.items))}
+                    items={specialities}
                     value={speciality}
                     on:MDCSelect:change={onCountryChange}
                   />
                 </div>
-                <div class="form-control">
+                <div class="form-control text-left">
                   <Dropdown
                     label="By Country"
                     blankItem="All"
@@ -315,7 +323,7 @@
                   <Dropdown
                     label="Filter by Speciality"
                     blankItem="All"
-                    items={sortByName(Object.values($specialityStore.items))}
+                    items={specialities}
                     value={speciality}
                     on:MDCSelect:change={onCountryChange}
                   />
@@ -373,11 +381,14 @@
                     >
                     <CellTable style="width: 35%;"
                       ><p>
-                        {item.speciality1?.name || ''}{#if item.speciality2},
-                          {item.speciality2?.name}
-                        {/if}{#if item.speciality3},
-                          {item.speciality3?.name}
-                        {/if}
+                        {implodeString(
+                          [
+                            item.speciality1?.name,
+                            item.speciality2?.name,
+                            item.speciality3?.name,
+                          ],
+                          ', ',
+                        )}
                       </p></CellTable
                     >
                     <CellTable style="width: 20%;"
@@ -441,11 +452,12 @@
 
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  specialities={sortByName(Object.values($specialityStore.items))}
+  {specialities}
   countries={sortByName(Object.values($countryStore.items))}
   on:close={onSearchSubmitMobile}
-  searchModel={{speciality: speciality,country: country}}
+  searchModel={{ speciality: speciality, country: country }}
 />
+
 <style lang="scss">
   .header-title {
     background-color: #f0f7f8;

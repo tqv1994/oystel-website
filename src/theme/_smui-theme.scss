@@ -832,6 +832,11 @@ header {
   }
 }
 
+/* mdc-dialog */
+body.mdc-dialog-scroll-lock{ // Fixed error jumpled screen when open dialog
+  overflow: auto;
+}
+
 #slider {
   .search-form .mdc-text-field {
     -webkit-backdrop-filter: blur(7px) brightness(0.7);

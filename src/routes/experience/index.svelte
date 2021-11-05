@@ -28,7 +28,7 @@
     ORDER_BY_PUBLISH_DATE_ASC,
     ORDER_BY_PUBLISH_DATE_DESC,
   } from '$lib/store/order';
-  import { debounce } from 'lodash';
+  import _ from 'lodash';
   import {
     COUNTRY,
     LIMIT,
@@ -131,12 +131,6 @@
     countries = sortByName(Object.values(store.items));
   });
 
-  type GoParams = {
-    q?: string;
-    t?: string;
-    c?: string;
-    s?: string;
-  };
   function go(params: SearchParams) {
     search({
       q: query,
@@ -146,11 +140,12 @@
       ...params,
     });
   }
+  const goSlow = _.debounce(go, 1000);
 
   function onQueryInput(event: InputEvent) {
     const q = (event.target as HTMLInputElement).value.trim();
     if (q.length > 2) {
-      go({ q });
+      goSlow({ q });
     }
   }
 

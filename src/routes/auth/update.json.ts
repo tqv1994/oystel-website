@@ -1,9 +1,9 @@
 import { cmsUrlPrefix } from '$lib/env';
-import { filterResponseHeaders } from '$lib/session';
+import { extractSetCookieHeader } from '$lib/utils/session';
 import { RequestHandler, Request } from '@sveltejs/kit';
 
 /**
- * @type {import('@sveltejs/kit').Post}
+ * @type {import('@sveltejs/kit').Put}
  */
 export const put: RequestHandler = async (
   request: Request<Record<string, any>, AuthForm>,
@@ -26,13 +26,11 @@ export const put: RequestHandler = async (
       },
       body: JSON.stringify(request.body.data),
     });
-    const headers = filterResponseHeaders(res.headers);
     const body = await res.json();
     return {
       status: res.status,
       body,
-      headers,
-    };
+      headers: extractSetCookieHeader(res.headers),    };
   } catch (error) {
     console.error('Error updating user info', error);
   }

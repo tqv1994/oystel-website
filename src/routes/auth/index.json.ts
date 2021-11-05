@@ -1,5 +1,5 @@
 import { cmsUrlPrefix } from '$lib/env';
-import { filterResponseHeaders } from '$lib/session';
+import { extractSetCookieHeader } from '$lib/utils/session';
 import { RequestHandler, Request } from '@sveltejs/kit';
 
 /**
@@ -24,13 +24,12 @@ export const post: RequestHandler = async (
         Authorization: 'Bearer ' + request.body.token,
       },
     });
-    const headers = filterResponseHeaders(res.headers);
     const body = await res.json();
     console.log('Sign in success', `${cmsUrlPrefix}/auth/me`, body);
     return {
       status: res.status,
       body,
-      headers,
+      headers: extractSetCookieHeader(res.headers),
     };
   } catch (error) {
     console.error('Error signing in in auth', error);

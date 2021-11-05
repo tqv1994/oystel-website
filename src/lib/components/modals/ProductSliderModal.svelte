@@ -182,13 +182,13 @@
       overflow-y: scroll;
     }
     .popup-products :global(.carousel .wrap-control) {
-      top: 102%;
+      top: 105%;
     }
     .popup-products :global(.carousel button.left) {
-      left: 5vw;
+      left: 10vw;
     }
     .popup-products :global(.carousel button.right) {
-      right: 12vw;
+      right: 10vw;
     }
     .popup-products :global(.btn-close) {
       right: 10px;

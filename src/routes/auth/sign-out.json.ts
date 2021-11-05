@@ -1,8 +1,5 @@
 import { RequestHandler, Request } from '@sveltejs/kit';
-import {
-  getSessionCookieFromRequest,
-  filterResponseHeaders,
-} from '$lib/session';
+import { extractSetCookieHeader, getSessionCookie } from '$lib/utils/session';
 import { cmsUrlPrefix } from '$lib/env';
 
 /**
@@ -10,7 +7,7 @@ import { cmsUrlPrefix } from '$lib/env';
  */
 export const get: RequestHandler = async (request: Request) => {
   try {
-    const cookie = getSessionCookieFromRequest(request);
+    const cookie = getSessionCookie(request.headers.cookie);
     if (cookie) {
       // console.log('we have session cookie...');
       const res = await fetch(`${cmsUrlPrefix}/auth/me`, {
@@ -23,10 +20,9 @@ export const get: RequestHandler = async (request: Request) => {
         console.error('Error signing out', res);
         return { status: 500 };
       }
-      const headers = filterResponseHeaders(res.headers);
       return {
         status: 202,
-        headers,
+        headers: extractSetCookieHeader(res.headers),
       };
     }
   } catch (err) {

@@ -14,8 +14,8 @@ import {
   TYPE,
 } from '$lib/store/search';
 import { orderings, ORDER_BY_NAME_ASC } from '$lib/store/order';
+import { Rec } from '@sveltejs/kit/types/helper';
 
-const tIndex = searchClient.index('experience-type');
 const dIndex = searchClient.index('experience');
 
 /**
@@ -24,15 +24,21 @@ const dIndex = searchClient.index('experience');
 export const get: RequestHandler = async (request: Request) => {
   try {
     const params = parseSearchParams(request.query);
-    const experiences: Record<string, SearchResultGroup<Experience>> = {};
+    const experiences: Rec<SearchResultGroup<Experience>> = {};
     if (params[TYPE]) {
       experiences[params[TYPE] as string] = await search<Experience>(params);
     } else {
-      const tRes = await tIndex.search<Category>();
-      if (tRes.nbHits) {
-        for (const t of tRes.hits) {
-          params[TYPE] = t.id;
-          experiences[t.id] = await search<Experience>(params);
+      const limit = params[LIMIT] || 3;
+      const res = await search<Experience>(params);
+      const map: Rec<Experience[]> = {};
+      for (const item of res.items) {
+        const cat = item.type.id;
+        if (!experiences[cat]) {
+          experiences[cat] = { hasMore: false, items: [item] };
+        } else if (experiences[cat].items.length < limit) {
+          map[item.type.id].push(item);
+        } else if (experiences[cat].items.length === limit) {
+          experiences[cat].hasMore = true;
         }
       }
     }
@@ -48,7 +54,10 @@ export const get: RequestHandler = async (request: Request) => {
 async function search<T extends Identifiable>(
   params: SearchParams,
 ): Promise<SearchResultGroup<T>> {
-  const filter: string[] = [`type = '${params[TYPE]}'`];
+  const filter: string[] = [];
+  if (params[TYPE]) {
+    filter.push(`type = ${params[TYPE]}`);
+  }
   if (params[COUNTRY]) {
     filter.push(`country = ${params[COUNTRY]}`);
   }

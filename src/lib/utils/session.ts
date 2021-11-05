@@ -1,22 +1,20 @@
-import { Request } from '@sveltejs/kit';
 import * as cookie from 'cookie';
 
-export function getSessionCookieFromRequest(req: Request): string {
-  const cookies = cookie.parse(req.headers.cookie || '');
-  const { session, 'session.sig': sig } = cookies;
-  if (session && sig) {
-    return `session=${session};session.sig=${sig}`;
+export function getSessionCookie(cookieString: string): string {
+  if (cookieString) {
+    const cookies = cookie.parse(cookieString);
+    const { session, 'session.sig': sig } = cookies;
+    if (session && sig) {
+      return `session=${session};session.sig=${sig}`;
+    }
   }
   return '';
 }
 
-export function filterResponseHeaders(
-  responseHeaders: Headers,
-): Record<string, string> {
-  const setCookie = (responseHeaders as any).raw()['set-cookie'];
-  const headers: Record<string, string> = {};
-  if (setCookie) {
-    headers['set-cookie'] = setCookie;
+export function extractSetCookieHeader(headers: Headers): Headers | undefined {
+  if (headers.has('set-cookie')) {
+    return new Headers({
+      'set-cookie': headers.get('set-cookie') as string,
+    });
   }
-  return headers;
 }

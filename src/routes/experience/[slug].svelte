@@ -19,11 +19,6 @@
 
   export const load: Load = async ({ fetch, page }) => {
     const id = parseId(page.params.slug);
-    if (get(experienceStore).items[id]) {
-      return {
-        props: { id },
-      };
-    }
 
     const res = await fetch(`/experience/${id}.json`);
     if (res.ok) {
@@ -50,7 +45,6 @@
   let experience: Experience;
   let productSliderOpen: boolean;
   let activeProduct: number;
-  let experiences: Experience[];
 
   if ($authStore.user) {
     experiences = $authStore.user.experienceLikes || [];
@@ -356,14 +350,14 @@
                             <Cell
                               spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
                               ><p class="text-eyebrow text-right">
-                                Experience
+                                Destination
                               </p></Cell
                             >
                           </InnerGrid>
                           <div class="divider" />
                           <h4 class="text-h2 title">{item.name}</h4>
                           <p class="short-text m-none">
-                            {item.intro}
+                            {(item.intro || '').substring(0,80)}
                           </p>
                         </a>
                       </div>
@@ -382,7 +376,7 @@
         <ProductShow title="What to pack" items={experience.pack} />
       {/if}
       {#if experience.destinations?.length}
-        <section class="t-pt-80 t-pb-100 m-pt-0 m-pb-85 d-none m-block">
+        <section class="m-pt-50 m-pb-85 d-none m-block">
           <div class="container">
             <h1 class="mt-0 d-mb-80 m-mb-35">My Favorite Places</h1>
             <div class="experiences-list">
@@ -429,7 +423,7 @@
                         </IconButton>
                       </div>
                       <a href={makeLink('/destination', item)}>
-                        <InnerGrid class="p-0 m-none">
+                        <InnerGrid class="p-0">
                           <Cell
                             spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
                             ><p class="text-eyebrow text-left">
@@ -439,15 +433,7 @@
                           <Cell
                             spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
                             ><p class="text-eyebrow text-right">
-                              Experience
-                            </p></Cell
-                          >
-                        </InnerGrid>
-                        <InnerGrid class="p-0 d-none m-block">
-                          <Cell
-                            spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
-                            ><p class="text-eyebrow text-left mt-20 mb-20">
-                              Experience
+                              Destination
                             </p></Cell
                           >
                         </InnerGrid>
@@ -456,7 +442,7 @@
                           {item.name}
                         </h4>
                         <p class="short-text m-mt-0">
-                          {item.intro}
+                          {(item.intro || '').substring(0,80)}
                         </p>
                       </a>
                     </div>

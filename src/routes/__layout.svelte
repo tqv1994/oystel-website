@@ -10,21 +10,19 @@
   import { countryStore } from '$lib/store/country';
   import { languageStore } from '$lib/store/language';
   import { Metadata } from './metadata.json';
+  import { Locals } from '$lib/store/locals';
   export let key;
 
-  export const load: Load = async ({ fetch, session, page }) => {
-    const metaRes = await fetch('/metadata.json');
-    if (metaRes.ok) {
-      const data: Metadata = await metaRes.json();
-      insertToStore(destinationTypeStore, data.destinationTypes, false);
-      insertToStore(experienceTypeStore, data.experienceTypes, false);
-      insertToStore(specialityStore, data.specialities, false);
-      insertToStore(countryStore, data.countries, false);
-      insertToStore(languageStore, data.languages, false);
-    } else {
-      const error = await metaRes.json();
-      console.log(error);
-    }
+  export const load: Load<{ session: Locals }> = async ({ session, page }) => {
+    insertToStore(
+      destinationTypeStore,
+      session.metadata.destinationTypes,
+      false,
+    );
+    insertToStore(experienceTypeStore, session.metadata.experienceTypes, false);
+    insertToStore(specialityStore, session.metadata.specialities, false);
+    insertToStore(countryStore, session.metadata.countries, false);
+    insertToStore(languageStore, session.metadata.languages, false);
     authStore.set({ user: session.user });
     return {
       props: {},

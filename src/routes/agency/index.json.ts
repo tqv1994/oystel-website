@@ -1,9 +1,6 @@
 import { cmsUrlPrefix } from '$lib/env';
-import {
-  getSessionCookieFromRequest,
-  filterResponseHeaders,
-} from '$lib/session';
-import { AgencyApplicationForm3 } from '$lib/xxxtypes';
+import { getSessionCookie } from '$lib/utils/session';
+import { extractSetCookieHeader } from '$lib/utils/session';
 import { RequestHandler, Request } from '@sveltejs/kit';
 
 /**
@@ -20,7 +17,7 @@ export const post: RequestHandler = async (
       }),
     };
   }
-  const cookie = getSessionCookieFromRequest(request);
+  const cookie = getSessionCookie(request.headers.cookie);
   if (cookie) {
     try {
       const res = await fetch(`${cmsUrlPrefix}/agencies`, {
@@ -33,12 +30,11 @@ export const post: RequestHandler = async (
           description: request.body.description,
         }),
       });
-      const headers = filterResponseHeaders(res.headers);
       const body = await res.json();
       return {
         status: res.status,
         body,
-        headers,
+        headers: extractSetCookieHeader(res.headers),
       };
     } catch (error) {
       console.error('Error POST agency info', error);

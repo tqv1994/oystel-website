@@ -1,6 +1,4 @@
 <script lang="ts" context="module">
-  export const prerender = true;
-
   import type { Load } from '@sveltejs/kit';
   import { destinationStore } from '$lib/store/destination';
   import { documentHelper } from '$lib/helpers';
@@ -41,6 +39,7 @@
 </script>
 
 <script lang="ts">
+
   let configPage = {
     header: {
       page: 'home',
@@ -297,11 +296,7 @@
             <div class="item-experience featured">
               <div class="thumbnail dark">
                 <a
-                  href={routerHelper.getUrl(
-                    'experiences-listing',
-                    curatedExperiences[0].name,
-                    curatedExperiences[0].id,
-                  )}
+                  href={makeLink('/experience',curatedExperiences[0])}
                 >
                   <div
                     class="image-cover"
@@ -418,7 +413,7 @@
             <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
               <div class="item-experience">
                 <div class="thumbnail">
-                  <a href={makeLink('/experience', item)}>
+                  <a href={makeLink('/destination', item)}>
                     <div
                       class="image-cover"
                       style="padding-top: calc(410/315 * 100%)"
