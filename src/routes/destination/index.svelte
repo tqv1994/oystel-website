@@ -16,7 +16,6 @@
   import { get } from 'svelte/store';
   import { Category } from '$lib/store/category';
   import Dropdown, { DropdownValue } from '$lib/components/dropdown.svelte';
-  import { debounce } from 'lodash';
   import {
     COUNTRY,
     LIMIT,
