@@ -19,11 +19,11 @@ import { makeLink } from '$lib/utils/link';
   
     export const load: Load = async ({ fetch, page }) => {
         const id = parseId(page.params.slug);
-        if (get(advisorStore).items[id]) {
-            return {
-                props: { id },
-            };
-        }
+        // if (get(advisorStore).items[id]) {
+        //     return {
+        //         props: { id },
+        //     };
+        // }
         const res = await fetch(`/advisor/${id}.json`);
         if (res.ok) {
             const data: Advisor = await res.json();
@@ -33,17 +33,6 @@ import { makeLink } from '$lib/utils/link';
             const error = await res.json();
             console.log(error);
         }
-      // const url = `api/v1/users/${page.params.slug}`;
-      // const { response, json } = await api.get(session.API_ENDPOINT, url);
-      // if (response.status === 200) {
-      // return {
-      //     props: {
-      //     localUser: json.data,
-      //     },
-      // };
-      // } else {
-      // return { props: { localUser: [] } };
-      // }
     };
   </script>
   
