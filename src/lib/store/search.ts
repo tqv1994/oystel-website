@@ -1,6 +1,6 @@
 import { goto } from '$app/navigation';
 import { meilisearchApiKey, meilisearchUrl } from '$lib/env';
-import {MeiliSearch} from 'meilisearch';
+import MeiliSearch from 'meilisearch';
 import { NAME_ASC_KEY, OrderingKey } from './order';
 import { Identifiable } from './types';
 

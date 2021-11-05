@@ -20,6 +20,7 @@
   import { Advisor } from '$lib/store/advisor';
   import { get } from 'svelte/store';
   import { SearchResultGroup } from '$lib/store/search';
+  import { debounce } from 'lodash';
   import { Ordering, orderings, ORDER_BY_NAME_ASC } from '$lib/store/order';
   import {
     COUNTRY,
