@@ -26,6 +26,10 @@ export type ExperienceBase = Exhibitable & {
 };
 
 export type Experience = ExperienceBase & Nationalizable & Categorizable;
+export type ExperienceSearchResultItem = ExperienceBase & {
+  country: string;
+  type: string;
+};
 
 export const experienceStore = writable<CollectionStore<Experience>>({
   items: {},

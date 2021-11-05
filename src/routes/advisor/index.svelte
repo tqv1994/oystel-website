@@ -63,7 +63,7 @@
   };
 
   export const load: Load = async ({ fetch, page }) => {
-    page.query.set(LIMIT, page.query.get(TYPE) ? '20' : '3');
+    page.query.set(LIMIT, '20');
     const res = await fetch(`/advisor.json?${page.query.toString()}`);
     if (res.ok) {
       const searchData: SearchResultGroup<SearchResultItem> = await res.json();
@@ -204,33 +204,33 @@
   }
 
   function onScrollFixedHeader() {
-    if (document.documentElement.clientWidth < 950) {
-      if (
-        document.body.scrollTop > 450 ||
-        document.documentElement.scrollTop > 450
-      ) {
-        document.getElementById('header').classList.add('fixed');
-        document.querySelector('header').style.zIndex = 7;
-        document.querySelector('header').style.position = 'relative';
-        document
-          .querySelector('.header-title')
-          .classList.add('fixed', 'is_sticky');
-      } else {
-        document.getElementById('header').classList.remove('fixed');
-        document.querySelector('header').style.zIndex = 'auto';
-        document.querySelector('header').style.position = 'static';
-        document
-          .querySelector('.header-title')
-          .classList.remove('fixed', 'is_sticky');
-      }
-    } else {
-      document.getElementById('header').classList.remove('fixed');
-      document.querySelector('header').style.zIndex = 'auto';
-      document.querySelector('header').style.position = 'static';
-      document
-        .querySelector('.header-title')
-        .classList.remove('fixed', 'is_sticky');
-    }
+    // if (document.documentElement.clientWidth < 950) {
+    //   if (
+    //     document.body.scrollTop > 450 ||
+    //     document.documentElement.scrollTop > 450
+    //   ) {
+    //     document.getElementById('header').classList.add('fixed');
+    //     document.querySelector('header').style.zIndex = 7;
+    //     document.querySelector('header').style.position = 'relative';
+    //     document
+    //       .querySelector('.header-title')
+    //       .classList.add('fixed', 'is_sticky');
+    //   } else {
+    //     document.getElementById('header').classList.remove('fixed');
+    //     document.querySelector('header').style.zIndex = 'auto';
+    //     document.querySelector('header').style.position = 'static';
+    //     document
+    //       .querySelector('.header-title')
+    //       .classList.remove('fixed', 'is_sticky');
+    //   }
+    // } else {
+    //   document.getElementById('header').classList.remove('fixed');
+    //   document.querySelector('header').style.zIndex = 'auto';
+    //   document.querySelector('header').style.position = 'static';
+    //   document
+    //     .querySelector('.header-title')
+    //     .classList.remove('fixed', 'is_sticky');
+    // }
   }
 
   // onMount(async () => {});
@@ -433,7 +433,14 @@
                               {item.country?.name || ''}
                             </p>
                             <p class="m-0">
-                              {(item.description || '')?.substr(0, 80)}
+                              {implodeString(
+                                [
+                                  item.speciality1?.name,
+                                  item.speciality2?.name,
+                                  item.speciality3?.name,
+                                ],
+                                ', ',
+                              ).substr(0, 80)}
                             </p>
                           </Cell>
                         </LayoutGrid>

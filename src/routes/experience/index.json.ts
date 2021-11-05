@@ -1,7 +1,6 @@
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Experience } from '$lib/store/experience';
-import { Category } from '$lib/store/category';
+import { Experience, ExperienceSearchResultItem } from '$lib/store/experience';
 import { searchClient, SearchResultGroup } from '$lib/store/search';
 import { Identifiable } from '$lib/store/types';
 import {
@@ -24,21 +23,20 @@ const dIndex = searchClient.index('experience');
 export const get: RequestHandler = async (request: Request) => {
   try {
     const params = parseSearchParams(request.query);
-    const experiences: Rec<SearchResultGroup<Experience>> = {};
+    const experiences: Rec<SearchResultGroup<ExperienceSearchResultItem>> = {};
     if (params[TYPE]) {
-      experiences[params[TYPE] as string] = await search<Experience>(params);
+      experiences[params[TYPE] as string] = await search<ExperienceSearchResultItem>(params);
     } else {
       const limit = params[LIMIT] || 3;
-      const res = await search<Experience>(params);
-      const map: Rec<Experience[]> = {};
+      const res = await search<ExperienceSearchResultItem>(params);
       for (const item of res.items) {
-        const cat = item.type.id;
-        if (!experiences[cat]) {
-          experiences[cat] = { hasMore: false, items: [item] };
-        } else if (experiences[cat].items.length < limit) {
-          map[item.type.id].push(item);
-        } else if (experiences[cat].items.length === limit) {
-          experiences[cat].hasMore = true;
+        const catId = item.type;
+        if (!experiences[catId]) {
+          experiences[catId] = { hasMore: false, items: [item] };
+        } else if (experiences[catId].items.length < limit) {
+          experiences[catId].items.push(item);
+        } else if (experiences[catId].items.length === limit) {
+          experiences[catId].hasMore = true;
         }
       }
     }

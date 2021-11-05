@@ -14,6 +14,7 @@
   import {
     Experience,
     ExperienceBase,
+    ExperienceSearchResultItem,
     experienceStore,
   } from '$lib/store/experience';
   import SearchResult from '$lib/components/search-result.svelte';
@@ -48,10 +49,6 @@
   ];
 
   type ExperienceGroups = Record<string, SearchResultGroup<Experience>>;
-  type ExperienceSearchResultItem = ExperienceBase & {
-    country: string;
-    type: string;
-  };
 
   export const load: Load = async ({ fetch, page }) => {
     page.query.set(LIMIT, page.query.get(TYPE) ? '20' : '3');
@@ -162,27 +159,27 @@
   }
 
   function onScrollFixedHeader() {
-    let eleHiddenOnScrolls = document.querySelectorAll(
-      '.header-title .hidden-on-sticky',
-    );
-    if (
-      document.body.scrollTop > 450 ||
-      document.documentElement.scrollTop > 450
-    ) {
-      document.getElementById('header').classList.add('fixed');
-      document.querySelector('header').style.zIndex = 8;
-      document.querySelector('header').style.position = 'relative';
-      document
-        .querySelector('.header-title')
-        .classList.add('fixed', 'is_sticky');
-    } else {
-      document.getElementById('header').classList.remove('fixed');
-      document.querySelector('header').style.zIndex = 'auto';
-      document.querySelector('header').style.position = 'relative';
-      document
-        .querySelector('.header-title')
-        .classList.remove('fixed', 'is_sticky');
-    }
+    // let eleHiddenOnScrolls = document.querySelectorAll(
+    //   '.header-title .hidden-on-sticky',
+    // );
+    // if (
+    //   document.body.scrollTop > 450 ||
+    //   document.documentElement.scrollTop > 450
+    // ) {
+    //   document.getElementById('header').classList.add('fixed');
+    //   document.querySelector('header').style.zIndex = 8;
+    //   document.querySelector('header').style.position = 'relative';
+    //   document
+    //     .querySelector('.header-title')
+    //     .classList.add('fixed', 'is_sticky');
+    // } else {
+    //   document.getElementById('header').classList.remove('fixed');
+    //   document.querySelector('header').style.zIndex = 'auto';
+    //   document.querySelector('header').style.position = 'relative';
+    //   document
+    //     .querySelector('.header-title')
+    //     .classList.remove('fixed', 'is_sticky');
+    // }
   }
 </script>
 

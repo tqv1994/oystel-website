@@ -90,26 +90,26 @@
   }
 
   function onScrollFixedHeader() {
-    if (document.documentElement.clientWidth > 949) {
-      document.getElementById('header')?.classList.add('fixed');
-      document.querySelector('header').style.zIndex = 100;
-      document.querySelector('.header-title')?.classList.add('fixed');
-      document.body.style.paddingTop = '659px';
-      if (
-        document.body.scrollTop > 100 ||
-        document.documentElement.scrollTop > 100
-      ) {
-        document.querySelector('.header-title').classList.add('is_sticky');
-      } else {
-        document.querySelector('.header-title').classList.remove('is_sticky');
-      }
-    } else {
-      document.getElementById('header')?.classList.remove('fixed');
-      document.querySelector('header').style.zIndex = 'auto';
-      document.querySelector('header').style.position = 'static';
-      document.querySelector('.header-title')?.classList.remove('fixed');
-      document.body.style.paddingTop = '0px';
-    }
+    // if (document.documentElement.clientWidth > 949) {
+    //   document.getElementById('header')?.classList.add('fixed');
+    //   document.querySelector('header').style.zIndex = 100;
+    //   document.querySelector('.header-title')?.classList.add('fixed');
+    //   document.body.style.paddingTop = '659px';
+    //   if (
+    //     document.body.scrollTop > 100 ||
+    //     document.documentElement.scrollTop > 100
+    //   ) {
+    //     document.querySelector('.header-title').classList.add('is_sticky');
+    //   } else {
+    //     document.querySelector('.header-title').classList.remove('is_sticky');
+    //   }
+    // } else {
+    //   document.getElementById('header')?.classList.remove('fixed');
+    //   document.querySelector('header').style.zIndex = 'auto';
+    //   document.querySelector('header').style.position = 'static';
+    //   document.querySelector('.header-title')?.classList.remove('fixed');
+    //   document.body.style.paddingTop = '0px';
+    // }
   }
   async function likeExperienceItem(experience: Experience) {
     if (!$authStore.user) {

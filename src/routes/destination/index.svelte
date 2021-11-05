@@ -11,7 +11,10 @@
   import { sortByName } from '$lib/utils/sort';
   import { Country, countryStore } from '$lib/store/country';
   import { destinationTypeStore } from '$lib/store/destination-type';
-  import { Destination, DestinationBase } from '$lib/store/destination';
+  import {
+    Destination,
+    DestinationSearchResultItem,
+  } from '$lib/store/destination';
   import SearchResult from '$lib/components/search-result.svelte';
   import { get } from 'svelte/store';
   import { Category } from '$lib/store/category';
@@ -44,10 +47,6 @@
   ];
 
   type DestinationGroups = Record<string, SearchResultGroup<Destination>>;
-  type SearchResultItem = DestinationBase & {
-    country: string;
-    type: string;
-  };
 
   export const load: Load = async ({ fetch, page }) => {
     page.query.set(LIMIT, page.query.get(TYPE) ? '20' : '3');
@@ -55,7 +54,7 @@
     if (res.ok) {
       const searchData: Record<
         string,
-        SearchResultGroup<SearchResultItem>
+        SearchResultGroup<DestinationSearchResultItem>
       > = await res.json();
       const destinations: DestinationGroups = {};
       const countries = get(countryStore);
@@ -162,27 +161,27 @@
   }
 
   function onScrollFixedHeader() {
-    let eleHiddenOnScrolls = document.querySelectorAll(
-      '.header-title .hidden-on-sticky',
-    );
-    if (
-      document.body.scrollTop > 450 ||
-      document.documentElement.scrollTop > 450
-    ) {
-      document.getElementById('header').classList.add('fixed');
-      document.querySelector('header').style.zIndex = 8;
-      document.querySelector('header').style.position = 'relative';
-      document
-        .querySelector('.header-title')
-        .classList.add('fixed', 'is_sticky');
-    } else {
-      document.getElementById('header').classList.remove('fixed');
-      document.querySelector('header').style.zIndex = 'auto';
-      document.querySelector('header').style.position = 'relative';
-      document
-        .querySelector('.header-title')
-        .classList.remove('fixed', 'is_sticky');
-    }
+    // let eleHiddenOnScrolls = document.querySelectorAll(
+    //   '.header-title .hidden-on-sticky',
+    // );
+    // if (
+    //   document.body.scrollTop > 450 ||
+    //   document.documentElement.scrollTop > 450
+    // ) {
+    //   document.getElementById('header').classList.add('fixed');
+    //   document.querySelector('header').style.zIndex = 8;
+    //   document.querySelector('header').style.position = 'relative';
+    //   document
+    //     .querySelector('.header-title')
+    //     .classList.add('fixed', 'is_sticky');
+    // } else {
+    //   document.getElementById('header').classList.remove('fixed');
+    //   document.querySelector('header').style.zIndex = 'auto';
+    //   document.querySelector('header').style.position = 'relative';
+    //   document
+    //     .querySelector('.header-title')
+    //     .classList.remove('fixed', 'is_sticky');
+    // }
   }
 </script>
 

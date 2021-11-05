@@ -25,6 +25,10 @@ export type DestinationBase = Exhibitable & {
 };
 
 export type Destination = DestinationBase & Nationalizable & Categorizable;
+export type DestinationSearchResultItem = DestinationBase & {
+  country: string;
+  type: string;
+};
 
 export const destinationStore = writable<CollectionStore<Destination>>({
   items: {},

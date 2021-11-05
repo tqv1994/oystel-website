@@ -39,7 +39,6 @@
 </script>
 
 <script lang="ts">
-
   let configPage = {
     header: {
       page: 'home',
@@ -77,28 +76,28 @@
   }
 
   function onScrollFixedHeader() {
-    if (document.documentElement.clientWidth > 949) {
-      if (
-        document.body.scrollTop > 200 ||
-        document.documentElement.scrollTop > 200
-      ) {
-        document.getElementById('header').classList.add('fixed');
-        document.getElementById('header').classList.add('scrolling');
-        document.querySelector('header').style.zIndex = 100;
-        documentHelper.changeBackgroundHeader('#000');
-      } else {
-        document.getElementById('header').classList.remove('fixed');
-        document.getElementById('header').classList.remove('scrolling');
-        document.querySelector('header').style.zIndex = 'auto';
-        documentHelper.changeBackgroundHeader('transparent');
-      }
-    } else {
-      document.getElementById('header').classList.remove('fixed');
-      document.getElementById('header').classList.remove('scrolling');
-      document.querySelector('header').style.zIndex = 'auto';
-      document.querySelector('header').style.position = 'static';
-      documentHelper.changeBackgroundHeader('transparent');
-    }
+    // if (document.documentElement.clientWidth > 949) {
+    //   if (
+    //     document.body.scrollTop > 200 ||
+    //     document.documentElement.scrollTop > 200
+    //   ) {
+    //     document.getElementById('header').classList.add('fixed');
+    //     document.getElementById('header').classList.add('scrolling');
+    //     document.querySelector('header').style.zIndex = 100;
+    //     documentHelper.changeBackgroundHeader('#000');
+    //   } else {
+    //     document.getElementById('header').classList.remove('fixed');
+    //     document.getElementById('header').classList.remove('scrolling');
+    //     document.querySelector('header').style.zIndex = 'auto';
+    //     documentHelper.changeBackgroundHeader('transparent');
+    //   }
+    // } else {
+    //   document.getElementById('header').classList.remove('fixed');
+    //   document.getElementById('header').classList.remove('scrolling');
+    //   document.querySelector('header').style.zIndex = 'auto';
+    //   document.querySelector('header').style.position = 'static';
+    //   documentHelper.changeBackgroundHeader('transparent');
+    // }
   }
   function onDestroy() {}
 </script>
@@ -295,9 +294,7 @@
           {#if curatedExperiences.length > 0}
             <div class="item-experience featured">
               <div class="thumbnail dark">
-                <a
-                  href={makeLink('/experience',curatedExperiences[0])}
-                >
+                <a href={makeLink('/experience', curatedExperiences[0])}>
                   <div
                     class="image-cover"
                     style="padding-top: calc(768/529 * 100%)"

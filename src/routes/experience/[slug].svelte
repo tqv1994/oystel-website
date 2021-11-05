@@ -58,26 +58,26 @@
   });
 
   function onScrollFixedHeader() {
-    if (document.documentElement.clientWidth > 949) {
-      if (
-        document.body.scrollTop > 900 ||
-        document.documentElement.scrollTop > 900
-      ) {
-        document.getElementById('header').classList.add('fixed');
-        document.querySelector('header').style.zIndex = 100;
-        document.querySelector('header').style.position = 'relative';
-        document
-          .querySelector('.header-title')
-          .classList.add('fixed', 'is_sticky');
-      } else {
-        document.getElementById('header').classList.remove('fixed');
-        document.querySelector('header').style.zIndex = 'auto';
-        document.querySelector('header').style.position = 'relative';
-        document
-          .querySelector('.header-title')
-          .classList.remove('fixed', 'is_sticky');
-      }
-    }
+    // if (document.documentElement.clientWidth > 949) {
+    //   if (
+    //     document.body.scrollTop > 900 ||
+    //     document.documentElement.scrollTop > 900
+    //   ) {
+    //     document.getElementById('header').classList.add('fixed');
+    //     document.querySelector('header').style.zIndex = 100;
+    //     document.querySelector('header').style.position = 'relative';
+    //     document
+    //       .querySelector('.header-title')
+    //       .classList.add('fixed', 'is_sticky');
+    //   } else {
+    //     document.getElementById('header').classList.remove('fixed');
+    //     document.querySelector('header').style.zIndex = 'auto';
+    //     document.querySelector('header').style.position = 'relative';
+    //     document
+    //       .querySelector('.header-title')
+    //       .classList.remove('fixed', 'is_sticky');
+    //   }
+    // }
   }
 </script>
 
@@ -357,7 +357,7 @@
                           <div class="divider" />
                           <h4 class="text-h2 title">{item.name}</h4>
                           <p class="short-text m-none">
-                            {(item.intro || '').substring(0,80)}
+                            {(item.intro || '').substring(0, 80)}
                           </p>
                         </a>
                       </div>
@@ -442,7 +442,7 @@
                           {item.name}
                         </h4>
                         <p class="short-text m-mt-0">
-                          {(item.intro || '').substring(0,80)}
+                          {(item.intro || '').substring(0, 80)}
                         </p>
                       </a>
                     </div>

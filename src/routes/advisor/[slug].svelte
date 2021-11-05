@@ -192,7 +192,7 @@
                 {@html advisor.description || ''}
               </p>
               <h4 class="mt-0 d-mb-55 m-mb-40">
-                Advisor | {advisor.address ? advisor.address.line1 : ''}
+                Advisor | {advisor.country?.name || ''}
               </h4>
               <Button variant="outlined" class="hover-affect"
                 ><Label>Contact Me</Label></Button
@@ -396,7 +396,7 @@
                         spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}
                         class="d-mb-20 m-mb-25"
                       >
-                        <a href={makeLink('experience', item)}>
+                        <a href={makeLink('/experience', item)}>
                           <div class="trip-item">
                             <div class="thumbnail">
                               <div
@@ -435,11 +435,20 @@
                 <h1 class="mt-0">Qualifications</h1>
                 <p class="title mt-0 mb-30 label-specialities">Specialties</p>
                 <p class="text-content mt-0 mb-55">
-                  {implodeString([advisor.speciality1?.name, advisor.speciality2?.name, advisor.speciality3?.name],', ')}
+                  {
+                  implodeString([
+                      advisor.speciality1?.name,
+                      advisor.speciality2?.name,
+                      advisor.speciality3?.name
+                      ],', ')}
                 </p>
                 <p class="title mt-0 mb-30">Languages</p>
                 <p class="text-content mt-0">
-                  {implodeString([advisor.language1?.name, advisor.language2?.name, advisor.language3?.name],', ')}
+                  {implodeString([
+                    advisor.language1?.name,
+                    advisor.language2?.name,
+                    advisor.language3?.name
+                    ],', ')}
                 </p>
               </div>
             </Cell>

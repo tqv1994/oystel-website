@@ -1,7 +1,6 @@
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Destination } from '$lib/store/destination';
-import { Category } from '$lib/store/category';
+import { DestinationSearchResultItem } from '$lib/store/destination';
 import { Identifiable } from '$lib/store/types';
 import {
   COUNTRY,
@@ -25,21 +24,20 @@ const dIndex = searchClient.index('destination');
 export const get: RequestHandler = async (request: Request) => {
   try {
     const params = parseSearchParams(request.query);
-    const destinations: Record<string, SearchResultGroup<Destination>> = {};
+    const destinations: Rec<SearchResultGroup<DestinationSearchResultItem>> = {};
     if (params[TYPE]) {
-      destinations[params[TYPE] as string] = await search<Destination>(params);
+      destinations[params[TYPE] as string] = await search<DestinationSearchResultItem>(params);
     } else {
       const limit = params[LIMIT] || 3;
-      const res = await search<Destination>(params);
-      const map: Rec<Destination[]> = {};
+      const res = await search<DestinationSearchResultItem>(params);
       for (const item of res.items) {
-        const cat = item.type.id;
-        if (!destinations[cat]) {
-          destinations[cat] = { hasMore: false, items: [item] };
-        } else if (destinations[cat].items.length < limit) {
-          map[item.type.id].push(item);
-        } else if (destinations[cat].items.length === limit) {
-          destinations[cat].hasMore = true;
+        const catId = item.type;
+        if (!destinations[catId]) {
+          destinations[catId] = { hasMore: false, items: [item] };
+        } else if (destinations[catId].items.length < limit) {
+          destinations[catId].items.push(item);
+        } else if (destinations[catId].items.length === limit) {
+          destinations[catId].hasMore = true;
         }
       }
     }
