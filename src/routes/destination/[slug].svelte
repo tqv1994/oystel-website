@@ -22,13 +22,13 @@
 
   export const load: Load = async ({ fetch, page }) => {
     const id = parseId(page.params.slug);
-    if (get(destinationStore).items[id]) {
-      return {
-        props: { id },
-      };
-    }
+    // if (get(destinationStore).items[id]) {
+    //   return {
+    //     props: { id },
+    //   };
+    // }
 
-    const res = await fetch(`/destination/${id}`);
+    const res = await fetch(`/destination/${id}.json`);
     if (res.ok) {
       const data: Destination = await res.json();
       insertToStore(destinationStore, [data]);
