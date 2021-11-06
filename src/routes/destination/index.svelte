@@ -38,6 +38,8 @@
     ORDER_BY_PUBLISH_DATE_ASC,
     ORDER_BY_PUBLISH_DATE_DESC,
   } from '$lib/store/order';
+  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
+import { experienceTypeStore } from '$lib/store/experience-type';
 
   const orderingOptions: Nameable[] = [
     ORDER_BY_NAME_ASC,
@@ -105,6 +107,7 @@
   export let category: Category | undefined;
   export let country: Country | undefined;
   export let ordering: Ordering;
+  let contentHeaderActionMobile: string = '';
 
   let configPage = {
     header: {
@@ -158,6 +161,15 @@
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
     go({ o: event.detail.value.key });
+  }
+
+  function onSearchSubmitMobile(event: CustomEvent) {
+    contentHeaderActionMobile = '';
+    go({
+      c: event.detail.country?.id || '',
+      t: event.detail.destination_type?.id || '',
+      o: event.detail.ordering?.key || '',
+    });
   }
 
   function onScrollFixedHeader() {
@@ -264,7 +276,7 @@
         <div class="container m-block d-none">
           <LayoutGrid class="p-0">
             <Cell span="12">
-              <Button style="width: 100%" variant="outlined"
+              <Button style="width: 100%" variant="outlined" on:click={()=>{ contentHeaderActionMobile = 'experience-search' }}
                 ><Label>Filter Your Results</Label></Button
               >
             </Cell>
@@ -284,14 +296,15 @@
     {/if}
   </div>
 </Layout>
-<!-- <HeaderActionMobile
+<HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  bind:searchModel
+  searchModel={{destination_type: category, ordering, country}}
   bind:destination_types={destinationTypes}
-  bind:types={experienceTypes}
+  experience_types={sortByName(Object.values($experienceTypeStore.items))}
   bind:countries
-  on:close={onSearchSubmit}
-/> -->
+  orderings={orderingOptions}
+  on:close={onSearchSubmitMobile}
+/>
 <OyNotification />
 
 <style lang="scss">

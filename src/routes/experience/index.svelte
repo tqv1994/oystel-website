@@ -40,6 +40,8 @@
     TYPE,
     SearchResultGroup,
   } from '$lib/store/search';
+  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
+  import { destinationStore } from '$lib/store/destination';
 
   const experienceOrderings: Nameable[] = [
     ORDER_BY_NAME_ASC,
@@ -100,9 +102,10 @@
 <script lang="ts">
   export let experiences: ExperienceGroups = {};
   export let query: string = '';
-  export let category: Category | undefined;
+  export let type: Category | undefined;
   export let country: Country | undefined;
   export let ordering: Ordering;
+  let contentHeaderActionMobile: string = '';
 
   let configPage = {
     header: {
@@ -131,7 +134,7 @@
   function go(params: SearchParams) {
     search({
       q: query,
-      t: category?.id,
+      t: type?.id,
       c: country?.id,
       o: ordering.key,
       ...params,
@@ -156,6 +159,15 @@
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
     go({ s: event.detail.value.key });
+  }
+
+  function onSearchSubmitMobile(event: CustomEvent) {
+    contentHeaderActionMobile = '';
+    go({
+      c: event.detail.country?.id || '',
+      t: event.detail.experience_type?.id || '',
+      o: event.detail.ordering?.key || '',
+    });
   }
 
   function onScrollFixedHeader() {
@@ -220,7 +232,7 @@
                     label="By Experience"
                     blankItem="All"
                     items={experienceTypes}
-                    value={category}
+                    value={type}
                     on:MDCSelect:change={onTypeChange}
                   />
                 </div>
@@ -262,7 +274,7 @@
         <div class="container m-block d-none">
           <LayoutGrid class="p-0">
             <Cell span="12">
-              <Button style="width: 100%" variant="outlined"
+              <Button style="width: 100%" variant="outlined" on:click={()=>{contentHeaderActionMobile='experience-search'}}
                 ><Label>Filter Your Results</Label></Button
               >
             </Cell>
@@ -276,20 +288,21 @@
           pathPrefix="/experience"
           categories={experienceTypes}
           groups={experiences}
-          showHeadings={!category}
+          showHeadings={!type}
         />
       </section>
     {/if}
   </div>
 </Layout>
-<!-- <HeaderActionMobile
+<HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  bind:searchModel
+  searchModel={{experience_type: type, ordering, country}}
   bind:experience_types={experienceTypes}
-  bind:types={experienceTypes}
+  destination_types={sortByName(Object.values($destinationStore.items))}
   bind:countries
-  on:close={onSearchSubmit}
-/> -->
+  orderings={experienceOrderings}
+  on:close={onSearchSubmitMobile}
+/>
 <OyNotification />
 
 <style lang="scss">

@@ -41,6 +41,8 @@
 </script>
 
 <script type="ts">
+import { makeLink } from "$lib/utils/link";
+
   type TabData = {
     name: string;
     exhibit: Exhibitable[];
@@ -117,7 +119,7 @@
 />
 <Layout config={configPage}>
   {#if destination}
-    <div class="content destination-detail">
+    <div class="content destination-detail d-pb-50 m-pb-40">
       <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-25 full-width">
         <div class="content-wrap">
           <div class="container">
@@ -150,7 +152,7 @@
                   <p class="text-eyebrow m-mb-0">{destination.country?.name}</p>
                   <h1 class="m-mt-30 m-mb-15">{destination.name}</h1>
                   <p class="mb-30 short-description mt-0">
-                    {destination.intro}
+                    {destination.intro || ''}
                   </p>
                   <Button variant="outlined" class="mb-15"
                     ><Label>Find My Advisor</Label></Button
@@ -327,7 +329,7 @@
           </div>
         </div>
       </section>
-      {#if tabs}
+      {#if tabs && activeTab}
         <section class="d-pt-90 d-pb-65 m-pt-40 m-pb-40" id="advisors-section">
           <div class="container">
             <div class="section-title d-mb-65 m-mb-40">
@@ -392,7 +394,7 @@
         <ProductShow title="What to pack" items={destination.pack} />
       {/if}
       {#if destination.experiences && destination.experiences.length > 0}
-        <section class="d-pt-80 d-pb-100 m-pt-40 m-pb-85">
+        <section class="d-pt-80 d-pb-50 m-pt-40 m-pb-40">
           <div class="container">
             <h1 class="mt-0 d-mb-80 m-mb-35">Where to Experience</h1>
             <div class="experiences-list">
@@ -401,7 +403,7 @@
                   <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                     <div class="experience-item">
                       <div class="thumbnail">
-                        <a href={item.url}>
+                        <a href={makeLink('/experience', item)}>
                           <div
                             class="image-cover"
                             style="padding-top: calc(410 / 315 * 100%)"
@@ -436,18 +438,18 @@
                           </Icon>
                         </IconButton>
                       </div>
-                      <a href={item.url}>
+                      <a href={makeLink('/experience', item)}>
                         <LayoutGrid class="p-0 m-none">
                           <Cell
                             spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
                             ><p class="text-eyebrow text-left">
-                              {item.country ? item.country.name : 'Country'}
+                              {item.country?.name || 'Country'}
                             </p></Cell
                           >
                           <Cell
                             spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
                             ><p class="text-eyebrow text-right">
-                              Experience
+                              {item.type?.name || "Experience"}
                             </p></Cell
                           >
                         </LayoutGrid>
@@ -455,14 +457,14 @@
                           <Cell
                             spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
                             ><p class="text-eyebrow text-left mt-20 mb-20">
-                              Experience
+                              {item.type?.name || "Experience"}
                             </p></Cell
                           >
                         </LayoutGrid>
                       </a>
                       <div class="divider" />
                       <h4 class="text-h2 title mt-30">{item.name}</h4>
-                      <p class="short-text m-none">{item.intro}</p>
+                      <p class="short-text m-none">{item.intro || ""}</p>
                     </div>
                   </Cell>
                 {/each}

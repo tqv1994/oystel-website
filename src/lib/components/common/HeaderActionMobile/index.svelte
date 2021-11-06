@@ -11,6 +11,7 @@
   import { Country } from '$lib/store/country';
   import { Speciality } from '$lib/store/speciality';
 import { Category } from '$lib/store/category';
+import { Nameable } from '$lib/store/types';
   let dispathcher = createEventDispatcher();
   export let open = false;
   export let content: string;
@@ -19,6 +20,7 @@ import { Category } from '$lib/store/category';
   export let destination_types: Category[] = [];
   export let countries: Country[] = [];
   export let specialities: Speciality[] = [];
+  export let orderings: Nameable[] = [];
   function callCloseHeaderActionMobile(event: CustomEvent) {
     dispathcher('close',event.detail);
   }
@@ -86,6 +88,7 @@ import { Category } from '$lib/store/category';
             on:close={callCloseHeaderActionMobile}
             bind:experience_types
             bind:destination_types
+            bind:orderings
             bind:countries>no content</OyFormSearchExperience
           >
         {:else if content == 'advisor-search'}

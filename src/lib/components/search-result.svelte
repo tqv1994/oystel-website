@@ -67,19 +67,19 @@
                   <LayoutGrid class="p-0 d-block m-none">
                     <Cell spanDevices={{ desktop: 6, phone: 2 }}
                       ><p class="text-eyebrow text-left">
-                        {d.country.name}
+                        {d.country?.name || ''}
                       </p></Cell
                     >
                     <Cell spanDevices={{ desktop: 6, phone: 2 }}
                       ><p class="text-eyebrow text-right">
-                        {d.type.name}
+                        {d.type?.name || ''}
                       </p></Cell
                     >
                   </LayoutGrid>
                   <LayoutGrid class="p-0 m-block d-none">
                     <Cell spanDevices={{ desktop: 6, phone: 2 }}
                       ><p class="text-eyebrow text-left mt-20 mb-20">
-                        {d.type.name}
+                        {d.type?.name || ''}
                       </p></Cell
                     >
                   </LayoutGrid>

@@ -437,9 +437,9 @@
                     </Icon>
                   </IconButton>
                 </div>
-                <a href={item.url}>
+                <a href={makeLink('/destination', item)}>
                   <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">
-                    {item.type == 'experience' ? 'Experience' : 'Destination'}
+                    {item.type?.name || 'Destination'}
                   </p>
                   <h4 class="text-h3 mt-25 mb-40 title">
                     {item.name}
@@ -583,6 +583,17 @@
         auto-fill,
         minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
       );
+    }
+  }
+
+  @media (max-width: 1079px) and (min-width: 950px){
+    #signup-section{
+      .d-mb-100{
+        margin-bottom: 30px !important;
+      }
+      .d-mt-145{
+        margin-top: 70px !important;
+      }
     }
   }
 </style>

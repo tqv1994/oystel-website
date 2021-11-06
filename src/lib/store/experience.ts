@@ -23,6 +23,7 @@ export type ExperienceBase = Exhibitable & {
   destinations: Destination[];
   looks: Look[];
   pack: Product[];
+  __typename?: string;
 };
 
 export type Experience = ExperienceBase & Nationalizable & Categorizable;

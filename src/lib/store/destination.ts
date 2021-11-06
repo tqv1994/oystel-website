@@ -22,6 +22,7 @@ export type DestinationBase = Exhibitable & {
   accommodations: Accommodation[];
   restaurants: Restaurant[];
   attractions: Attraction[];
+  __typename?: string;
 };
 
 export type Destination = DestinationBase & Nationalizable & Categorizable;

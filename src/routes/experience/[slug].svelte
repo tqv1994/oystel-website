@@ -88,7 +88,7 @@
 />
 <Layout config={configPage}>
   {#if experience}
-    <div class="content experience-detail">
+    <div class="content experience-detail d-pb-100">
       <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-60 full-width">
         <div class="content-wrap">
           <div class="container">

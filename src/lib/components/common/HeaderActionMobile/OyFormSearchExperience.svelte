@@ -10,22 +10,32 @@
   import { Destination } from '$lib/store/destination';
   import { Experience } from '$lib/store/experience';
   import { Country } from '$lib/store/country';
+import { Category } from '$lib/store/category';
+import { Nameable } from '$lib/store/types';
+import Dropdown from '$lib/components/dropdown.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
   let menuActive;
-  export let searchModel = {
-    name: '',
-    type: '',
-    destination: '',
-    country: '',
-    sort_by: '',
+  export let searchModel: {
+    experience_type: Category | undefined,
+    destination_type: Category | undefined,
+    country: Country | undefined,
+    ordering: Nameable | undefined
   };
+  let { experience_type, 
+    destination_type, 
+    country, 
+    ordering } = searchModel;
   export let destination_types: Destination[];
-  export let types: Experience[];
+  export let experience_types: Experience[];
   export let countries: Country[];
+  export let orderings: Nameable[] = [];
   function onSearchSubmit() {
-    dispatch('close');
+    setTimeout(()=>{
+      dispatch('close',{destination_type, experience_type, country, ordering});
+    },0);
+    
   }
 </script>
 
@@ -36,55 +46,36 @@
     on:submit|preventDefault={onSearchSubmit}
   >
     <div class="form-control mb-40">
-      <Select
-        variant="outlined"
-        bind:value={searchModel.type}
-        label="By Experience Type"
-      >
-        <Option value="" />
-        {#if types}
-          {#each types as item}
-            <Option value={item.id}>{item.name}</Option>
-          {/each}
-        {/if}
-      </Select>
+      <Dropdown
+                    label="By Experience Type"
+                    blankItem="All"
+                    items={experience_types}
+                    bind:value={experience_type}
+                  />
     </div>
     <div class="form-control mb-40">
-      <Select
-        variant="outlined"
-        bind:value={searchModel.destination}
-        label="By Destination"
-      >
-        <Option value="" />
-        {#if destination_types}
-          {#each destination_types as item}
-            <Option value={item.id}>{item.name}</Option>
-          {/each}
-        {/if}
-      </Select>
+      <Dropdown
+        label="By Destination Type"
+        blankItem="All"
+        items={destination_types}
+        bind:value={destination_type}
+      />
     </div>
     <div class="form-control mb-40">
-      <Select
-        variant="outlined"
-        bind:value={searchModel.country}
+      <Dropdown
         label="By Country"
-      >
-        <Option value="" />
-        {#if countries}
-          {#each countries as item}
-            <Option value={item.name}>{item.name}</Option>
-          {/each}
-        {/if}
-      </Select>
+        blankItem="All"
+        items={countries}
+        bind:value={country}
+      />
     </div>
     <div class="form-control mb-80">
-      <Select
-        variant="outlined"
-        bind:value={searchModel.sort_by}
+      <Dropdown
         label="Sort By"
-      >
-        <Option value="" />
-      </Select>
+        blankItem="All"
+        items={orderings}
+        bind:value={ordering}
+      />
     </div>
     <div class="form-control btn-submit-wrap">
       <Button variant="outlined" style="width: 100%;" type="submit"

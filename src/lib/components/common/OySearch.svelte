@@ -45,7 +45,7 @@ import { documentHelper } from '$lib/helpers';
   }
 
   async function handleSearch(key: string){
-    goto(`/search?name=${key}`);
+    goto(`/search?q=${key}`);
     return;
   }
 
