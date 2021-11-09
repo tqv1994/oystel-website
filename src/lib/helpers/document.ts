@@ -53,5 +53,30 @@ export const documentHelper = {
         }
 
         return "unknown";
+    },
+
+    getRectTop: function (el: any){
+        var rect = el.getBoundingClientRect();
+        return rect.top;
+    },
+
+    checkOffset: function(el: HTMLElement | null ,elStop: HTMLElement | null){
+        if(el != null && elStop != null){
+            if((documentHelper.getRectTop(el) + document.body.scrollTop) + el.offsetHeight >= (documentHelper.getRectTop(elStop) + document.body.scrollTop) - 10){
+                // el.classList.remove('fixed');
+                let style = "top: "+(documentHelper.getRectTop(elStop) - documentHelper.getRectTop(el))+"px !important;";
+                // style += "transform: none";
+                el.setAttribute('style',style);
+                // el.style.position = 'absolute';
+            }
+            if(document.body.scrollTop + window.innerHeight < (documentHelper.getRectTop(elStop) + document.body.scrollTop)){
+                el.setAttribute('style','');
+                // el.classList.add('fixed'); // restore when you scroll up
+            }
+            
+        }
     }
+    
+    
+
 };

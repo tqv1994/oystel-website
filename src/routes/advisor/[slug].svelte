@@ -5,7 +5,7 @@
   import Button, { Label } from '@smui/button';
   import IconButton, { Icon } from '@smui/icon-button';
   import Svg from '@smui/common/Svg.svelte';
-  import { stringHelper } from '$lib/helpers';
+  import { documentHelper, stringHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { Advisor } from '$lib/store/advisor';
@@ -58,12 +58,15 @@
 
   function onScrollFixedContactInfo() {
     const classList = document.querySelector('.contact-info')?.classList;
+    const footer = document.querySelector('footer');
+    
     if (
       document.documentElement.clientWidth >= 950 &&
       (document.body.scrollTop > 100 ||
         document.documentElement.scrollTop > 100)
     ) {
       classList?.add('fixed');
+      documentHelper.checkOffset(document.querySelector('.contact-info'), footer);
     } else {
       classList?.remove('fixed');
     }

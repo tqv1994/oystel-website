@@ -33,6 +33,8 @@ import { createEventDispatcher } from 'svelte';
 </script>
 
 <script type="ts">
+import BlurImage from "./blur-image.svelte";
+
   let dispathcher = createEventDispatcher();
   export let title: string;
   export let items: Product[];
@@ -61,11 +63,10 @@ import { createEventDispatcher } from 'svelte';
             >
               <div
                 class="thumbnail"
-                style="background-image: url({item.gallery &&
-                item.gallery.length
-                  ? item.gallery[0]?.url
-                  : '/missing-image'})"
               >
+              <div class="image-cover" style="padding-top: 145%">
+                <BlurImage data={item.gallery[0]}></BlurImage>
+              </div>
                 <IconButton class="btn-favorite {item.liked ? 'liked' : ''}" on:click={()=>{callLikeItem(item)}}>
                   <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
                     <path
@@ -140,11 +141,13 @@ import { createEventDispatcher } from 'svelte';
 
   .products-list :global(.item-product .thumbnail) {
     width: 100%;
-    padding-bottom: 145%;
     background-color: #f2f2f2;
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
+    :global(img){
+      object-fit: contain;
+    }
   }
 
   .products-list :global(.item-product .thumbnail .btn-favorite) {

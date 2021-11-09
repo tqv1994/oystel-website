@@ -248,10 +248,9 @@
             <LayoutGrid class="p-0 hidden-on-sticky">
               <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
                 <div class="experience-detail-image">
-                  <div
-                    class="thumbnail"
-                    style={`background-image: url(${experience?.gallery[0].url})`}
-                  />
+                  <div class="image-cover" style="padding-top: 0; height: 100%">
+                    <BlurImage data={experience?.gallery[0]}></BlurImage>
+                  </div>
                 </div>
               </Cell>
               <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
@@ -870,8 +869,10 @@
     .experience-detail-image {
       position: relative;
       width: 100%;
-      padding-bottom: 65.625%;
-      height: auto;
+      .image-cover{
+        padding-bottom: 65.625% !important;
+        height: auto !important;
+      }
     }
     .experience-detail-image .thumbnail {
       position: absolute;
