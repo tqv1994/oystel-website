@@ -165,7 +165,12 @@
     width: 100%;
     padding-bottom: 64.31%;
     background-size: cover;
-    background-position: center;
+    background-position: bottom;
     background-repeat: no-repeat;
+    @media (max-width: 1631px) {
+      height: 100%;
+      background-position: bottom;
+      padding-bottom: 0;;
+    }
   }
 </style>

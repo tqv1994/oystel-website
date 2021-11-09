@@ -634,7 +634,7 @@
                       </a>
                       <div class="divider" />
                       <h4 class="text-h2 title mt-30">{item.name}</h4>
-                      <p class="short-text m-none">{item.intro || ''}</p>
+                      <p class="short-text m-none">{(item.intro || '').substring(0,80)}</p>
                     </div>
                   </Cell>
                 {/each}

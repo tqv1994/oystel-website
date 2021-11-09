@@ -1,5 +1,5 @@
-<script>
-  import authStore from '$lib/api/auth/store';
+<script lang="ts">
+  import { authStore } from '$lib/store/auth';
   import Layout from '$lib/components/common/Layout.svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
@@ -10,8 +10,7 @@
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
   import Select, { Option } from '@smui/select';
   import { goto } from '$app/navigation';
-  let openSignupModal, openSigninModal;
-  let userModel = $authStore.user;
+  let openSignupModal: boolean;
   let filterActive = 'Current Drops';
   let configPage = {
     header: {
@@ -21,24 +20,9 @@
       currentMenu: 'shop',
     },
   };
-  function callOpenSignupModal() {
-    if (!userModel) {
-      openSignupModal = true;
-      openSigninModal = false;
-    }
-    openSignupModal = true;
-    openSigninModal = false;
-  }
-
-  function callOpenSigninModal() {
-    if (!userModel) {
-      openSignupModal = false;
-      openSigninModal = true;
-    }
-  }
 </script>
 
-<Layout config={configPage}>
+<Layout config={configPage} bind:openSignupModal>
   <div class="content">
     <section
       class="header-title full-width dark d-pt-115 d-pb-20 t-pt-80 t-pb-20 m-pt-90 m-pb-15"
@@ -229,7 +213,7 @@
             <Button
               variant="outlined"
               class="hover-affect"
-              on:click={callOpenSignupModal}
+              on:click={()=>{openSignupModal = true}}
               ><Label class="text-button2">Sign Up Now</Label></Button
             >
           </Cell>
@@ -247,7 +231,7 @@
         <div class="list-featured-drop">
           <LayoutGrid class="p-0">
             <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-              <a href="/shop/detail">
+              <a href="#">
                 <div class="item-featured-drop">
                   <div class="thumbnail dark d-mb-60 m-mb-30">
                     <img class="" src="/img/feature-drops/item-5.jpg" alt="" />
@@ -267,7 +251,7 @@
               </a>
             </Cell>
             <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-              <a href="/shop/detail">
+              <a href="#">
                 <div class="item-featured-drop">
                   <div class="thumbnail dark d-mb-60 m-mb-30">
                     <img class="" src="/img/feature-drops/item-6.jpg" alt="" />
@@ -287,7 +271,7 @@
               </a>
             </Cell>
             <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-              <a href="/shop/detail">
+              <a href="#">
                 <div class="item-featured-drop">
                   <div class="thumbnail dark d-mb-60 m-mb-30">
                     <img class="" src="/img/feature-drops/item-7.jpg" alt="" />
@@ -308,7 +292,7 @@
               </a>
             </Cell>
             <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-              <a href="/shop/detail">
+              <a href="#">
                 <div class="item-featured-drop">
                   <div class="thumbnail dark d-mb-60 m-mb-30">
                     <img class="" src="/img/feature-drops/item-2.jpg" alt="" />
@@ -330,7 +314,7 @@
             </Cell>
 
             <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-              <a href="/shop/detail">
+              <a href="#">
                 <div class="item-featured-drop">
                   <div class="thumbnail dark d-mb-60 m-mb-30">
                     <img class="" src="/img/feature-drops/item-8.jpg" alt="" />
@@ -350,7 +334,7 @@
               </a>
             </Cell>
             <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-              <a href="/shop/detail">
+              <a href="#">
                 <div class="item-featured-drop">
                   <div class="thumbnail dark d-mb-60 m-mb-30">
                     <img class="" src="/img/feature-drops/item-9.jpg" alt="" />
@@ -370,7 +354,7 @@
               </a>
             </Cell>
             <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-              <a href="/shop/detail">
+              <a href="#">
                 <div class="item-featured-drop">
                   <div class="thumbnail dark d-mb-60 m-mb-30">
                     <img class="" src="/img/feature-drops/item-10.jpg" alt="" />
@@ -391,7 +375,7 @@
               </a>
             </Cell>
             <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-              <a href="/shop/detail">
+              <a href="#">
                 <div class="item-featured-drop">
                   <div class="thumbnail dark d-mb-60 m-mb-30">
                     <img class="" src="/img/feature-drops/item-11.jpg" alt="" />
@@ -417,16 +401,6 @@
     </section>
   </div>
 </Layout>
-<SignupModal
-  bind:open={openSignupModal}
-  bind:authModel={userModel}
-  on:close={callOpenSigninModal}
-/>
-<SigninModal
-  bind:open={openSigninModal}
-  bind:authModel={userModel}
-  on:close={callOpenSignupModal}
-/>
 
 <style lang="scss">
   $desktop-width: 950px;
@@ -449,7 +423,7 @@
     --wrap-width: 100%;
   }
 
-  #featured-drops{
+  #featured-drops {
     --mdc-layout-grid-gutter-desktop: 15px;
   }
 
@@ -474,7 +448,7 @@
     padding-bottom: 70px;
   }
   .header-title .short-description {
-    @include desktop{
+    @include desktop {
       width: 80%;
     }
   }
@@ -536,10 +510,10 @@
     grid-auto-flow: column;
   }
 
-  #featured-drops .list-featured-drop{
-      :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-        background-color: #5078bc;
-      }
+  #featured-drops .list-featured-drop {
+    :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
+      background-color: #5078bc;
+    }
   }
 
   @media (min-width: 1240px) {
@@ -591,7 +565,7 @@
     }
   }
 
-  #signup-section{
+  #signup-section {
     --mdc-layout-grid-gutter-desktop: 15px;
   }
 
@@ -658,6 +632,25 @@
       line-height: 10px;
       letter-spacing: 0.1px;
       bottom: -15px;
+    }
+  }
+
+  @media(max-width: 1025px) and (min-width: 950px){
+      .header-title .content-left{
+          .d-mr-50{
+              margin-right: 10px !important;
+          }
+      }
+  }
+
+  @media (max-width: 1105px) and (min-width: 950px) {
+    #signup-section {
+      .d-mb-100 {
+        margin-bottom: 30px !important;
+      }
+      .d-mt-145 {
+        margin-top: 70px !important;
+      }
     }
   }
 
