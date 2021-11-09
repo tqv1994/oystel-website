@@ -63,8 +63,9 @@ export const documentHelper = {
     checkOffset: function(el: HTMLElement | null ,elStop: HTMLElement | null){
         if(el != null && elStop != null){
             if((documentHelper.getRectTop(el) + document.body.scrollTop) + el.offsetHeight >= (documentHelper.getRectTop(elStop) + document.body.scrollTop) - 10){
+                const elTop = documentHelper.getRectTop(el);
                 // el.classList.remove('fixed');
-                let style = "top: "+(documentHelper.getRectTop(elStop) - documentHelper.getRectTop(el))+"px !important;";
+                let style = "top: "+(elTop)+"px !important;";
                 // style += "transform: none";
                 el.setAttribute('style',style);
                 // el.style.position = 'absolute';
