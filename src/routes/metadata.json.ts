@@ -58,5 +58,5 @@ export const get: RequestHandler = async (request: Request) => {
   } catch (error) {
     console.error('Error getting destinations', error);
   }
-  return makeErrorResponse(500, 'Error retrieving data for the destinations');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the destinations');
 };

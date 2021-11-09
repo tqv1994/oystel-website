@@ -110,7 +110,7 @@
       return {
         props: {
           advisors: { hasMore: searchData.hasMore, items },
-          query: page.query.get(QUERY),
+          query: page.query.get(QUERY) || '',
           experienceType:
             experienceTypes.items[page.query.get(EXPERIENCE_TYPE) || ''],
           destinationType:
@@ -183,7 +183,7 @@
   }
 
   function onSpecialityChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ t: event.detail.value.id });
+    go({ s: event.detail.value.id });
   }
 
   function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
@@ -199,7 +199,7 @@
     console.log(event.detail);
     go({
       c: event.detail.country?.id || '',
-      t: event.detail.speciality?.id || '',
+      s: event.detail.speciality?.id || '',
     });
   }
 
@@ -272,7 +272,7 @@
     </section>
     <section class="d-pt-80 d-pb-200 m-pt-40 m-pb-95">
       <div class="container">
-        <form class="m-none search-form-advisor mb-50" action="/">
+        <form class="m-none search-form-advisor mb-50" on:submit|preventDefault={()=>{go({})}}>
           <LayoutGrid class="p-0">
             <Cell spanDevices={{ desktop: 4 }}>
               <div class="form-control">
@@ -300,7 +300,7 @@
                     blankItem="All"
                     items={specialities}
                     value={speciality}
-                    on:MDCSelect:change={onCountryChange}
+                    on:MDCSelect:change={onSpecialityChange}
                   />
                 </div>
                 <div class="form-control text-left">
@@ -325,7 +325,7 @@
                     blankItem="All"
                     items={specialities}
                     value={speciality}
-                    on:MDCSelect:change={onCountryChange}
+                    on:MDCSelect:change={onSpecialityChange}
                   />
                 </div>
               </div>

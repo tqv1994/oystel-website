@@ -6,17 +6,30 @@
   import { makeLink } from '$lib/utils/link';
   import { Identifiable, Nameable, Searchable } from '$lib/store/types';
   import { SearchResultGroup } from '$lib/store/search';
+import { createEventDispatcher } from 'svelte';
+import { Product } from '$lib/store/product';
+import { Destination } from '$lib/store/destination';
+import { Experience } from '$lib/store/experience';
+
 </script>
 
 <script lang="ts">
+  let dispathcher = createEventDispatcher();
+
   export let categories: (Identifiable & Nameable)[];
-  export let groups: Record<string, SearchResultGroup<Searchable>>;
+  export let groups: Rec<SearchResultGroup<Searchable>>;
   export let pathPrefix: string;
   export let showHeadings: boolean = true;
+  function callLikeItem(group_id: string,key: number) {
+    setTimeout(()=>{
+      dispathcher('likeItem',{group_id, key});
+    },0);
+    
+  }
 </script>
 
 {#each categories as cat, i}
-  {#if groups[cat.id]?.items.length}
+  {#if (groups[cat.id]?.items || []).length}
     <div class="container">
       {#if showHeadings}
         <div class="section-title">
@@ -31,7 +44,7 @@
       {/if}
       <div class="section-content">
         <LayoutGrid class="p-0">
-          {#each groups[cat.id].items as d}
+          {#each groups[cat.id].items as d,index}
             <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
               <div class="experience-item">
                 <div class="thumbnail">
@@ -43,7 +56,7 @@
                       <BlurImage data={d.gallery && d.gallery[0]} />
                     </div>
                   </a>
-                  <IconButton class="btn-favorite">
+                  <IconButton class="btn-favorite {d.liked ? 'liked' : ''}" on:click={()=>{callLikeItem(cat.id,index)}}>
                     <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
                       <path
                         d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"

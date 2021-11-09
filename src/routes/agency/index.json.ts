@@ -3,11 +3,12 @@ import { getSessionCookie } from '$lib/utils/session';
 import { extractSetCookieHeader } from '$lib/utils/session';
 import { RequestHandler, Request } from '@sveltejs/kit';
 
+
 /**
  * @type {import('@sveltejs/kit').Post}
  */
 export const post: RequestHandler = async (
-  request: Request<Record<string, any>, AgencyApplicationForm3>,
+  request: Request<Rec<any>, AgencyApplicationForm3>,
 ) => {
   if (!request.body.description) {
     return {

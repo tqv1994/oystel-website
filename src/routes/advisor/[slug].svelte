@@ -142,7 +142,7 @@
                 </Cell>
                 <Cell
                   spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
-                  class="text-center t-block m-none"
+                  class="text-right t-block m-none"
                 >
                   <IconButton class="btn-share">
                     <Icon component={Svg} viewBox="0 0 16.833 24.384">
@@ -488,7 +488,8 @@
     }
     left: 0;
     background-color: #f0f7f8;
-    width: 475px;
+    width: calc(475px - 90px);
+    transition: top 1s ease;
   }
   .contact-info:global(.fixed) {
     top: 50% !important;
@@ -497,14 +498,11 @@
   @media screen and (min-width: 1441px) {
     .contact-info:global(.fixed) {
       margin-left: calc(
-        calc(100vw / 2 - 1440px / 2) + var(--mdc-layout-grid-margin-desktop)
+        calc(100vw / 2 - 1336px / 2) + var(--mdc-layout-grid-margin-desktop)
       );
     }
   }
   @media screen and (max-width: 1440px) and (min-width: 950px) {
-    .contact-info {
-      width: 40vw;
-    }
     .contact-info:global(.fixed) {
       margin-left: 0;
     }

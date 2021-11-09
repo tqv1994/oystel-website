@@ -1,17 +1,17 @@
-export function parseId(slug: string):string {
+export function parseId(slug: string): string {
   const match = slug.match(/(?<=^.+-)\w+$/); // Look for a - (hyphen) followed by a \w
   return match ? match[0] : slug;
 }
 
 export const makeErrorResponse = (
-  code: number,
+  status: number,
+  code: string,
   message: string,
 ) => ({
-  status: code,
+  status: status,
   body: JSON.stringify({
-    error: {
-      code,
-      message,
-    },
+    code,
+    status,
+    message,
   }),
 });

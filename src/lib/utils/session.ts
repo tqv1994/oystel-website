@@ -1,5 +1,6 @@
 import * as cookie from 'cookie';
 
+
 export function getSessionCookie(cookieString: string): string {
   if (cookieString) {
     const cookies = cookie.parse(cookieString);
@@ -11,10 +12,18 @@ export function getSessionCookie(cookieString: string): string {
   return '';
 }
 
-export function extractSetCookieHeader(headers: Headers): Headers | undefined {
+export function extractSetCookieHeader(headers: Headers): ResponseHeaders {
   if (headers.has('set-cookie')) {
-    return new Headers({
-      'set-cookie': headers.get('set-cookie') as string,
-    });
+    const cookieString = headers.get('set-cookie') || '';
+    const parts = cookieString.split(', session.sig=');
+    if (
+      parts.length === 2 &&
+      parts[0].startsWith('session=')
+    ) {
+      return {
+        'set-cookie': [parts[0], 'session.sig=' + parts[1]],
+      };
+    }
   }
+  return {};
 }

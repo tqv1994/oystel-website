@@ -21,7 +21,7 @@ export const get: RequestHandler = async (request: Request) => {
   } catch (error) {
     console.error('Error searching for destinations', error);
   }
-  return makeErrorResponse(500, 'Error searching for destinations');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error searching for destinations');
 };
 
 async function search<T extends Identifiable>(

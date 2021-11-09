@@ -16,13 +16,38 @@
   import ProductShow from '$lib/components/product-show.svelte';
   import LookShow from '$lib/components/look-show.svelte';
   import { authStore } from '$lib/store/auth';
+  import { contains } from '$lib/utils/array';
+  import { Product } from '$lib/store/product';
+  import { Destination } from '$lib/store/destination';
+  import { ExperienceLikeData } from './like.json';
+  import { DestinationLikeData } from '../destination/like.json';
+  import { ProductLikeData } from '../product/like.json';
 
-  export const load: Load = async ({ fetch, page }) => {
+  export const load: Load = async ({ fetch, session, page }) => {
     const id = parseId(page.params.slug);
 
     const res = await fetch(`/experience/${id}.json`);
     if (res.ok) {
       const data: Experience = await res.json();
+      if (data) {
+        data.liked = contains(session.user?.destinationLikes || [], 'id', id);
+        data.pack = data.pack.map((item: Product) => {
+          item.liked = contains(
+            session.user?.productLikes || [],
+            'id',
+            item.id,
+          );
+          return item;
+        });
+        data.destinations = data.destinations.map((item: Destination) => {
+          item.liked = contains(
+            session.user?.destinationLikes || [],
+            'id',
+            item.id,
+          );
+          return item;
+        });
+      }
       insertToStore(experienceStore, [data]);
       return { props: { id } };
     } else {
@@ -46,16 +71,144 @@
   let productSliderOpen: boolean;
   let activeProduct: number;
 
-  if ($authStore.user) {
-    experiences = $authStore.user.experienceLikes || [];
-  }
-
   experienceStore.subscribe((store) => {
     experience = store.items[id];
     if (!experience) {
       return;
     }
   });
+
+  async function likeExperience() {
+    let liked: boolean;
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    let experienceLikedIds: string[] = (
+      $authStore.user?.experienceLikes || []
+    ).map((item: Experience) => item.id);
+    let indexLikeExist = experienceLikedIds.findIndex(
+      (id: string) => id == experience.id,
+    );
+    if (indexLikeExist < 0) {
+      experienceLikedIds.push(experience.id);
+      liked = true;
+    } else {
+      experienceLikedIds.splice(indexLikeExist, 1);
+      liked = false;
+    }
+    const res = await fetch(`/experience/like.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(experienceLikedIds),
+    });
+
+    if (res.ok) {
+      const data: ExperienceLikeData = await res.json();
+      $authStore.user.experienceLikes = data.updateUser.user.experienceLikes;
+      authStore.set({ user: $authStore.user });
+      experience.liked = liked;
+    } else {
+      const error = await res.json();
+      console.error(error);
+    }
+  }
+
+  async function likeDestination(destination: Destination) {
+    let liked: boolean;
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    let destinationLikedIds: string[] = (
+      $authStore.user?.destinationLikes || []
+    ).map((item: Destination) => item.id);
+    let indexLikeExist = destinationLikedIds.findIndex(
+      (id: string) => id == destination.id,
+    );
+    if (indexLikeExist < 0) {
+      destinationLikedIds.push(destination.id);
+      liked = true;
+    } else {
+      destinationLikedIds.splice(indexLikeExist, 1);
+      liked = false;
+    }
+    const res = await fetch(`/destination/like.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(destinationLikedIds),
+    });
+
+    if (res.ok) {
+      const data: DestinationLikeData = await res.json();
+      $authStore.user.destinationLikes = data.updateUser.user.destinationLikes;
+      authStore.set({ user: $authStore.user });
+      destination.liked = liked;
+      experience.destinations = experience.destinations.map(
+        (item: Destination) => {
+          if (item.id == destination.id) {
+            item = destination;
+          }
+          return item;
+        },
+      );
+    } else {
+      const error = await res.json();
+      console.error(error);
+    }
+  }
+
+  async function likeProduct(event: CustomEvent) {
+    let liked: boolean;
+    const product = event.detail.product;
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    if (!product) {
+      return;
+    }
+    let productLikedIds: string[] = ($authStore.user?.productLikes || []).map(
+      (item: Product) => item.id,
+    );
+    let indexLikeExist = productLikedIds.findIndex(
+      (id: string) => id == product.id,
+    );
+    if (indexLikeExist < 0) {
+      productLikedIds.push(product.id);
+      liked = true;
+    } else {
+      productLikedIds.splice(indexLikeExist, 1);
+      liked = false;
+    }
+    const res = await fetch(`/product/like.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(productLikedIds),
+    });
+
+    if (res.ok) {
+      const data: ProductLikeData = await res.json();
+      $authStore.user.productLikes = data.updateUser.user.productLikes;
+      authStore.set({ user: $authStore.user });
+      product.liked = liked;
+      experience.pack = experience.pack.map((item: Product) => {
+        if (item.id == product.id) {
+          item = product;
+        }
+        return item;
+      });
+    } else {
+      const error = await res.json();
+      console.error(error);
+    }
+  }
 
   function onScrollFixedHeader() {
     // if (document.documentElement.clientWidth > 949) {
@@ -154,7 +307,7 @@
                   </IconButton>
                   <IconButton
                     class="btn-favorite {experience.liked ? 'liked' : ''}"
-                    on:click={likeExperienceItem(experience)}
+                    on:click={likeExperience}
                   >
                     <Icon
                       class="like"
@@ -234,7 +387,7 @@
                   </IconButton>
                   <IconButton
                     class="btn-favorite {experience.liked ? 'liked' : ''}"
-                    on:click={likeExperienceItem(experience)}
+                    on:click={likeExperience}
                   >
                     <Icon
                       class="like"
@@ -312,6 +465,7 @@
                           </a>
                           <IconButton
                             class="btn-favorite {item.liked ? 'liked' : ''}"
+                            on:click={() => likeDestination(item)}
                           >
                             <Icon
                               class="like"
@@ -373,7 +527,11 @@
         <LookShow title="Shop by look" items={experience.looks} />
       {/if}
       {#if experience.pack?.length}
-        <ProductShow title="What to pack" items={experience.pack} />
+        <ProductShow
+          title="What to pack"
+          items={experience.pack}
+          on:likeItem={likeProduct}
+        />
       {/if}
       {#if experience.destinations?.length}
         <section class="m-pt-50 m-pb-85 d-none m-block">
@@ -395,6 +553,7 @@
                         </a>
                         <IconButton
                           class="btn-favorite {item.liked ? 'liked' : ''}"
+                          on:click={() => likeDestination(item)}
                         >
                           <Icon
                             class="like"

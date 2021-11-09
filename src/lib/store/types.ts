@@ -1,4 +1,5 @@
 import { sortByPublishedAt } from '$lib/utils/sort';
+
 import { Writable } from 'svelte/store';
 import { Category } from './category';
 import { Country } from './country';
@@ -8,7 +9,7 @@ export interface FetchError {
   code?: number;
   status?: string;
   message?: string;
-  fields?: Record<string, string>;
+  fields?: Rec<string>;
 }
 
 export type AsyncStore = {
@@ -21,7 +22,7 @@ export type AsyncStore = {
 export type CollectionStore<T> = AsyncStore & {
   hasMore?: boolean;
   last?: T;
-  items: Record<string, T>;
+  items: Rec<T>;
 };
 
 export type Identifiable = {
@@ -55,6 +56,7 @@ export type Exhibitable = Publishable &
   Nameable & {
     description: string;
     gallery: UploadFile[];
+    liked?: boolean;
   };
 
 export type Searchable = Exhibitable & Nationalizable & Categorizable;

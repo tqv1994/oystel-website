@@ -1,16 +1,17 @@
 import { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { ExperiencesData } from '$lib/store/pages';
-import { ExperienceType } from '$lib/store/experience-type';
+
+import { Category } from '$lib/store/category';
+import { Experience } from '$lib/store/experience';
 
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const post: RequestHandler = async (request: Request<Record<string, any>, AuthForm>) => {
-  let experienceTypes: ExperienceType[] = request.body || [];
+export const post: RequestHandler = async (request: Request<Rec<any>, AuthForm>) => {
+  const experienceTypes: Category[] = request.body || [];
   let queryString = '';
-  for(let experienceType of experienceTypes){
+  for(const experienceType of experienceTypes){
     queryString += ` experienceType_${experienceType.id}: experiences (limit: 3, sort: "published_at:desc", where: {type: {id: ${experienceType.id}}})
       {
         id
@@ -52,7 +53,7 @@ export const post: RequestHandler = async (request: Request<Record<string, any>,
     }       
     `;
     console.log(query);
-    const res = await client.query<ExperiencesData>(query).toPromise();
+    const res = await client.query<Experience>(query).toPromise();
     if(res.data){
       
       return {
@@ -65,5 +66,5 @@ export const post: RequestHandler = async (request: Request<Record<string, any>,
   } catch (error) {
     console.error('Error getting experiences', error);
   }
-  return makeErrorResponse(500, 'Error retrieving data for the experiences');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the experiences');
 };

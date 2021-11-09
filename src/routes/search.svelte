@@ -1,8 +1,14 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import { ExperienceSearchResultItem, experienceStore } from '$lib/store/experience';
+  import {
+    ExperienceSearchResultItem,
+    experienceStore,
+  } from '$lib/store/experience';
   import { experienceTypeStore } from '$lib/store/experience-type';
-  import { DestinationSearchResultItem, destinationStore } from '$lib/store/destination';
+  import {
+    DestinationSearchResultItem,
+    destinationStore,
+  } from '$lib/store/destination';
   import { destinationTypeStore } from '$lib/store/destination-type';
   import { countryStore } from '$lib/store/country';
   import { onMount } from 'svelte';
@@ -44,60 +50,99 @@
     DESTINATION_TYPE,
     SearchResultGroup,
   } from '$lib/store/search';
-import { Category } from '$lib/store/category';
-import SearchResult from '$lib/components/search-result.svelte';
-import { makeLink } from '$lib/utils/link';
-import { sortByName } from '$lib/utils/sort';
-import { Nameable } from '$lib/store/types';
-const Orderings: Nameable[] = [
+  import { Category } from '$lib/store/category';
+  import SearchResult from '$lib/components/search-result.svelte';
+  import { makeLink } from '$lib/utils/link';
+  import { sortByName } from '$lib/utils/sort';
+  import { Nameable } from '$lib/store/types';
+  import { contains } from '$lib/utils/array';
+  import { ExperienceLikeData } from './experience/like.json';
+  import { DestinationLikeData } from './destination/like.json';
+  const Orderings: Nameable[] = [
     ORDER_BY_NAME_ASC,
     ORDER_BY_NAME_DESC,
     ORDER_BY_PUBLISH_DATE_ASC,
     ORDER_BY_PUBLISH_DATE_DESC,
   ];
-  export const load: Load = async ({ fetch, page }) => {
+  export const load: Load = async ({ fetch, session, page }) => {
     page.query.set(LIMIT, '10');
-    const res = await fetch(`/search.json?${page.query.toString()}`);
-    if (res.ok) {
-      const searchData: SearchResultGroup<ExperienceSearchResultItem|DestinationSearchResultItem> = await res.json();
-      const searchResult: (Experience|Destination)[] = [];
-      const countries = get(countryStore);
-      const experienceTypes = get(experienceTypeStore);
-      const destinationTypes = get(destinationTypeStore);
-      for (const k in searchData) {
-        for (const item of searchData.items) {
-          searchResult.push({
-            id: item.id,
-            name: item.name,
-            description: item.description,
-            intro: item.intro,
-            gallery: item.gallery,
-            videos: item.videos,
-            looks: item.looks,
-            pack: item.pack,
-            destinations: [],
-            experiences:[],
-            country: countries.items[item.country],
-            type: item.__typename == 'Destination' ? destinationTypes.items[item.type] : experienceTypes.items[item.type],
-            created_at: item.created_at,
-            updated_at: item.updated_at,
-            published_at: item.published_at,
-            __typename: item.__typename
-          });
-        }
+    const searchResultExperience: Experience[] = [];
+    const searchResultDestination: Destination[] = [];
+    const countries = get(countryStore);
+    const experienceTypes = get(experienceTypeStore);
+    const destinationTypes = get(destinationTypeStore);
+    const resExperience = await fetch(
+      `/experience/search.json?${page.query.toString()}`,
+    );
+    if (resExperience.ok) {
+      const searchDataExperience: SearchResultGroup<ExperienceSearchResultItem> =
+        await resExperience.json();
+      for (const item of searchDataExperience.items) {
+        searchResultExperience.push({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          intro: item.intro,
+          gallery: item.gallery,
+          videos: item.videos,
+          looks: item.looks,
+          pack: item.pack,
+          destinations: [],
+          country: countries.items[item.country],
+          created_at: item.created_at,
+          updated_at: item.updated_at,
+          published_at: item.published_at,
+          type: experienceTypes.items[item.type],
+          liked: contains(session.user?.experienceLikes || [], 'id', item.id),
+        });
       }
-      return {
-        props: {
-          searchResult,
-          query: page.query.get(QUERY),
-          experience_type: get(experienceStore).items[page.query.get(EXPERIENCE_TYPE) || ''],
-          destination_type: get(destinationStore).items[page.query.get(DESTINATION_TYPE) || ''],
-          country: get(countryStore).items[page.query.get(COUNTRY) || ''],
-          ordering:
-            orderings[page.query.get(ORDERING) || ''] || ORDER_BY_NAME_ASC,
-        },
-      };
     }
+
+    const resDestination = await fetch(
+      `/destination/search.json?${page.query.toString()}`,
+    );
+    if (resDestination.ok) {
+      const searchDataDestination: SearchResultGroup<DestinationSearchResultItem> =
+        await resDestination.json();
+      for (const item of searchDataDestination.items) {
+        searchResultDestination.push({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          intro: item.intro,
+          gallery: item.gallery,
+          videos: item.videos,
+          looks: item.looks,
+          pack: item.pack,
+          experiences: item.experiences,
+          accommodations: item.accommodations,
+          restaurants: item.restaurants,
+          attractions: item.attractions,
+          country: countries.items[item.country],
+          type: destinationTypes.items[item.type],
+          created_at: item.created_at,
+          updated_at: item.updated_at,
+          published_at: item.published_at,
+          liked: contains(session.user?.destinationLikes || [], 'id', item.id),
+        });
+      }
+    }
+    return {
+      props: {
+        searchResultExperience,
+        searchResultDestination,
+        query: page.query.get(QUERY) || '',
+        experience_type:
+          get(experienceTypeStore).items[page.query.get(EXPERIENCE_TYPE) || ''],
+        destination_type:
+          get(destinationTypeStore).items[
+            page.query.get(DESTINATION_TYPE) || ''
+          ],
+        country: get(countryStore).items[page.query.get(COUNTRY) || ''],
+        ordering:
+          orderings[page.query.get(ORDERING) || ''] || ORDER_BY_NAME_ASC,
+      },
+    };
   };
 </script>
 
@@ -123,8 +168,8 @@ const Orderings: Nameable[] = [
       currentMenu: '',
     },
   };
-  export let searchResult: (Experience | Destination)[];
-  console.log(searchResult);
+  export let searchResultDestination: Destination[];
+  export let searchResultExperience: Experience[];
   let experienceTypes: Category[];
   experienceTypeStore.subscribe((store) => {
     experienceTypes = sortByName(Object.values(store.items));
@@ -163,7 +208,9 @@ const Orderings: Nameable[] = [
     goSlow({ x: event.detail.value.id });
   }
 
-  function onDestinationTypeChange(event: CustomEvent<DropdownValue<Category>>) {
+  function onDestinationTypeChange(
+    event: CustomEvent<DropdownValue<Category>>,
+  ) {
     goSlow({ d: event.detail.value.id });
   }
 
@@ -172,7 +219,109 @@ const Orderings: Nameable[] = [
   }
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
-    goSlow({ s: event.detail.value.key });
+    goSlow({ o: event.detail.value.key });
+  }
+
+  function onSearchSubmitMobile(event: CustomEvent) {
+    contentHeaderActionMobile = '';
+    go({
+      c: event.detail.country?.id || '',
+      t: event.detail.experience_type?.id || '',
+      x: event.detail.destination_type?.id || '',
+      o: event.detail.ordering?.key || '',
+    });
+  }
+
+  async function likeExperience(experience: Experience) {
+    let liked: boolean;
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    let experienceLikedIds: string[] = (
+      $authStore.user?.experienceLikes || []
+    ).map((item: Experience) => item.id);
+    let indexLikeExist = experienceLikedIds.findIndex(
+      (id: string) => id == experience.id,
+    );
+    if (indexLikeExist < 0) {
+      experienceLikedIds.push(experience.id);
+      liked = true;
+    } else {
+      experienceLikedIds.splice(indexLikeExist, 1);
+      liked = false;
+    }
+    const res = await fetch(`/experience/like.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(experienceLikedIds),
+    });
+
+    if (res.ok) {
+      const data: ExperienceLikeData = await res.json();
+      $authStore.user.experienceLikes = data.updateUser.user.experienceLikes;
+      authStore.set({ user: $authStore.user });
+      experience.liked = liked;
+      searchResultExperience = searchResultExperience.map(
+        (item: Experience) => {
+          if (item.id == experience.id) {
+            item = experience;
+          }
+          return item;
+        },
+      );
+    } else {
+      const error = await res.json();
+      console.error(error);
+    }
+  }
+
+  async function likeDestination(destination: Destination) {
+    let liked: boolean;
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    let destinationLikedIds: string[] = (
+      $authStore.user?.destinationLikes || []
+    ).map((item: Destination) => item.id);
+    let indexLikeExist = destinationLikedIds.findIndex(
+      (id: string) => id == destination.id,
+    );
+    if (indexLikeExist < 0) {
+      destinationLikedIds.push(destination.id);
+      liked = true;
+    } else {
+      destinationLikedIds.splice(indexLikeExist, 1);
+      liked = false;
+    }
+    const res = await fetch(`/destination/like.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(destinationLikedIds),
+    });
+
+    if (res.ok) {
+      const data: DestinationLikeData = await res.json();
+      $authStore.user.destinationLikes = data.updateUser.user.destinationLikes;
+      authStore.set({ user: $authStore.user });
+      destination.liked = liked;
+      searchResultDestination = searchResultDestination.map(
+        (item: Destination) => {
+          if (item.id == destination.id) {
+            item = destination;
+          }
+          return item;
+        },
+      );
+    } else {
+      const error = await res.json();
+      console.error(error);
+    }
   }
 
   function onScrollFixedHeader() {
@@ -214,11 +363,7 @@ const Orderings: Nameable[] = [
     <section class="header-title d-pt-120 d-pb-55 m-pt-90 m-pb-25 full-width">
       <div class="content-wrap">
         <div class="container m-none">
-          <form
-            class="search-form-experiences"
-            action="/"
-            method="GET"
-          >
+          <form class="search-form-experiences" method="GET" on:submit|preventDefault={()=>{go({})}}>
             <LayoutGrid class="p-0">
               <Cell span="4">
                 <div class="form-control">
@@ -301,89 +446,147 @@ const Orderings: Nameable[] = [
       <div class="container">
         <div class="section-content">
           <LayoutGrid class="p-0">
-              {#each (searchResult || []) as item, i}
-                <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-                  <div class="experience-item">
-                    <div class="thumbnail">
-                      <a href={makeLink(item.__typename == 'Destination' ? '/destination' : '/experience',item)}>
-                        <div
-                          class="image-cover"
-                          style="padding-top: calc(410 / 315 * 100%)"
-                        >
-                          <BlurImage data={item.gallery[0]} />
-                        </div>
-                      </a>
-                      <IconButton
-                        class="btn-favorite {item.liked ? 'liked' : ''}"
-                        on:click={likeItem(item)}
+            {#each searchResultDestination || [] as item, i}
+              <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
+                <div class="experience-item">
+                  <div class="thumbnail">
+                    <a href={makeLink('/destination', item)}>
+                      <div
+                        class="image-cover"
+                        style="padding-top: calc(410 / 315 * 100%)"
                       >
-                        <Icon
-                          class="like"
-                          component={Svg}
-                          viewBox="-4 -4 24 24"
-                        >
-                          <path
-                            d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                            transform="translate(0.001)"
-                            fill="#fff"
-                            fill-rule="evenodd"
-                          />
-                        </Icon>
-                        <Icon
-                          class="liked"
-                          component={Svg}
-                          viewBox="-4 -4 24 24"
-                        >
-                          <path
-                            d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                            transform="translate(0)"
-                            fill="#fff"
-                            fill-rule="evenodd"
-                          />
-                        </Icon>
-                      </IconButton>
-                    </div>
-                    <a href={makeLink(item.__typename == 'Destination' ? '/destination' : '/experience',item)}>
-                      <LayoutGrid class="p-0 d-block m-none">
-                        <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                          ><p class="text-eyebrow text-left">
-                            {item.country ? item.country.name : 'Country'}
-                          </p></Cell
-                        >
-                        <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                          ><p class="text-eyebrow text-right">
-                            {item.type?.name || ''}
-                          </p></Cell
-                        >
-                      </LayoutGrid>
-                      <LayoutGrid class="p-0 d-none m-block">
-                        <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                          ><p class="text-eyebrow text-left">
-                            {item.type?.name || ''}
-                          </p></Cell
-                        >
-                      </LayoutGrid>
-                      <div class="divider" />
-                      <h4 class="text-h2 title">{item.name}</h4>
-                      <p class="short-text m-none">{(item.intro || '').substring(0,80)}</p>
+                        <BlurImage data={item.gallery[0]} />
+                      </div>
                     </a>
+                    <IconButton
+                      class="btn-favorite {item.liked ? 'liked' : ''}"
+                      on:click={likeDestination(item)}
+                    >
+                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
+                        <path
+                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
+                          transform="translate(0.001)"
+                          fill="#fff"
+                          fill-rule="evenodd"
+                        />
+                      </Icon>
+                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
+                        <path
+                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
+                          transform="translate(0)"
+                          fill="#fff"
+                          fill-rule="evenodd"
+                        />
+                      </Icon>
+                    </IconButton>
                   </div>
-                </Cell>
-              {/each}
+                  <a href={makeLink('/destination', item)}>
+                    <LayoutGrid class="p-0 d-block m-none">
+                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                        ><p class="text-eyebrow text-left">
+                          {item.country ? item.country.name : 'Country'}
+                        </p></Cell
+                      >
+                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                        ><p class="text-eyebrow text-right">
+                          {item.type?.name || ''}
+                        </p></Cell
+                      >
+                    </LayoutGrid>
+                    <LayoutGrid class="p-0 d-none m-block">
+                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                        ><p class="text-eyebrow text-left">
+                          {item.type?.name || ''}
+                        </p></Cell
+                      >
+                    </LayoutGrid>
+                    <div class="divider" />
+                    <h4 class="text-h2 title">{item.name}</h4>
+                    <p class="short-text m-none">
+                      {(item.intro || '').substring(0, 80)}
+                    </p>
+                  </a>
+                </div>
+              </Cell>
+            {/each}
+            {#each searchResultExperience || [] as item, i}
+              <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
+                <div class="experience-item">
+                  <div class="thumbnail">
+                    <a href={makeLink('/experience', item)}>
+                      <div
+                        class="image-cover"
+                        style="padding-top: calc(410 / 315 * 100%)"
+                      >
+                        <BlurImage data={item.gallery[0]} />
+                      </div>
+                    </a>
+                    <IconButton
+                      class="btn-favorite {item.liked ? 'liked' : ''}"
+                      on:click={likeExperience(item)}
+                    >
+                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
+                        <path
+                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
+                          transform="translate(0.001)"
+                          fill="#fff"
+                          fill-rule="evenodd"
+                        />
+                      </Icon>
+                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
+                        <path
+                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
+                          transform="translate(0)"
+                          fill="#fff"
+                          fill-rule="evenodd"
+                        />
+                      </Icon>
+                    </IconButton>
+                  </div>
+                  <a href={makeLink('/experience', item)}>
+                    <LayoutGrid class="p-0 d-block m-none">
+                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                        ><p class="text-eyebrow text-left">
+                          {item.country ? item.country.name : 'Country'}
+                        </p></Cell
+                      >
+                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                        ><p class="text-eyebrow text-right">
+                          {item.type?.name || ''}
+                        </p></Cell
+                      >
+                    </LayoutGrid>
+                    <LayoutGrid class="p-0 d-none m-block">
+                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                        ><p class="text-eyebrow text-left">
+                          {item.type?.name || ''}
+                        </p></Cell
+                      >
+                    </LayoutGrid>
+                    <div class="divider" />
+                    <h4 class="text-h2 title">{item.name}</h4>
+                    <p class="short-text m-none">
+                      {(item.intro || '').substring(0, 80)}
+                    </p>
+                  </a>
+                </div>
+              </Cell>
+            {/each}
           </LayoutGrid>
         </div>
       </div>
     </section>
   </div>
 </Layout>
-<!-- <HeaderActionMobile
+<HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  bind:searchModel
-  bind:types={experienceTypes}
+  searchModel={{ experience_type, destination_type, ordering, country }}
+  bind:experience_types={experienceTypes}
   bind:destination_types={destinationTypes}
   bind:countries
-  on:close={onSearchSubmit}
-/> -->
+  orderings={Orderings}
+  on:close={onSearchSubmitMobile}
+/>
 <OyNotification />
 
 <style>

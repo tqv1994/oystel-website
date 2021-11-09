@@ -49,5 +49,5 @@ export const get: RequestHandler = async (request: Request) => {
   } catch (error) {
     console.error('Error getting product list', error);
   }
-  return makeErrorResponse(500, 'Error retrieving data for the product list');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the product list');
 };

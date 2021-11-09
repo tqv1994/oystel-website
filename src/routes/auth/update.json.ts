@@ -2,11 +2,12 @@ import { cmsUrlPrefix } from '$lib/env';
 import { extractSetCookieHeader } from '$lib/utils/session';
 import { RequestHandler, Request } from '@sveltejs/kit';
 
+
 /**
  * @type {import('@sveltejs/kit').Put}
  */
 export const put: RequestHandler = async (
-  request: Request<Record<string, any>, AuthForm>,
+  request: Request<Rec<any>, AuthForm>,
 ) => {
   if (!request.body.token) {
     return {

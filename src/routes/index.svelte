@@ -20,14 +20,49 @@
   import { getItems, insertToStore } from '$lib/store/types';
   import { makeLink } from '$lib/utils/link';
   import { HomePageData } from './home.json';
+  import { authStore } from '$lib/store/auth';
+  import { responsePathAsArray } from 'graphql';
+  import { ExperienceLikeData } from './experience/like.json';
+  import { DestinationLikeData } from './destination/like.json';
 
   export const load: Load = async ({ fetch, session, page }) => {
     const res = await fetch('/home.json');
     if (res.ok) {
+      console.log('user session', session.user);
       const data: HomePageData = await res.json();
       insertToStore(dropStore, data.drops);
-      insertToStore(experienceStore, data.experiences);
-      insertToStore(destinationStore, data.destinations);
+      insertToStore(
+        experienceStore,
+        data.experiences.map((item: Experience) => {
+          if (session.user) {
+            let indexExist = (session.user?.experienceLikes || []).findIndex(
+              (itemLike: Experience) => itemLike.id === item.id,
+            );
+            if (indexExist >= 0) {
+              item.liked = true;
+            } else {
+              item.liked = false;
+            }
+          }
+          return item;
+        }),
+      );
+      insertToStore(
+        destinationStore,
+        data.destinations.map((item: Destination) => {
+          if (session.user) {
+            let indexExist = (session.user?.destinationLikes || []).findIndex(
+              (itemLike: Destination) => itemLike.id === item.id,
+            );
+            if (indexExist >= 0) {
+              item.liked = true;
+            } else {
+              item.liked = false;
+            }
+          }
+          return item;
+        }),
+      );
     } else {
       const error = await res.json();
       console.error(error);
@@ -73,6 +108,88 @@
       ]);
     }
     onScrollFixedHeader();
+  }
+
+  async function likeExperience(experience: Experience) {
+    let liked: boolean;
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    let experienceLikedIds: string[] = (
+      $authStore.user?.experienceLikes || []
+    ).map((item: Experience) => item.id);
+    let indexLikeExist = experienceLikedIds.findIndex(
+      (id: string) => id == experience.id,
+    );
+    if (indexLikeExist < 0) {
+      experienceLikedIds.push(experience.id);
+      liked = true;
+    } else {
+      experienceLikedIds.splice(indexLikeExist, 1);
+      liked = false;
+    }
+    const res = await fetch(`/experience/like.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(experienceLikedIds),
+    });
+
+    if (res.ok) {
+      const data: ExperienceLikeData = await res.json();
+      $authStore.user.experienceLikes = data.updateUser.user.experienceLikes;
+      authStore.set({ user: $authStore.user });
+      experience.liked = liked;
+      experienceStore.subscribe(
+        (store) => (curatedExperiences = getItems(store)),
+      );
+    } else {
+      const error = await res.json();
+      console.error(error);
+    }
+  }
+
+  async function likeDestination(destination: Destination) {
+    let liked: boolean;
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    let destinationLikedIds: string[] = (
+      $authStore.user?.destinationLikes || []
+    ).map((item: Destination) => item.id);
+    let indexLikeExist = destinationLikedIds.findIndex(
+      (id: string) => id == destination.id,
+    );
+    if (indexLikeExist < 0) {
+      destinationLikedIds.push(destination.id);
+      liked = true;
+    } else {
+      destinationLikedIds.splice(indexLikeExist, 1);
+      liked = false;
+    }
+    const res = await fetch(`/destination/like.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(destinationLikedIds),
+    });
+
+    if (res.ok) {
+      const data: DestinationLikeData = await res.json();
+      $authStore.user.destinationLikes = data.updateUser.user.destinationLikes;
+      authStore.set({ user: $authStore.user });
+      destination.liked = liked;
+      destinationStore.subscribe(
+        (store) => (advisorDestinations = getItems(store)),
+      );
+    } else {
+      const error = await res.json();
+      console.error(error);
+    }
   }
 
   function onScrollFixedHeader() {
@@ -302,7 +419,14 @@
                     <BlurImage data={curatedExperiences[0].gallery[0]} />
                   </div>
                 </a>
-                <IconButton class="btn-favorite" on:click={() => {}}>
+                <IconButton
+                  class="btn-favorite {curatedExperiences[0].liked
+                    ? 'liked'
+                    : ''}"
+                  on:click={() => {
+                    likeExperience(curatedExperiences[0]);
+                  }}
+                >
                   <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
                     <path
                       d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
@@ -324,7 +448,10 @@
                   <p class="mt-0 text-eyebrow pl-25 pr-25">
                     Featured Experience
                   </p>
-                  <a class="" href={curatedExperiences[0].url}>
+                  <a
+                    class=""
+                    href={makeLink('/experience', curatedExperiences[0])}
+                  >
                     <h4 class="pl-25 pr-25 text-h2 mt-20 title">
                       {curatedExperiences[0].name}
                     </h4>
@@ -349,7 +476,12 @@
                           <BlurImage data={experience.gallery[0]} />
                         </div>
                       </a>
-                      <IconButton class="btn-favorite" on:click={() => {}}>
+                      <IconButton
+                        class="btn-favorite {experience.liked ? 'liked' : ''}"
+                        on:click={() => {
+                          likeExperience(experience);
+                        }}
+                      >
                         <Icon
                           class="like"
                           component={Svg}
@@ -418,7 +550,12 @@
                       <BlurImage data={item.gallery[0]} />
                     </div>
                   </a>
-                  <IconButton class="btn-favorite" on:click={() => {}}>
+                  <IconButton
+                    class="btn-favorite {item.liked ? 'liked' : ''}"
+                    on:click={() => {
+                      likeDestination(item);
+                    }}
+                  >
                     <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
                       <path
                         d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
@@ -586,12 +723,12 @@
     }
   }
 
-  @media (max-width: 1079px) and (min-width: 950px){
-    #signup-section{
-      .d-mb-100{
+  @media (max-width: 1105px) and (min-width: 950px) {
+    #signup-section {
+      .d-mb-100 {
         margin-bottom: 30px !important;
       }
-      .d-mt-145{
+      .d-mt-145 {
         margin-top: 70px !important;
       }
     }

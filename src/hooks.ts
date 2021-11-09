@@ -7,7 +7,6 @@ import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
 import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
 import { languageFieldsFragment } from '$lib/store/language';
 import { countryFieldsFragment } from '$lib/store/country';
-import { ResponseHeaders } from '@sveltejs/kit/types/helper';
 import { Metadata } from './routes/metadata.json';
 import { Locals } from '$lib/store/locals';
 
@@ -84,11 +83,14 @@ export const handle: Handle<Locals> = async ({ request, resolve }) => {
   console.log('Handling', request.path, ++counter);
 
   if (!request.locals.metadata) {
+    console.log('Loading metadata...');
     const client = createGraphClient();
     try {
       const res = await client.query<Metadata>(metadataQuery).toPromise();
       if (res.data) {
         request.locals.metadata = res.data;
+      } else if (res.error) {
+        console.error(res.error.message);
       }
     } catch (err) {
       console.error('Error fetching metadata', err);
@@ -100,7 +102,7 @@ export const handle: Handle<Locals> = async ({ request, resolve }) => {
     if (request.headers.cookie) {
       const cookie = getSessionCookie(request.headers.cookie);
       if (cookie) {
-        // console.log('we have session cookie...');
+        console.log('Authenticating user from cookie...');
         try {
           const client = createGraphClient(cookie);
           const res = await client.query(meQuery).toPromise();
@@ -116,6 +118,7 @@ export const handle: Handle<Locals> = async ({ request, resolve }) => {
     }
   }
 
+  console.log('Resuming request...', request.path, counter);
   const response = await resolve(request);
 
   return {

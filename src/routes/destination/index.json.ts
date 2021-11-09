@@ -14,7 +14,7 @@ import {
   SearchResultGroup,
 } from '$lib/store/search';
 import { orderings, ORDER_BY_NAME_ASC } from '$lib/store/order';
-import { Rec } from '@sveltejs/kit/types/helper';
+
 
 const dIndex = searchClient.index('destination');
 
@@ -47,7 +47,7 @@ export const get: RequestHandler = async (request: Request) => {
   } catch (error) {
     console.error('Error searching for destinations', error);
   }
-  return makeErrorResponse(500, 'Error searching for destinations');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error searching for destinations');
 };
 
 async function search<T extends Identifiable>(

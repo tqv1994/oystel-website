@@ -39,7 +39,10 @@
     ORDER_BY_PUBLISH_DATE_DESC,
   } from '$lib/store/order';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-import { experienceTypeStore } from '$lib/store/experience-type';
+  import { experienceTypeStore } from '$lib/store/experience-type';
+  import { authStore } from '$lib/store/auth';
+  import { DestinationLikeData } from './like.json';
+  import { contains } from '$lib/utils/array';
 
   const orderingOptions: Nameable[] = [
     ORDER_BY_NAME_ASC,
@@ -48,9 +51,9 @@ import { experienceTypeStore } from '$lib/store/experience-type';
     ORDER_BY_PUBLISH_DATE_DESC,
   ];
 
-  type DestinationGroups = Record<string, SearchResultGroup<Destination>>;
+  type DestinationGroups = Rec<SearchResultGroup<Destination>>;
 
-  export const load: Load = async ({ fetch, page }) => {
+  export const load: Load = async ({ fetch, session, page }) => {
     page.query.set(LIMIT, page.query.get(TYPE) ? '20' : '3');
     const res = await fetch(`/destination.json?${page.query.toString()}`);
     if (res.ok) {
@@ -82,6 +85,11 @@ import { experienceTypeStore } from '$lib/store/experience-type';
             created_at: item.created_at,
             updated_at: item.updated_at,
             published_at: item.published_at,
+            liked: contains(
+              session.user?.destinationLikes || [],
+              'id',
+              item.id,
+            ),
           });
         }
         destinations[k] = { hasMore: searchData[k].hasMore, items };
@@ -90,7 +98,7 @@ import { experienceTypeStore } from '$lib/store/experience-type';
       return {
         props: {
           destinations,
-          query: page.query.get(QUERY),
+          query: page.query.get(QUERY) || '',
           type: get(destinationTypeStore).items[page.query.get(TYPE) || ''],
           country: get(countryStore).items[page.query.get(COUNTRY) || ''],
           ordering:
@@ -172,6 +180,58 @@ import { experienceTypeStore } from '$lib/store/experience-type';
     });
   }
 
+  async function likeDestination(event: CustomEvent) {
+    let liked: boolean;
+    let group_id = event.detail.group_id;
+    let indexDestination = event.detail.key;
+    let destination = destinations[group_id].items[indexDestination];
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    if (group_id && destination) {
+      let destinationLikedIds: string[] = (
+        $authStore.user?.destinationLikes || []
+      ).map((item: Destination) => item.id);
+      let indexLikeExist = destinationLikedIds.findIndex(
+        (id: string) => id == destination.id,
+      );
+      if (indexLikeExist < 0) {
+        destinationLikedIds.push(destination.id);
+        liked = true;
+      } else {
+        destinationLikedIds.splice(indexLikeExist, 1);
+        liked = false;
+      }
+      const res = await fetch(`/destination/like.json`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(destinationLikedIds),
+      });
+
+      if (res.ok) {
+        const data: DestinationLikeData = await res.json();
+        $authStore.user.destinationLikes =
+          data.updateUser.user.destinationLikes;
+        authStore.set({ user: $authStore.user });
+        destination.liked = liked;
+        destinations[group_id].items = destinations[group_id].items.map(
+          (item: Destination, index: number) => {
+            if (index == indexDestination) {
+              item = destination;
+            }
+            return item;
+          },
+        );
+      } else {
+        const error = await res.json();
+        console.error(error);
+      }
+    }
+  }
+
   function onScrollFixedHeader() {
     // let eleHiddenOnScrolls = document.querySelectorAll(
     //   '.header-title .hidden-on-sticky',
@@ -211,7 +271,7 @@ import { experienceTypeStore } from '$lib/store/experience-type';
     <section class="header-title d-pt-120 d-pb-95 m-pt-80 m-pb-25 full-width">
       <div class="content-wrap">
         <div class="container m-none">
-          <form class="search-form-experiences" method="GET">
+          <form class="search-form-experiences" method="GET" on:submit|preventDefault={()=>{go({})}}>
             <LayoutGrid class="p-0">
               <Cell span="6">
                 <div class="form-control">
@@ -276,8 +336,12 @@ import { experienceTypeStore } from '$lib/store/experience-type';
         <div class="container m-block d-none">
           <LayoutGrid class="p-0">
             <Cell span="12">
-              <Button style="width: 100%" variant="outlined" on:click={()=>{ contentHeaderActionMobile = 'experience-search' }}
-                ><Label>Filter Your Results</Label></Button
+              <Button
+                style="width: 100%"
+                variant="outlined"
+                on:click={() => {
+                  contentHeaderActionMobile = 'experience-search';
+                }}><Label>Filter Your Results</Label></Button
               >
             </Cell>
           </LayoutGrid>
@@ -289,8 +353,9 @@ import { experienceTypeStore } from '$lib/store/experience-type';
         <SearchResult
           pathPrefix="/destination"
           categories={destinationTypes}
-          groups={destinations}
+          bind:groups={destinations}
           showHeadings={!category}
+          on:likeItem={likeDestination}
         />
       </section>
     {/if}
@@ -298,7 +363,7 @@ import { experienceTypeStore } from '$lib/store/experience-type';
 </Layout>
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  searchModel={{destination_type: category, ordering, country}}
+  searchModel={{ destination_type: category, ordering, country }}
   bind:destination_types={destinationTypes}
   experience_types={sortByName(Object.values($experienceTypeStore.items))}
   bind:countries

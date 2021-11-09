@@ -9,7 +9,6 @@
   import { specialityStore } from '$lib/store/speciality';
   import { countryStore } from '$lib/store/country';
   import { languageStore } from '$lib/store/language';
-  import { Metadata } from './metadata.json';
   import { Locals } from '$lib/store/locals';
   export let key;
 

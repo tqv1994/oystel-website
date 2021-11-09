@@ -51,5 +51,5 @@ export const get: RequestHandler = async (request: Request) => {
   } catch (error) {
     console.error('Error getting home page', error);
   }
-  return makeErrorResponse(500, 'Error retrieving data for the home page');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the home page');
 };

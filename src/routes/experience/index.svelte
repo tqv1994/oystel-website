@@ -42,6 +42,8 @@
   } from '$lib/store/search';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
   import { destinationStore } from '$lib/store/destination';
+  import { authStore } from '$lib/store/auth';
+  import { ExperienceLikeData } from './like.json';
 
   const experienceOrderings: Nameable[] = [
     ORDER_BY_NAME_ASC,
@@ -50,9 +52,9 @@
     ORDER_BY_PUBLISH_DATE_DESC,
   ];
 
-  type ExperienceGroups = Record<string, SearchResultGroup<Experience>>;
+  type ExperienceGroups = Rec<SearchResultGroup<Experience>>;
 
-  export const load: Load = async ({ fetch, page }) => {
+  export const load: Load = async ({ fetch, session, page }) => {
     page.query.set(LIMIT, page.query.get(TYPE) ? '20' : '3');
     const res = await fetch(`/experience.json?${page.query.toString()}`);
     if (res.ok) {
@@ -66,6 +68,13 @@
       for (const k in searchData) {
         const items: Experience[] = [];
         for (const item of searchData[k].items) {
+          let liked = false;
+          let indexLiked = (session.user?.experienceLikes || []).findIndex(
+            (experience: Experience) => experience.id == item.id,
+          );
+          if (indexLiked >= 0) {
+            liked = true;
+          }
           items.push({
             id: item.id,
             name: item.name,
@@ -81,6 +90,7 @@
             created_at: item.created_at,
             updated_at: item.updated_at,
             published_at: item.published_at,
+            liked: liked,
           });
         }
         experiences[k] = { hasMore: searchData[k].hasMore, items };
@@ -88,7 +98,7 @@
       return {
         props: {
           experiences,
-          query: page.query.get(QUERY),
+          query: page.query.get(QUERY) || '',
           type: get(experienceStore).items[page.query.get(TYPE) || ''],
           country: get(countryStore).items[page.query.get(COUNTRY) || ''],
           ordering:
@@ -158,7 +168,7 @@
   }
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
-    go({ s: event.detail.value.key });
+    go({ o: event.detail.value.key });
   }
 
   function onSearchSubmitMobile(event: CustomEvent) {
@@ -168,6 +178,57 @@
       t: event.detail.experience_type?.id || '',
       o: event.detail.ordering?.key || '',
     });
+  }
+
+  async function likeExperience(event: CustomEvent) {
+    let liked: boolean;
+    let group_id = event.detail.group_id;
+    let indexExperience = event.detail.key;
+    let experience = experiences[group_id].items[indexExperience];
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    if (group_id && experience) {
+      let experienceLikedIds: string[] = (
+        $authStore.user?.experienceLikes || []
+      ).map((item: Experience) => item.id);
+      let indexLikeExist = experienceLikedIds.findIndex(
+        (id: string) => id == experience.id,
+      );
+      if (indexLikeExist < 0) {
+        experienceLikedIds.push(experience.id);
+        liked = true;
+      } else {
+        experienceLikedIds.splice(indexLikeExist, 1);
+        liked = false;
+      }
+      const res = await fetch(`/experience/like.json`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(experienceLikedIds),
+      });
+
+      if (res.ok) {
+        const data: ExperienceLikeData = await res.json();
+        $authStore.user.experienceLikes = data.updateUser.user.experienceLikes;
+        authStore.set({ user: $authStore.user });
+        experience.liked = liked;
+        experiences[group_id].items = experiences[group_id].items.map(
+          (item: Experience, index: number) => {
+            if (index == indexExperience) {
+              item = experience;
+            }
+            return item;
+          },
+        );
+      } else {
+        const error = await res.json();
+        console.error(error);
+      }
+    }
   }
 
   function onScrollFixedHeader() {
@@ -209,7 +270,7 @@
     <section class="header-title d-pt-120 d-pb-95 m-pt-80 m-pb-25 full-width">
       <div class="content-wrap">
         <div class="container m-none">
-          <form class="search-form-experiences" method="GET">
+          <form class="search-form-experiences" method="GET" on:submit|preventDefault={()=>{go({})}}>
             <LayoutGrid class="p-0">
               <Cell span="6">
                 <div class="form-control">
@@ -274,8 +335,12 @@
         <div class="container m-block d-none">
           <LayoutGrid class="p-0">
             <Cell span="12">
-              <Button style="width: 100%" variant="outlined" on:click={()=>{contentHeaderActionMobile='experience-search'}}
-                ><Label>Filter Your Results</Label></Button
+              <Button
+                style="width: 100%"
+                variant="outlined"
+                on:click={() => {
+                  contentHeaderActionMobile = 'experience-search';
+                }}><Label>Filter Your Results</Label></Button
               >
             </Cell>
           </LayoutGrid>
@@ -289,6 +354,7 @@
           categories={experienceTypes}
           groups={experiences}
           showHeadings={!type}
+          on:likeItem={likeExperience}
         />
       </section>
     {/if}
@@ -296,7 +362,7 @@
 </Layout>
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  searchModel={{experience_type: type, ordering, country}}
+  searchModel={{ experience_type: type, ordering, country }}
   bind:experience_types={experienceTypes}
   destination_types={sortByName(Object.values($destinationStore.items))}
   bind:countries

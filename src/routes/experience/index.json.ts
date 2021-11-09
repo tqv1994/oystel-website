@@ -13,7 +13,7 @@ import {
   TYPE,
 } from '$lib/store/search';
 import { orderings, ORDER_BY_NAME_ASC } from '$lib/store/order';
-import { Rec } from '@sveltejs/kit/types/helper';
+
 
 const dIndex = searchClient.index('experience');
 
@@ -46,7 +46,7 @@ export const get: RequestHandler = async (request: Request) => {
   } catch (error) {
     console.error('Error searching for experiences', error);
   }
-  return makeErrorResponse(500, 'Error searching for experiences');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error searching for experiences');
 };
 
 async function search<T extends Identifiable>(

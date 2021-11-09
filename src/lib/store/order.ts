@@ -1,3 +1,4 @@
+
 import { Nameable } from './types';
 
 export const NAME_ASC_KEY = 'n';
@@ -39,7 +40,7 @@ export const ORDER_BY_PUBLISH_DATE_DESC: Ordering = {
   value: 'published_at:desc',
 };
 
-export const orderings:Record<string, Ordering> = {
+export const orderings:Rec<Ordering> = {
   [NAME_ASC_KEY]: ORDER_BY_NAME_ASC,
   [NAME_DESC_KEY]: ORDER_BY_NAME_DESC,
   [PUBLISH_DATE_ASC_KEY]: ORDER_BY_PUBLISH_DATE_ASC,

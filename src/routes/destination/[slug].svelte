@@ -20,7 +20,7 @@
   import ProductShow from '$lib/components/product-show.svelte';
   import LookShow from '$lib/components/look-show.svelte';
 
-  export const load: Load = async ({ fetch, page }) => {
+  export const load: Load = async ({ fetch, session, page }) => {
     const id = parseId(page.params.slug);
     // if (get(destinationStore).items[id]) {
     //   return {
@@ -31,6 +31,25 @@
     const res = await fetch(`/destination/${id}.json`);
     if (res.ok) {
       const data: Destination = await res.json();
+      if (data) {
+        data.liked = contains(session.user?.destinationLikes || [], 'id', id);
+        data.pack = data.pack.map((item: Product) => {
+          item.liked = contains(
+            session.user?.productLikes || [],
+            'id',
+            item.id,
+          );
+          return item;
+        });
+        data.experiences = data.experiences.map((item: Experience) => {
+          item.liked = contains(
+            session.user?.experienceLikes || [],
+            'id',
+            item.id,
+          );
+          return item;
+        });
+      }
       insertToStore(destinationStore, [data]);
       return { props: { id } };
     } else {
@@ -41,7 +60,14 @@
 </script>
 
 <script type="ts">
-import { makeLink } from "$lib/utils/link";
+  import { makeLink } from '$lib/utils/link';
+  import { authStore } from '$lib/store/auth';
+  import { Experience } from '$lib/store/experience';
+  import { ExperienceLikeData } from '../experience/like.json';
+  import { contains } from '$lib/utils/array';
+  import { Product } from '$lib/store/product';
+  import { DestinationLikeData } from './like.json';
+  import { ProductLikeData } from '../product/like.json';
 
   type TabData = {
     name: string;
@@ -87,6 +113,138 @@ import { makeLink } from "$lib/utils/link";
     ];
     activeTab = tabs[0];
   });
+
+  async function likeExperience(experience: Experience) {
+    let liked: boolean;
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    let experienceLikedIds: string[] = (
+      $authStore.user?.experienceLikes || []
+    ).map((item: Experience) => item.id);
+    let indexLikeExist = experienceLikedIds.findIndex(
+      (id: string) => id == experience.id,
+    );
+    if (indexLikeExist < 0) {
+      experienceLikedIds.push(experience.id);
+      liked = true;
+    } else {
+      experienceLikedIds.splice(indexLikeExist, 1);
+      liked = false;
+    }
+    const res = await fetch(`/experience/like.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(experienceLikedIds),
+    });
+
+    if (res.ok) {
+      const data: ExperienceLikeData = await res.json();
+      $authStore.user.experienceLikes = data.updateUser.user.experienceLikes;
+      authStore.set({ user: $authStore.user });
+      experience.liked = liked;
+      destination.experiences = destination.experiences.map(
+        (item: Experience) => {
+          if (item.id == experience.id) {
+            item = experience;
+          }
+          return item;
+        },
+      );
+    } else {
+      const error = await res.json();
+      console.error(error);
+    }
+  }
+
+  async function likeDestination() {
+    let liked: boolean;
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    let destinationLikedIds: string[] = (
+      $authStore.user?.destinationLikes || []
+    ).map((item: Destination) => item.id);
+    let indexLikeExist = destinationLikedIds.findIndex(
+      (id: string) => id == destination.id,
+    );
+    if (indexLikeExist < 0) {
+      destinationLikedIds.push(destination.id);
+      liked = true;
+    } else {
+      destinationLikedIds.splice(indexLikeExist, 1);
+      liked = false;
+    }
+    const res = await fetch(`/destination/like.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(destinationLikedIds),
+    });
+
+    if (res.ok) {
+      const data: DestinationLikeData = await res.json();
+      $authStore.user.destinationLikes = data.updateUser.user.destinationLikes;
+      authStore.set({ user: $authStore.user });
+      destination.liked = liked;
+    } else {
+      const error = await res.json();
+      console.error(error);
+    }
+  }
+
+  async function likeProduct(event: CustomEvent) {
+    let liked: boolean;
+    const product = event.detail.product;
+    if (!$authStore.user) {
+      window.pushToast('Please login to use this feature');
+      return;
+    }
+    if (!product) {
+      return;
+    }
+    let productLikedIds: string[] = ($authStore.user?.productLikes || []).map(
+      (item: Product) => item.id,
+    );
+    let indexLikeExist = productLikedIds.findIndex(
+      (id: string) => id == product.id,
+    );
+    if (indexLikeExist < 0) {
+      productLikedIds.push(product.id);
+      liked = true;
+    } else {
+      productLikedIds.splice(indexLikeExist, 1);
+      liked = false;
+    }
+    const res = await fetch(`/product/like.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(productLikedIds),
+    });
+
+    if (res.ok) {
+      const data: ProductLikeData = await res.json();
+      $authStore.user.productLikes = data.updateUser.user.productLikes;
+      authStore.set({ user: $authStore.user });
+      product.liked = liked;
+      destination.pack = destination.pack.map((item: Product) => {
+        if (item.id == product.id) {
+          item = product;
+        }
+        return item;
+      });
+    } else {
+      const error = await res.json();
+      console.error(error);
+    }
+  }
 
   function onScrollFixedHeader() {
     // if (document.documentElement.clientWidth > 949) {
@@ -199,7 +357,10 @@ import { makeLink } from "$lib/utils/link";
                       </g>
                     </Icon>
                   </IconButton>
-                  <IconButton class="btn-favorite">
+                  <IconButton
+                    class="btn-favorite {destination.liked ? 'liked' : ''}"
+                    on:click={likeDestination}
+                  >
                     <Icon
                       class="like"
                       component={Svg}
@@ -278,7 +439,7 @@ import { makeLink } from "$lib/utils/link";
                   </IconButton>
                   <IconButton
                     class="btn-favorite {destination.liked ? 'liked' : ''}"
-                    on:click={likeDestinationItem(destination)}
+                    on:click={likeDestination}
                   >
                     <Icon
                       class="like"
@@ -391,7 +552,11 @@ import { makeLink } from "$lib/utils/link";
         <LookShow title="Shop by look" items={destination.looks} />
       {/if}
       {#if destination.pack?.length}
-        <ProductShow title="What to pack" items={destination.pack} />
+        <ProductShow
+          title="What to pack"
+          bind:items={destination.pack}
+          on:likeItem={likeProduct}
+        />
       {/if}
       {#if destination.experiences && destination.experiences.length > 0}
         <section class="d-pt-80 d-pb-50 m-pt-40 m-pb-40">
@@ -411,7 +576,12 @@ import { makeLink } from "$lib/utils/link";
                             <BlurImage data={item.gallery[0]} />
                           </div>
                         </a>
-                        <IconButton class="btn-favorite">
+                        <IconButton
+                          class="btn-favorite {item.liked ? 'liked' : ''}"
+                          on:click={() => {
+                            likeExperience(item);
+                          }}
+                        >
                           <Icon
                             class="like"
                             component={Svg}
@@ -449,7 +619,7 @@ import { makeLink } from "$lib/utils/link";
                           <Cell
                             spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
                             ><p class="text-eyebrow text-right">
-                              {item.type?.name || "Experience"}
+                              {item.type?.name || 'Experience'}
                             </p></Cell
                           >
                         </LayoutGrid>
@@ -457,14 +627,14 @@ import { makeLink } from "$lib/utils/link";
                           <Cell
                             spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
                             ><p class="text-eyebrow text-left mt-20 mb-20">
-                              {item.type?.name || "Experience"}
+                              {item.type?.name || 'Experience'}
                             </p></Cell
                           >
                         </LayoutGrid>
                       </a>
                       <div class="divider" />
                       <h4 class="text-h2 title mt-30">{item.name}</h4>
-                      <p class="short-text m-none">{item.intro || ""}</p>
+                      <p class="short-text m-none">{item.intro || ''}</p>
                     </div>
                   </Cell>
                 {/each}

@@ -1,11 +1,12 @@
 import { RequestHandler, Request } from '@sveltejs/kit';
 import { extractSetCookieHeader } from '$lib/utils/session';
 import { cmsUrlPrefix } from '$lib/env';
+
 /**
  * @type {import('@sveltejs/kit').Post}
  */
 export const post: RequestHandler = async (
-  request: Request<Record<string, any>, AuthForm>,
+  request: Request<Rec<any>, AuthForm>,
 ) => {
   try {
     const res = await fetch(`${cmsUrlPrefix}/users/me`, {
