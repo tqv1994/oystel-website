@@ -5,7 +5,7 @@
   import { createEventDispatcher } from 'svelte';
   import Tab, { Icon, Label } from '@smui/tab';
   import TabBar from '@smui/tab-bar';
-  import { afterUpdate } from 'svelte';
+  import { afterUpdate, onDestroy } from 'svelte';
   import { documentHelper, routerHelper } from '$lib/helpers';
   import { goto } from '$app/navigation';
   export let open = false;
@@ -35,6 +35,7 @@
       }
     }
     if (open == true) {
+      document.documentElement.style.overflow = "hidden";
       if (menuId) {
         let menuActive = document.querySelector(
           'header #main-menu li#' + menuId,
@@ -43,7 +44,13 @@
           menuActive.classList.add('active');
         }
       }
+    }else{
+      document.documentElement.style.overflow = "auto";
     }
+  });
+
+  onDestroy(()=>{
+    document.documentElement.style.overflow = "auto";
   });
 
   function handleCloseSubMenu() {
