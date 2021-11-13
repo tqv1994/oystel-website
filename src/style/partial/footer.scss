@@ -1,0 +1,78 @@
+@use "../../theme/variables" as v;
+@mixin mobile {
+    @media (max-width: #{ v.$desktop-width - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{ v.$desktop-width}) {
+        @content;
+    }
+}
+footer {
+    background-color: v.$blackColor;
+    .mdc-layout-grid {
+        @include mobile {
+            padding-top: 90px;
+            padding-bottom: 90px;
+        }
+        @include desktop {
+            padding: 100px 160px 90px 160px;
+        }
+        .mdc-layout-grid {
+            --mdc-layout-grid-margin-desktop: 0;
+            padding: 0;
+            @media (min-width: 1240px) {
+                --mdc-layout-grid-gutter-desktop: 50px;
+            }
+        }
+    }
+    ul {
+        padding-inline-start: 0;
+        li {
+            font-size: 13px;
+            letter-spacing: 0.2px;
+            line-height: 30px;
+            list-style: none;
+        }
+    }
+    .widget {
+        .widget-title {
+            text-transform: uppercase;
+        }
+        margin-bottom: 40px;
+    }
+}
+
+.user-dashboard {
+    --mdc-tab-horizontal-padding: 0;
+    .mdc-drawer {
+        border-color: transparent;
+    }
+    .mdc-tab-bar {
+        .mdc-tab-scroller__scroll-content {
+            display: block;
+        }
+        .mdc-tab {
+            padding-right: 0;
+            padding-left: 0;
+            justify-content: left;
+            width: 100%;
+            text-transform: uppercase;
+        }
+    }
+    .personal-info {
+        position: relative;
+        padding: 25px 30px;
+        border: 1px solid #000;
+    }
+    .user-profile-image {
+        position: relative;
+        .btn-update-avatar {
+            position: absolute;
+            top: 24px;
+            right: 15px;
+        }
+    }
+}

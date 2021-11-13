@@ -1,41 +1,37 @@
 <script lang="ts">
-  import TopAppBar, { Section, Row, Title } from '@smui/top-app-bar';
-  import Button, { Icon, Label } from '@smui/button';
-  import Svg from '@smui/common/Svg.svelte';
-  import IconButton from '@smui/icon-button';
-  import Textfield from '@smui/textfield';
-  import Select, { Option } from '@smui/select';
-  import { createEventDispatcher, afterUpdate } from 'svelte';
-  import { goto } from '$app/navigation';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import { createEventDispatcher } from 'svelte';
   import { Destination } from '$lib/store/destination';
   import { Experience } from '$lib/store/experience';
   import { Country } from '$lib/store/country';
-import { Category } from '$lib/store/category';
-import { Nameable } from '$lib/store/types';
-import Dropdown from '$lib/components/dropdown.svelte';
+  import { Category } from '$lib/store/category';
+  import { Nameable } from '$lib/store/types';
+  import Dropdown from '$lib/components/Dropdown.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
   let menuActive;
   export let searchModel: {
-    experience_type: Category | undefined,
-    destination_type: Category | undefined,
-    country: Country | undefined,
-    ordering: Nameable | undefined
+    experience_type: Category | undefined;
+    destination_type: Category | undefined;
+    country: Country | undefined;
+    ordering: Nameable | undefined;
   };
-  let { experience_type, 
-    destination_type, 
-    country, 
-    ordering } = searchModel;
+  let { experience_type, destination_type, country, ordering } = searchModel;
   export let destination_types: Destination[];
   export let experience_types: Experience[];
   export let countries: Country[];
   export let orderings: Nameable[] = [];
   function onSearchSubmit() {
-    setTimeout(()=>{
-      dispatch('close',{destination_type, experience_type, country, ordering});
-    },0);
-    
+    setTimeout(() => {
+      dispatch('close', {
+        destination_type,
+        experience_type,
+        country,
+        ordering,
+      });
+    }, 0);
   }
 </script>
 
@@ -47,11 +43,11 @@ import Dropdown from '$lib/components/dropdown.svelte';
   >
     <div class="form-control mb-40">
       <Dropdown
-                    label="By Experience Type"
-                    blankItem="All"
-                    items={experience_types}
-                    bind:value={experience_type}
-                  />
+        label="By Experience Type"
+        blankItem="All"
+        items={experience_types}
+        bind:value={experience_type}
+      />
     </div>
     <div class="form-control mb-40">
       <Dropdown

@@ -1,11 +1,12 @@
 <script lang="ts">
   import { clickOutside } from '$lib/components/events/clickOutside.js';
-  import Textfield from '@smui/textfield';
-  import { Icon } from '@smui/button';
+  import Textfield from '@smui/textfield/Textfield.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
   import { searchKeys } from '$lib/const';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
-import { documentHelper } from '$lib/helpers';
+  import { documentHelper } from '$lib/helpers';
+  import '/src/style/partial/form.scss';
   export let searchResult: string = '';
   // tagsStore.subscribe(({ tags }) => {
   //     tagDatas = Object.values(tags);
@@ -44,27 +45,27 @@ import { documentHelper } from '$lib/helpers';
     }
   }
 
-  async function handleSearch(key: string){
+  async function handleSearch(key: string) {
     goto(`/search?q=${key}`);
     return;
   }
 
-  onMount(async()=>{
+  onMount(async () => {
     checkDeviceToDisableInput();
   });
-  function checkDeviceToDisableInput(){
+  function checkDeviceToDisableInput() {
     if (document.documentElement.clientWidth <= 949) {
-      if(documentHelper.getMobileOperatingSystem() == "Android"){
+      if (documentHelper.getMobileOperatingSystem() == 'Android') {
         disabled = true;
-      }else{
+      } else {
         disabled = false;
       }
-    }
-    else{
+    } else {
       disabled = false;
     }
   }
 </script>
+
 <svelte:window
   on:resize={() => {
     checkDeviceToDisableInput();
@@ -85,7 +86,7 @@ import { documentHelper } from '$lib/helpers';
       withTrailingIcon={false}
       bind:value={searchResult}
       on:keyup={handleSearchTags}
-      disabled={disabled}
+      {disabled}
     >
       <Icon slot="trailingIcon"><img src="/img/icons/icon-search.svg" /></Icon>
     </Textfield>
@@ -96,7 +97,15 @@ import { documentHelper } from '$lib/helpers';
       <ul>
         {#if keyResult.length > 0}
           {#each keyResult as key}
-            <li class="mt-0"><a class="m-0" href="javascript:void(0);" on:click={()=>{handleSearch(key)}}>{key}</a></li>
+            <li class="mt-0">
+              <a
+                class="m-0"
+                href="javascript:void(0);"
+                on:click={() => {
+                  handleSearch(key);
+                }}>{key}</a
+              >
+            </li>
           {/each}
         {/if}
       </ul>

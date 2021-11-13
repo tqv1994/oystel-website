@@ -229,7 +229,7 @@
   }
   .wrap-control {
     width: var(--wrap-width);
-    max-width: 1440px;
+    max-width: 100vw;
     position: absolute;
     top: 50%;
     left: 50%;

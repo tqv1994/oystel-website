@@ -4,6 +4,7 @@ import { makeErrorResponse } from '$lib/utils/fetch';
 
 import { Category } from '$lib/store/category';
 import { Experience } from '$lib/store/experience';
+import type { Rec } from '@sveltejs/kit/types/helper';
 
 /**
  * @type {import('@sveltejs/kit').Get}

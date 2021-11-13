@@ -1,15 +1,13 @@
 <script lang="ts">
-  import { authStore } from '$lib/store/auth';
   import Layout from '$lib/components/common/Layout.svelte';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
-  import Button, { Icon, Label } from '@smui/button';
-  import IconButton, { Icon as Icon2 } from '@smui/button';
-  import Svg from '@smui/common/Svg.svelte';
-  import SignupModal from '$lib/components/modals/SignupModal.svelte';
-  import SigninModal from '$lib/components/modals/SigninModal.svelte';
-  import Select, { Option } from '@smui/select';
-  import { goto } from '$app/navigation';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Select from '@smui/select/Select.svelte';
+  import Option from '@smui/select/Option.svelte';
   let openSignupModal: boolean;
   let filterActive = 'Current Drops';
   let configPage = {
@@ -213,8 +211,9 @@
             <Button
               variant="outlined"
               class="hover-affect"
-              on:click={()=>{openSignupModal = true}}
-              ><Label class="text-button2">Sign Up Now</Label></Button
+              on:click={() => {
+                openSignupModal = true;
+              }}><Label class="text-button2">Sign Up Now</Label></Button
             >
           </Cell>
         </LayoutGrid>
@@ -402,7 +401,7 @@
   </div>
 </Layout>
 
-<style lang="scss">
+<style lang="scss" global>
   $desktop-width: 950px;
   @mixin mobile {
     @media (max-width: #{$desktop-width - 1px}) {
@@ -414,249 +413,205 @@
       @content;
     }
   }
-  .header-title {
-    background-color: #000;
-  }
-  .shop-slides {
-    height: 100%;
-    width: 100%;
-    --wrap-width: 100%;
-  }
-
-  #featured-drops {
-    --mdc-layout-grid-gutter-desktop: 15px;
-  }
-
-  .shop-slides :global(.dots) {
-    display: none;
-  }
-
-  .shop-slides :global(.carousel),
-  .shop-slides :global(.slides),
-  .shop-slides :global(.slides div) {
-    height: 100%;
-  }
-  .shop-slides :global(.slide-item) {
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-  }
-  .header-title .content-left {
-    padding-top: 245px;
-    padding-bottom: 70px;
-  }
-  .header-title .short-description {
-    @include desktop {
-      width: 80%;
-    }
-  }
-  .trips-list-wrap {
-    padding-bottom: 110px;
-  }
-
-  :global(.mdc-select.smui-select--standard .mdc-select__anchor) {
-    height: 35px;
-  }
-
-  .trips-list-wrap .item-featured-drop .thumbnail {
-    position: relative;
-  }
-  .trips-list-wrap .item-featured-drop .thumbnail .caption {
-    text-transform: uppercase;
-    position: absolute;
-    bottom: -20px;
-    width: calc(100% - 25px);
-    background-color: #5078bc;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 0;
-    font-size: 14px;
-    line-height: 32px;
-    letter-spacing: 0.1px;
-  }
-  .trips-list-wrap .item-featured-drop .thumbnail .caption span {
-    width: 100%;
-    display: inline-block;
-    text-align: center;
-  }
-  .trips-list-wrap .item-featured-drop.coming .thumbnail .caption {
-    background-color: #5078bc;
-  }
-  .trips-list-wrap .item-featured-drop:not(.new) {
-    white-space: normal;
-  }
-
-  .trips-list-wrap .item-featured-drop:not(.new) .caption span {
-    width: 100%;
-    display: inline-block;
-    text-align: center;
-  }
-  .trips-list-wrap .item-featured-drop .title {
-    height: 55px;
-    overflow: hidden;
-  }
-  .trips-list-wrap .item-featured-drop .divider::after {
-    background-color: #ccc;
-  }
-
-  .trips-list-wrap .item-featured-drop {
-    margin-bottom: 70px;
-  }
-
-  #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
-    overflow-x: auto;
-    grid-auto-flow: column;
-  }
-
-  #featured-drops .list-featured-drop {
-    :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-      background-color: #5078bc;
-    }
-  }
-
-  @media (min-width: 1240px) {
-    #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr)
-      );
-    }
-  }
-  @media (max-width: 1239px) and (min-width: 905px) {
-    #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr)
-      );
-    }
-  }
-  @media (max-width: 904px) and (min-width: 600px) {
-    #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)), 1fr)
-      );
-    }
-  }
-  @media (max-width: 599px) {
-    #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
-      );
-    }
-  }
-
-  #signup-section {
-    --mdc-layout-grid-gutter-desktop: 15px;
-  }
-
-  @media screen and (max-width: 949px) {
-    .shop-slides :global(.carousel),
-    .shop-slides :global(.slides),
-    .shop-slides :global(.slides div) {
-      height: auto;
-    }
-    .shop-slides :global(.slide-item) {
-      padding-top: 70%;
-    }
-    .header-title .short-description {
-      width: 100%;
-    }
-    .shop-slides :global(.wrap-control) {
-      display: none;
+  .page-shop {
+    @import './src/style/partial/featured-drop.scss';
+    @import './src/style/partial/thumbnail.scss';
+    @import './src/style/partial/signup-section.scss';
+    .header-title {
+      background-color: #000;
     }
     .shop-slides {
-      margin-bottom: 20px;
+      height: 100%;
+      width: 100%;
+      --wrap-width: 100%;
     }
-    .shop-slides :global(.dots) {
-      display: flex;
-      justify-content: start;
-      margin-top: 20px;
+
+    #featured-drops {
+      --mdc-layout-grid-gutter-desktop: 15px;
     }
-    .header-title :global(.mdc-layout-grid__cell:first-child) {
-      order: 2;
+
+    .shop-slides .dots {
+      display: none;
+    }
+
+    .shop-slides .carousel,
+    .shop-slides .slides,
+    .shop-slides .slides div {
+      height: 100%;
+    }
+    .shop-slides :global(.slide-item) {
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
     }
     .header-title .content-left {
-      padding-top: 15px;
-      padding-bottom: 20px;
+      padding-top: 245px;
+      padding-bottom: 70px;
     }
-
-    .filter-wrap label {
-      display: block;
-      margin-bottom: 30px;
+    .header-title .short-description {
+      @include desktop {
+        width: 80%;
+      }
     }
-
     .trips-list-wrap {
-      padding-bottom: 30px;
+      padding-bottom: 110px;
     }
 
-    .trips-list-wrap :global(.mdc-select .mdc-select__selected-text) {
+    :global(.mdc-select.smui-select--standard .mdc-select__anchor) {
+      height: 35px;
+    }
+
+    .trips-list-wrap .item-featured-drop .thumbnail {
+      position: relative;
+    }
+    .trips-list-wrap .item-featured-drop .thumbnail .caption {
+      text-transform: uppercase;
       position: absolute;
+      bottom: -20px;
+      width: calc(100% - 25px);
+      background-color: #5078bc;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 0;
+      font-size: 14px;
+      line-height: 32px;
+      letter-spacing: 0.1px;
+    }
+    .trips-list-wrap .item-featured-drop .thumbnail .caption span {
+      width: 100%;
+      display: inline-block;
       text-align: center;
+    }
+    .trips-list-wrap .item-featured-drop.coming .thumbnail .caption {
+      background-color: #5078bc;
+    }
+    .trips-list-wrap .item-featured-drop:not(.new) {
+      white-space: normal;
+    }
+
+    .trips-list-wrap .item-featured-drop:not(.new) .caption span {
+      width: 100%;
+      display: inline-block;
+      text-align: center;
+    }
+    .trips-list-wrap .item-featured-drop .title {
+      height: 55px;
+      overflow: hidden;
+    }
+    .trips-list-wrap .item-featured-drop .divider::after {
+      background-color: #ccc;
     }
 
     .trips-list-wrap .item-featured-drop {
-      margin-bottom: 50px;
+      margin-bottom: 70px;
     }
 
-    .trips-list-wrap .item-featured-drop .title {
-      height: auto;
+    #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
+      overflow-x: auto;
+      grid-auto-flow: column;
     }
 
-    .trips-list-wrap .item-featured-drop :global(.mdc-button) {
-      display: none;
-    }
-
-    .trips-list-wrap .item-featured-drop .thumbnail .caption {
-      padding: 15px 0;
-      font-size: 9px;
-      line-height: 10px;
-      letter-spacing: 0.1px;
-      bottom: -15px;
-    }
-  }
-
-  @media(max-width: 1025px) and (min-width: 950px){
-      .header-title .content-left{
-          .d-mr-50{
-              margin-right: 10px !important;
-          }
+    #featured-drops .list-featured-drop {
+      :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
+        background-color: #5078bc;
       }
-  }
+    }
 
-  @media (max-width: 1105px) and (min-width: 950px) {
     #signup-section {
-      .d-mb-100 {
-        margin-bottom: 30px !important;
+      --mdc-layout-grid-gutter-desktop: 15px;
+    }
+
+    @media screen and (max-width: 949px) {
+      .shop-slides :global(.carousel),
+      .shop-slides :global(.slides),
+      .shop-slides :global(.slides div) {
+        height: auto;
       }
-      .d-mt-145 {
-        margin-top: 70px !important;
+      .shop-slides :global(.slide-item) {
+        padding-top: 70%;
+      }
+      .header-title .short-description {
+        width: 100%;
+      }
+      .shop-slides :global(.wrap-control) {
+        display: none;
+      }
+      .shop-slides {
+        margin-bottom: 20px;
+      }
+      .shop-slides :global(.dots) {
+        display: flex;
+        justify-content: start;
+        margin-top: 20px;
+      }
+      .header-title :global(.mdc-layout-grid__cell:first-child) {
+        order: 2;
+      }
+      .header-title .content-left {
+        padding-top: 15px;
+        padding-bottom: 20px;
+      }
+
+      .filter-wrap label {
+        display: block;
+        margin-bottom: 30px;
+      }
+
+      .trips-list-wrap {
+        padding-bottom: 30px;
+      }
+
+      .trips-list-wrap :global(.mdc-select .mdc-select__selected-text) {
+        position: absolute;
+        text-align: center;
+      }
+
+      .trips-list-wrap .item-featured-drop {
+        margin-bottom: 50px;
+      }
+
+      .trips-list-wrap .item-featured-drop .title {
+        height: auto;
+      }
+
+      .trips-list-wrap .item-featured-drop :global(.mdc-button) {
+        display: none;
+      }
+
+      .trips-list-wrap .item-featured-drop .thumbnail .caption {
+        padding: 15px 0;
+        font-size: 9px;
+        line-height: 10px;
+        letter-spacing: 0.1px;
+        bottom: -15px;
       }
     }
-  }
 
-  @media (max-width: 389px) {
-    .header-title .content-left .m-mr-60 {
-      margin-right: 40px !important;
+    @media (max-width: 1025px) and (min-width: 950px) {
+      .header-title .content-left {
+        .d-mr-50 {
+          margin-right: 10px !important;
+        }
+      }
+    }
+
+    @media (max-width: 1105px) and (min-width: 950px) {
+      #signup-section {
+        .d-mb-100 {
+          margin-bottom: 30px !important;
+        }
+        .d-mt-145 {
+          margin-top: 70px !important;
+        }
+      }
+    }
+
+    @media (max-width: 389px) {
+      .header-title .content-left .m-mr-60 {
+        margin-right: 40px !important;
+      }
     }
   }
 </style>

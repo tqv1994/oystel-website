@@ -1,11 +1,20 @@
 <script>
-  import Dialog, { Header, Title, Content, Actions } from '@smui/dialog';
-  import IconButton from '@smui/icon-button';
-  import Button, { Label, Icon } from '@smui/button';
-  import DataTable, { Head, Body, Row, Cell } from '@smui/data-table';
-  import Textfield from '@smui/textfield';
+  import Dialog from '@smui/dialog/Dialog.svelte';
+  import Title from '@smui/dialog/Title';
+  import Content from '@smui/dialog/Content';
+  import Actions from '@smui/dialog/Actions';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import DataTable from '@smui/data-table/DataTable.svelte';
+  import Head from '@smui/data-table/Head.svelte';
+  import Body from '@smui/data-table/Body.svelte';
+  import Row from '@smui/data-table/Row.svelte';
+  import Cell from '@smui/data-table/DataTable.svelte';
+  import Textfield from '@smui/textfield/Textfield.svelte';
   import { createEventDispatcher } from 'svelte';
-  import Select, { Option } from '@smui/select';
+  import Select from '@smui/select/Select.svelte';
+  import Option from '@smui/select/Option.svelte';
   export let open;
   const dispatch = createEventDispatcher();
   let model = [];

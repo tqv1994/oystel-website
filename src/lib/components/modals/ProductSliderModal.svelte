@@ -1,17 +1,14 @@
 <script lang="ts">
-  import Dialog, { Header, Title, Content, Actions } from '@smui/dialog';
   import IconButton from '@smui/icon-button';
-  import Button, { Label, Icon } from '@smui/button';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Textfield from '@smui/textfield';
-  import HelperText from '@smui/textfield/helper-text/index';
-  import { createEventDispatcher } from 'svelte';
-  import { goto } from '$app/navigation';
-  import Svg from '@smui/common/Svg.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import OyCarousel from '../common/OyCarousel.svelte';
-  import { each } from 'svelte/internal';
   import { Product } from '$lib/store/product';
-
+  import BlurImage from '../blur-image.svelte';
   export let open = false;
   export let products: Product[];
   export let active: number;
@@ -71,7 +68,7 @@
                         class="image-cover"
                         style="padding-top: calc(305 / 191 * 100%)"
                       >
-                        <img src={item.gallery[0]?.url} alt="" />
+                        <BlurImage {...item.gallery[0]} />
                       </div>
                     </div>
                   </Cell>
@@ -101,7 +98,7 @@
   {/if}
 </div>
 
-<style lang="scss">
+<style lang="scss" global>
   $desktop-width: 950px;
   @mixin mobile {
     @media (max-width: #{$desktop-width - 1px}) {
@@ -120,14 +117,16 @@
       }
     }
   }
-  section {
-    --mdc-layout-grid-gutter-desktop: 100px;
-    background-color: #fff;
-  }
-  .divider:after {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
   .popup-products {
+    @import './src/style/partial/thumbnail.scss';
+    box-shadow: 0 3px 10px rgb(0 0 0 / 16%);
+    section {
+      --mdc-layout-grid-gutter-desktop: 100px;
+      background-color: #fff;
+    }
+    .divider:after {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
     z-index: 100;
     position: fixed;
     left: 50%;
@@ -135,63 +134,63 @@
     transform: translateX(-50%);
     opacity: 1;
     transition: bottom 2s ease;
-  }
-  .popup-products.close {
-    opacity: 0;
-    bottom: -999px;
-    z-index: -1;
-  }
-  .popup-products.open {
-  }
-
-  .popup-products :global(.btn-close) {
-    position: absolute;
-    top: -30px;
-    right: 0;
-    z-index: 7;
-  }
-
-  .popup-products :global(.wrap-control) {
-    top: 38%;
-  }
-  .popup-products :global(.carousel .wrap-control button.left .control),
-  .popup-products :global(.carousel .wrap-control button.right .control) {
-    position: relative;
-  }
-  .popup-products :global(.carousel .wrap-control button.left .control i) {
-    position: absolute;
-    left: -20px;
-    top: 2px;
-  }
-  .popup-products :global(.carousel .wrap-control button.right .control i) {
-    position: absolute;
-    right: -20px;
-    top: 2px;
-  }
-  .popup-products :global(.carousel .wrap-control button .control i img) {
-    filter: brightness(0) !important;
-  }
-
-  .popup-products :global(.carousel .dots) {
-    display: none;
-  }
-
-  @media (max-width: 949px) {
+    &.close {
+      opacity: 0;
+      bottom: -999px;
+      z-index: -1;
+    }
     .popup-products.open {
-      top: 0;
-      overflow-y: scroll;
     }
-    .popup-products :global(.carousel .wrap-control) {
-      top: 105%;
+
+    .btn-close {
+      position: absolute;
+      top: -30px;
+      right: 0;
+      z-index: 7;
     }
-    .popup-products :global(.carousel button.left) {
-      left: 10vw;
+
+    .wrap-control{
+      top: 38%;
     }
-    .popup-products :global(.carousel button.right) {
-      right: 10vw;
+    .carousel .wrap-control button.left .control,
+    .carousel .wrap-control button.right .control {
+      position: relative;
     }
-    .popup-products :global(.btn-close) {
-      right: 10px;
+    .carousel .wrap-control button.left .control i {
+      position: absolute;
+      left: -20px;
+      top: 2px;
+    }
+    .carousel .wrap-control button.right .control i {
+      position: absolute;
+      right: -20px;
+      top: 2px;
+    }
+    .carousel .wrap-control button .control i img {
+      filter: brightness(0) !important;
+    }
+
+    .carousel .dots {
+      display: none;
+    }
+
+    @media (max-width: 949px) {
+      .open {
+        top: 0;
+        overflow-y: scroll;
+      }
+      .carousel .wrap-control {
+        top: 105%;
+      }
+      .carousel button.left {
+        left: 10vw;
+      }
+      .carousel button.right {
+        right: 10vw;
+      }
+      .btn-close {
+        right: 10px;
+      }
     }
   }
 </style>

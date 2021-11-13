@@ -1,4 +1,5 @@
 import { sortByPublishedAt } from '$lib/utils/sort';
+import type { Rec } from '@sveltejs/kit/types/helper';
 
 import { Writable } from 'svelte/store';
 import { Category } from './category';

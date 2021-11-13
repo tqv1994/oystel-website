@@ -1,12 +1,14 @@
-<script>
+<script lang="ts">
   import '$lib/firebase';
-  import Dialog, { Header, Title, Content, Actions } from '@smui/dialog';
-  import IconButton from '@smui/icon-button';
-  import Button, { Label, Icon } from '@smui/button';
-  import LayoutGrid, { Cell, InnerGrid } from '@smui/layout-grid';
-  import Textfield from '@smui/textfield';
-  import HelperText from '@smui/textfield/helper-text/index';
-  import Svg from '@smui/common/Svg.svelte';
+  import Dialog, { Content } from '@smui/dialog';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Textfield from '@smui/textfield/Textfield.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import {
     createUserWithEmailAndPassword,
     getAuth,
@@ -19,7 +21,7 @@
   import { authStore } from '$lib/store/auth';
   import { createEventDispatcher } from 'svelte';
   import * as yup from 'yup';
-  export let open;
+  export let open: boolean;
   export let authModel;
   const dispatch = createEventDispatcher();
   let response = 'Nothing yet.';
@@ -346,43 +348,44 @@
   </Content>
 </Dialog>
 
-<style lang="scss">
-  @media screen and (max-width: 999px) {
-    :global(#signup-modal) {
-      :global(button.mdc-button) {
+<style lang="scss" global>
+  @import './src/style/partial/signup-modal.scss';
+  #signup-modal {
+    @media screen and (max-width: 999px) {
+      button.mdc-button {
         min-width: auto;
         padding-left: 15px;
         padding-right: 15px;
       }
     }
-  }
-  .title-with-line {
-    position: relative;
-    -js-display: flex;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-flow: row wrap;
-    flex-flow: row wrap;
-    -ms-flex-align: center;
-    align-items: center;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    b {
-      display: block;
-      -ms-flex: 1;
-      flex: 1;
-      height: 1px;
-      background-color: #fff;
+    .title-with-line {
+      position: relative;
+      -js-display: flex;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-flow: row wrap;
+      flex-flow: row wrap;
+      -ms-flex-align: center;
+      align-items: center;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      b {
+        display: block;
+        -ms-flex: 1;
+        flex: 1;
+        height: 1px;
+        background-color: #fff;
+      }
+      .title {
+        text-align: center;
+        margin: 0 15px;
+        font-size: 14px;
+      }
     }
-    .title {
-      text-align: center;
-      margin: 0 15px;
-      font-size: 14px;
+    .text-input {
+      font-size: var(--mdc-typography-overline-font-size);
+      line-height: var(--mdc-typography-overline-line-height);
+      font-style: normal;
     }
-  }
-  .text-input {
-    font-size: var(--mdc-typography-overline-font-size);
-    line-height: var(--mdc-typography-overline-line-height);
-    font-style: normal;
   }
 </style>

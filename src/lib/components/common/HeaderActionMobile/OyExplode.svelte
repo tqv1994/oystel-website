@@ -1,62 +1,58 @@
 <script lang="ts">
-  import TopAppBar, { Section, Row, Title } from '@smui/top-app-bar';
-  import Button, { Icon } from '@smui/button';
-  import Svg from '@smui/common/Svg.svelte';
-  import IconButton from '@smui/icon-button';
-  import Textfield from '@smui/textfield';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Textfield from '@smui/textfield/Textfield.svelte';
   import { createEventDispatcher, afterUpdate, onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  import { searchKeys } from '$lib/const'; 
+  import { searchKeys } from '$lib/const';
 
   const dispatch = createEventDispatcher();
   let menuActive;
   let searchResultString = '';
   let results: string[] = searchKeys;
 
-  function getHierachyTags(){
-  //       tagResult = [];
-  //       if(Array.isArray(tagDatas)){
-  //           for(const tag of tagDatas){
-  //               if(tag.parent != null){
-  //                   continue;
-  //               }
-  //               tagResult.push(tag);
-  //               let tagChilds = [];
-  //               for(const tagChild of tagDatas){
-  //                   if(tagChild.parent == null || tagChild.id == tag.id){
-  //                       continue;
-  //                   }
-  //                   if(tagChild.id_relative.indexOf(tag.id_relative) >= 0){
-  //                       let prefix = '';
-  //                       const countIdRelative = tagChild.id_relative.split('.').length;
-  //                       tagChild.title = tagChild.title.split("&nbsp;").join("");
-  //                       for(let k = 0; k < countIdRelative - 2; k++){
-  //                           prefix += '&nbsp;&nbsp;&nbsp;&nbsp;';
-  //                       }
-  //                       tagChild.title = prefix + tagChild.title; 
-  //                       tagChilds.push(tagChild);
-  //                   }
-  //               }
-  //               tagChilds = tagChilds.sort((a,b)=>{
-  //                   if(a.id_relative < b.id_relative){
-  //                       return -1;
-  //                   }
-  //                   if(a.id_relative > b.id_relative){
-  //                       return 1;
-  //                   }
-  //                   return 0
-  //               });
-  //               tagResult = tagResult.concat(tagChilds);
-  //           }
-  //       }
-    }
-  
+  function getHierachyTags() {
+    //       tagResult = [];
+    //       if(Array.isArray(tagDatas)){
+    //           for(const tag of tagDatas){
+    //               if(tag.parent != null){
+    //                   continue;
+    //               }
+    //               tagResult.push(tag);
+    //               let tagChilds = [];
+    //               for(const tagChild of tagDatas){
+    //                   if(tagChild.parent == null || tagChild.id == tag.id){
+    //                       continue;
+    //                   }
+    //                   if(tagChild.id_relative.indexOf(tag.id_relative) >= 0){
+    //                       let prefix = '';
+    //                       const countIdRelative = tagChild.id_relative.split('.').length;
+    //                       tagChild.title = tagChild.title.split("&nbsp;").join("");
+    //                       for(let k = 0; k < countIdRelative - 2; k++){
+    //                           prefix += '&nbsp;&nbsp;&nbsp;&nbsp;';
+    //                       }
+    //                       tagChild.title = prefix + tagChild.title;
+    //                       tagChilds.push(tagChild);
+    //                   }
+    //               }
+    //               tagChilds = tagChilds.sort((a,b)=>{
+    //                   if(a.id_relative < b.id_relative){
+    //                       return -1;
+    //                   }
+    //                   if(a.id_relative > b.id_relative){
+    //                       return 1;
+    //                   }
+    //                   return 0
+    //               });
+    //               tagResult = tagResult.concat(tagChilds);
+    //           }
+    //       }
+  }
 
   function search() {
     if (searchResultString != '') {
       results = [];
       searchKeys.map((item) => {
-        item = item.split('&nbsp;').join("");
+        item = item.split('&nbsp;').join('');
         let result = item.toLowerCase();
         let search = searchResultString.toLowerCase();
         let index = result.indexOf(search);
@@ -74,7 +70,7 @@
       '#fff';
   });
 
-  async function handleSearch(key: string){
+  async function handleSearch(key: string) {
     goto(`/search?name=${key}`);
     return;
   }
@@ -90,8 +86,7 @@
         label="Start with a search"
         withTrailingIcon={false}
       >
-        <Icon slot="trailingIcon"
-          ><img src="/img/icons/icon-search.svg" /></Icon
+        <Icon slot="trailingIcon"><img src="/img/icons/icon-search.svg" /></Icon
         >
       </Textfield>
     </div>
@@ -103,8 +98,11 @@
         <ul class="mt-0">
           {#each results as result}
             <li>
-              <a href="javascript:void(0)" on:click={()=>{handleSearch(result)}}
-                >{result}</a
+              <a
+                href="javascript:void(0)"
+                on:click={() => {
+                  handleSearch(result);
+                }}>{result}</a
               >
             </li>
           {/each}

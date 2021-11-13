@@ -1,8 +1,10 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import IconButton, { Icon } from '@smui/icon-button';
-  import Svg from '@smui/common/Svg.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { destinationStore } from '$lib/store/destination';
   import { Destination } from '$lib/store/destination';
@@ -32,6 +34,7 @@
 </script>
 
 <script type="ts">
+
   export let title: string;
   export let items: Look[];
 </script>
@@ -50,8 +53,7 @@
               style="padding-top: calc( 142 / 165 * 100% );"
             >
               <BlurImage
-                data={{ url: '/img/experiences/product-1.jpg' }}
-                is_static={true}
+                {...items[0].gallery[0]}
               />
             </div>
           </div>
@@ -95,7 +97,7 @@
                     class="image-cover"
                     style="padding-top: calc( 58 / 45 * 100% );"
                   >
-                    <BlurImage data={look.gallery[0]} />
+                    <BlurImage {...look.gallery[0]} />
                   </div>
                 </div>
                 <div class="title-wrap">
@@ -134,6 +136,7 @@
     </LayoutGrid>
   </div>
 </section>
+
 <style lang="scss">
   #shop-by-look-section {
     --mdc-typography-headline5-font-size: 14px;

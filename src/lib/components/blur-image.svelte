@@ -1,19 +1,21 @@
 <script lang="ts">
-  import { UploadFile } from '$lib/store/upload-file';
-  import { BlurhashImage } from 'svelte-blurhash';
+  import { BlurhashImage } from 'svelte-blurhash/src';
 
   let className: string = '';
   export { className as class };
-  export let data: UploadFile;
+  export let url: string;
+  export let width: number | undefined = undefined;
+  export let height: number | undefined = undefined;
+  export let blurHash: string = 'LjI5DEWB?bRj_4aytRWBozayRjoL';
 </script>
 
-{#if data}
+{#if url}
   <BlurhashImage
     class={className}
     fadeDuration={1000}
-    src={data.url}
-    width={data.width || 100}
-    height={data.height || 100}
-    hash={data.blurHash}
+    src={url}
+    {width}
+    {height}
+    hash={blurHash}
   />
 {/if}

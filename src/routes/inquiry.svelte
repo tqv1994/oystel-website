@@ -1,10 +1,14 @@
 <script>
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Checkbox from '@smui/checkbox';
-  import Button, { Label } from '@smui/button';
-  import IconButton, { Icon } from '@smui/icon-button';
-  import Layout from '$lib/components/common/Layout.svelte';
-  import Svg from '@smui/common/Svg.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Checkbox from '@smui/checkbox/Checkbox.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
+  import OysteoLogo from '$lib/components/OysteoLogo.svelte';
+
   let stepItems;
   let model = [
     {
@@ -50,7 +54,7 @@
         <div class="container">
           <div class="text-center d-mb-35 m-mb-25">
             <div class="logo d-mb-120 m-mb-45 ">
-              <img src="/img/logo.svg" />
+              <OysteoLogo />
             </div>
             <h1 class="mt-0 m-mb-15 d-mb-25">How can we accommodate you?</h1>
             <p class="mb-0 text-description">
@@ -72,7 +76,9 @@
             </LayoutGrid>
           </div>
           <div class="form-control text-center mb-20 group-button">
-            <Button variant="outlined" class="d-mr-30 t-mr-30 m-mb-15 pl-40 pr-40"
+            <Button
+              variant="outlined"
+              class="d-mr-30 t-mr-30 m-mb-15 pl-40 pr-40"
               ><Label>Previous Question</Label></Button
             >
             <Button variant="outlined" class="t-mb-15 pl-40 pr-40"
@@ -134,8 +140,8 @@
     text-transform: uppercase;
     display: inline-block;
   }
-  @media screen and (min-width: 950px){
-    .text-description{
+  @media screen and (min-width: 950px) {
+    .text-description {
       margin: auto;
       max-width: 430px;
     }

@@ -1,9 +1,11 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
 
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Textfield from '@smui/textfield';
-  import Button, { Label } from '@smui/button';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Textfield from '@smui/textfield/Textfield.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
   import { Icon } from '@smui/icon-button';
   import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
@@ -43,6 +45,7 @@
   import { authStore } from '$lib/store/auth';
   import { DestinationLikeData } from './like.json';
   import { contains } from '$lib/utils/array';
+  import type { Rec } from '@sveltejs/kit/types/helper';
 
   const orderingOptions: Nameable[] = [
     ORDER_BY_NAME_ASC,
@@ -233,27 +236,25 @@
   }
 
   function onScrollFixedHeader() {
-    // let eleHiddenOnScrolls = document.querySelectorAll(
-    //   '.header-title .hidden-on-sticky',
-    // );
-    // if (
-    //   document.body.scrollTop > 450 ||
-    //   document.documentElement.scrollTop > 450
-    // ) {
-    //   document.getElementById('header').classList.add('fixed');
-    //   document.querySelector('header').style.zIndex = 8;
-    //   document.querySelector('header').style.position = 'relative';
-    //   document
-    //     .querySelector('.header-title')
-    //     .classList.add('fixed', 'is_sticky');
-    // } else {
-    //   document.getElementById('header').classList.remove('fixed');
-    //   document.querySelector('header').style.zIndex = 'auto';
-    //   document.querySelector('header').style.position = 'relative';
-    //   document
-    //     .querySelector('.header-title')
-    //     .classList.remove('fixed', 'is_sticky');
-    // }
+    let eleHiddenOnScrolls = document.querySelectorAll(
+      '.header-title .hidden-on-sticky',
+    );
+    if (
+      document.body.scrollTop > 450 ||
+      document.documentElement.scrollTop > 450
+    ) {
+      document.getElementById('header').classList.add('fixed');
+      document.querySelector('header').style.zIndex = 8;
+      document.querySelector('header').style.position = 'relative';
+      document.querySelector('.header-title.is_sticky').classList.add('show');
+    } else {
+      document.getElementById('header').classList.remove('fixed');
+      document.querySelector('header').style.zIndex = 'auto';
+      document.querySelector('header').style.position = 'relative';
+      document
+        .querySelector('.header-title.is_sticky')
+        .classList.remove('show');
+    }
   }
 </script>
 
@@ -268,10 +269,16 @@
 />
 <Layout config={configPage} on:refreshPage={() => {}}>
   <div class="content">
-    <section class="header-title d-pt-120 d-pb-95 m-pt-80 m-pb-25 full-width">
+    <section class="header-title d-pt-130 d-pb-95 m-pt-80 m-pb-25 full-width">
       <div class="content-wrap">
         <div class="container m-none">
-          <form class="search-form-experiences" method="GET" on:submit|preventDefault={()=>{go({})}}>
+          <form
+            class="search-form-experiences"
+            method="GET"
+            on:submit|preventDefault={() => {
+              go({});
+            }}
+          >
             <LayoutGrid class="p-0">
               <Cell span="6">
                 <div class="form-control">
@@ -322,7 +329,7 @@
               </Cell>
             </LayoutGrid>
           </form>
-          <LayoutGrid class="p-0 hidden-on-sticky">
+          <LayoutGrid class="p-0">
             <Cell span="12">
               <h1 class="text-center d-mt-115 d-mb-20">
                 Choose Your Destination
@@ -332,6 +339,84 @@
               </p>
             </Cell>
           </LayoutGrid>
+        </div>
+        <div class="container m-block d-none">
+          <LayoutGrid class="p-0">
+            <Cell span="12">
+              <Button
+                style="width: 100%"
+                variant="outlined"
+                on:click={() => {
+                  contentHeaderActionMobile = 'experience-search';
+                }}><Label>Filter Your Results</Label></Button
+              >
+            </Cell>
+          </LayoutGrid>
+        </div>
+      </div>
+    </section>
+    <section
+      class="header-title d-pt-130 d-pb-95 m-pt-80 m-pb-25 full-width fixed is_sticky"
+    >
+      <div class="content-wrap">
+        <div class="container m-none">
+          <form
+            class="search-form-experiences"
+            method="GET"
+            on:submit|preventDefault={() => {
+              go({});
+            }}
+          >
+            <LayoutGrid class="p-0">
+              <Cell span="6">
+                <div class="form-control">
+                  <Textfield
+                    variant="outlined"
+                    bind:value={query}
+                    on:input={onQueryInput}
+                    label="Start with a search"
+                    withTrailingIcon={false}
+                  >
+                    <Icon slot="trailingIcon"
+                      ><img src="/img/icons/icon-search.svg" /></Icon
+                    >
+                  </Textfield>
+                </div>
+              </Cell>
+              <Cell span="2">
+                <div class="form-control">
+                  <Dropdown
+                    label="By Destination"
+                    blankItem="All"
+                    items={destinationTypes}
+                    value={category}
+                    on:MDCSelect:change={onTypeChange}
+                  />
+                </div>
+              </Cell>
+              <Cell span="2">
+                <div class="form-control">
+                  <Dropdown
+                    label="By Country"
+                    blankItem="All"
+                    items={countries}
+                    value={country}
+                    on:MDCSelect:change={onCountryChange}
+                  />
+                </div>
+              </Cell>
+              <Cell span="2">
+                <div class="form-control">
+                  <Dropdown
+                    label="Sort By"
+                    items={orderingOptions}
+                    value={ordering}
+                    on:MDCSelect:change={onSortChange}
+                  />
+                </div>
+              </Cell>
+            </LayoutGrid>
+          </form>
         </div>
         <div class="container m-block d-none">
           <LayoutGrid class="p-0">
@@ -372,19 +457,24 @@
 />
 <OyNotification />
 
-<style lang="scss">
+<style lang="scss" global>
   $desktop-width: 950px;
   @mixin desktop {
     @media (min-width: #{$desktop-width}) {
       @content;
     }
   }
-  .header-title {
-    background-color: #f0f7f8;
-  }
-  .header-title:global(.is_sticky) {
-    @include desktop {
-      padding-bottom: 55px !important;
+  .page-destinations {
+    @import './src/style/partial/thumbnail.scss';
+    @import './src/style/partial/sticky';
+    @import './src/style/partial/experiences-search-form.scss';
+    .header-title {
+      background-color: #f0f7f8;
+    }
+    .header-title.is_sticky {
+      @include desktop {
+        padding-bottom: 55px !important;
+      }
     }
   }
 </style>

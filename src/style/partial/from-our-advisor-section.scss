@@ -1,0 +1,43 @@
+@use "../../theme/variables" as v;
+@mixin mobile {
+    @media (max-width: #{ v.$desktop-width - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{ v.$desktop-width}) {
+        @content;
+    }
+}
+#from-advisors {
+    //@include desktop{
+    //  --mdc-layout-grid-margin-desktop: 0;
+    //}
+    .item-experience {
+        .divider {
+            &::after {
+                background-color: #ccc;
+            }
+        }
+        .title {
+            height: 45px;
+            @include mobile {
+                height: 38px;
+            }
+            overflow: hidden;
+        }
+    }
+}
+
+.page-home {
+    #from-advisors {
+        @include mobile {
+            button .text-eyebrow,
+            .mdc-button .text-eyebrow,
+            .text-eyebrow {
+                font-size: 11px !important;
+            }
+        }
+    }
+}

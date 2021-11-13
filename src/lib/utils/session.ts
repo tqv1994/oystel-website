@@ -1,5 +1,5 @@
 import * as cookie from 'cookie';
-
+import type { ResponseHeaders } from '@sveltejs/kit/types/helper';
 
 export function getSessionCookie(cookieString: string): string {
   if (cookieString) {

@@ -1,0 +1,79 @@
+@use "../../theme/variables" as v;
+@mixin mobile {
+  @media (max-width: #{ v.$desktop-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{ v.$desktop-width}) {
+    @content;
+  }
+}
+#experience-section {
+  @include desktop {
+    padding-right: calc(90px + var(--mdc-layout-grid-margin-desktop));
+  }
+  .mdc-layout-grid {
+    padding-top: 0;
+    padding-bottom: 0;
+    .mdc-layout-grid {
+      --mdc-layout-grid-margin-desktop: 0;
+    }
+  }
+  .list-experiences {
+    max-height: 839px;
+    overflow-y: scroll;
+    @include mobile {
+      max-height: 100%;
+      overflow-y: auto;
+    }
+
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none; /* for Firefox */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    .title {
+      height: 45px;
+      @include mobile {
+        height: 38px;
+      }
+      overflow: hidden;
+    }
+  }
+  .item-experience {
+    &.featured {
+      .caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: rgb(2, 3, 0);
+        background: linear-gradient(0deg, rgba(2, 3, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+        width: 100%;
+      }
+    }
+    .thumbnail {
+      position: relative;
+      overflow: hidden;
+    }
+    .divider {
+      &::after {
+        background-color: #ccc;
+      }
+    }
+  }
+}
+.page-home {
+  #experience-section {
+    .item-experience:not(.featured) {
+      @include mobile {
+        button .text-eyebrow,
+        .mdc-button .text-eyebrow,
+        .text-eyebrow {
+          font-size: 11px !important;
+        }
+      }
+    }
+  }
+}

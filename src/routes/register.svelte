@@ -1,8 +1,9 @@
 <script lang="ts">
   import '$lib/firebase';
-  import Textfield from '@smui/textfield';
-  import Icon from '@smui/textfield/icon';
-  import Button, { Label } from '@smui/button';
+  import Textfield from '@smui/textfield/Textfield.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
   import {
     getAuth,
     createUserWithEmailAndPassword,

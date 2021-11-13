@@ -1,14 +1,17 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import LayoutGrid, { Cell, InnerGrid } from '@smui/layout-grid';
-  import Button, { Label } from '@smui/button';
-  import IconButton, { Icon } from '@smui/icon-button';
-  import Svg from '@smui/common/Svg.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import InnerGrid from '@smui/layout-grid/InnerGrid.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import { Exhibitable, insertToStore } from '$lib/store/types';
-  import { get } from 'svelte/store';
+  import { insertToStore } from '$lib/store/types';
   import { parseId } from '$lib/utils/fetch';
   import { Experience, experienceStore } from '$lib/store/experience';
   import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
@@ -211,26 +214,24 @@
   }
 
   function onScrollFixedHeader() {
-    // if (document.documentElement.clientWidth > 949) {
-    //   if (
-    //     document.body.scrollTop > 900 ||
-    //     document.documentElement.scrollTop > 900
-    //   ) {
-    //     document.getElementById('header').classList.add('fixed');
-    //     document.querySelector('header').style.zIndex = 100;
-    //     document.querySelector('header').style.position = 'relative';
-    //     document
-    //       .querySelector('.header-title')
-    //       .classList.add('fixed', 'is_sticky');
-    //   } else {
-    //     document.getElementById('header').classList.remove('fixed');
-    //     document.querySelector('header').style.zIndex = 'auto';
-    //     document.querySelector('header').style.position = 'relative';
-    //     document
-    //       .querySelector('.header-title')
-    //       .classList.remove('fixed', 'is_sticky');
-    //   }
-    // }
+    if (document.documentElement.clientWidth > 949) {
+      if (
+        document.body.scrollTop > 900 ||
+        document.documentElement.scrollTop > 900
+      ) {
+        document.getElementById('header').classList.add('fixed');
+        document.querySelector('header').style.zIndex = 100;
+        document
+          .querySelector('.header-title.is_sticky')
+          .classList.add('show');
+      } else {
+        document.getElementById('header').classList.remove('fixed');
+        document.querySelector('header').style.zIndex = 'auto';
+        document
+          .querySelector('.header-title.is_sticky')
+          .classList.remove('show');
+      }
+    }
   }
 </script>
 
@@ -248,13 +249,13 @@
             <LayoutGrid class="p-0 hidden-on-sticky">
               <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
                 <div class="experience-detail-image">
-                  <div class="image-cover" style="padding-top: 0; height: 100%">
-                    <BlurImage data={experience?.gallery[0]}></BlurImage>
+                  <div class="image-cover" style="padding-top: 0; height: 90vh">
+                    <BlurImage {...experience?.gallery[0]} />
                   </div>
                 </div>
               </Cell>
               <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
-                <div class="d-pt-90 m-pt-45 d-pb-100">
+                <div class="d-pt-25-vh m-pt-45">
                   <p class="text-eyebrow m-m-0">{experience?.country.name}</p>
                   <h1 class="m-mt-30 m-mb-15">{experience?.name}</h1>
                   <p class="mb-30 short-description m-mt-0">
@@ -344,6 +345,12 @@
                 </div>
               </Cell>
             </LayoutGrid>
+          </div>
+        </div>
+      </section>
+      <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-60 full-width is_sticky fixed m-none">
+        <div class="content-wrap">
+          <div class="container">
             <LayoutGrid class="p-0 show-on-sticky m-none">
               <Cell spanDevices={{ desktop: 8 }}
                 ><div>
@@ -459,7 +466,7 @@
                               class="image-cover"
                               style="padding-top: calc(499 / 383 * 100%)"
                             >
-                              <BlurImage data={item.gallery[0]} />
+                                <BlurImage {...item.gallery[0]} />
                             </div>
                           </a>
                           <IconButton
@@ -547,7 +554,7 @@
                             class="image-cover"
                             style="padding-top: calc(499 / 383 * 100%)"
                           >
-                            <BlurImage data={item.gallery[0]} />
+                            <BlurImage {...item.gallery[0]} />
                           </div>
                         </a>
                         <IconButton
@@ -621,7 +628,7 @@
 >
 <OyNotification />
 
-<style lang="scss">
+<style lang="scss" global>
   $desktop-width: 950px;
   @mixin mobile {
     @media (max-width: #{$desktop-width - 1px}) {
@@ -633,258 +640,265 @@
       @content;
     }
   }
-
-  .content :global(.mdc-button) {
-    width: 180px;
-    min-width: 180px;
-    padding: 0 15px;
-  }
-  /* Header title */
-  .header-title {
-    background-color: #f0f7f8;
-  }
-
-  :global(.experience-detail .header-title .btn-favorite) {
-    position: relative;
-    :global(.like) {
-      display: block;
+  .page-experience-detail {
+    @import './src/style/partial/thumbnail.scss'; 
+    @import './src/style/partial/sticky.scss';
+    .content .mdc-button {
+      width: 180px;
+      min-width: 180px;
+      padding: 0 15px;
     }
-    :global(.liked) {
-      display: none;
+    /* Header title */
+    .header-title {
+      background-color: #f0f7f8;
     }
-    &:hover {
-      :global(.like) {
-        display: none;
-      }
-      :global(.liked) {
+
+    .header-title .btn-favorite {
+      position: relative;
+      .like {
         display: block;
       }
-    }
-  }
-  :global(.experience-detail .header-title .btn-favorite.liked) {
-    :global(.liked) {
-      display: block;
-    }
-    :global(.like) {
-      display: none;
-    }
-  }
-
-  .experience-detail-image {
-    width: 100%;
-    height: 100%;
-  }
-  .experience-detail-image .thumbnail {
-    height: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
-  .header-title .action-buttons {
-    position: absolute;
-    top: 85px;
-    right: 100px;
-  }
-  .header-title .short-description {
-    @include desktop {
-      width: 80%;
-    }
-  }
-
-  .section-title :global(.mdc-tab) {
-    padding: 0;
-    margin-right: 30px;
-  }
-  .section-title :global(.mdc-tab .mdc-tab__content) {
-    width: 100%;
-    justify-content: left;
-  }
-
-  .detail-content .container > :global(.mdc-layout-grid) {
-    --mdc-layout-grid-gutter-desktop: 100px;
-  }
-
-  .detail-content .container :global(.mdc-layout-grid .mdc-layout-grid) {
-    --mdc-layout-grid-gutter-desktop: 30px;
-  }
-
-  /* Products */
-  #what-to-pack-section {
-    --mdc-layout-grid-gutter-phone: 24px;
-    --mdc-layout-grid-gutter-tablet: 24px;
-  }
-  .item-product .title-wrap {
-    position: relative;
-  }
-  .item-product .title-wrap :global(.mdc-icon-button) {
-    position: absolute;
-    top: 20%;
-    right: 0;
-    transform: translateY(-50%);
-  }
-
-  .item-product .title-wrap .divider:after {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
-
-  .products-list :global(.mdc-layout-grid__inner) {
-    overflow-x: auto;
-    grid-auto-flow: column;
-    padding-bottom: 80px;
-  }
-  .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-track) {
-    background-color: #d3d3d3;
-  }
-  .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar) {
-    height: 10px;
-    background-color: #d3d3d3;
-  }
-  .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-    background-color: #5078bc;
-  }
-  @media (min-width: 1240px) {
-    .products-list :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr)
-      );
-    }
-  }
-  @media (max-width: 1239px) and (min-width: 905px) {
-    .products-list :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)), 1fr)
-      );
-    }
-  }
-  @media (max-width: 904px) and (min-width: 600px) {
-    .products-list :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
-      );
-    }
-  }
-  @media (max-width: 599px) {
-    .products-list :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
-      );
-    }
-  }
-
-  .products-list :global(.item-product .thumbnail) {
-    width: 100%;
-    padding-bottom: 145%;
-    background-color: #f2f2f2;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-  }
-
-  :global(.products-list .item-product) {
-    @include mobile {
-      h3 {
-        --mdc-typography-headline3-font-size: 14px;
+      .liked {
+        display: none;
+      }
+      &:hover {
+        .like {
+          display: none;
+        }
+        .liked {
+          display: block;
+        }
       }
     }
-  }
-
-  .products-list :global(.item-product .thumbnail .btn-favorite) {
-    filter: brightness(0);
-  }
-
-  .experience-item :global(.mdc-layout-grid) {
-    --mdc-layout-grid-gutter-desktop: 0;
-  }
-  .experience-item .divider::after {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
-  .experience-item .title {
-    @include desktop {
-      height: 50px;
-      overflow: hidden;
+    .header-title .btn-favorite.liked {
+      .liked {
+        display: block;
+      }
+      .like {
+        display: none;
+      }
     }
-  }
-  .experience-item .thumbnail {
-    position: relative;
-  }
-  .experience-item .thumbnail :global(.btn-favorite) {
-    position: absolute;
-    top: 2%;
-    right: 2%;
-  }
 
-  :global(.is_sticky.header-title) {
-    padding-bottom: 50px !important;
-  }
-
-  .divider:after {
-    background-color: #000;
-  }
-
-  @media (max-width: 1222px) {
-    .detail-content .container > :global(.mdc-layout-grid) {
-      --mdc-layout-grid-gutter-desktop: 30px;
-    }
-  }
-
-  @media screen and (max-width: 1304px) {
-    :global(.page.page-experience-detail
-        .header-title
-        .show-on-sticky
-        button.mdc-button) {
-      width: auto;
-      min-width: auto;
-    }
-  }
-
-  @media screen and (max-width: 999px) {
-    :global(.page.page-experience-detail
-        .header-title
-        .show-on-sticky
-        button.mdc-button) {
-      padding: 10px;
-    }
-  }
-
-  @media screen and (max-width: 949px) {
     .experience-detail-image {
-      position: relative;
       width: 100%;
-      .image-cover{
-        padding-bottom: 65.625% !important;
-        height: auto !important;
-      }
+      height: 100%;
     }
     .experience-detail-image .thumbnail {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
       height: 100%;
       background-size: cover;
       background-repeat: no-repeat;
     }
+    .header-title .action-buttons {
+      position: absolute;
+      top: 24vh;
+      right: 100px;
+    }
+    .header-title .short-description {
+      @include desktop {
+        width: 80%;
+      }
+    }
+
+    .section-title :global(.mdc-tab) {
+      padding: 0;
+      margin-right: 30px;
+    }
+    .section-title :global(.mdc-tab .mdc-tab__content) {
+      width: 100%;
+      justify-content: left;
+    }
+
+    .detail-content .container .mdc-layout-grid {
+      --mdc-layout-grid-gutter-desktop: 100px;
+    }
+
+    .detail-content .container .mdc-layout-grid .mdc-layout-grid {
+      --mdc-layout-grid-gutter-desktop: 30px;
+    }
+
+    /* Products */
+    #what-to-pack-section {
+      --mdc-layout-grid-gutter-phone: 24px;
+      --mdc-layout-grid-gutter-tablet: 24px;
+    }
+    .item-product .title-wrap {
+      position: relative;
+    }
+    .item-product .title-wrap :global(.mdc-icon-button) {
+      position: absolute;
+      top: 20%;
+      right: 0;
+      transform: translateY(-50%);
+    }
+
+    .item-product .title-wrap .divider:after {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
     .products-list :global(.mdc-layout-grid__inner) {
-      margin-bottom: 45px;
+      overflow-x: auto;
+      grid-auto-flow: column;
+      padding-bottom: 80px;
+    }
+    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-track) {
+      background-color: #d3d3d3;
+    }
+    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar) {
+      height: 10px;
+      background-color: #d3d3d3;
+    }
+    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
+      background-color: #5078bc;
+    }
+    @media (min-width: 1240px) {
+      .products-list :global(.mdc-layout-grid__inner) {
+        grid-auto-columns: minmax(
+          calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)),
+          1fr
+        );
+        grid-template-columns: repeat(
+          auto-fill,
+          minmax(
+            calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)),
+            1fr
+          )
+        );
+      }
+    }
+    @media (max-width: 1239px) and (min-width: 905px) {
+      .products-list :global(.mdc-layout-grid__inner) {
+        grid-auto-columns: minmax(
+          calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)),
+          1fr
+        );
+        grid-template-columns: repeat(
+          auto-fill,
+          minmax(
+            calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)),
+            1fr
+          )
+        );
+      }
+    }
+    @media (max-width: 904px) and (min-width: 600px) {
+      .products-list :global(.mdc-layout-grid__inner) {
+        grid-auto-columns: minmax(
+          calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
+          1fr
+        );
+        grid-template-columns: repeat(
+          auto-fill,
+          minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
+        );
+      }
+    }
+    @media (max-width: 599px) {
+      .products-list :global(.mdc-layout-grid__inner) {
+        grid-auto-columns: minmax(
+          calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
+          1fr
+        );
+        grid-template-columns: repeat(
+          auto-fill,
+          minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
+        );
+      }
+    }
+
+    .products-list :global(.item-product .thumbnail) {
+      width: 100%;
+      padding-bottom: 145%;
+      background-color: #f2f2f2;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+    }
+
+    :global(.products-list .item-product) {
+      @include mobile {
+        h3 {
+          --mdc-typography-headline3-font-size: 14px;
+        }
+      }
+    }
+
+    .products-list :global(.item-product .thumbnail .btn-favorite) {
+      filter: brightness(0);
+    }
+
+    .experience-item :global(.mdc-layout-grid) {
+      --mdc-layout-grid-gutter-desktop: 0;
+    }
+    .experience-item .divider::after {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    .experience-item .title {
+      @include desktop {
+        height: 50px;
+        overflow: hidden;
+      }
+    }
+    .experience-item .thumbnail {
+      position: relative;
+    }
+    .experience-item .thumbnail :global(.btn-favorite) {
+      position: absolute;
+      top: 2%;
+      right: 2%;
+    }
+
+    :global(.is_sticky.header-title) {
+      padding-bottom: 50px !important;
+    }
+
+    .divider:after {
+      background-color: #000;
+    }
+
+    @media (max-width: 1222px) {
+      .detail-content .container > :global(.mdc-layout-grid) {
+        --mdc-layout-grid-gutter-desktop: 30px;
+      }
+    }
+
+    @media screen and (max-width: 1304px) {
+          .header-title
+          .show-on-sticky
+          button.mdc-button {
+        width: auto;
+        min-width: auto;
+      }
+    }
+
+    @media screen and (max-width: 999px) {
+        .header-title
+          .show-on-sticky
+          button.mdc-button {
+        padding: 10px;
+      }
+    }
+
+    @media screen and (max-width: 949px) {
+      .experience-detail-image {
+        position: relative;
+        width: 100%;
+        .image-cover {
+          padding-bottom: 65.625% !important;
+          height: auto !important;
+        }
+      }
+      .experience-detail-image .thumbnail {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-repeat: no-repeat;
+      }
+      .products-list :global(.mdc-layout-grid__inner) {
+        margin-bottom: 45px;
+      }
     }
   }
 </style>

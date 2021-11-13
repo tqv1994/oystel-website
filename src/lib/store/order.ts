@@ -1,4 +1,5 @@
 
+import type { Rec } from '@sveltejs/kit/types/helper';
 import { Nameable } from './types';
 
 export const NAME_ASC_KEY = 'n';

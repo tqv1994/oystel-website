@@ -1,6 +1,7 @@
 <script lang="ts">
-  import Button, { Icon } from '@smui/button';
-  import Svg from '@smui/common/Svg.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import { createEventDispatcher } from 'svelte';
   import { menus } from '$lib/const';
   import { routerHelper } from '$lib/helpers/router';

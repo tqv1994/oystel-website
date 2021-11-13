@@ -1,0 +1,25 @@
+@use "../../theme/variables" as v;
+form {
+    --mdc-shape-small: 25px;
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__trailing,
+    .mdc-button {
+        border-radius: 0 !important;
+    }
+    .mdc-select {
+        .mdc-select__menu {
+            max-height: 300px;
+            &::-webkit-scrollbar-track {
+                background-color: #d3d3d3;
+            }
+            &::-webkit-scrollbar {
+                width: 7px;
+
+                background-color: #d3d3d3;
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: v.$blackColor;
+            }
+        }
+    }
+}

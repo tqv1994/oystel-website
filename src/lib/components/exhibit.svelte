@@ -1,5 +1,6 @@
 <script lang="ts">
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { Exhibitable } from '$lib/store/types';
 
@@ -18,7 +19,7 @@
               style="padding-top: calc( 410 / 315 * 100% );"
             >
               {#if item.gallery}
-                <BlurImage data={item.gallery[0]} />
+                <BlurImage {...item.gallery[0]} />
               {/if}
             </div>
           </div>

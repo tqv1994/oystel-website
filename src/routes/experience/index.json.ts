@@ -13,7 +13,7 @@ import {
   TYPE,
 } from '$lib/store/search';
 import { orderings, ORDER_BY_NAME_ASC } from '$lib/store/order';
-
+import type { Rec } from '@sveltejs/kit/types/helper';
 
 const dIndex = searchClient.index('experience');
 
@@ -25,10 +25,14 @@ export const get: RequestHandler = async (request: Request) => {
     const params = parseSearchParams(request.query);
     const experiences: Rec<SearchResultGroup<ExperienceSearchResultItem>> = {};
     if (params[TYPE]) {
-      experiences[params[TYPE] as string] = await search<ExperienceSearchResultItem>(params);
+      experiences[params[TYPE] as string] =
+        await search<ExperienceSearchResultItem>(params);
     } else {
       const limit = params[LIMIT] || 3;
-      const res = await search<ExperienceSearchResultItem>(params);
+      const res = await search<ExperienceSearchResultItem>({
+        ...params,
+        [LIMIT]: 1000,
+      });
       for (const item of res.items) {
         const catId = item.type;
         if (!experiences[catId]) {
@@ -46,7 +50,11 @@ export const get: RequestHandler = async (request: Request) => {
   } catch (error) {
     console.error('Error searching for experiences', error);
   }
-  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error searching for experiences');
+  return makeErrorResponse(
+    500,
+    'INTERNAL_SERVER_ERROR',
+    'Error searching for experiences',
+  );
 };
 
 async function search<T extends Identifiable>(

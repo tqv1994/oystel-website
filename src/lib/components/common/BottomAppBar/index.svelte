@@ -1,8 +1,11 @@
 <script>
-  import Button, { Icon, Label } from '@smui/button';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
   import { goto } from '$app/navigation';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Svg from '@smui/common/Svg.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import { createEventDispatcher } from 'svelte';
   import { authStore } from '$lib/store/auth';
   export let params;

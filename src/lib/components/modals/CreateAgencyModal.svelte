@@ -1,9 +1,11 @@
 <script>
-  import Dialog, { Header, Title, Content, Actions } from '@smui/dialog';
-  import IconButton from '@smui/icon-button';
-  import Button, { Label, Icon } from '@smui/button';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Textfield from '@smui/textfield';
+  import Dialog from '@smui/dialog/Dialog.svelte';
+  import Title from '@smui/dialog/Title';
+  import Content from '@smui/dialog/Content';
+  import Actions from '@smui/dialog/Actions';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import Textfield from '@smui/textfield/Textfield.svelte';
   import { createEventDispatcher } from 'svelte';
   export let open;
   const dispatch = createEventDispatcher();

@@ -1,14 +1,20 @@
 <script lang="ts">
   import { authStore } from '$lib/store/auth';
   import { goto } from '$app/navigation';
-  import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
-  import IconButton, { Icon } from '@smui/icon-button';
-  import Button, { Label } from '@smui/button';
-  import { Wrapper } from '@smui/tooltip';
-  import Textfield from '@smui/textfield';
-  import A from '@smui/common/A.svelte';
-  import Svg from '@smui/common/Svg.svelte';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
+  import TopAppBar from '@smui/top-app-bar/TopAppBar.svelte';
+  import Row from '@smui/top-app-bar/Row';
+  import Section from '@smui/top-app-bar/Section.svelte';
+  import Title from '@smui/top-app-bar/Title';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import Wrapper from '@smui/tooltip/Wrapper.svelte';
+  import Textfield from '@smui/textfield/Textfield.svelte';
+  import A from '@smui/common/elements/A.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
   import { onMount, afterUpdate, createEventDispatcher } from 'svelte';
   import OySubMenu from '$lib/components/common/OySubMenu.svelte';
   import SignupModal from '$lib/components/modals/SignupModal.svelte';
@@ -18,6 +24,9 @@
   import OySearchModal from '$lib/components/modals/OySearchModal.svelte';
   import { menus } from '$lib/const';
   import { documentHelper } from '$lib/helpers/document';
+  import '/src/style/partial/footer.scss';
+  import '/src/style/partial/form.scss';
+  import OysteoLogo from '$lib/components/OysteoLogo.svelte';
 
   let miniWindow = false;
   let searchResult = '';
@@ -110,6 +119,16 @@
       }
     }
   }
+
+  function handleGotoPlanTrip() {
+    userModel = $authStore.user;
+    if (!userModel) {
+      openSignupModal = false;
+      openSigninModal = true;
+    } else {
+      goto('/plan');
+    }
+  }
 </script>
 
 <svelte:window on:resize={onResize} bind:outerWidth />
@@ -133,7 +152,7 @@
                 class="mdc-theme--primary"
                 style={miniWindow ? 'padding-left: 0;' : ''}
               >
-                <img src="/img/logo.svg" />
+                <OysteoLogo />
               </Title>
             </Section>
             <Section
@@ -198,6 +217,9 @@
                   class="btn-plan-your-trip mr-10"
                   type="button"
                   variant="outlined"
+                  on:click={() => {
+                    handleGotoPlanTrip();
+                  }}
                 >
                   <Label class="text-button2">Plan Your Trip</Label>
                 </Button>
@@ -405,27 +427,33 @@
 >
 <HeaderActionMobile bind:content={contentHeaderAction} />
 
-<style lang="scss">
-  .wrap-menu-mobile {
-    display: flex;
-    flex-direction: row-reverse;
-    flex-wrap: nowrap;
-  }
-  .wrap-menu-mobile :global(.mdc-icon-button) {
-    --mdc-ripple-color: tranparent;
-    padding: 12px 0;
-    width: auto;
-    height: auto;
-  }
-  @media screen and (max-width: 768px) {
-    header .search-form,
-    header .search-form :global(.mdc-text-field) {
-      width: 100%;
+<style lang="scss" global>
+  @import './src/style/partial/header.scss';
+  @import './src/style/partial/form.scss';
+  header {
+    .wrap-menu-mobile {
+      display: flex;
+      flex-direction: row-reverse;
+      flex-wrap: nowrap;
+    }
+    .wrap-menu-mobile .mdc-icon-button {
+      --mdc-ripple-color: tranparent;
+      padding: 12px 0;
+      width: auto;
+      height: auto;
+    }
+    @media screen and (max-width: 949px) {
+      .search-form,
+      .search-form .mdc-text-field {
+        width: 100%;
+      }
+    }
+    .mdc-icon-buttob {
+      min-width: auto;
     }
   }
-
-  header :global(.mdc-icon-button) {
-    min-width: auto;
+  #logo {
+    line-height: 0;
   }
 
   footer {
@@ -472,9 +500,5 @@
     .button-socials img {
       width: 24px;
     }
-  }
-
-  :global(#logo) {
-    line-height: 0;
   }
 </style>

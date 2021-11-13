@@ -1,0 +1,71 @@
+@use "../../theme/variables" as v;
+@mixin mobile {
+    @media (max-width: #{ v.$desktop-width - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{ v.$desktop-width}) {
+        @content;
+    }
+}
+#slider {
+    .search-form .mdc-text-field {
+        -webkit-backdrop-filter: blur(7px) brightness(0.7);
+        backdrop-filter: blur(7px) brightness(0.7);
+        background-color: rgba(255, 255, 255, 0.65);
+    }
+    .search-form {
+        .open-search-complete:before {
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+        }
+    }
+    .slide-item {
+        @include desktop{
+            height: 100vh;
+        }
+        height: 769px;
+        @include mobile {
+            height: 600px;
+        }
+        width: 100%;
+        background-size: cover;
+        background-position: top center;
+        background-repeat: no-repeat;
+        position: relative;
+        &:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .text-box {
+            width: 60%;
+            top: 41.5%;
+            left: 8%;
+            position: relative;
+            z-index: 2;
+            @include mobile {
+                width: 100%;
+                left: auto;
+                top: 38%;
+            }
+        }
+    }
+    .control {
+        filter: brightness(0%);
+    }
+    @include desktop {
+        .dots {
+            display: none;
+        }
+    }
+    @include mobile {
+        .control {
+            display: none;
+        }
+    }
+}

@@ -1,7 +1,6 @@
 <script lang="ts">
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Button, { Icon, Label } from '@smui/button';
-  import IconButton, { Icon as Icons } from '@smui/icon-button';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
   export let images: string[] = [];
   let featuredImage: string;
   if (images.length > 0) {

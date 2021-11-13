@@ -1,6 +1,7 @@
 import { RequestHandler, Request } from '@sveltejs/kit';
 import { extractSetCookieHeader } from '$lib/utils/session';
 import { cmsUrlPrefix } from '$lib/env';
+import type { Rec } from '@sveltejs/kit/types/helper';
 
 /**
  * @type {import('@sveltejs/kit').Post}

@@ -2,11 +2,12 @@
   import type { Load } from '@sveltejs/kit';
   import { authStore } from '$lib/store/auth';
   import Layout from '$lib/components/common/Layout.svelte';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
-  import { Icon } from '@smui/button';
-  import IconButton, { Icon as Icon2 } from '@smui/icon-button';
-  import Svg from '@smui/common/Svg.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import OySlideProducts from '$lib/components/common/OySlideProducts.svelte';
   import { Product } from '$lib/store/product';
   import { productStore } from '$lib/store/product';

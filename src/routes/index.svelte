@@ -3,10 +3,13 @@
   import { destinationStore } from '$lib/store/destination';
   import { documentHelper } from '$lib/helpers';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
-  import Svg from '@smui/common/Svg.svelte';
-  import IconButton from '@smui/icon-button';
-  import Button, { Label, Icon } from '@smui/button';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
+  import Svg from '@smui/common/elements/Svg.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
   import Layout from '$lib/components/common/Layout.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
@@ -299,7 +302,7 @@
                   class="image-cover"
                   style="padding-top: calc(474/420 * 100%)"
                 >
-                  <BlurImage data={featureDrops[0].gallery[0]} />
+                  <BlurImage {...featureDrops[0].gallery[0]} />
                 </div>
                 <div class="caption">
                   <span>{featureDrops[0].products?.length} Packages left</span>
@@ -335,7 +338,7 @@
                           class="image-cover"
                           style="padding-top: calc(410/311 * 100%)"
                         >
-                          <BlurImage data={drop.gallery[0]} />
+                          <BlurImage {...drop.gallery[0]} />
                         </div>
                         <div class="caption">
                           <span
@@ -416,7 +419,7 @@
                     class="image-cover"
                     style="padding-top: calc(768/529 * 100%)"
                   >
-                    <BlurImage data={curatedExperiences[0].gallery[0]} />
+                    <BlurImage {...curatedExperiences[0].gallery[0]} />
                   </div>
                 </a>
                 <IconButton
@@ -473,7 +476,7 @@
                           class="image-cover"
                           style="padding-top: calc(410/311 * 100%)"
                         >
-                          <BlurImage data={experience.gallery[0]} />
+                          <BlurImage {...experience.gallery[0]} />
                         </div>
                       </a>
                       <IconButton
@@ -547,7 +550,7 @@
                       class="image-cover"
                       style="padding-top: calc(410/315 * 100%)"
                     >
-                      <BlurImage data={item.gallery[0]} />
+                      <BlurImage {...item.gallery[0]} />
                     </div>
                   </a>
                   <IconButton
@@ -593,143 +596,100 @@
 </Layout>
 <OyNotification />
 
-<style lang="scss">
+<style lang="scss" global>
   $desktop-width: 950px;
-  @mixin mobile {
-    @media (max-width: #{$desktop-width - 1px}) {
-      @content;
+    @mixin mobile {
+      @media (max-width: #{$desktop-width - 1px}) {
+        @content;
+      }
     }
-  }
-  @mixin desktop {
-    @media (min-width: #{$desktop-width}) {
-      @content;
+    @mixin desktop {
+      @media (min-width: #{$desktop-width}) {
+        @content;
+      }
     }
-  }
   .filter-color {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 253px;
-    @include mobile {
-      height: 100px;
-    }
-    z-index: 2;
-    background: #181919;
-    background: linear-gradient(180deg, #181919 0%, rgba(0, 0, 0, 0) 100%);
-  }
-  #slider {
-    h1 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 253px;
       @include mobile {
-        width: 200px;
+        height: 100px;
       }
+      z-index: 2;
+      background: #181919;
+      background: linear-gradient(180deg, #181919 0%, rgba(0, 0, 0, 0) 100%);
     }
-  }
-  #signup-section {
-    .thumbnail {
-      .caption {
-        font-size: 12px;
-        line-height: 22px;
-        letter-spacing: 0.1;
-      }
-    }
-    h4 {
-      text-transform: uppercase;
-    }
-  }
-  #experience-section {
-    .item-experience.featured {
-      .title {
-        height: 28px;
-        overflow: hidden;
+  .page-home {
+    @import '../style/partial/featured-drop.scss';
+    @import '../style/partial/signup-section.scss';
+    @import '../style/partial/experience-section.scss';
+    @import '../style/partial/from-our-advisor-section.scss';
+    @import '../style/partial/slides-homepage.scss';
+    @import '../style/partial/thumbnail.scss';
+
+    #slider {
+      h1 {
         @include mobile {
-          height: 26px;
+          width: 200px;
         }
       }
-      :global(.thumbnail .btn-favorite) {
-        top: 0;
-        right: -2px;
-      }
     }
-  }
-  @media screen and (max-width: 1239px) {
-    #slider :global(.dots) {
-      margin-top: -45px;
-    }
-  }
-  @media screen and (max-width: 599px) {
-    .list-experiences .item-experience .text-h2,
-    .list-experiences .item-experience h2,
-    #from-advisors .item-experience .text-h2,
-    #from-advisors .item-experience .h2 {
-      font-size: 14px;
-      line-height: 18px;
-      letter-spacing: 0;
-    }
-    #slider .slide-item.slide-item-2 {
-      background-position: right;
-    }
-  }
-  .list-featured-drop :global(.mdc-layout-grid__inner) {
-    overflow-x: auto;
-    grid-auto-flow: column;
-  }
-  @media (min-width: 1240px) {
-    .list-featured-drop :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr)
-      );
-    }
-  }
-  @media (max-width: 1239px) and (min-width: 905px) {
-    .list-featured-drop :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)), 1fr)
-      );
-    }
-  }
-  @media (max-width: 904px) and (min-width: 600px) {
-    .list-featured-drop :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)), 1fr)
-      );
-    }
-  }
-  @media (max-width: 599px) {
-    .list-featured-drop :global(.mdc-layout-grid__inner) {
-      grid-auto-columns: minmax(
-        calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
-        1fr
-      );
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
-      );
-    }
-  }
-
-  @media (max-width: 1105px) and (min-width: 950px) {
     #signup-section {
-      .d-mb-100 {
-        margin-bottom: 30px !important;
+      .thumbnail {
+        .caption {
+          font-size: 12px;
+          line-height: 22px;
+          letter-spacing: 0.1;
+        }
       }
-      .d-mt-145 {
-        margin-top: 70px !important;
+      h4 {
+        text-transform: uppercase;
+      }
+    }
+    #experience-section {
+      .item-experience.featured {
+        .title {
+          height: 28px;
+          overflow: hidden;
+          @include mobile {
+            height: 26px;
+          }
+        }
+        :global(.thumbnail .btn-favorite) {
+          top: 0;
+          right: -2px;
+        }
+      }
+    }
+    @media screen and (max-width: 1239px) {
+      #slider :global(.dots) {
+        margin-top: -45px;
+      }
+    }
+    @media screen and (max-width: 599px) {
+      .list-experiences .item-experience .text-h2,
+      .list-experiences .item-experience h2,
+      #from-advisors .item-experience .text-h2,
+      #from-advisors .item-experience .h2 {
+        font-size: 14px;
+        line-height: 18px;
+        letter-spacing: 0;
+      }
+      #slider .slide-item.slide-item-2 {
+        background-position: right;
+      }
+    }
+
+    @media (max-width: 1105px) and (min-width: 950px) {
+      #signup-section {
+        .d-mb-100 {
+          margin-bottom: 30px !important;
+        }
+        .d-mt-145 {
+          margin-top: 70px !important;
+        }
       }
     }
   }

@@ -10,18 +10,17 @@
   import { countryStore } from '$lib/store/country';
   import { languageStore } from '$lib/store/language';
   import { Locals } from '$lib/store/locals';
-  export let key;
 
   export const load: Load<{ session: Locals }> = async ({ session, page }) => {
     insertToStore(
       destinationTypeStore,
-      session.metadata.destinationTypes,
+      session.metadata?.destinationTypes,
       false,
     );
-    insertToStore(experienceTypeStore, session.metadata.experienceTypes, false);
-    insertToStore(specialityStore, session.metadata.specialities, false);
-    insertToStore(countryStore, session.metadata.countries, false);
-    insertToStore(languageStore, session.metadata.languages, false);
+    insertToStore(experienceTypeStore, session.metadata?.experienceTypes, false);
+    insertToStore(specialityStore, session.metadata?.specialities, false);
+    insertToStore(countryStore, session.metadata?.countries, false);
+    insertToStore(languageStore, session.metadata?.languages, false);
     authStore.set({ user: session.user });
     return {
       props: {},
@@ -33,9 +32,6 @@
 <script lang="ts">
 </script>
 
-<svelte:window
-/>
+<svelte:window />
 <!-- __layout.svelte -->
-<PageTransition refresh={key}>
   <slot />
-</PageTransition>

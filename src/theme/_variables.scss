@@ -18,6 +18,12 @@ $desktop-width: 950px;
   }
 }
 
+$contentMaxWidth: 1920px;
+$whiteColor: #fff;
+$blackColor: #000;
+$brownColor: #91421c;
+$blueColor: #5078bc;
+
 #svelte {
   --mdc-ripple-color: transparent;
   --desktop-width: #{$desktop-width};

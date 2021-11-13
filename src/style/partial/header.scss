@@ -1,0 +1,160 @@
+@use "../../theme/variables" as v;
+@use '@material/textfield';
+@use '@material/button';
+@use '@material/theme/color-palette';
+@use '@material/typography/mdc-typography';
+@use '@material/typography/index' as typography;
+@use '@material/theme/index' as theme;
+@mixin mobile {
+    @media (max-width: #{ v.$desktop-width - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{ v.$desktop-width}) {
+        @content;
+    }
+}
+header {
+    &.header-transparent {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+    &.mdc-top-app-bar {
+        background-color: transparent;
+    }
+    &#header {
+        @include desktop {
+            .mdc-top-app-bar__row {
+                position: static;
+                height: 116px;
+            }
+        }
+    }
+    #logo{
+        fill: #fff;
+    }
+
+    .mdc-top-app-bar__section {
+        #main-menu {
+            height: 100%;
+            overflow: hidden;
+            padding-left: 0;
+            padding-right: 1px;
+        }
+        #main-menu li {
+            list-style: none;
+            display: inline-block;
+            margin-right: calc(100vw * 15 / 600);
+            position: relative;
+            margin-top: 45px;
+            margin-bottom: 45px;
+            a {
+                margin-top: 1em;
+                margin-bottom: 1em;
+                text-decoration: none;
+                @include typography.typography("button");
+                color: #fff;
+            }
+            &:hover,
+            &.active,
+            &.active-static {
+                &::after {
+                    width: 100%;
+                    height: 2px;
+                    background: #fff;
+                    position: absolute;
+                    top: 25px;
+                    left: 0;
+                    content: "";
+                }
+                &::before {
+                    width: 100%;
+                    height: 25px;
+                    background: transparent;
+                    position: absolute;
+                    top: 22px;
+                    left: 0;
+                    content: "";
+                }
+            }
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+        .sub-menu {
+            .mdc-tab {
+                padding-left: 0;
+                padding-right: 0;
+                justify-content: left;
+                margin-right: 24px;
+            }
+        }
+    }
+    .button-actions {
+        display: inline-flex;
+        .mdc-icon-button {
+            display: inline;
+            width: 30px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+    .mdc-top-app-bar__section--align-end {
+        .btn-plan-your-trip {
+            @include button.outline-color(theme.$surface);
+            @include button.horizontal-padding(45px);
+            min-width: 195px;
+        }
+        a {
+        }
+    }
+    .search-form {
+        .mdc-text-field {
+            width: 300px;
+            @include textfield.outlined-height(35px);
+            @include textfield.outline-color(#fff);
+            @include textfield.hover-outline-color(#fff);
+            @include textfield.label-color(#fff);
+            @include textfield.disabled-outline-color(#fff);
+            padding-right: 15px;
+        }
+    }
+    .mdc-top-app-bar__section.list-tags-wrap {
+        margin-left: 100px;
+        width: 100%;
+        .list-tags {
+            &.open {
+                opacity: 1;
+            }
+            opacity: 0;
+            transition-duration: 1s;
+            transition-property: opacity;
+            cursor: grab;
+            overflow-x: scroll;
+            white-space: nowrap;
+            -ms-overflow-style: none; /* for Internet Explorer, Edge */
+            scrollbar-width: none; /* for Firefox */
+            overflow-y: scroll;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+            .mdc-button {
+                --mdc-theme-primary: #8c9295;
+                border: 1px solid theme.$surface;
+                @include button.outline-width(1px, 45px);
+                margin-right: 20px;
+                @include textfield.label-color(#fff);
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+        &:hover .list-tags {
+            opacity: 1;
+        }
+    }
+}

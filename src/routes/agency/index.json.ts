@@ -2,6 +2,7 @@ import { cmsUrlPrefix } from '$lib/env';
 import { getSessionCookie } from '$lib/utils/session';
 import { extractSetCookieHeader } from '$lib/utils/session';
 import { RequestHandler, Request } from '@sveltejs/kit';
+import type { Rec } from '@sveltejs/kit/types/helper';
 
 
 /**

@@ -1,17 +1,22 @@
 <script lang="ts">
-  import TopAppBar, { Section, Row, Title } from '@smui/top-app-bar';
+  import TopAppBar from '@smui/top-app-bar/TopAppBar.svelte';
+  import Section from '@smui/top-app-bar/Section.svelte';
+  import Row from '@smui/top-app-bar/Row';
+  import Title from '@smui/top-app-bar/Title';
   import { createEventDispatcher } from 'svelte';
-  import Button, { Icon } from '@smui/button';
-  import Svg from '@smui/common/Svg.svelte';
-  import IconButton from '@smui/icon-button';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
   import OyMenu from './OyMenu.svelte';
   import OyExplode from './OyExplode.svelte';
   import OyFormSearchExperience from './OyFormSearchExperience.svelte';
   import OyFormSearchAdvisor from './OyFormSearchAdvisor.svelte';
   import { Country } from '$lib/store/country';
   import { Speciality } from '$lib/store/speciality';
-import { Category } from '$lib/store/category';
-import { Nameable } from '$lib/store/types';
+  import { Category } from '$lib/store/category';
+  import { Nameable } from '$lib/store/types';
+  import OysteoLogo from '$lib/components/OysteoLogo.svelte';
+
   let dispathcher = createEventDispatcher();
   export let open = false;
   export let content: string;
@@ -22,7 +27,7 @@ import { Nameable } from '$lib/store/types';
   export let specialities: Speciality[] = [];
   export let orderings: Nameable[] = [];
   function callCloseHeaderActionMobile(event: CustomEvent) {
-    dispathcher('close',event.detail);
+    dispathcher('close', event.detail);
   }
 </script>
 
@@ -33,7 +38,7 @@ import { Nameable } from '$lib/store/types';
         <Row>
           <Section class="pl-0">
             <Title id="logo" href="/" class="mdc-theme--primary pl-0">
-              <img src="/img/logo.svg" />
+              <OysteoLogo />
             </Title>
           </Section>
           <Section class="pr-0" align="end">

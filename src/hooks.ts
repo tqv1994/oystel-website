@@ -9,6 +9,12 @@ import { languageFieldsFragment } from '$lib/store/language';
 import { countryFieldsFragment } from '$lib/store/country';
 import { Metadata } from './routes/metadata.json';
 import { Locals } from '$lib/store/locals';
+import { User } from '$lib/store/auth';
+import type { ResponseHeaders } from '@sveltejs/kit/types/helper';
+
+type QueryData = {
+  me?: User;
+};
 
 const meQuery = `query {
   me {
@@ -25,15 +31,15 @@ const meQuery = `query {
     avatar {
       ...uploadFileFields
     }
-    destinationLikes {
+    destination_likes {
       id
       name
     }
-    experienceLikes {
+    experience_likes {
       id
       name
     }
-    productLikes {
+    product_likes {
       id
       name
     }
@@ -78,16 +84,21 @@ ${countryFieldsFragment}
 `;
 
 let counter = 0;
+let metadata: Metadata;
+
 /** @type {import('@sveltejs/kit').Handle} */
 export const handle: Handle<Locals> = async ({ request, resolve }) => {
-  console.log('Handling', request.path, ++counter);
+  console.log('Handling', request.path, request.query, ++counter);
 
-  if (!request.locals.metadata) {
+  if (metadata) {
+    request.locals.metadata = metadata;
+  } else {
     console.log('Loading metadata...');
     const client = createGraphClient();
     try {
       const res = await client.query<Metadata>(metadataQuery).toPromise();
       if (res.data) {
+        metadata = res.data;
         request.locals.metadata = res.data;
       } else if (res.error) {
         console.error(res.error.message);
@@ -105,12 +116,15 @@ export const handle: Handle<Locals> = async ({ request, resolve }) => {
         console.log('Authenticating user from cookie...');
         try {
           const client = createGraphClient(cookie);
-          const res = await client.query(meQuery).toPromise();
+          const res = await client.query<QueryData>(meQuery).toPromise();
           if (res.error) {
             console.error('Failed to get session:', res.error.message);
-            headers['set-cookie'] = res.error.response.headers['set-cookie'];
+            const setCookie = res.error.response.headers.getAll('set-cookie');
+            if (setCookie) {
+              headers['set-cookie'] = setCookie;
+            }
           }
-          request.locals.user = res.data.me;
+          request.locals.user = res.data?.me;
         } catch (err) {
           console.error('Error fetching profile', err);
         }

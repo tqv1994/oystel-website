@@ -1,13 +1,9 @@
 <script lang="ts">
-  import Dialog, { Header, Title, Content, Actions } from '@smui/dialog';
   import IconButton from '@smui/icon-button';
-  import Button, { Label, Icon } from '@smui/button';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Textfield from '@smui/textfield';
-  import HelperText from '@smui/textfield/helper-text/index';
-  import { createEventDispatcher } from 'svelte';
-  import { goto } from '$app/navigation';
-  import Svg from '@smui/common/Svg.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import ProductSliderModal from './ProductSliderModal.svelte';
   import { productStore } from '$lib/store/product';
   import { Product } from '$lib/store/product';

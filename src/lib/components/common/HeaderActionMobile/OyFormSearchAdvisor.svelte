@@ -1,22 +1,17 @@
 <script lang="ts">
-  import TopAppBar, { Section, Row, Title } from '@smui/top-app-bar';
-  import Button, { Icon, Label } from '@smui/button';
-  import Svg from '@smui/common/Svg.svelte';
-  import IconButton from '@smui/icon-button';
-  import Textfield from '@smui/textfield';
-  import Select, { Option } from '@smui/select';
-  import { createEventDispatcher, afterUpdate } from 'svelte';
-  import { goto } from '$app/navigation';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import { createEventDispatcher } from 'svelte';
   import { Country } from '$lib/store/country';
   import { Speciality } from '$lib/store/speciality';
-  import Dropdown, { DropdownValue } from '$lib/components/dropdown.svelte';
+  import Dropdown from '$lib/components/Dropdown.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
   let menuActive;
   export let searchModel: {
-    speciality: Speciality | undefined,
-    country: Country | undefined
+    speciality: Speciality | undefined;
+    country: Country | undefined;
   } = {
     speciality: undefined,
     country: undefined,
@@ -26,10 +21,9 @@
   let country: Country | undefined = searchModel.country;
   let speciality: Speciality | undefined = searchModel.speciality;
   function onSearchSubmit() {
-    setTimeout(()=>{
-      dispatch('close',{country, speciality});
-    },0);
-    
+    setTimeout(() => {
+      dispatch('close', { country, speciality });
+    }, 0);
   }
 </script>
 
@@ -41,19 +35,19 @@
   >
     <div class="form-control mb-40">
       <Dropdown
-                    label="By Speciality"
-                    blankItem="All"
-                    items={specialities}
-                    value={speciality}
-                  />
+        label="By Speciality"
+        blankItem="All"
+        items={specialities}
+        value={speciality}
+      />
     </div>
     <div class="form-control mb-40">
       <Dropdown
-                    label="By Location"
-                    blankItem="All"
-                    items={locations}
-                    bind:value={country}
-                  />
+        label="By Location"
+        blankItem="All"
+        items={locations}
+        bind:value={country}
+      />
     </div>
     <div class="form-control btn-submit-wrap">
       <Button variant="outlined" style="width: 100%;" type="submit"

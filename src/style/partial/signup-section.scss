@@ -1,0 +1,70 @@
+@use "../../theme/variables" as v;
+@mixin mobile {
+    @media (max-width: #{ v.$desktop-width - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{ v.$desktop-width}) {
+        @content;
+    }
+}
+#signup-section {
+    & > .content-wrap > .mdc-layout-grid {
+        @include desktop {
+            padding-left: calc(120px + var(--mdc-layout-grid-margin-desktop));
+        }
+    }
+    @include mobile {
+        text-align: center;
+    }
+    .mdc-layout-grid {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    .thumbnail {
+        &.multi-images-affect {
+            img {
+                height: 100%;
+            }
+            img:nth-of-type(2) {
+                position: absolute;
+                top: 0;
+                left: 0;
+                opacity: 0;
+                transition-property: opacity;
+                transition-duration: 0.5s;
+                transition-timing-function: linear;
+            }
+            &:hover {
+                img:nth-of-type(1) {
+                    opacity: 1;
+                }
+                img:nth-of-type(2) {
+                    opacity: 1;
+                }
+            }
+        }
+        position: relative;
+        .caption {
+            text-transform: uppercase;
+            font-size: 12px;
+            line-height: 22px;
+            position: absolute;
+            bottom: -20px;
+            width: calc(100% - 25px);
+            background-color: v.$blueColor;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 0;
+            span {
+                width: 100%;
+                display: inline-block;
+                text-align: center;
+            }
+            text-transform: uppercase;
+            letter-spacing: 0.1px;
+        }
+    }
+}

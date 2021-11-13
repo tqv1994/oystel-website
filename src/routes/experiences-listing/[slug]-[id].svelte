@@ -1,10 +1,14 @@
 <script lang="ts" context="module">
   import { onMount, afterUpdate, beforeUpdate, onDestroy } from 'svelte';
   import type { Load } from '@sveltejs/kit';
-  import LayoutGrid, { Cell, InnerGrid } from '@smui/layout-grid';
-  import Button, { Label } from '@smui/button';
-  import IconButton, { Icon } from '@smui/icon-button';
-  import Svg from '@smui/common/Svg.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import InnerGrid from '@smui/layout-grid/InnerGrid.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import Layout from '$lib/components/common/Layout.svelte';
   import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
   import { authStore } from '$lib/store/auth';
@@ -409,7 +413,7 @@
                           class="image-cover"
                           style="padding-top: calc(636 / 493 * 100%);"
                         >
-                          <BlurImage data={experience.gallery[i + i + 1]} />
+                          <BlurImage {...experience.gallery[i + i + 1]} />
                         </div>
                       </div>
                       <p>{experience.gallery[i + i].alternativeText}</p>
@@ -424,7 +428,7 @@
                             class="image-cover"
                             style="padding-top: calc(447 / 344 * 100%);"
                           >
-                            <BlurImage data={experience.gallery[i + i + 2]} />
+                            <BlurImage {...experience.gallery[i + i + 2]} />
                           </div>
                         </div>
                         <p>{experience.gallery[i + i + 2].alternativeText}</p>
@@ -458,7 +462,7 @@
                               class="image-cover"
                               style="padding-top: calc(499 / 383 * 100%)"
                             >
-                              <BlurImage data={item.gallery[0]} />
+                              <BlurImage {...item.gallery[0]} />
                             </div>
                           </a>
                           <IconButton
@@ -712,7 +716,7 @@
                           class="image-cover"
                           style="padding-top: calc(499 / 383 * 100%)"
                         >
-                          <BlurImage data={item.gallery[0]} />
+                          <BlurImage {...item.gallery[0]} />
                         </div>
                       </a>
                       <IconButton

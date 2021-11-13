@@ -12,14 +12,18 @@
   import { destinationTypeStore } from '$lib/store/destination-type';
   import { countryStore } from '$lib/store/country';
   import { onMount } from 'svelte';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
   import { goto } from '$app/navigation';
-  import Textfield from '@smui/textfield';
-  import Button, { Label } from '@smui/button';
-  import IconButton, { Icon } from '@smui/icon-button';
-  import Select, { Option } from '@smui/select';
+  import Textfield from '@smui/textfield/Textfield.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Select from '@smui/select/Select.svelte';
+  import Option from '@smui/select/Option.svelte';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-  import Svg from '@smui/common/Svg.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import { stringHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
   import { authStore } from '$lib/store/auth';
@@ -363,7 +367,13 @@
     <section class="header-title d-pt-120 d-pb-55 m-pt-90 m-pb-25 full-width">
       <div class="content-wrap">
         <div class="container m-none">
-          <form class="search-form-experiences" method="GET" on:submit|preventDefault={()=>{go({})}}>
+          <form
+            class="search-form-experiences"
+            method="GET"
+            on:submit|preventDefault={() => {
+              go({});
+            }}
+          >
             <LayoutGrid class="p-0">
               <Cell span="4">
                 <div class="form-control">
@@ -455,7 +465,7 @@
                         class="image-cover"
                         style="padding-top: calc(410 / 315 * 100%)"
                       >
-                        <BlurImage data={item.gallery[0]} />
+                        <BlurImage {...item.gallery[0]} />
                       </div>
                     </a>
                     <IconButton
@@ -518,7 +528,7 @@
                         class="image-cover"
                         style="padding-top: calc(410 / 315 * 100%)"
                       >
-                        <BlurImage data={item.gallery[0]} />
+                        <BlurImage {...item.gallery[0]} />
                       </div>
                     </a>
                     <IconButton
@@ -589,90 +599,95 @@
 />
 <OyNotification />
 
-<style>
-  .header-title {
-    background-color: #f0f7f8;
-  }
-  .header-title:global(.is_sticky) {
-    padding-bottom: 55px !important;
-  }
-  .search-form-experiences :global(.mdc-layout-grid) {
-    --mdc-layout-grid-gutter-desktop: 0;
-    --mdc-select-idle-line-color: #000;
-    --mdc-select-hover-line-color: #000;
-  }
-  .search-form-experiences :global(.mdc-text-field),
-  .search-form-experiences :global(.mdc-select) {
-    height: 35px;
-    width: 100%;
-    padding-right: 15px;
-  }
-  .search-form-experiences
-    :global(.mdc-select.mdc-select--outlined .mdc-select__anchor) {
-    height: 35px;
-  }
-  .search-form-experiences
-    :global(.mdc-text-field .mdc-notched-outline__leading),
-  .search-form-experiences :global(.mdc-text-field .mdc-notched-outline__notch),
-  .search-form-experiences
-    :global(.mdc-text-field .mdc-notched-outline__trailing),
-  .search-form-experiences :global(.mdc-select .mdc-notched-outline__leading),
-  .search-form-experiences :global(.mdc-select .mdc-notched-outline__notch),
-  .search-form-experiences :global(.mdc-select .mdc-notched-outline__trailing) {
-    border-color: #000;
-  }
-  .search-form-experiences :global(.mdc-text-field img) {
-    filter: brightness(0.1);
-  }
+<style lang="scss" global>
+  .page-search {
+    @import './src/style/partial/thumbnail.scss';
+    .header-title {
+      background-color: #f0f7f8;
+    }
+    .header-title:global(.is_sticky) {
+      padding-bottom: 55px !important;
+    }
+    .search-form-experiences :global(.mdc-layout-grid) {
+      --mdc-layout-grid-gutter-desktop: 0;
+      --mdc-select-idle-line-color: #000;
+      --mdc-select-hover-line-color: #000;
+    }
+    .search-form-experiences :global(.mdc-text-field),
+    .search-form-experiences :global(.mdc-select) {
+      height: 35px;
+      width: 100%;
+      padding-right: 15px;
+    }
+    .search-form-experiences
+      :global(.mdc-select.mdc-select--outlined .mdc-select__anchor) {
+      height: 35px;
+    }
+    .search-form-experiences
+      :global(.mdc-text-field .mdc-notched-outline__leading),
+    .search-form-experiences
+      :global(.mdc-text-field .mdc-notched-outline__notch),
+    .search-form-experiences
+      :global(.mdc-text-field .mdc-notched-outline__trailing),
+    .search-form-experiences :global(.mdc-select .mdc-notched-outline__leading),
+    .search-form-experiences :global(.mdc-select .mdc-notched-outline__notch),
+    .search-form-experiences
+      :global(.mdc-select .mdc-notched-outline__trailing) {
+      border-color: #000;
+    }
+    .search-form-experiences :global(.mdc-text-field img) {
+      filter: brightness(0.1);
+    }
 
-  /* Section title */
-  .section-title .title {
-    position: relative;
-    overflow: hidden;
-  }
-  .section-title .title:after {
-    content: '';
-    display: inline-block;
-    border-top: 1px solid;
-    border-color: #000;
-    vertical-align: middle;
-    width: 100%;
-    margin-right: -100%;
-    margin-left: 40px;
-  }
-
-  .experience-item :global(.mdc-layout-grid) {
-    --mdc-layout-grid-gutter-desktop: 0;
-  }
-  .experience-item .divider::after {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
-  .experience-item .title {
-    height: 50px;
-    overflow: hidden;
-  }
-  .experience-item .thumbnail {
-    position: relative;
-  }
-
-  .item-read-more {
-    background-color: #f0f7f8;
-    position: relative;
-  }
-  .item-read-more .label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .item-read-more .label .material-icons {
-    position: relative;
-    top: 5px;
-  }
-
-  @media screen and (max-width: 768px) {
+    /* Section title */
+    .section-title .title {
+      position: relative;
+      overflow: hidden;
+    }
     .section-title .title:after {
-      margin-left: 20px;
+      content: '';
+      display: inline-block;
+      border-top: 1px solid;
+      border-color: #000;
+      vertical-align: middle;
+      width: 100%;
+      margin-right: -100%;
+      margin-left: 40px;
+    }
+
+    .experience-item :global(.mdc-layout-grid) {
+      --mdc-layout-grid-gutter-desktop: 0;
+    }
+    .experience-item .divider::after {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    .experience-item .title {
+      height: 50px;
+      overflow: hidden;
+    }
+    .experience-item .thumbnail {
+      position: relative;
+    }
+
+    .item-read-more {
+      background-color: #f0f7f8;
+      position: relative;
+    }
+    .item-read-more .label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .item-read-more .label .material-icons {
+      position: relative;
+      top: 5px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .section-title .title:after {
+        margin-left: 20px;
+      }
     }
   }
 </style>

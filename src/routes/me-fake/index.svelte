@@ -1,12 +1,15 @@
 <script>
   import { authStore } from '$lib/store/auth';
   import { onMount, afterUpdate } from 'svelte';
-  import Button, { Label, Icon } from '@smui/button';
-  import Checkbox from '@smui/checkbox';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Textfield from '@smui/textfield';
-  import IconButton from '@smui/icon-button';
-  import Svg from '@smui/common/Svg.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Checkbox from '@smui/checkbox/Checkbox.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Textfield from '@smui/textfield/Textfield.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
 
   let userModel = $authStore.user;
   let modelEmailPreferences = {

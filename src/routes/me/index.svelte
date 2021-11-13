@@ -1,16 +1,16 @@
 <script lang="ts">
   import { authStore } from '$lib/store/auth';
-  import { onMount, afterUpdate } from 'svelte';
-  import Button, { Label, Icon } from '@smui/button';
-  import Checkbox from '@smui/checkbox';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Textfield from '@smui/textfield';
-  import IconButton from '@smui/icon-button';
-  import Svg from '@smui/common/Svg.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Checkbox from '@smui/checkbox/Checkbox.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Textfield from '@smui/textfield/Textfield.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { User } from '$lib/store/auth';
   import { goto } from '$app/navigation';
-  import { stringHelper } from '$lib/helpers';
   import { dateTimeHelper } from '$lib/helpers/datetime';
 
   let me: User | undefined = $authStore.user;
@@ -73,7 +73,7 @@
     <Cell spanDevices={{ desktop: 4, phone: 4, tablet: 8 }}>
       <div class="thumbnail user-profile-image dark">
         <div class="image-cover" style="padding-top: 100%">
-          <BlurImage data={me.avatar} />
+          <BlurImage {...me.avatar} />
         </div>
 
         <IconButton class="btn-update-avatar">

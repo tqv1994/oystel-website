@@ -1,10 +1,10 @@
 <script lang="ts">
-  import IconButton from '@smui/icon-button';
-  import Button from '@smui/button';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import { createEventDispatcher } from 'svelte';
-  import Tab, { Icon, Label } from '@smui/tab';
-  import TabBar from '@smui/tab-bar';
+  import Button from '@smui/button/Button.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Tab from '@smui/tab/Tab.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import TabBar from '@smui/tab-bar/TabBar.svelte';
   import { afterUpdate, onDestroy } from 'svelte';
   import { documentHelper, routerHelper } from '$lib/helpers';
   import { goto } from '$app/navigation';
@@ -35,7 +35,7 @@
       }
     }
     if (open == true) {
-      document.documentElement.style.overflow = "hidden";
+      document.documentElement.style.overflow = 'hidden';
       if (menuId) {
         let menuActive = document.querySelector(
           'header #main-menu li#' + menuId,
@@ -44,13 +44,13 @@
           menuActive.classList.add('active');
         }
       }
-    }else{
-      document.documentElement.style.overflow = "auto";
+    } else {
+      document.documentElement.style.overflow = 'auto';
     }
   });
 
-  onDestroy(()=>{
-    document.documentElement.style.overflow = "auto";
+  onDestroy(() => {
+    document.documentElement.style.overflow = 'auto';
   });
 
   function handleCloseSubMenu() {
@@ -177,7 +177,7 @@
     @media (max-width: 1631px) {
       height: 100%;
       background-position: bottom;
-      padding-bottom: 0;;
+      padding-bottom: 0;
     }
   }
 </style>

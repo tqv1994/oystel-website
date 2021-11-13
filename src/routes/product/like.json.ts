@@ -1,7 +1,7 @@
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Rec } from '@sveltejs/kit/types/helper';
+import type { Rec } from '@sveltejs/kit/types/helper';
 import { Product } from '$lib/store/product';
 /**
  * @type {import('@sveltejs/kit').Post}

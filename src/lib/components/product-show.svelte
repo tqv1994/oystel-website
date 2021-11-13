@@ -1,8 +1,10 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import IconButton, { Icon } from '@smui/icon-button';
-  import Svg from '@smui/common/Svg.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import { destinationStore } from '$lib/store/destination';
   import { Destination } from '$lib/store/destination';
   import { insertToStore } from '$lib/store/types';
@@ -10,7 +12,7 @@
   import { parseId } from '$lib/utils/fetch';
   import { Product } from '$lib/store/product';
   import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
-import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
 
   export const load: Load = async ({ fetch, page }) => {
     const id = parseId(page.params.slug);
@@ -33,7 +35,7 @@ import { createEventDispatcher } from 'svelte';
 </script>
 
 <script type="ts">
-import BlurImage from "./blur-image.svelte";
+  import BlurImage from './blur-image.svelte';
 
   let dispathcher = createEventDispatcher();
   export let title: string;
@@ -41,9 +43,9 @@ import BlurImage from "./blur-image.svelte";
   let openProductSlide: boolean = false;
   let productIndex: number;
   function callLikeItem(product: Product) {
-    setTimeout(()=>{
-      dispathcher('likeItem',{product});
-    },0);
+    setTimeout(() => {
+      dispathcher('likeItem', { product });
+    }, 0);
   }
 </script>
 
@@ -61,13 +63,16 @@ import BlurImage from "./blur-image.svelte";
               }}
               class="item-product"
             >
-              <div
-                class="thumbnail"
-              >
-              <div class="image-cover" style="padding-top: 145%">
-                <BlurImage data={item.gallery[0]}></BlurImage>
-              </div>
-                <IconButton class="btn-favorite {item.liked ? 'liked' : ''}" on:click={()=>{callLikeItem(item)}}>
+              <div class="thumbnail">
+                <div class="image-cover" style="padding-top: 145%">
+                  <BlurImage {...item.gallery[0]} />
+                </div>
+                <IconButton
+                  class="btn-favorite {item.liked ? 'liked' : ''}"
+                  on:click={() => {
+                    callLikeItem(item);
+                  }}
+                >
                   <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
                     <path
                       d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
@@ -100,6 +105,7 @@ import BlurImage from "./blur-image.svelte";
   products={items}
   bind:active={productIndex}>no content</ProductSliderModal
 >
+
 <style lang="scss">
   $desktop-width: 950px;
   @mixin mobile {
@@ -145,7 +151,7 @@ import BlurImage from "./blur-image.svelte";
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
-    :global(img){
+    :global(img) {
       object-fit: contain;
     }
   }

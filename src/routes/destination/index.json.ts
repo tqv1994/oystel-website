@@ -14,6 +14,7 @@ import {
   SearchResultGroup,
 } from '$lib/store/search';
 import { orderings, ORDER_BY_NAME_ASC } from '$lib/store/order';
+import type { Rec } from '@sveltejs/kit/types/helper';
 
 
 const dIndex = searchClient.index('destination');

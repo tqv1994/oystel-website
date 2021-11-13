@@ -1,10 +1,13 @@
 <script context="module" lang="ts">
   import type { Load } from '@sveltejs/kit';
   import { onMount, afterUpdate, beforeUpdate } from 'svelte';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Button, { Label } from '@smui/button';
-  import IconButton, { Icon } from '@smui/icon-button';
-  import Svg from '@smui/common/Svg.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import { documentHelper, stringHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
@@ -59,14 +62,17 @@
   function onScrollFixedContactInfo() {
     const classList = document.querySelector('.contact-info')?.classList;
     const footer = document.querySelector('footer');
-    
+
     if (
       document.documentElement.clientWidth >= 950 &&
       (document.body.scrollTop > 100 ||
         document.documentElement.scrollTop > 100)
     ) {
       classList?.add('fixed');
-      documentHelper.checkOffset(document.querySelector('.contact-info'), footer);
+      documentHelper.checkOffset(
+        document.querySelector('.contact-info'),
+        footer,
+      );
     } else {
       classList?.remove('fixed');
     }
@@ -139,7 +145,7 @@
                 >
                   <div class="thumbnail">
                     <div class="image-cover" style="padding-top: 100%">
-                      <BlurImage data={advisor.avatar} />
+                      <BlurImage {...advisor.avatar} />
                     </div>
                   </div>
                 </Cell>
@@ -256,7 +262,7 @@
                 >
                   <div class="thumbnail">
                     <div class="image-cover" style="padding-top: 100%">
-                      <BlurImage data={advisor.avatar} />
+                      <BlurImage {...advisor.avatar} />
                     </div>
                   </div>
                 </Cell>
@@ -406,7 +412,7 @@
                                 class="image-cover"
                                 style="padding-top: calc(335 / 258 * 100%)"
                               >
-                                <BlurImage data={item.gallery[0]} />
+                                <BlurImage {...item.gallery[0]} />
                               </div>
                             </div>
                             <LayoutGrid class="p-0">
@@ -438,20 +444,25 @@
                 <h1 class="mt-0">Qualifications</h1>
                 <p class="title mt-0 mb-30 label-specialities">Specialties</p>
                 <p class="text-content mt-0 mb-55">
-                  {
-                  implodeString([
+                  {implodeString(
+                    [
                       advisor.speciality1?.name,
                       advisor.speciality2?.name,
-                      advisor.speciality3?.name
-                      ],', ')}
+                      advisor.speciality3?.name,
+                    ],
+                    ', ',
+                  )}
                 </p>
                 <p class="title mt-0 mb-30">Languages</p>
                 <p class="text-content mt-0">
-                  {implodeString([
-                    advisor.language1?.name,
-                    advisor.language2?.name,
-                    advisor.language3?.name
-                    ],', ')}
+                  {implodeString(
+                    [
+                      advisor.language1?.name,
+                      advisor.language2?.name,
+                      advisor.language3?.name,
+                    ],
+                    ', ',
+                  )}
                 </p>
               </div>
             </Cell>
@@ -462,7 +473,7 @@
   {/if}
 </Layout>
 
-<style lang="scss">
+<style lang="scss" global>
   $desktop-width: 950px;
   @mixin mobile {
     @media (max-width: #{$desktop-width - 1px}) {
@@ -474,182 +485,185 @@
       @content;
     }
   }
-  .header-title {
-    height: 810px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-  .contact-info {
-    --mdc-typography-button-font-size: 16px;
-    top: 80px;
-    position: absolute;
-    @include mobile {
-      position: relative;
-      top: auto;
-      left: auto;
-    }
-    left: 0;
-    background-color: #f0f7f8;
-    width: calc(475px - 90px);
-    transition: top 1s ease;
-  }
-  .contact-info:global(.fixed) {
-    top: 50% !important;
-    transform: translateY(-50%);
-  }
-  @media screen and (min-width: 1441px) {
-    .contact-info:global(.fixed) {
-      margin-left: calc(
-        calc(100vw / 2 - 1336px / 2) + var(--mdc-layout-grid-margin-desktop)
-      );
-    }
-  }
-  @media screen and (max-width: 1440px) and (min-width: 950px) {
-    .contact-info:global(.fixed) {
-      margin-left: 0;
-    }
-  }
-  .contact-info .thumbnail {
-    width: 100px;
-  }
-  .contact-info .thumbnail .image-cover {
-    border-radius: 50%;
-  }
-  .contact-info :global(.btn-share) {
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  .contact-info .description {
-    max-height: 110px;
-    overflow-y: scroll;
-    width: 85%;
-    &::-webkit-scrollbar-track {
-      background-color: #d3d3d3;
-    }
-    &::-webkit-scrollbar {
-      width: 5px;
-      background-color: #d3d3d3;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: #5078bc;
-    }
-  }
-
-  .trip-item :global(.mdc-layout-grid) {
-    --mdc-layout-grid-gutter-desktop: 0;
-  }
-  .trip-item .divider::after {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
-  .trip-item .title {
-    height: 55px;
-    overflow: hidden;
-  }
-  .trip-item .thumbnail {
-    position: relative;
-  }
-  .trip-item .thumbnail :global(.btn-favorite) {
-    position: absolute;
-    top: 2%;
-    right: 2%;
-  }
-  .trip-item .thumbnail :global(.btn-favorite .like) {
-    display: block;
-  }
-  .trip-item .thumbnail :global(.btn-favorite .liked) {
-    display: none;
-  }
-  .trip-item .thumbnail :global(.btn-favorite:hover .like) {
-    display: none;
-  }
-  .trip-item .thumbnail :global(.btn-favorite:hover .liked) {
-    display: block;
-  }
-  .qualifications-wrap {
-    padding-right: 10%;
-  }
-  .qualifications-wrap .title {
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 0.2px;
-  }
-  .qualifications-wrap .text-content {
-    --mdc-typography-body1-font-weight: 300;
-    --mdc-typography-body1-letter-spacing: 0.1px;
-    --mdc-typography-body1-font-size: 17px;
-  }
-
-  @include mobile {
+  .page-advisor-detail {
+    @import './src/style/partial/thumbnail.scss';
     .header-title {
-      height: auto;
-      padding-bottom: 82.67%;
+      height: 810px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
     .contact-info {
-      text-align: center !important;
-      width: calc(100vw - 90px);
-      margin: auto;
-      margin-top: -90px;
-      padding-left: 8px;
-      padding-right: 8px;
-      .description {
-        width: 100%;
+      --mdc-typography-button-font-size: 16px;
+      top: 80px;
+      position: absolute;
+      @include mobile {
+        position: relative;
+        top: auto;
+        left: auto;
       }
-      .thumbnail {
-        margin: 0 auto;
-      }
-      :global(.btn-share) {
-        position: absolute;
-        right: 0;
-        top: 30px;
+      left: 0;
+      background-color: #f0f7f8;
+      width: calc(475px - 90px);
+      transition: top 1s ease;
+    }
+    .contact-info.fixed {
+      top: 50% !important;
+      transform: translateY(-50%);
+    }
+    @media screen and (min-width: 1441px) {
+      .contact-info.fixed {
+        margin-left: calc(
+          calc(100vw / 2 - 1336px / 2) + var(--mdc-layout-grid-margin-desktop)
+        );
       }
     }
-    :global(.page-advisor-detail .content) {
-      :global(button) {
-        --mdc-typography-button-font-size: 16px;
-        --mdc-typography-button-line-height: 24px;
-        --mdc-typography-button-letter-spacing: 0.5;
+    @media screen and (max-width: 1440px) and (min-width: 950px) {
+      .contact-info.fixed {
+        margin-left: 0;
+      }
+    }
+    .contact-info .thumbnail {
+      width: 100px;
+    }
+    .contact-info .thumbnail .image-cover {
+      border-radius: 50%;
+    }
+    .contact-info :global(.btn-share) {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .contact-info .description {
+      max-height: 110px;
+      overflow-y: scroll;
+      width: 85%;
+      &::-webkit-scrollbar-track {
+        background-color: #d3d3d3;
+      }
+      &::-webkit-scrollbar {
+        width: 5px;
+        background-color: #d3d3d3;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: #5078bc;
+      }
+    }
+
+    .trip-item .mdc-layout-grid {
+      --mdc-layout-grid-gutter-desktop: 0;
+    }
+    .trip-item .divider::after {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    .trip-item .title {
+      height: 55px;
+      overflow: hidden;
+    }
+    .trip-item .thumbnail {
+      position: relative;
+    }
+    .trip-item .thumbnail :global(.btn-favorite) {
+      position: absolute;
+      top: 2%;
+      right: 2%;
+    }
+    .trip-item .thumbnail :global(.btn-favorite .like) {
+      display: block;
+    }
+    .trip-item .thumbnail :global(.btn-favorite .liked) {
+      display: none;
+    }
+    .trip-item .thumbnail :global(.btn-favorite:hover .like) {
+      display: none;
+    }
+    .trip-item .thumbnail :global(.btn-favorite:hover .liked) {
+      display: block;
+    }
+    .qualifications-wrap {
+      padding-right: 10%;
+    }
+    .qualifications-wrap .title {
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 0.2px;
+    }
+    .qualifications-wrap .text-content {
+      --mdc-typography-body1-font-weight: 300;
+      --mdc-typography-body1-letter-spacing: 0.1px;
+      --mdc-typography-body1-font-size: 17px;
+    }
+
+    @include mobile {
+      .header-title {
+        height: auto;
+        padding-bottom: 82.67%;
       }
       .contact-info {
-        --mdc-typography-headline4-font-size: 14px;
-        --mdc-typography-headline4-line-height: 27px;
-      }
-      .trip-item {
-        .title {
-          --mdc-typography-headline2-font-size: 14px;
-          --mdc-typography-headline2-line-height: 18px;
+        text-align: center !important;
+        width: calc(100vw - 90px);
+        margin: auto;
+        margin-top: -90px;
+        padding-left: 8px;
+        padding-right: 8px;
+        .description {
+          width: 100%;
+        }
+        .thumbnail {
+          margin: 0 auto;
+        }
+        .btn-share {
+          position: absolute;
+          right: 0;
+          top: 30px;
         }
       }
-      .label-specialities,
-      .label-languages {
-        --mdc-typography-body1-font-size: 12px;
-        --mdc-typography-body1-line-height: 20px;
-        --mdc-typography-body1-letter-spacing: 0.1;
-      }
-      .qualifications-wrap .text-content {
-        --mdc-typography-body1-font-weight: 400;
-        --mdc-typography-body1-letter-spacing: 0;
-        --mdc-typography-body1-line-height: 27px;
-        --mdc-typography-body1-font-size: 14px;
+      .content {
+        button {
+          --mdc-typography-button-font-size: 16px;
+          --mdc-typography-button-line-height: 24px;
+          --mdc-typography-button-letter-spacing: 0.5;
+        }
+        .contact-info {
+          --mdc-typography-headline4-font-size: 14px;
+          --mdc-typography-headline4-line-height: 27px;
+        }
+        .trip-item {
+          .title {
+            --mdc-typography-headline2-font-size: 14px;
+            --mdc-typography-headline2-line-height: 18px;
+          }
+        }
+        .label-specialities,
+        .label-languages {
+          --mdc-typography-body1-font-size: 12px;
+          --mdc-typography-body1-line-height: 20px;
+          --mdc-typography-body1-letter-spacing: 0.1;
+        }
+        .qualifications-wrap .text-content {
+          --mdc-typography-body1-font-weight: 400;
+          --mdc-typography-body1-letter-spacing: 0;
+          --mdc-typography-body1-line-height: 27px;
+          --mdc-typography-body1-font-size: 14px;
+        }
       }
     }
-  }
-  .destinations-wrap h5 {
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 34px;
-    letter-spacing: 0.2px;
-  }
-  @media (min-width: 1441px) {
-    .contact-info:not(.fixed) {
-      left: 45px;
-    }
-  }
-  @media (max-width: 949px) {
     .destinations-wrap h5 {
-      font-size: 12px;
-      line-height: 20px;
-      letter-spacing: 0.1px;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 34px;
+      letter-spacing: 0.2px;
+    }
+    @media (min-width: 1441px) {
+      .contact-info:not(.fixed) {
+        left: 45px;
+      }
+    }
+    @media (max-width: 949px) {
+      .destinations-wrap h5 {
+        font-size: 12px;
+        line-height: 20px;
+        letter-spacing: 0.1px;
+      }
     }
   }
 </style>

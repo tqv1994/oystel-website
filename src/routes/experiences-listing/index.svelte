@@ -6,14 +6,18 @@
   import { countryStore } from '$lib/store/country';
 
   import { onMount } from 'svelte';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
   import { goto } from '$app/navigation';
-  import Textfield from '@smui/textfield';
-  import Button, { Label } from '@smui/button';
-  import IconButton, { Icon } from '@smui/icon-button';
-  import Select, { Option } from '@smui/select';
+  import Textfield from '@smui/textfield/Textfield.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Icon from '@smui/common/CommonIcon.svelte';
+  import Select from '@smui/select/Select.svelte';
+  import Option from '@smui/select/Option.svelte';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-  import Svg from '@smui/common/Svg.svelte';
+  import Svg from '@smui/common/elements/Svg.svelte';
   import { stringHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';

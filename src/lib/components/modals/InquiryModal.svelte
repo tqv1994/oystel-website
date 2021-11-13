@@ -1,12 +1,14 @@
-<script>
+<script lang="ts">
   import '$lib/firebase';
-  import Dialog, { Content } from '@smui/dialog';
-  import IconButton from '@smui/icon-button';
-  import Button, { Label, Icon } from '@smui/button';
-  import LayoutGrid, { Cell } from '@smui/layout-grid';
+  import Dialog from '@smui/dialog/Dialog.svelte';
+  import Content from '@smui/dialog/Content';
+  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/common/CommonLabel.svelte';
+  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import Cell from '@smui/layout-grid/Cell.svelte';
   import { createEventDispatcher } from 'svelte';
-  export let open;
-  export let authModel;
+  export let open: boolean;
   const dispatch = createEventDispatcher();
   let classModal = '';
   export function openModal() {
@@ -67,19 +69,22 @@
   </Content>
 </Dialog>
 
-<style>
-  :global(.btn-find-advisor) {
-    top: 50%;
-    transform: translateY(-50%);
-    right: 10%;
-    position: absolute;
-  }
-  @media (max-width: 949px) {
-    :global(.btn-find-advisor) {
-      top: auto;
-      transform: translateY(0);
-      left: 0;
-      position: relative;
+<style lang="scss" global>
+  @import './src/style/partial/inquiry-modal.scss';
+  #inquiry-modal{
+    .btn-find-advisor {
+      top: 50%;
+      transform: translateY(-50%);
+      right: 10%;
+      position: absolute;
+    }
+    @media (max-width: 949px) {
+      .btn-find-advisor {
+        top: auto;
+        transform: translateY(0);
+        left: 0;
+        position: relative;
+      }
     }
   }
   /*:global(#inquiry-modal.mdc-dialog) {*/
