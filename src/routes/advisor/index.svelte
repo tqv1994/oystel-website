@@ -37,7 +37,7 @@
     SPECIALITY,
     TYPE,
   } from '$lib/store/search';
-  import Dropdown, { DropdownValue } from '$lib/components/dropdown.svelte';
+  import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
   import { sortByName } from '$lib/utils/sort';
   import { destinationTypeStore } from '$lib/store/destination-type';
   import { experienceTypeStore } from '$lib/store/experience-type';
