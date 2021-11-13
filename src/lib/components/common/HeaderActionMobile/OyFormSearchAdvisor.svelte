@@ -4,7 +4,7 @@
   import { createEventDispatcher } from 'svelte';
   import { Country } from '$lib/store/country';
   import { Speciality } from '$lib/store/speciality';
-  import Dropdown from '$lib/components/dropdown.svelte';
+  import Dropdown from '$lib/components/Dropdown.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
