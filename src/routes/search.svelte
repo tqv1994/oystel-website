@@ -33,7 +33,7 @@
   import { Country } from '$lib/store/country';
   import { Destination } from '$lib/store/destination';
   import { get } from 'svelte/store';
-  import Dropdown, { DropdownValue } from '$lib/components/dropdown.svelte';
+  import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
   import {
     Ordering,
     orderings,
