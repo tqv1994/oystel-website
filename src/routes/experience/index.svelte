@@ -22,7 +22,7 @@
   import SearchResult from '$lib/components/search-result.svelte';
   import { get } from 'svelte/store';
   import { Category } from '$lib/store/category';
-  import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
+  import Dropdown, { DropdownValue } from '$lib/components/dropdown.svelte';
   import {
     Ordering,
     orderings,
@@ -197,7 +197,7 @@
         $authStore.user?.experienceLikes || []
       ).map((item: Experience) => item.id);
       let indexLikeExist = experienceLikedIds.findIndex(
-        (id: string) => id == experience.id,
+        (id: number | string) => id == experience.id,
       );
       if (indexLikeExist < 0) {
         experienceLikedIds.push(experience.id);
@@ -245,9 +245,7 @@
       document.getElementById('header').classList.add('fixed');
       document.querySelector('header').style.zIndex = 8;
       document.querySelector('header').style.position = 'relative';
-      document
-        .querySelector('.header-title.is_sticky')
-        .classList.add('show');
+      document.querySelector('.header-title.is_sticky').classList.add('show');
     } else {
       document.getElementById('header').classList.remove('fixed');
       document.querySelector('header').style.zIndex = 'auto';
@@ -356,7 +354,9 @@
         </div>
       </div>
     </section>
-    <section class="header-title d-pt-130 d-pb-60 m-pt-80 m-pb-25 full-width is_sticky fixed hidden">
+    <section
+      class="header-title d-pt-130 d-pb-60 m-pt-80 m-pb-25 full-width is_sticky fixed hidden"
+    >
       <div class="content-wrap">
         <div class="container m-none">
           <form

@@ -337,9 +337,9 @@
             </div>
           </div>
         </Cell>
-        <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
+        <Cell spanDevices={{ desktop: 7, tablet: 8, phone: 4 }}>
           <LayoutGrid>
-            <Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }}>
+            <Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}>
               <div class="widget">
                 <h4 class="mt-0 widget-title">Explore Oysteo</h4>
                 <div class="widget-content">
@@ -352,7 +352,7 @@
                 </div>
               </div>
             </Cell>
-            <Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }}>
+            <Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}>
               <div class="widget">
                 <h4 class="mt-0 widget-title">Contact Oysteo</h4>
                 <div class="widget-content">
@@ -379,7 +379,7 @@
             </Cell>
           </LayoutGrid>
         </Cell>
-        <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }} class="m-none">
+        <Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }} class="m-none">
           <div class="widget pl-50">
             <h4 class="mt-0 widget-title">Sign Up for Updates</h4>
             <div class="widget-content">

@@ -17,12 +17,34 @@
   .mdc-layout-grid {
     padding-top: 0;
     padding-bottom: 0;
+    .list-experiences {
+      > .mdc-layout-grid__inner {
+        -moz-column-count: 2; /*change this to change the grid column count*/
+        -webkit-column-count: 2; /*change this to change the grid column count*/
+        column-count: 2; /*change this to change the grid column count*/
+        -moz-column-gap: var(--mdc-layout-grid-gutter-desktop);
+        -webkit-column-gap: var(--mdc-layout-grid-gutter-desktop);
+        column-gap: var(--mdc-layout-grid-gutter-desktop);
+        margin-top: -10px;
+        display: inline-block;
+        width: 100%;
+        overflow:visible;
+        > .mdc-layout-grid__cell{
+          width: 100%;
+          display: inline-block;
+          background: transparent;
+          box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          -webkit-box-sizing: border-box;
+          margin: 1%;
+        }
+      }
+    }
     .mdc-layout-grid {
       --mdc-layout-grid-margin-desktop: 0;
     }
   }
   .list-experiences {
-    max-height: 839px;
     overflow-y: scroll;
     @include mobile {
       max-height: 100%;

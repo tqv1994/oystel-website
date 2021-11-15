@@ -29,43 +29,45 @@
     : [];
   let prevBackground = '';
 
-  onMount(() => {
-    allSlides = document.querySelectorAll('.slide-content');
-    transitionEvent = whichTransitionEvent();
-    controller = new Siema({
-      selector: siema,
-      perPage: typeof perPage === 'object' ? perPage : Number(perPage),
-      loop,
-      duration: isFadeIn ? 0 : duration,
-      easing,
-      startIndex,
-      draggable,
-      multipleDrag,
-      threshold,
-      rtl,
-      onInit: () => {
-        document.querySelector('.slides > div').style.zIndex = 1;
-        document.querySelector('.slides > div').style.position = 'relative';
-        allSlides[0].classList.add('current-slide');
-        if (isFadeIn) {
-          let backDrop = document.createElement('div');
-          backDrop.classList.add('back-drop');
-          backDrop.style.backgroundImage = allSlides[0].style.backgroundImage;
-          document.querySelector('.slides').appendChild(backDrop);
-        }
-        changeSlide;
-      },
-      onChange: handleChange,
-    });
+  onMount(async () => {
+    await setTimeout(() => {
+      allSlides = document.querySelectorAll('.slide-content');
+      transitionEvent = whichTransitionEvent();
+      controller = new Siema({
+        selector: siema,
+        perPage: typeof perPage === 'object' ? perPage : Number(perPage),
+        loop,
+        duration: isFadeIn ? 0 : duration,
+        easing,
+        startIndex,
+        draggable,
+        multipleDrag,
+        threshold,
+        rtl,
+        onInit: () => {
+          document.querySelector('.slides > div').style.zIndex = 1;
+          document.querySelector('.slides > div').style.position = 'relative';
+          allSlides[0].classList.add('current-slide');
+          if (isFadeIn) {
+            let backDrop = document.createElement('div');
+            backDrop.classList.add('back-drop');
+            backDrop.style.backgroundImage = allSlides[0].style.backgroundImage;
+            document.querySelector('.slides').appendChild(backDrop);
+          }
+          changeSlide;
+        },
+        onChange: handleChange,
+      });
 
-    if (autoplay) {
-      timer = setInterval(right, autoplay);
-    }
-    return () => {
-      autoplay && clearInterval(timer);
-      timer = null;
-      controller.destroy();
-    };
+      if (autoplay) {
+        timer = setInterval(right, autoplay);
+      }
+      return () => {
+        autoplay && clearInterval(timer);
+        timer = null;
+        controller.destroy();
+      };
+    }, 0);
   });
   export function isDotActive(currentIndex, dotIndex) {
     if (currentIndex < 0) currentIndex = pips.length + currentIndex;
@@ -76,15 +78,18 @@
   }
 
   export function left() {
-    prevBackground = allSlides[controller.currentSlide].style.backgroundImage;
-    controller.prev();
+    prevBackground = allSlides[controller.currentSlide]?.style.backgroundImage;
+    setTimeout(()=>{
+      controller.prev();
+    },0);
   }
 
   export function right() {
     // allSlides[controller.currentSlide].removeEventListener(transitionEvent, right);
-    prevBackground = allSlides[controller.currentSlide].style.backgroundImage;
-
-    controller.next();
+    prevBackground = allSlides[controller.currentSlide]?.style.backgroundImage;
+    setTimeout(()=>{
+      controller.next();
+    },0);
   }
   export function go(index) {
     controller.goTo(index);

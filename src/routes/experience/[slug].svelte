@@ -25,6 +25,7 @@
   import { ExperienceLikeData } from './like.json';
   import { DestinationLikeData } from '../destination/like.json';
   import { ProductLikeData } from '../product/like.json';
+  import Item from '$lib/components/Item.svelte';
 
   export const load: Load = async ({ fetch, session, page }) => {
     const id = parseId(page.params.slug);
@@ -119,12 +120,13 @@
     }
   }
 
-  async function likeDestination(destination: Destination) {
+  async function likeDestination(event: CustomEvent) {
     let liked: boolean;
     if (!$authStore.user) {
       window.pushToast('Please login to use this feature');
       return;
     }
+    let destination = event.detail.item;
     let destinationLikedIds: string[] = (
       $authStore.user?.destinationLikes || []
     ).map((item: Destination) => item.id);
@@ -214,22 +216,26 @@
   }
 
   function onScrollFixedHeader() {
-    if (document.documentElement.clientWidth > 949) {
-      if (
-        document.body.scrollTop > 900 ||
-        document.documentElement.scrollTop > 900
-      ) {
-        document.getElementById('header').classList.add('fixed');
-        document.querySelector('header').style.zIndex = 100;
-        document
-          .querySelector('.header-title.is_sticky')
-          .classList.add('show');
+    const header = document.getElementById('header');
+    const headerTitle = document.querySelector('.header-title.is_sticky');
+    if (header && headerTitle) {
+      if (document.documentElement.clientWidth > 949) {
+        if (
+          document.body.scrollTop > 900 ||
+          document.documentElement.scrollTop > 900
+        ) {
+          header.classList.add('fixed');
+          header.style.setProperty('z-index','100','important');
+          headerTitle.classList.add('show');
+        } else {
+          header.classList.remove('fixed');
+          header.style.setProperty('z-index','');
+          headerTitle.classList.remove('show');
+        }
       } else {
-        document.getElementById('header').classList.remove('fixed');
-        document.querySelector('header').style.zIndex = 'auto';
-        document
-          .querySelector('.header-title.is_sticky')
-          .classList.remove('show');
+        header.classList.remove('fixed');
+        header.style.setProperty('z-index','');
+        headerTitle.classList.remove('show');
       }
     }
   }
@@ -348,7 +354,9 @@
           </div>
         </div>
       </section>
-      <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-60 full-width is_sticky fixed m-none">
+      <section
+        class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-60 full-width is_sticky fixed m-none"
+      >
         <div class="content-wrap">
           <div class="container">
             <LayoutGrid class="p-0 show-on-sticky m-none">
@@ -459,68 +467,11 @@
                 <LayoutGrid class="p-0">
                   {#each experience.destinations || [] as item}
                     <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 4 }}>
-                      <div class="experience-item">
-                        <div class="thumbnail">
-                          <a href={makeLink('/destination', item)}>
-                            <div
-                              class="image-cover"
-                              style="padding-top: calc(499 / 383 * 100%)"
-                            >
-                                <BlurImage {...item.gallery[0]} />
-                            </div>
-                          </a>
-                          <IconButton
-                            class="btn-favorite {item.liked ? 'liked' : ''}"
-                            on:click={() => likeDestination(item)}
-                          >
-                            <Icon
-                              class="like"
-                              component={Svg}
-                              viewBox="-4 -4 24 24"
-                            >
-                              <path
-                                d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                                transform="translate(0.001)"
-                                fill="#fff"
-                                fill-rule="evenodd"
-                              />
-                            </Icon>
-                            <Icon
-                              class="liked"
-                              component={Svg}
-                              viewBox="-4 -4 24 24"
-                            >
-                              <path
-                                d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                                transform="translate(0)"
-                                fill="#fff"
-                                fill-rule="evenodd"
-                              />
-                            </Icon>
-                          </IconButton>
-                        </div>
-                        <a href={makeLink('/destination', item)}>
-                          <InnerGrid class="p-0">
-                            <Cell
-                              spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
-                              ><p class="text-eyebrow text-left">
-                                {item.country ? item.country.name : 'Country'}
-                              </p></Cell
-                            >
-                            <Cell
-                              spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
-                              ><p class="text-eyebrow text-right">
-                                Destination
-                              </p></Cell
-                            >
-                          </InnerGrid>
-                          <div class="divider" />
-                          <h4 class="text-h2 title">{item.name}</h4>
-                          <p class="short-text m-none">
-                            {(item.intro || '').substring(0, 80)}
-                          </p>
-                        </a>
-                      </div>
+                      <Item
+                        pathPrefix="destination"
+                        bind:item
+                        on:likeItem={likeDestination}
+                      />
                     </Cell>
                   {/each}
                 </LayoutGrid>
@@ -547,70 +498,11 @@
               <LayoutGrid class="p-0">
                 {#each experience.destinations as item}
                   <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
-                    <div class="experience-item">
-                      <div class="thumbnail">
-                        <a href={makeLink('/destination', item)}>
-                          <div
-                            class="image-cover"
-                            style="padding-top: calc(499 / 383 * 100%)"
-                          >
-                            <BlurImage {...item.gallery[0]} />
-                          </div>
-                        </a>
-                        <IconButton
-                          class="btn-favorite {item.liked ? 'liked' : ''}"
-                          on:click={() => likeDestination(item)}
-                        >
-                          <Icon
-                            class="like"
-                            component={Svg}
-                            viewBox="-4 -4 24 24"
-                          >
-                            <path
-                              d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                              transform="translate(0.001)"
-                              fill="#fff"
-                              fill-rule="evenodd"
-                            />
-                          </Icon>
-                          <Icon
-                            class="liked"
-                            component={Svg}
-                            viewBox="-4 -4 24 24"
-                          >
-                            <path
-                              d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                              transform="translate(0)"
-                              fill="#fff"
-                              fill-rule="evenodd"
-                            />
-                          </Icon>
-                        </IconButton>
-                      </div>
-                      <a href={makeLink('/destination', item)}>
-                        <InnerGrid class="p-0">
-                          <Cell
-                            spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
-                            ><p class="text-eyebrow text-left">
-                              {item.country ? item.country.name : 'Country'}
-                            </p></Cell
-                          >
-                          <Cell
-                            spanDevices={{ desktop: 6, phone: 2, tablet: 4 }}
-                            ><p class="text-eyebrow text-right">
-                              Destination
-                            </p></Cell
-                          >
-                        </InnerGrid>
-                        <div class="divider" />
-                        <h4 class="text-h2 title m-mt-30 m-mb-20">
-                          {item.name}
-                        </h4>
-                        <p class="short-text m-mt-0">
-                          {(item.intro || '').substring(0, 80)}
-                        </p>
-                      </a>
-                    </div>
+                    <Item
+                      pathPrefix="destination"
+                      bind:item
+                      on:likeItem={likeDestination}
+                    />
                   </Cell>
                 {/each}
               </LayoutGrid>
@@ -641,7 +533,7 @@
     }
   }
   .page-experience-detail {
-    @import './src/style/partial/thumbnail.scss'; 
+    @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/sticky.scss';
     .content .mdc-button {
       width: 180px;
@@ -862,18 +754,14 @@
     }
 
     @media screen and (max-width: 1304px) {
-          .header-title
-          .show-on-sticky
-          button.mdc-button {
+      .header-title .show-on-sticky button.mdc-button {
         width: auto;
         min-width: auto;
       }
     }
 
     @media screen and (max-width: 999px) {
-        .header-title
-          .show-on-sticky
-          button.mdc-button {
+      .header-title .show-on-sticky button.mdc-button {
         padding: 10px;
       }
     }

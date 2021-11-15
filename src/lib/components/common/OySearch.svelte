@@ -6,7 +6,6 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { documentHelper } from '$lib/helpers';
-  import '/src/style/partial/form.scss';
   export let searchResult: string = '';
   // tagsStore.subscribe(({ tags }) => {
   //     tagDatas = Object.values(tags);

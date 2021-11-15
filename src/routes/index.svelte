@@ -1,5 +1,6 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
+  import { onMount } from 'svelte';
   import { destinationStore } from '$lib/store/destination';
   import { documentHelper } from '$lib/helpers';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
@@ -27,6 +28,7 @@
   import { responsePathAsArray } from 'graphql';
   import { ExperienceLikeData } from './experience/like.json';
   import { DestinationLikeData } from './destination/like.json';
+  import Item from '$lib/components/Item.svelte';
 
   export const load: Load = async ({ fetch, session, page }) => {
     const res = await fetch('/home.json');
@@ -82,13 +84,14 @@
       page: 'home',
       transparent: true,
       theme: 'dark',
+      currentMenu: '',
     },
   };
   let openSignupModal = false;
 
   let advisorDestinations: Destination[] = [];
   destinationStore.subscribe(
-    (store) => (advisorDestinations = getItems(store)),
+    (store) => (advisorDestinations = getItems(store).splice(-5, 4)),
   );
 
   let curatedExperiences: Experience[] = [];
@@ -219,7 +222,8 @@
     //   documentHelper.changeBackgroundHeader('transparent');
     // }
   }
-  function onDestroy() {}
+
+  onMount(() => {});
 </script>
 
 <svelte:window
@@ -238,7 +242,12 @@
 <Layout bind:config={configPage} bind:openSignupModal>
   <div class="content">
     <section id="slider" class="full-width">
-      <OyCarousel perPage={{ 800: 1 }} draggable={false} isFadeIn={true}>
+      <OyCarousel
+        perPage={{ 800: 1 }}
+        draggable={false}
+        loop={true}
+        isFadeIn={true}
+      >
         <span class="control m-none" slot="left-control">
           <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon>
         </span>
@@ -310,13 +319,13 @@
               </div>
               <div class="">
                 <p class="mt-0 mb-25 m-mb-15 text-eyebrow">Fashion Drop</p>
-                <h4 class="text-h3 mt-0 mb-20 ">
+                <h4 class="text-h3 mt-0 mb-20 title">
                   {featureDrops[0].name}
                 </h4>
                 <Button
                   type="button"
                   href={makeLink('/drops', featureDrops[0])}
-                  class="hover-affect"
+                  class="hover-affect-drop"
                   variant="outlined"><Label>Plan Your Trip</Label></Button
                 >
               </div>
@@ -329,40 +338,52 @@
         >
           {#if featureDrops.length > 1}
             <div class="list-featured-drop">
-              <LayoutGrid class="p-0">
+              <OyCarousel
+                perPage={3}
+                draggable={false}
+                isFadeIn={false}
+                rtl={true}
+                dots={false}
+              >
+                <span class="control m-none" slot="left-control">
+                  <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon>
+                </span>
                 {#each featureDrops.slice(1) as drop}
-                  <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
-                    <div class="item-featured-drop">
-                      <div class="thumbnail dark d-mb-40 m-mb-40">
-                        <div
-                          class="image-cover"
-                          style="padding-top: calc(410/311 * 100%)"
-                        >
-                          <BlurImage {...drop.gallery[0]} />
-                        </div>
-                        <div class="caption">
-                          <span
-                            >{drop.id}
-                            Packages left {#if !drop.products} ERROR {/if}</span
-                          >
-                        </div>
-                      </div>
-                      <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">
-                        Experience Drop
-                      </p>
-                      <h4 class="text-h3 mt-0 d-mb-25 m-mb-15 title">
-                        {drop.name}
-                      </h4>
-                      <Button
-                        class="hover-affect"
-                        variant="outlined"
-                        href={makeLink('/drops', drop)}
-                        ><Label>Plan Your Trip</Label></Button
+                  <div
+                    class="item-featured-drop slide-content slide-item text-left"
+                  >
+                    <div class="thumbnail dark d-mb-40 m-mb-40">
+                      <div
+                        class="image-cover"
+                        style="padding-top: calc(410/311 * 100%)"
                       >
+                        <BlurImage {...drop.gallery[0]} />
+                      </div>
+                      <div class="caption">
+                        <span
+                          >{drop.id}
+                          Packages left {#if !drop.products} ERROR {/if}</span
+                        >
+                      </div>
                     </div>
-                  </Cell>
+                    <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">
+                      Experience Drop
+                    </p>
+                    <h4 class="text-h3 mt-0 d-mb-25 m-mb-15 title">
+                      {drop.name}
+                    </h4>
+                    <Button
+                      class="hover-affect-drop"
+                      variant="outlined"
+                      href={makeLink('/drops', drop)}
+                      ><Label>Plan Your Trip</Label></Button
+                    >
+                  </div>
                 {/each}
-              </LayoutGrid>
+                <span class="control m-none" slot="right-control">
+                  <Icon><img src="/img/icons/icon-right-arrow.svg" /></Icon>
+                </span>
+              </OyCarousel>
             </div>
           {/if}
         </Cell>
@@ -375,7 +396,10 @@
     >
       <div class="content-wrap">
         <LayoutGrid>
-          <Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }}>
+          <Cell
+            spanDevices={{ desktop: 5, tablet: 8, phone: 4 }}
+            class="content-left"
+          >
             <div class="thumbnail dark multi-images-affect">
               <img src="/img/signup-img.jpg" alt="" />
               <img src="/img/signup-img-2.jpg" alt="" />
@@ -386,9 +410,9 @@
           </Cell>
           <Cell
             spanDevices={{ desktop: 7, tablet: 8, phone: 4 }}
-            class="light d-pl-100 d-pr-70"
+            class="light d-pl-100 d-pr-70 content-right"
           >
-            <p class="text-body2 d-mb-100 d-mt-145 m-mt-40 m-mb-40">
+            <p class="text-body2 d-mb-100 m-mt-40 m-mb-40">
               Join now for exclusive biweekly travel promotional drops, special
               content, and bespoke travel itineraries.
             </p>
@@ -472,12 +496,7 @@
                   <div class="item-experience">
                     <div class="thumbnail">
                       <a href={makeLink('/experience', experience)}>
-                        <div
-                          class="image-cover"
-                          style="padding-top: calc(410/311 * 100%)"
-                        >
-                          <BlurImage {...experience.gallery[0]} />
-                        </div>
+                        <img src={experience.gallery[0].url} />
                       </a>
                       <IconButton
                         class="btn-favorite {experience.liked ? 'liked' : ''}"
@@ -518,11 +537,15 @@
                         experience.id,
                       )}
                     >
-                      <p class="text-eyebrow d-mt-25 m-mt-20">Experience</p>
-                      <h4 class="text-h3 title mt-25 d-mb-20 m-mb-35">
-                        {experience.name}
-                      </h4>
-                      <div class="divider d-pb-30 m-pb-25" />
+                    <LayoutGrid class="p-0">
+                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                        ><p class="text-eyebrow text-left m-0 d-mt-25 d-mb-25">
+                          {experience.country?.name || ''}
+                        </p></Cell
+                      >
+                    </LayoutGrid>
+                    <div class="divider" />
+                    <h4 class="text-h3 title m-mt-30">{experience.name}</h4>
                     </a>
                   </div>
                 </Cell>
@@ -578,13 +601,15 @@
                   </IconButton>
                 </div>
                 <a href={makeLink('/destination', item)}>
-                  <p class="text-eyebrow d-mt-25 m-mt-20 mb-0">
-                    {item.type?.name || 'Destination'}
-                  </p>
-                  <h4 class="text-h3 mt-25 mb-40 title">
-                    {item.name}
-                  </h4>
-                  <div class="divider d-mt-25 m-mt-15 d-pb-30 m-pb-20" />
+                  <LayoutGrid class="p-0">
+                    <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                      ><p class="text-eyebrow text-left m-0 d-mt-25 d-mb-25">
+                        {item.country?.name || ''}
+                      </p></Cell
+                    >
+                  </LayoutGrid>
+                  <div class="divider" />
+                  <h4 class="text-h3 title m-mt-30">{item.name}</h4>
                 </a>
               </div>
             </Cell>
@@ -598,29 +623,36 @@
 
 <style lang="scss" global>
   $desktop-width: 950px;
-    @mixin mobile {
-      @media (max-width: #{$desktop-width - 1px}) {
-        @content;
-      }
+  @mixin mobile {
+    @media (max-width: #{$desktop-width - 1px}) {
+      @content;
     }
-    @mixin desktop {
-      @media (min-width: #{$desktop-width}) {
-        @content;
-      }
+  }
+  @mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+      @content;
     }
+  }
   .filter-color {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 253px;
-      @include mobile {
-        height: 100px;
-      }
-      z-index: 2;
-      background: #181919;
-      background: linear-gradient(180deg, #181919 0%, rgba(0, 0, 0, 0) 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 253px;
+    @include mobile {
+      height: 100px;
     }
+    z-index: 2;
+    background: #181919;
+    background: linear-gradient(
+      180deg,
+      rgb(0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.9) 10%,
+      rgba(0, 0, 0, 0.2) 60%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    opacity: 0.9;
+  }
   .page-home {
     @import '../style/partial/featured-drop.scss';
     @import '../style/partial/signup-section.scss';
@@ -628,7 +660,6 @@
     @import '../style/partial/from-our-advisor-section.scss';
     @import '../style/partial/slides-homepage.scss';
     @import '../style/partial/thumbnail.scss';
-
     #slider {
       h1 {
         @include mobile {
@@ -636,6 +667,7 @@
         }
       }
     }
+
     #signup-section {
       .thumbnail {
         .caption {
@@ -681,15 +713,9 @@
         background-position: right;
       }
     }
-
-    @media (max-width: 1105px) and (min-width: 950px) {
-      #signup-section {
-        .d-mb-100 {
-          margin-bottom: 30px !important;
-        }
-        .d-mt-145 {
-          margin-top: 70px !important;
-        }
+    .item-experience {
+      .divider {
+        width: 30%;
       }
     }
   }

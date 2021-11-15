@@ -7,7 +7,7 @@
   import { Country } from '$lib/store/country';
   import { Category } from '$lib/store/category';
   import { Nameable } from '$lib/store/types';
-  import Dropdown from '$lib/components/Dropdown.svelte';
+  import Dropdown from '$lib/components/dropdown.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;

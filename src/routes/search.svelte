@@ -33,7 +33,7 @@
   import { Country } from '$lib/store/country';
   import { Destination } from '$lib/store/destination';
   import { get } from 'svelte/store';
-  import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
+  import Dropdown, { DropdownValue } from '$lib/components/dropdown.svelte';
   import {
     Ordering,
     orderings,
@@ -62,6 +62,7 @@
   import { contains } from '$lib/utils/array';
   import { ExperienceLikeData } from './experience/like.json';
   import { DestinationLikeData } from './destination/like.json';
+  import Item from '$lib/components/Item.svelte';
   const Orderings: Nameable[] = [
     ORDER_BY_NAME_ASC,
     ORDER_BY_NAME_DESC,
@@ -236,12 +237,13 @@
     });
   }
 
-  async function likeExperience(experience: Experience) {
+  async function likeExperience(event: CustomEvent) {
     let liked: boolean;
     if (!$authStore.user) {
       window.pushToast('Please login to use this feature');
       return;
     }
+    let experience = event.detail.item;
     let experienceLikedIds: string[] = (
       $authStore.user?.experienceLikes || []
     ).map((item: Experience) => item.id);
@@ -282,12 +284,13 @@
     }
   }
 
-  async function likeDestination(destination: Destination) {
+  async function likeDestination(event: CustomEvent) {
     let liked: boolean;
     if (!$authStore.user) {
       window.pushToast('Please login to use this feature');
       return;
     }
+    let destination = event.detail.item;
     let destinationLikedIds: string[] = (
       $authStore.user?.destinationLikes || []
     ).map((item: Destination) => item.id);
@@ -458,128 +461,20 @@
           <LayoutGrid class="p-0">
             {#each searchResultDestination || [] as item, i}
               <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-                <div class="experience-item">
-                  <div class="thumbnail">
-                    <a href={makeLink('/destination', item)}>
-                      <div
-                        class="image-cover"
-                        style="padding-top: calc(410 / 315 * 100%)"
-                      >
-                        <BlurImage {...item.gallery[0]} />
-                      </div>
-                    </a>
-                    <IconButton
-                      class="btn-favorite {item.liked ? 'liked' : ''}"
-                      on:click={likeDestination(item)}
-                    >
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <a href={makeLink('/destination', item)}>
-                    <LayoutGrid class="p-0 d-block m-none">
-                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                        ><p class="text-eyebrow text-left">
-                          {item.country ? item.country.name : 'Country'}
-                        </p></Cell
-                      >
-                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                        ><p class="text-eyebrow text-right">
-                          {item.type?.name || ''}
-                        </p></Cell
-                      >
-                    </LayoutGrid>
-                    <LayoutGrid class="p-0 d-none m-block">
-                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                        ><p class="text-eyebrow text-left">
-                          {item.type?.name || ''}
-                        </p></Cell
-                      >
-                    </LayoutGrid>
-                    <div class="divider" />
-                    <h4 class="text-h2 title">{item.name}</h4>
-                    <p class="short-text m-none">
-                      {(item.intro || '').substring(0, 80)}
-                    </p>
-                  </a>
-                </div>
+                <Item
+                  pathPrefix="/destination"
+                  bind:item
+                  on:likeItem={likeDestination}
+                />
               </Cell>
             {/each}
             {#each searchResultExperience || [] as item, i}
               <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-                <div class="experience-item">
-                  <div class="thumbnail">
-                    <a href={makeLink('/experience', item)}>
-                      <div
-                        class="image-cover"
-                        style="padding-top: calc(410 / 315 * 100%)"
-                      >
-                        <BlurImage {...item.gallery[0]} />
-                      </div>
-                    </a>
-                    <IconButton
-                      class="btn-favorite {item.liked ? 'liked' : ''}"
-                      on:click={likeExperience(item)}
-                    >
-                      <Icon class="like" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.185,0c-.118,0-.24,0-.357.014A4.714,4.714,0,0,0,7.757,1.685,4.715,4.715,0,0,0,4.615.139H4.472A4.372,4.372,0,0,0,0,4.361C-.084,6.547,1.407,8.4,2.537,9.6A24.976,24.976,0,0,0,7.6,13.558a.773.773,0,0,0,.786-.02,24.965,24.965,0,0,0,4.9-4.161c1.081-1.246,2.5-3.156,2.328-5.334A4.385,4.385,0,0,0,11.185,0m0,1.3a3.093,3.093,0,0,1,3.128,2.843c.132,1.691-1.087,3.309-2.014,4.378a23.965,23.965,0,0,1-4.336,3.738A23.536,23.536,0,0,1,3.485,8.7C2.518,7.674,1.237,6.109,1.3,4.412A3.053,3.053,0,0,1,4.465,1.44h.112A3.425,3.425,0,0,1,6.823,2.591l.972,1,.932-1.041a3.421,3.421,0,0,1,2.208-1.242c.082-.007.166-.009.249-.009"
-                          transform="translate(0.001)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                      <Icon class="liked" component={Svg} viewBox="-4 -4 24 24">
-                        <path
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                          transform="translate(0)"
-                          fill="#fff"
-                          fill-rule="evenodd"
-                        />
-                      </Icon>
-                    </IconButton>
-                  </div>
-                  <a href={makeLink('/experience', item)}>
-                    <LayoutGrid class="p-0 d-block m-none">
-                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                        ><p class="text-eyebrow text-left">
-                          {item.country ? item.country.name : 'Country'}
-                        </p></Cell
-                      >
-                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                        ><p class="text-eyebrow text-right">
-                          {item.type?.name || ''}
-                        </p></Cell
-                      >
-                    </LayoutGrid>
-                    <LayoutGrid class="p-0 d-none m-block">
-                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                        ><p class="text-eyebrow text-left">
-                          {item.type?.name || ''}
-                        </p></Cell
-                      >
-                    </LayoutGrid>
-                    <div class="divider" />
-                    <h4 class="text-h2 title">{item.name}</h4>
-                    <p class="short-text m-none">
-                      {(item.intro || '').substring(0, 80)}
-                    </p>
-                  </a>
-                </div>
+                <Item
+                  pathPrefix="/experience"
+                  bind:item
+                  on:likeItem={likeExperience}
+                />
               </Cell>
             {/each}
           </LayoutGrid>
@@ -602,41 +497,12 @@
 <style lang="scss" global>
   .page-search {
     @import './src/style/partial/thumbnail.scss';
+    @import './src/style/partial/experiences-search-form.scss';
     .header-title {
       background-color: #f0f7f8;
     }
     .header-title:global(.is_sticky) {
       padding-bottom: 55px !important;
-    }
-    .search-form-experiences :global(.mdc-layout-grid) {
-      --mdc-layout-grid-gutter-desktop: 0;
-      --mdc-select-idle-line-color: #000;
-      --mdc-select-hover-line-color: #000;
-    }
-    .search-form-experiences :global(.mdc-text-field),
-    .search-form-experiences :global(.mdc-select) {
-      height: 35px;
-      width: 100%;
-      padding-right: 15px;
-    }
-    .search-form-experiences
-      :global(.mdc-select.mdc-select--outlined .mdc-select__anchor) {
-      height: 35px;
-    }
-    .search-form-experiences
-      :global(.mdc-text-field .mdc-notched-outline__leading),
-    .search-form-experiences
-      :global(.mdc-text-field .mdc-notched-outline__notch),
-    .search-form-experiences
-      :global(.mdc-text-field .mdc-notched-outline__trailing),
-    .search-form-experiences :global(.mdc-select .mdc-notched-outline__leading),
-    .search-form-experiences :global(.mdc-select .mdc-notched-outline__notch),
-    .search-form-experiences
-      :global(.mdc-select .mdc-notched-outline__trailing) {
-      border-color: #000;
-    }
-    .search-form-experiences :global(.mdc-text-field img) {
-      filter: brightness(0.1);
     }
 
     /* Section title */
@@ -653,20 +519,6 @@
       width: 100%;
       margin-right: -100%;
       margin-left: 40px;
-    }
-
-    .experience-item :global(.mdc-layout-grid) {
-      --mdc-layout-grid-gutter-desktop: 0;
-    }
-    .experience-item .divider::after {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-    .experience-item .title {
-      height: 50px;
-      overflow: hidden;
-    }
-    .experience-item .thumbnail {
-      position: relative;
     }
 
     .item-read-more {

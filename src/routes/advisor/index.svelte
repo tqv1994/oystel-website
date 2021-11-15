@@ -37,7 +37,7 @@
     SPECIALITY,
     TYPE,
   } from '$lib/store/search';
-  import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
+  import Dropdown, { DropdownValue } from '$lib/components/dropdown.svelte';
   import { sortByName } from '$lib/utils/sort';
   import { destinationTypeStore } from '$lib/store/destination-type';
   import { experienceTypeStore } from '$lib/store/experience-type';
@@ -603,9 +603,10 @@
       .advisors-list .mdc-layout-grid .mdc-layout-grid__cell .item-advisor {
         border-top: 1px solid rgba(0, 0, 0, 0.2);
       }
-      .advisors-list .mdc-layout-grid
-          .mdc-layout-grid__cell:last-child
-          .item-advisor {
+      .advisors-list
+        .mdc-layout-grid
+        .mdc-layout-grid__cell:last-child
+        .item-advisor {
         border-bottom: 1px solid rgba(0, 0, 0, 0.2);
       }
     }
