@@ -34,9 +34,9 @@ export type Advisor = AdvisorBase & {
   experienceType1?: Category;
   experienceType2?: Category;
   experienceType3?: Category;
-  destinationType1?: Category;
-  destinationType2?: Category;
-  destinationType3?: Category;
+  destinationTypes1?: Category;
+  destinationTypes2?: Category;
+  destinationTypes3?: Category;
   speciality1?: Speciality;
   speciality2?: Speciality;
   speciality3?: Speciality;

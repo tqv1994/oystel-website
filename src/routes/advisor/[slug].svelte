@@ -23,16 +23,27 @@
 
   export const load: Load = async ({ fetch, page }) => {
     const id = parseId(page.params.slug);
-    if (get(advisorStore).items[id]) {
-      return {
-        props: { id },
-      };
-    }
     const res = await fetch(`/advisor/${id}.json`);
     if (res.ok) {
       const data: Advisor = await res.json();
+      let destinationOfType1: Destination[] = [];
+      const destinationOfType2: Destination[] = [];
+      const destinationOfType3: Destination[] = [];
+      for(let destination of (data.destinations || [])){
+        switch(destination.type?.id){
+          case data.destinationTypes1?.id:
+            destinationOfType1.push(destination);
+            break;
+          case data.destinationTypes2?.id:
+            destinationOfType2.push(destination);
+            break;
+          case data.destinationTypes3?.id:
+            destinationOfType3.push(destination);
+            break;
+        }
+      }
       insertToStore(advisorStore, [data]);
-      return { props: { id } };
+      return { props: { id, destinationOfType1, destinationOfType2, destinationOfType3 } };
     } else {
       const error = await res.json();
       console.log(error);
@@ -50,6 +61,9 @@
     },
   };
   export let id: string;
+  export let destinationOfType1: Destination[];
+  export let destinationOfType2: Destination[];
+  export let destinationOfType3: Destination[];
   let advisor: Advisor | undefined;
   advisorStore.subscribe((store) => {
     advisor = store.items[id];
@@ -329,62 +343,62 @@
       </section>
       <section class="d-pt-80 d-pb-100 m-pt-55 m-pb-80">
         <div class="container">
-          <LayoutGrid class="p-0 d-pl-115 d-pr-115 t-pl-0 t-pr-0">
+          <LayoutGrid class="p-0 d-pl-105 d-pr-105 t-pl-0 t-pr-0">
             <Cell spanDevices={{ desktop: 6 }} class="m-none t-block" />
             <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
               <div class="destinations-wrap">
                 <h1 class="mt-0">Destinations</h1>
                 <LayoutGrid class="p-0">
-                  {#if advisor.destinationType1 || advisor.destinationType2}
+                  {#if advisor.destinationTypes1 || advisor.destinationTypes2}
                     <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
-                      {#if advisor.destinationType1}
+                      {#if advisor.destinationTypes1}
                         <div class="mb-30">
                           <h5 class="mb-10 mt-0">
-                            {advisor.destinationType1.name}
+                            {advisor.destinationTypes1.name}
                           </h5>
-                          <!-- {#each advisor.destinationType1.destinations as destination, indexChild}
+                          {#each (destinationOfType1 || []) as destination, indexChild}
                                 <p
-                                  class={indexChild + 1 < advisor.destinationType1.destinations.length
+                                  class={indexChild + 1 < destinationOfType1.length
                                     ? 'mb-10 mt-0'
                                     : 'm-0'}
                                 >
                                   {destination.name}
                                 </p>
-                              {/each} -->
+                              {/each}
                         </div>
                       {/if}
-                      {#if advisor.destinationType2}
+                      {#if advisor.destinationTypes2}
                         <div class="mb-0">
                           <h5 class="mb-10 mt-0">
-                            {advisor.destinationType2.name}
+                            {advisor.destinationTypes2.name}
                           </h5>
-                          <!-- {#each advisor.destinationType2.destinations as destination, indexChild}
+                          {#each destinationOfType2 || [] as destination, indexChild}
                                 <p
-                                  class={indexChild + 1 < advisor.destinationType2.destinations.length
+                                  class={indexChild + 1 < destinationOfType2.length
                                     ? 'mb-10 mt-0'
                                     : 'm-0'}
                                 >
                                   {destination.name}
                                 </p>
-                              {/each} -->
+                              {/each}
                         </div>
                       {/if}
                     </Cell>
-                    {#if advisor.destinationType3}
+                    {#if advisor.destinationTypes3}
                       <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
                         <div class="mb-0">
                           <h5 class="mb-15 mt-0">
-                            {advisor.destinationType3.name}
+                            {advisor.destinationTypes3.name}
                           </h5>
-                          <!-- {#each advisor.destinationType3.destinations as destination, indexChild}
+                          {#each destinationOfType3 || [] as destination, indexChild}
                                     <p
-                                    class={indexChild + 1 < advisor.destinationType3.destinations.length
+                                    class={indexChild + 1 < destinationOfType2.length
                                         ? 'mb-10 mt-0'
                                         : 'm-0'}
                                     >
                                     {destination.name}
                                     </p>
-                                {/each} -->
+                                {/each}
                         </div>
                       </Cell>
                     {/if}
@@ -488,7 +502,7 @@
   .page-advisor-detail {
     @import './src/style/partial/thumbnail.scss';
     .header-title {
-      height: 810px;
+      height: 100vh;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -511,17 +525,8 @@
       top: 50% !important;
       transform: translateY(-50%);
     }
-    @media screen and (min-width: 1441px) {
-      .contact-info.fixed {
-        margin-left: calc(
-          calc(100vw / 2 - 1336px / 2) + var(--mdc-layout-grid-margin-desktop)
-        );
-      }
-    }
-    @media screen and (max-width: 1440px) and (min-width: 950px) {
-      .contact-info.fixed {
-        margin-left: 0;
-      }
+    .contact-info.fixed {
+      margin-left: 0;
     }
     .contact-info .thumbnail {
       width: 100px;
@@ -532,21 +537,6 @@
     .contact-info :global(.btn-share) {
       top: 50%;
       transform: translateY(-50%);
-    }
-    .contact-info .description {
-      max-height: 110px;
-      overflow-y: scroll;
-      width: 85%;
-      &::-webkit-scrollbar-track {
-        background-color: #d3d3d3;
-      }
-      &::-webkit-scrollbar {
-        width: 5px;
-        background-color: #d3d3d3;
-      }
-      &::-webkit-scrollbar-thumb {
-        background-color: #5078bc;
-      }
     }
 
     .trip-item .mdc-layout-grid {
@@ -652,11 +642,6 @@
       font-size: 16px;
       line-height: 34px;
       letter-spacing: 0.2px;
-    }
-    @media (min-width: 1441px) {
-      .contact-info:not(.fixed) {
-        left: 45px;
-      }
     }
     @media (max-width: 949px) {
       .destinations-wrap h5 {

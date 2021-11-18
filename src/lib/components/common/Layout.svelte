@@ -27,6 +27,7 @@
   import '/src/style/partial/footer.scss';
   import '/src/style/partial/form.scss';
   import OysteoLogo from '$lib/components/OysteoLogo.svelte';
+  import { hoverOutside } from '$lib/components/events/hoverOutside';
 
   let miniWindow = false;
   let searchResult = '';
@@ -110,13 +111,28 @@
 
   function handleOpenSubMenu(menuItem: Menu) {
     if (menuItem.submenu.length > 0) {
-      if (!openSubMenu) {
+      if(!openSubMenu){
         documentHelper.changeBackgroundHeader('#000');
+      }
+      if (!openSubMenu || menuItem.link != urlViewAllSubmenu) {
         openSubMenu = true;
         menuItemActive = 'menu-item-' + menuItem.slug;
         tabsSubMenu = menuItem.submenu;
         urlViewAllSubmenu = menuItem.link;
       }
+    }
+  }
+
+  function handleCloseSubMenu() {
+    const elHeader = document.getElementById('header');
+    if(openSubMenu){
+      if(!elHeader?.classList.contains('scrolling')){
+        documentHelper.changeBackgroundHeader();
+      }
+      openSubMenu = false;
+      menuItemActive = '';
+      tabsSubMenu = [];
+      urlViewAllSubmenu = '';
     }
   }
 
@@ -156,12 +172,16 @@
               </Title>
             </Section>
             <Section
-              class="m-none pt-0 pb-0"
+              class="m-none pt-0 pb-0 menu-wrap"
               toolbar
               align="center"
               style="z-index: 2"
             >
-              <ul id="main-menu" class="m-0">
+            <div use:hoverOutside
+            on:hover_outside={()=>{
+              handleCloseSubMenu();
+            }}>
+              <ul id="main-menu" class="m-0" >
                 {#if typeof menus != 'undefined' && menus.length > 0}
                   {#each menus as item, i}
                     <li
@@ -171,7 +191,8 @@
                         ' ' +
                         (item.submenu.length > 0 ? 'has-submenu' : '')}
                       id="menu-item-{item.slug}"
-                      on:click={() => {
+                      
+                      on:mouseenter={() => {
                         handleOpenSubMenu(item);
                       }}
                     >
@@ -184,7 +205,7 @@
                   {/each}
                 {/if}
               </ul>
-              {#if tabsSubMenu}
+              {#if tabsSubMenu && tabsSubMenu.length > 0}
                 <OySubMenu
                   bind:open={openSubMenu}
                   bind:menuId={menuItemActive}
@@ -193,6 +214,7 @@
                   urlViewAll={urlViewAllSubmenu}
                 />
               {/if}
+              </div>
             </Section>
             <Section class="d-none m-block pr-0" align="end" toolbar>
               <Wrapper>
@@ -450,6 +472,13 @@
     }
     .mdc-icon-buttob {
       min-width: auto;
+    }
+    .menu-wrap{
+      justify-content: center;
+      > div{
+        height: 100%;
+        overflow: hidden;
+      }
     }
   }
   #logo {

@@ -18,7 +18,7 @@ footer {
             padding-bottom: 90px;
         }
         @include desktop {
-            padding: 100px 160px 90px 160px;
+            padding: 95px 126px 50px calc(100px + var(--mdc-layout-grid-margin-desktop));
         }
         .mdc-layout-grid {
             --mdc-layout-grid-margin-desktop: 0;
@@ -42,6 +42,18 @@ footer {
             text-transform: uppercase;
         }
         margin-bottom: 40px;
+    }
+
+    form {
+        .mdc-button {
+            &:hover {
+                border-color: v.$blackColor;
+                background-color: v.$whiteColor;
+                .mdc-button__label {
+                    color: v.$blackColor !important;
+                }
+            }
+        }
     }
 }
 

@@ -16,8 +16,8 @@
   if (open == false) {
     reset();
   } else {
+    active = null;
     if (tabs) {
-      active = tabs[0];
       const indexTabLast = tabs.findIndex(
         (item) => typeof item.is_last == 'boolean',
       );
@@ -35,6 +35,14 @@
       }
     }
     if (open == true) {
+      if (tabs) {
+        const indexTabLast = tabs.findIndex(
+          (item) => typeof item.is_last == 'boolean',
+        );
+        if (indexTabLast < 0) {
+          tabs.push({ title: 'View All', is_last: true });
+        }
+      }
       document.documentElement.style.overflow = 'hidden';
       if (menuId) {
         let menuActive = document.querySelector(
@@ -50,6 +58,7 @@
   });
 
   onDestroy(() => {
+    active = null;
     document.documentElement.style.overflow = 'auto';
   });
 
@@ -74,7 +83,7 @@
 <div class="light sub-menu {open == true ? 'open' : ''}">
   {#if tabs && tabs.length > 0}
     <LayoutGrid class="p-0">
-      <Cell spanDevices={{ desktop: 3, mobile: 12 }} class="p-40 pt-50">
+      <Cell spanDevices={{ desktop: 3, phone: 12 }} class="p-40 pt-50">
         <TabBar {tabs} let:tab bind:active>
           <!-- Note: the `tab` property is required! -->
           {#if tab.is_last == true}
@@ -86,6 +95,9 @@
               role="tab"
               aria-selected="true"
               tabindex="0"
+              on:mouseenter={() => {
+                active = null;
+              }}
             >
               <span class="mdc-tab__content">
                 <span class="mdc-tab__text-label">View All</span>
@@ -93,7 +105,13 @@
             </button>
           {/if}
           {#if typeof tab.is_last == 'undefined'}
-            <Tab {tab} class="mb-10">
+            <Tab
+              on:mouseenter={() => {
+                active = tab;
+              }}
+              {tab}
+              class="mb-10"
+            >
               <Label>{tab.name}</Label>
             </Tab>
           {/if}
@@ -101,15 +119,16 @@
       </Cell>
       <Cell
         spanDevices={{ desktop: 4, mobile: 12 }}
-        class="p-50 pt-120 tab-content light"
+        class="tab-content light pl-50 pr-50"
       >
         {#if active && active.name}
-          <div>
+          <div class="">
             <div class="post-type mb-15 text-eyebrow">Most Popular</div>
             <h3 class="mb-40">{active.catalog}</h3>
             <Button
               type="button"
               variant="outlined"
+              class="hover-affect"
               on:click={routerHelper.redirect(active.link)}
             >
               <Label class="text-button2">Explore Now</Label>
@@ -125,7 +144,7 @@
     </LayoutGrid>
   {/if}
 </div>
-<div class="backdrop" on:click={handleCloseSubMenu} />
+<div class="backdrop" on:mouseenter={handleCloseSubMenu} />
 
 <style lang="scss">
   .sub-menu,
@@ -142,7 +161,7 @@
   .sub-menu {
     --mdc-layout-grid-gutter-desktop: 0;
     &.open {
-      top: 117px;
+      top: 115px;
       opacity: 1;
       animation: fadeIn 1s ease;
       & ~ .backdrop {
@@ -159,9 +178,21 @@
         display: block;
       }
     }
+    :global(.mdc-button) {
+      height: 40px;
+    }
+    :global(.hover-affect:hover) {
+      background: #000;
+    }
   }
   .sub-menu :global(.tab-content) {
     background-color: #f0f7f8;
+    position: relative;
+    > :global(div) {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
   }
   .mdc-tab {
     padding-left: 0;

@@ -76,17 +76,21 @@
       <LayoutGrid class="pt-0">
         <Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }} class="m-mb-45">
           <div class="item-featured-drop new">
-            <div class="thumbnail dark d-mb-70 m-mb-40">
+            <div class="thumbnail dark d-mb-45 m-mb-40">
+              <div
+                  class="image-cover"
+                  style="padding-top: calc(474/420 * 100%)"
+                >
               <img class="" src="/img/feature-drops/item-1.jpg" alt="" />
+            </div>
               <div class="caption"><span>6 Packages left</span></div>
             </div>
-            <div class="m-pr-45 m-pl-45">
-              <p class="mt-0 m-mb-15 text-eyebrow">Fashion Drop</p>
-              <div class="divider d-pb-30 m-pb-20" />
-              <h4 class="text-h2 mt-0 mb-30 ">
+            <div class="">
+              <p class="mt-0 mb-25 m-mb-15 text-eyebrow">Fashion Drop</p>
+              <h4 class="text-h3 mt-0 mb-20 title">
                 Louis Vuitton - Photographed by Inez & Vinoodh in Monaco
               </h4>
-              <Button class="hover-affect" variant="outlined"
+              <Button class="hover-affect-drop" variant="outlined"
                 ><Label>Plan Your Trip</Label></Button
               >
             </div>
@@ -97,10 +101,18 @@
           class="d-mr--30 m-mr-0"
         >
           <div class="list-featured-drop">
-            <LayoutGrid class="p-0">
-              <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
-                <div class="item-featured-drop">
-                  <div class="thumbnail dark d-mb-60 m-mb-40">
+            <OyCarousel
+                perPage={3}
+                draggable={false}
+                isFadeIn={false}
+                rtl={true}
+                dots={true}
+              >
+                <span class="control m-none" slot="left-control">
+                  <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon>
+                </span>
+                <div class="item-featured-drop slide-content slide-item text-left">
+                  <div class="thumbnail dark d-mb-40 m-mb-40">
                     <img class="" src="/img/feature-drops/item-2.jpg" alt="" />
                     <div class="caption text-h5">
                       <span>11 Packages left</span>
@@ -109,8 +121,7 @@
                   <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">
                     Experience Drop
                   </p>
-                  <div class="divider d-pb-30 m-pb-20 " />
-                  <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
+                  <h4 class="text-h3 mt-0 d-mb-25 m-mb-15 title">
                     Exfoliating and polishing your skin with a finely ground
                     herbs.
                   </h4>
@@ -118,18 +129,15 @@
                     ><Label>Plan Your Trip</Label></Button
                   >
                 </div>
-              </Cell>
-              <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
-                <div class="item-featured-drop coming">
-                  <div class="thumbnail dark d-mb-60 m-mb-40">
+                <div class="item-featured-drop slide-content slide-item text-left coming">
+                  <div class="thumbnail dark d-mb-40 m-mb-40">
                     <img class="" src="/img/feature-drops/item-3.jpg" alt="" />
                     <div class="caption"><span>Coming 07.02.21</span></div>
                   </div>
                   <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">
                     Fashion Drop
                   </p>
-                  <div class="divider d-pb-30 m-pb-20" />
-                  <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
+                  <h4 class="text-h3 mt-0 d-mb-25 m-mb-15 title">
                     Exfoliating and polishing your skin with a finely ground
                     herbs.
                   </h4>
@@ -137,18 +145,15 @@
                     ><Label>Set Reminder</Label></Button
                   >
                 </div>
-              </Cell>
-              <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
-                <div class="item-featured-drop">
-                  <div class="thumbnail dark d-mb-60 m-mb-40">
+                <div class="item-featured-drop slide-content slide-item text-left">
+                  <div class="thumbnail dark d-mb-40 m-mb-40">
                     <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
                     <div class="caption"><span>3 Packages left</span></div>
                   </div>
                   <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">
                     Experience Drop
                   </p>
-                  <div class="divider d-pb-30 m-pb-20" />
-                  <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
+                  <h4 class="text-h3 mt-0 d-mb-25 m-mb-15 title">
                     Exfoliating and polishing your skin with a finely ground
                     herbs.
                   </h4>
@@ -156,18 +161,15 @@
                     ><Label>Plan Your Trip</Label></Button
                   >
                 </div>
-              </Cell>
-              <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
-                <div class="item-featured-drop">
-                  <div class="thumbnail dark d-mb-60 m-mb-40">
+                <div class="item-featured-drop slide-content slide-item text-left">
+                  <div class="thumbnail dark d-mb-40 m-mb-40">
                     <img class="" src="/img/feature-drops/item-4.jpg" alt="" />
                     <div class="caption"><span>3 Packages left</span></div>
                   </div>
                   <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">
                     Experience Drop
                   </p>
-                  <div class="divider d-pb-30 m-pb-20" />
-                  <h4 class="text-h2 mt-0 d-mb-25 m-mb-15 title">
+                  <h4 class="text-h3 mt-0 d-mb-25 m-mb-15 title">
                     Exfoliating and polishing your skin with a finely ground
                     herbs.
                   </h4>
@@ -175,8 +177,10 @@
                     ><Label>Plan Your Trip</Label></Button
                   >
                 </div>
-              </Cell>
-            </LayoutGrid>
+                <span class="control m-none" slot="right-control">
+                  <Icon><img src="/img/icons/icon-right-arrow.svg" /></Icon>
+                </span>
+              </OyCarousel>
           </div>
         </Cell>
       </LayoutGrid>
@@ -188,7 +192,10 @@
     >
       <div class="content-wrap">
         <LayoutGrid>
-          <Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }}>
+          <Cell
+            spanDevices={{ desktop: 5, tablet: 8, phone: 4 }}
+            class="content-left"
+          >
             <div class="thumbnail dark multi-images-affect">
               <img src="/img/signup-img.jpg" alt="" />
               <img src="/img/signup-img-2.jpg" alt="" />
@@ -199,9 +206,9 @@
           </Cell>
           <Cell
             spanDevices={{ desktop: 7, tablet: 8, phone: 4 }}
-            class="light d-pl-100 d-pr-70"
+            class="light d-pl-100 d-pr-70 content-right"
           >
-            <p class="text-body2 d-mb-100 d-mt-145 m-mt-40 m-mb-40">
+            <p class="text-body2 d-mb-100 m-mt-40 m-mb-40">
               Join now for exclusive biweekly travel promotional drops, special
               content, and bespoke travel itineraries.
             </p>
@@ -211,9 +218,8 @@
             <Button
               variant="outlined"
               class="hover-affect"
-              on:click={() => {
-                openSignupModal = true;
-              }}><Label class="text-button2">Sign Up Now</Label></Button
+              on:click={()=>{openSignupModal = true}}
+              ><Label class="text-button2">Sign Up Now</Label></Button
             >
           </Cell>
         </LayoutGrid>
@@ -437,9 +443,9 @@
     .shop-slides .carousel,
     .shop-slides .slides,
     .shop-slides .slides div {
-      height: 100%;
+      height: 90vh;
     }
-    .shop-slides :global(.slide-item) {
+    .shop-slides .slide-item {
       width: 100%;
       height: 100%;
       background-repeat: no-repeat;
@@ -447,8 +453,7 @@
       background-position: center;
     }
     .header-title .content-left {
-      padding-top: 245px;
-      padding-bottom: 70px;
+      padding-top: 40vh;
     }
     .header-title .short-description {
       @include desktop {

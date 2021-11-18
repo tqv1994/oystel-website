@@ -91,14 +91,14 @@
 
   let advisorDestinations: Destination[] = [];
   destinationStore.subscribe(
-    (store) => (advisorDestinations = getItems(store).splice(-5, 4)),
+    (store) => (advisorDestinations = getItems(store, 4)),
   );
 
   let curatedExperiences: Experience[] = [];
-  experienceStore.subscribe((store) => (curatedExperiences = getItems(store)));
+  experienceStore.subscribe((store) => (curatedExperiences = getItems(store, 7)));
 
   let featureDrops: Drop[] = [];
-  dropStore.subscribe((store) => (featureDrops = getItems(store)));
+  dropStore.subscribe((store) => (featureDrops = getItems(store, 7)));
 
   function callOpenSignupModal() {
     openSignupModal = true;
@@ -199,28 +199,28 @@
   }
 
   function onScrollFixedHeader() {
-    // if (document.documentElement.clientWidth > 949) {
-    //   if (
-    //     document.body.scrollTop > 200 ||
-    //     document.documentElement.scrollTop > 200
-    //   ) {
-    //     document.getElementById('header').classList.add('fixed');
-    //     document.getElementById('header').classList.add('scrolling');
-    //     document.querySelector('header').style.zIndex = 100;
-    //     documentHelper.changeBackgroundHeader('#000');
-    //   } else {
-    //     document.getElementById('header').classList.remove('fixed');
-    //     document.getElementById('header').classList.remove('scrolling');
-    //     document.querySelector('header').style.zIndex = 'auto';
-    //     documentHelper.changeBackgroundHeader('transparent');
-    //   }
-    // } else {
-    //   document.getElementById('header').classList.remove('fixed');
-    //   document.getElementById('header').classList.remove('scrolling');
-    //   document.querySelector('header').style.zIndex = 'auto';
-    //   document.querySelector('header').style.position = 'static';
-    //   documentHelper.changeBackgroundHeader('transparent');
-    // }
+    if (document.documentElement.clientWidth > 949) {
+      if (
+        document.body.scrollTop > 200 ||
+        document.documentElement.scrollTop > 200
+      ) {
+        document.getElementById('header').classList.add('fixed');
+        document.getElementById('header').classList.add('scrolling');
+        document.querySelector('header').style.zIndex = 100;
+        documentHelper.changeBackgroundHeader('#000');
+      } else {
+        document.getElementById('header').classList.remove('fixed');
+        document.getElementById('header').classList.remove('scrolling');
+        document.querySelector('header').style.zIndex = 'auto';
+        documentHelper.changeBackgroundHeader('transparent');
+      }
+    } else {
+      document.getElementById('header').classList.remove('fixed');
+      document.getElementById('header').classList.remove('scrolling');
+      document.querySelector('header').style.zIndex = 'auto';
+      document.querySelector('header').style.position = 'static';
+      documentHelper.changeBackgroundHeader('transparent');
+    }
   }
 
   onMount(() => {});
@@ -342,8 +342,9 @@
                 perPage={3}
                 draggable={false}
                 isFadeIn={false}
-                rtl={true}
-                dots={false}
+                rtl={false}
+                dots={true}
+                loop={false}
               >
                 <span class="control m-none" slot="left-control">
                   <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon>
@@ -538,8 +539,8 @@
                       )}
                     >
                     <LayoutGrid class="p-0">
-                      <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                        ><p class="text-eyebrow text-left m-0 d-mt-25 d-mb-25">
+                      <Cell spanDevices={{ desktop: 6, phone: 2 }} class="mt-25 mb-25"
+                        ><p class="text-eyebrow text-left m-0">
                           {experience.country?.name || ''}
                         </p></Cell
                       >
@@ -555,7 +556,7 @@
         </Cell>
       </LayoutGrid>
     </section>
-    <section id="from-advisors" class="pb-60">
+    <section id="from-advisors" class="pb-60 ">
       <LayoutGrid class="pt-0 pb-0">
         <Cell span="12">
           <h2 class="text-h1 mt-0">From our Advisors</h2>
@@ -602,8 +603,8 @@
                 </div>
                 <a href={makeLink('/destination', item)}>
                   <LayoutGrid class="p-0">
-                    <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                      ><p class="text-eyebrow text-left m-0 d-mt-25 d-mb-25">
+                    <Cell spanDevices={{ desktop: 6, phone: 2 }} class="mt-25 mb-25"
+                      ><p class="text-eyebrow text-left m-0">
                         {item.country?.name || ''}
                       </p></Cell
                     >
@@ -660,6 +661,9 @@
     @import '../style/partial/from-our-advisor-section.scss';
     @import '../style/partial/slides-homepage.scss';
     @import '../style/partial/thumbnail.scss';
+    #header{
+      transition: background-color 0.4s;
+    }
     #slider {
       h1 {
         @include mobile {

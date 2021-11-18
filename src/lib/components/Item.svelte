@@ -59,7 +59,7 @@ import { Searchable } from '$lib/store/types';
   <a href={makeLink(pathPrefix, item)}>
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, phone: 2 }}
-        ><p class="text-eyebrow text-left m-0 d-mt-25 d-mb-25">
+        ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
           {item.country?.name || ''}
         </p></Cell
       >

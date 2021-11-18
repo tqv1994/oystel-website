@@ -6,6 +6,16 @@ form {
     .mdc-button {
         border-radius: 0 !important;
     }
+    .mdc-text-field{
+        &.smui-text-field--standard{
+            .mdc-text-field__input,.mdc-floating-label{
+                padding-left: max(16px, calc(var(--mdc-shape-small, 4px) + 4px));
+            }
+            .mdc-floating-label{
+                left: 4px;
+            }
+        }
+    }
     .mdc-select {
         .mdc-select__menu {
             max-height: 300px;

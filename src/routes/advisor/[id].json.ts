@@ -9,6 +9,7 @@ import { languageFieldsFragment } from '$lib/store/language';
 import { Advisor, advisorFieldsFragment } from '$lib/store/advisor';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
 import { experienceFieldsFragment } from '$lib/store/experience';
+import { destinationFieldsFragment } from '$lib/store/destination';
 
 const query = `
 query($id: ID!) {
@@ -16,6 +17,12 @@ query($id: ID!) {
     ...advisorFields
     experiences {
       ...experienceFields
+    }
+    destinations {
+      ...destinationFields
+      type{
+        ...destinationTypeFields
+      }
     }
   }
 }
@@ -27,6 +34,7 @@ ${countryFieldsFragment}
 ${specialityFieldsFragment}
 ${uploadFileFieldsFragment}
 ${experienceFieldsFragment}
+${destinationFieldsFragment}
 `;
 /**
  * @type {import('@sveltejs/kit').Get}

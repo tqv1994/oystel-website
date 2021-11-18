@@ -23,7 +23,7 @@ $blueColor: v.$blueColor;
         .mdc-layout-grid,
         .mdc-layout-grid .mdc-layout-grid__inner {
             height: 100%;
-            margin-right: -5px;
+            margin-right: -15px;
         }
     }
     .list-featured-drop .mdc-layout-grid__inner {
@@ -177,6 +177,18 @@ $blueColor: v.$blueColor;
                     auto-fill,
                     minmax(calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)* 2), 1fr)
                 );
+            }
+        }
+    }
+    .dots{
+        @include desktop{
+            display: none;
+        }
+        margin-top: 30px;
+        li{
+            background-color: rgba(0,0,0,0.3);
+            &.active{
+                background-color: #000;
             }
         }
     }

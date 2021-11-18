@@ -206,46 +206,41 @@
   }
 
   function onScrollFixedHeader() {
-    // if (document.documentElement.clientWidth < 950) {
-    //   if (
-    //     document.body.scrollTop > 450 ||
-    //     document.documentElement.scrollTop > 450
-    //   ) {
-    //     document.getElementById('header').classList.add('fixed');
-    //     document.querySelector('header').style.zIndex = 7;
-    //     document.querySelector('header').style.position = 'relative';
-    //     document
-    //       .querySelector('.header-title')
-    //       .classList.add('fixed', 'is_sticky');
-    //   } else {
-    //     document.getElementById('header').classList.remove('fixed');
-    //     document.querySelector('header').style.zIndex = 'auto';
-    //     document.querySelector('header').style.position = 'static';
-    //     document
-    //       .querySelector('.header-title')
-    //       .classList.remove('fixed', 'is_sticky');
-    //   }
-    // } else {
-    //   document.getElementById('header').classList.remove('fixed');
-    //   document.querySelector('header').style.zIndex = 'auto';
-    //   document.querySelector('header').style.position = 'static';
-    //   document
-    //     .querySelector('.header-title')
-    //     .classList.remove('fixed', 'is_sticky');
-    // }
+    let eleHeader = document.getElementById('header');
+    let eleHeaderTitle = document.querySelector('.header-title.is_sticky');
+    if (eleHeader && eleHeaderTitle) {
+      if (document.documentElement.clientWidth < 950) {
+        if (
+          document.body.scrollTop > 250 ||
+          document.documentElement.scrollTop > 250
+        ) {
+          eleHeader.classList.add('fixed');
+          eleHeader.style.setProperty('z-index','100','important');
+          eleHeaderTitle.classList.add('show');
+        } else {
+          eleHeader.classList.remove('fixed');
+          eleHeader.style.setProperty('z-index','auto');
+          eleHeaderTitle.classList.remove('show');
+        }
+      } else {
+        eleHeader.classList.remove('fixed');
+        eleHeader.style.setProperty('z-index','auto');
+        eleHeaderTitle.classList.remove('show');
+      }
+    }
   }
 
   // onMount(async () => {});
 </script>
 
-<!-- <svelte:window
+<svelte:window
   on:load={() => {
     onScrollFixedHeader();
   }}
   on:scroll={() => {
     onScrollFixedHeader();
   }}
-/> -->
+/>
 <Layout config={configPage}>
   <div class="content">
     <section class="header-title d-pt-120 d-pb-95 m-pt-100 m-pb-25 full-width">
@@ -259,6 +254,24 @@
           >
             First hand experience, ready to craft your perfect vacation.
           </p>
+          <div class="d-none m-block">
+            <Button
+              on:click={() => {
+                contentHeaderActionMobile = 'advisor-search';
+              }}
+              type="button"
+              style="width: 100%"
+              variant="outlined"><Label>Filter Your Results</Label></Button
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      class="header-title d-pt-120 d-pb-95 m-pt-100 m-pb-25 full-width is_sticky fixed"
+    >
+      <div class="content-wrap">
+        <div class="container">
           <div class="d-none m-block">
             <Button
               on:click={() => {
@@ -302,8 +315,9 @@
             >
               <div>
                 <div class="form-control text-left">
+                  <label class="text-h3">Filter by Speciality</label>
                   <Dropdown
-                    label="Filter by Speciality"
+                    label=""
                     blankItem="All"
                     items={specialities}
                     value={speciality}
@@ -311,8 +325,9 @@
                   />
                 </div>
                 <div class="form-control text-left">
+                  <label class="text-h3">By Country</label>
                   <Dropdown
-                    label="By Country"
+                    label=""
                     blankItem="All"
                     items={countries}
                     value={country}
@@ -326,7 +341,7 @@
               class="form-inline d-tablet text-right"
             >
               <div>
-                <div class="form-control">
+                <div class="form-control text-left">
                   <Dropdown
                     label="Filter by Speciality"
                     blankItem="All"
@@ -342,7 +357,7 @@
               class="form-inline d-tablet text-right"
             >
               <div>
-                <div class="form-control">
+                <div class="form-control text-left">
                   <Dropdown
                     label="By Country"
                     blankItem="All"
@@ -373,7 +388,7 @@
                       ><a href={makeLink('/advisor', item)}
                         ><div
                           class="image-cover"
-                          style="width: 100px;padding-top: 100%"
+                          style="width: 100px;padding-top: 0; height: 100px"
                         >
                           <BlurImage {...item.avatar} />
                         </div></a
@@ -475,6 +490,7 @@
 <style lang="scss" global>
   .page-advisors {
     @import './src/style/partial/thumbnail.scss';
+    @import './src/style/partial/sticky.scss';
     .header-title {
       background-color: #f0f7f8;
     }
@@ -514,6 +530,19 @@
           border-color: #000;
         }
       }
+      .mdc-select {
+        .mdc-notched-outline__notch {
+          border-top: 0;
+        }
+        .mdc-notched-outline__leading {
+          border-top: 0;
+          border-left: 0;
+        }
+        .mdc-notched-outline__trailing {
+          border-top: 0;
+          border-right: 0;
+        }
+      }
       .mdc-text-field img {
         filter: brightness(0.1);
       }
@@ -550,6 +579,9 @@
     }
     .mdc-data-table {
       border: 0;
+      thead {
+        text-transform: uppercase;
+      }
       tr td {
         padding-top: 50px;
         padding-bottom: 30px;
@@ -566,7 +598,7 @@
     // #header.fixed {
     //   animation: fadeIn 2s ease;
     // }
-    @media screen and (min-width: 1223px) {
+    @media screen and (min-width: 1259px) {
       :global(.d-tablet) {
         display: none;
       }
@@ -574,7 +606,7 @@
         display: block;
       }
     }
-    @media screen and (max-width: 1222px) {
+    @media screen and (max-width: 1258px) {
       .d-desktop {
         display: none;
       }

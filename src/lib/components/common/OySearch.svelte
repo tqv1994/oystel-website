@@ -89,7 +89,7 @@
     >
       <Icon slot="trailingIcon"><img src="/img/icons/icon-search.svg" /></Icon>
     </Textfield>
-    <div class="tags light mr--35 ml--35">
+    <div class="tags light mr--35 ml--35 text-left">
       {#if searchResult == ''}
         <p class="m-0 mt-25">Trending Searches</p>
       {/if}
@@ -148,6 +148,11 @@
       }
       :global(.mdc-text-field.mdc-text-field *) {
         border-color: transparent;
+      }
+      :global(.mdc-text-field.mdc-text-field--focused){
+        :global(.mdc-floating-label){
+          display: none;
+        }
       }
       .tags {
         display: block;
