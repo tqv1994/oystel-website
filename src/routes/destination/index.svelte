@@ -20,7 +20,7 @@
   import SearchResult from '$lib/components/search-result.svelte';
   import { get } from 'svelte/store';
   import { Category } from '$lib/store/category';
-  import Dropdown, { DropdownValue } from '$lib/components/dropdown.svelte';
+  import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
   import _ from 'lodash';
   import {
     COUNTRY,
