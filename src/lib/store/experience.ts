@@ -16,6 +16,8 @@ import {
   ORDER_BY_PUBLISH_DATE_ASC,
   ORDER_BY_PUBLISH_DATE_DESC,
 } from './order';
+import { SearchResultItemWithCountryId, SearchResultItemWithTypeIDs } from './search';
+import { GalleryComponentBase } from './component';
 
 export type ExperienceBase = Exhibitable & {
   intro: string;
@@ -28,9 +30,11 @@ export type ExperienceBase = Exhibitable & {
 export type Experience = ExperienceBase & Nationalizable & Categorizable &{
   liked: boolean;
 };
-export type ExperienceSearchResultItem = ExperienceBase & {
-  country: string;
-  type: string;
+
+export type ExperienceSearchResultItem = ExperienceBase & SearchResultItemWithTypeIDs & SearchResultItemWithCountryId;
+
+export type ExperienceGallery = GalleryComponentBase & {
+  experiences: Experience[];
 };
 
 export const experienceStore = writable<CollectionStore<Experience>>({
@@ -55,6 +59,28 @@ fragment experienceFields on Experience {
   }
   country {
     ...countryFields
+  }
+  type1 {
+    ...experienceTypeFields
+  }
+  type2 {
+    ...experienceTypeFields
+  }
+  type3 {
+    ...experienceTypeFields
+  }
+}
+`;
+
+export const experienceGalleryFieldsFragment = `
+fragment experienceGalleryFields on ComponentGalleriesExperienceGallery {
+  id
+  name
+  headline
+  prominent
+  vertical
+  experiences {
+    ...experienceFields
   }
 }
 `;

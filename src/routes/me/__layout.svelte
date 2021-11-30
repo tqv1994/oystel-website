@@ -2,14 +2,53 @@
   import type { Load } from '@sveltejs/kit';
   export const load: Load = async ({ fetch, session, page }) => {
     let me: User | undefined;
-    authStore.subscribe(({ user }) => {
+    authStore.subscribe(async ({ user }) => {
       me = user;
+      if (me && me?.travellerMe == null) {
+        const res = await fetch(`/traveller/create.json`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: me?.email,
+            forename: me?.name || '-',
+            surname: me?.name || '-',
+          }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+
+          const resUpdateMe = await fetch(`/auth/update.json`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              travellerMe: data.createTraveller.traveller.id,
+            }),
+          });
+          if (resUpdateMe.ok) {
+            const dataUpdateMe = await resUpdateMe.json();
+
+            if (typeof me === 'undefined') {
+              return {
+                status: 302,
+                redirect: '/',
+              };
+            }
+          } else {
+            const dataUpdateMe = await resUpdateMe.json();
+            console.log(dataUpdateMe);
+          }
+        }
+      }
     });
     if (typeof me === 'undefined') {
-      return {
-        status: 302,
-        redirect: '/',
-      };
+          return {
+            status: 302,
+            redirect: '/',
+          };
     }
     return {
       props: { me },
@@ -20,36 +59,10 @@
 <script lang="ts">
   import { authStore } from '$lib/store/auth';
   import { onMount, afterUpdate } from 'svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import CreateAgencyModal from '$lib/components/modals/CreateAgencyModal.svelte';
-  import Drawer from '@smui/drawer/Drawer.svelte';
-  import Content from '@smui/drawer/Content';
-  import List from '@smui/list/List.svelte';
-  import Item from '@smui/list/Item.svelte';
-  import Text from '@smui/list/Text';
-  import Select from '@smui/select/Select.svelte';
-  import Option from '@smui/select/Option.svelte';
-  import Layout from '$lib/components/common/Layout.svelte';
-  import { goto } from '$app/navigation';
   import { User } from '$lib/store/auth';
 
   let active = 'Account Details';
   export let me: User;
-  let openCreateAgencyModal = false;
-  let modelEmailPreferences = {
-    neverMissADrop: false,
-    curatedForYou: false,
-  };
-  let isEditProfile = false;
-  let currentPage = '';
-  afterUpdate(() => {
-    // console.log($authStore.user);
-    // if (!$authStore.user) {
-    //   window.location.href = '/';
-    // }
-    currentPage = location.pathname;
-  });
 
   onMount(async () => {});
 
@@ -81,109 +94,10 @@
   //     goto('/');
   //   }
   // }
-
-  async function onSubmitProfile() {
-    // await userAPIService.update(userModel).then((res)=>{
-    //     console.log(res);
-    // });
-    try {
-      const res = await fetch('/auth/update.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: localStorage.getItem('token'),
-          data: userModel,
-        }),
-      });
-      if (res.ok) {
-        isEditProfile = false;
-        return;
-      }
-      console.error('Error authenticating', res);
-    } catch (error) {
-      console.error('Create/update user failure', error);
-    }
-  }
-
-  async function signOut() {
-    try {
-      const res = await fetch('/auth/sign-out.json', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (res.ok) {
-        authStore.set({ user: undefined });
-        goto('/');
-      }
-      console.error('Error authenticating', res);
-    } catch (error) {
-      console.error('Create/update user failure', error);
-    }
-  }
 </script>
 
 {#if me}
-  <Layout>
-    <div class="content user-dashboard">
-      <div class="container">
-        <section class="pt-20 pb-40">
-          <LayoutGrid class="p-0">
-            <Cell span="12" class="light">
-              <div class="section-header">
-                <p class="mb-35">Welcome to Your Oysteo Account</p>
-                <h1 class="mb-10 mt-0">
-                  Good afternoon, {me.name || 'there'}.
-                </h1>
-                <a href="/sign-out" class="btn-sign-out text-input">Sign Out</a>
-              </div>
-              <div class="divider" />
-            </Cell>
-          </LayoutGrid>
-          <div class="section-body">
-            <LayoutGrid class="pl-0 pr-0 d-pt-90">
-              <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
-                <Drawer class="m-none">
-                  <Content>
-                    <List>
-                      <Item
-                        href="/me"
-                        class={currentPage == '/me' ? 'active' : ''}
-                        ><Text>Account Details</Text></Item
-                      >
-                      <Item href="/me"><Text>Trips</Text></Item>
-                      <Item href="/me"><Text>My Advisors</Text></Item>
-                      <Item href="/me"><Text>Wishlists</Text></Item>
-                      <Item href="/me"><Text>Preferences</Text></Item>
-                      <Item href="/me"><Text>Family & Friends</Text></Item>
-                      <Item href="/me"><Text>Support</Text></Item>
-                      <Item href="/my-agency"><Text>For advisors</Text></Item>
-                    </List></Content
-                  ></Drawer
-                >
-                <div class="d-none m-block text-center mb-35">
-                  <Select bind:value={currentPage} label="">
-                    <Option value="/me" selected>Account Details</Option>
-                    <Option value="/trips">Trips</Option>
-                    <Option value="/my-advisors">My Advisors</Option>
-                  </Select>
-                </div>
-              </Cell>
-              <Cell spanDevices={{ desktop: 9, phone: 4, tablet: 8 }}>
-                <div class="tab-content">
-                  <slot />
-                </div>
-              </Cell>
-            </LayoutGrid>
-          </div>
-        </section>
-      </div>
-    </div>
-    <CreateAgencyModal bind:open={openCreateAgencyModal} />
-  </Layout>
+  <slot />
 {/if}
 
 <style type="text/css">

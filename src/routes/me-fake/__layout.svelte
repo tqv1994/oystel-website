@@ -1,16 +1,16 @@
 <script>
   import { authStore } from '$lib/store/auth';
   import { afterUpdate } from 'svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
   import CreateAgencyModal from '$lib/components/modals/CreateAgencyModal.svelte';
-  import Drawer from '@smui/drawer/Drawer.svelte';
-  import Content from '@smui/drawer/Content';
-  import List from '@smui/list/List.svelte';
-  import Item from '@smui/list/Item.svelte';
-  import Text from '@smui/list/Text';
-  import Select from '@smui/select/Select.svelte';
-  import Option from '@smui/select/Option.svelte';
+  import Drawer from '@smui/drawer';
+  import { Content } from '@smui/drawer';
+  import List from '@smui/list';
+  import { Item } from '@smui/list';
+  import { Text } from '@smui/list';
+  import Select from '@smui/select';
+  import { Option } from '@smui/select';
   import Layout from '$lib/components/common/Layout.svelte';
 
   let active = 'Account Details';

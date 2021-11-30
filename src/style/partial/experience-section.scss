@@ -1,23 +1,15 @@
+@use "../../theme/colors";
+@use "../../theme/sizes";
 @use "../../theme/variables" as v;
-@mixin mobile {
-  @media (max-width: #{ v.$desktop-width - 1px}) {
-    @content;
-  }
-}
-
-@mixin desktop {
-  @media (min-width: #{ v.$desktop-width}) {
-    @content;
-  }
-}
-#experience-section {
-  @include desktop {
+@use '../../theme/mixins';
+.experiences {
+  @include mixins.desktop {
     padding-right: calc(90px + var(--mdc-layout-grid-margin-desktop));
   }
   .mdc-layout-grid {
     padding-top: 0;
     padding-bottom: 0;
-    .list-experiences {
+    .experiences--list {
       > .mdc-layout-grid__inner {
         -moz-column-count: 2; /*change this to change the grid column count*/
         -webkit-column-count: 2; /*change this to change the grid column count*/
@@ -44,9 +36,9 @@
       --mdc-layout-grid-margin-desktop: 0;
     }
   }
-  .list-experiences {
+  .experiences--list {
     overflow-y: scroll;
-    @include mobile {
+    @include mixins.mobile {
       max-height: 100%;
       overflow-y: auto;
     }
@@ -58,13 +50,13 @@
     }
     .title {
       height: 45px;
-      @include mobile {
+      @include mixins.mobile {
         height: 38px;
       }
       overflow: hidden;
     }
   }
-  .item-experience {
+  .experiences--item, .item {
     &.featured {
       .caption {
         position: absolute;
@@ -75,6 +67,15 @@
         width: 100%;
       }
     }
+    &:not(.featured) {
+      @include mixins.mobile {
+        button .text-eyebrow,
+        .mdc-button .text-eyebrow,
+        .text-eyebrow {
+          font-size: 11px !important;
+        }
+      }
+    }
     .thumbnail {
       position: relative;
       overflow: hidden;
@@ -82,19 +83,6 @@
     .divider {
       &::after {
         background-color: #ccc;
-      }
-    }
-  }
-}
-.page-home {
-  #experience-section {
-    .item-experience:not(.featured) {
-      @include mobile {
-        button .text-eyebrow,
-        .mdc-button .text-eyebrow,
-        .text-eyebrow {
-          font-size: 11px !important;
-        }
       }
     }
   }

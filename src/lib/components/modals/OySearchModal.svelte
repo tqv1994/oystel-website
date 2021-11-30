@@ -1,9 +1,9 @@
 <script lang="ts">
   import { clickOutside } from '$lib/components/events/clickOutside.js';
-  import Textfield from '@smui/textfield/Textfield.svelte';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
+  import Textfield from '@smui/textfield';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import { Icon } from '@smui/common';
   import OySearch from '$lib/components/common/OySearch.svelte';
 
   export let openSearch: boolean = false;

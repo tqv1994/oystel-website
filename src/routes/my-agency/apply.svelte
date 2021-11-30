@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
-  import Textfield from '@smui/textfield/Textfield.svelte';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import { Icon } from '@smui/common';
+  import Textfield from '@smui/textfield';
   import { goto } from '$app/navigation';
   import Layout from '$lib/components/common/Layout.svelte';
 

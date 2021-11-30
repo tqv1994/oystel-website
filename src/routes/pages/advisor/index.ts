@@ -16,15 +16,15 @@ export const get: RequestHandler = async (request: Request) => {
     		userMe {
           ...userFields
         }
-        specialities {
-          ...specialityFields
+        advisorTypes {
+          ....advisorTypeFields
         }
         countries {
           ...countryFields
         }
       }
     }
-    fragment specialityFields on speciality {
+    fragment .advisorTypeFields on AdvisorType {
       id
       name
     }

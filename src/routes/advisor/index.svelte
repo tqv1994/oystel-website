@@ -1,23 +1,21 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
   import { countryStore } from '$lib/store/country';
-  import { specialityStore } from '$lib/store/speciality';
+  import { advisorTypeStore } from '$lib/store/advisor-type';
   import { AdvisorBase } from '$lib/store/advisor';
   import { Country } from '$lib/store/country';
-  import { Speciality } from '$lib/store/speciality';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import Textfield from '@smui/textfield/Textfield.svelte';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import { Icon } from '@smui/icon-button';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import Textfield from '@smui/textfield';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import Icon from '@smui/icon-button';
   import DataTable, {
     Head,
     Body,
     Row,
     Cell as CellTable,
   } from '@smui/data-table';
-  import Layout from '$lib/components/common/Layout.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { Advisor } from '$lib/store/advisor';
   import { get } from 'svelte/store';
@@ -34,7 +32,6 @@
     QUERY,
     search,
     SearchParams,
-    SPECIALITY,
     TYPE,
   } from '$lib/store/search';
   import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
@@ -45,7 +42,6 @@
   import { Category } from '$lib/store/category';
   import { makeLink } from '$lib/utils/link';
   import { implodeString } from '$lib/utils/string';
-  import InviteMembersModal from '$lib/components/modals/InviteMembersModal.svelte';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
 
   type SearchResultItem = AdvisorBase & {
@@ -56,9 +52,9 @@
     experienceType1: string;
     experienceType2: string;
     experienceType3: string;
-    speciality1: string;
-    speciality2: string;
-    speciality3: string;
+    type1: string;
+    type2: string;
+    type3: string;
     language1: string;
     language2: string;
     language3: string;
@@ -72,7 +68,7 @@
       const destinationTypes = get(destinationTypeStore);
       const experienceTypes = get(experienceTypeStore);
       const countries = get(countryStore);
-      const specialities = get(specialityStore);
+      const advisorTypes = get(advisorTypeStore);
       const languages = get(languageStore);
       const items: Advisor[] = [];
       for (const item of searchData.items) {
@@ -101,9 +97,9 @@
           destinationType1: destinationTypes.items[item.destinationType1],
           destinationType2: destinationTypes.items[item.destinationType2],
           destinationType3: destinationTypes.items[item.destinationType3],
-          speciality1: specialities.items[item.speciality1],
-          speciality2: specialities.items[item.speciality2],
-          speciality3: specialities.items[item.speciality3],
+          type1: advisorTypes.items[item.type1],
+          type2: advisorTypes.items[item.type2],
+          type3: advisorTypes.items[item.type3],
           language1: languages.items[item.language1],
           language2: languages.items[item.language2],
           language3: languages.items[item.language3],
@@ -117,7 +113,7 @@
             experienceTypes.items[page.query.get(EXPERIENCE_TYPE) || ''],
           destinationType:
             destinationTypes.items[page.query.get(DESTINATION_TYPE) || ''],
-          speciality: specialities.items[page.query.get(SPECIALITY) || ''],
+          type: advisorTypes.items[page.query.get(TYPE) || ''],
           language: languages.items[page.query.get(LANGUAGE) || ''],
           country: countries.items[page.query.get(COUNTRY) || ''],
           ordering:
@@ -129,6 +125,8 @@
 </script>
 
 <script lang="ts">
+  import Item from '@smui/list/Item.svelte';
+
   export let advisors: SearchResultGroup<Advisor> = {
     hasMore: true,
     items: [],
@@ -136,13 +134,13 @@
   export let query: string = '';
   export let experiencetype: Category | undefined;
   export let destinationtype: Category | undefined;
-  export let speciality: Speciality | undefined;
+  export let type: Category | undefined;
   export let language: Language | undefined;
   export let country: Country | undefined;
   export let ordering: Ordering;
   let contentHeaderActionMobile: string = '';
 
-  const specialities = sortByName(Object.values($specialityStore.items));
+  const advisorTypes = sortByName(Object.values($advisorTypeStore.items));
 
   let configPage = {
     header: {
@@ -166,7 +164,7 @@
   function go(params: SearchParams) {
     search({
       [QUERY]: query,
-      [SPECIALITY]: speciality?.id,
+      [TYPE]: type?.id,
       [DESTINATION_TYPE]: destinationtype?.id,
       [EXPERIENCE_TYPE]: experiencetype?.id,
       [LANGUAGE]: language?.id,
@@ -184,12 +182,12 @@
     }
   }
 
-  function onSpecialityChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ s: event.detail.value.id });
+  function onTypeChange(event: CustomEvent<DropdownValue<Category>>) {
+    go({ [TYPE]: event.detail.value.id });
   }
 
   function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
-    go({ c: event.detail.value.id });
+    go({ [COUNTRY]: event.detail.value.id });
   }
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
@@ -200,8 +198,8 @@
     contentHeaderActionMobile = '';
     console.log(event.detail);
     go({
-      c: event.detail.country?.id || '',
-      s: event.detail.speciality?.id || '',
+      [COUNTRY]: event.detail.country?.id || '',
+      [TYPE]: event.detail.type?.id || '',
     });
   }
 
@@ -215,16 +213,16 @@
           document.documentElement.scrollTop > 250
         ) {
           eleHeader.classList.add('fixed');
-          eleHeader.style.setProperty('z-index','100','important');
+          eleHeader.style.setProperty('z-index', '100', 'important');
           eleHeaderTitle.classList.add('show');
         } else {
           eleHeader.classList.remove('fixed');
-          eleHeader.style.setProperty('z-index','auto');
+          eleHeader.style.setProperty('z-index', 'auto');
           eleHeaderTitle.classList.remove('show');
         }
       } else {
         eleHeader.classList.remove('fixed');
-        eleHeader.style.setProperty('z-index','auto');
+        eleHeader.style.setProperty('z-index', 'auto');
         eleHeaderTitle.classList.remove('show');
       }
     }
@@ -241,256 +239,249 @@
     onScrollFixedHeader();
   }}
 />
-<Layout config={configPage}>
-  <div class="content">
-    <section class="header-title d-pt-120 d-pb-95 m-pt-100 m-pb-25 full-width">
-      <div class="content-wrap">
-        <div class="container">
-          <h1 class="text-center mb-20 m-mt-0 d-mt-70 hidden-on-sticky">
-            Crafted from Experience
-          </h1>
-          <p
-            class="text-center mt-0 m-pl-40 m-pr-40 m-mb-40 d-mb-0 hidden-on-sticky"
-          >
-            First hand experience, ready to craft your perfect vacation.
-          </p>
-          <div class="d-none m-block">
-            <Button
-              on:click={() => {
-                contentHeaderActionMobile = 'advisor-search';
-              }}
-              type="button"
-              style="width: 100%"
-              variant="outlined"><Label>Filter Your Results</Label></Button
-            >
-          </div>
-        </div>
-      </div>
-    </section>
-    <section
-      class="header-title d-pt-120 d-pb-95 m-pt-100 m-pb-25 full-width is_sticky fixed"
-    >
-      <div class="content-wrap">
-        <div class="container">
-          <div class="d-none m-block">
-            <Button
-              on:click={() => {
-                contentHeaderActionMobile = 'advisor-search';
-              }}
-              type="button"
-              style="width: 100%"
-              variant="outlined"><Label>Filter Your Results</Label></Button
-            >
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="d-pt-80 d-pb-200 m-pt-40 m-pb-95">
+<div class="content advisor-listing-page">
+  <section class="header-title d-pt-120 d-pb-95 m-pt-100 m-pb-25 full-width">
+    <div class="content-wrap">
       <div class="container">
-        <form
-          class="m-none search-form-advisor mb-50"
-          on:submit|preventDefault={() => {
-            go({});
-          }}
+        <h1 class="text-center mb-20 m-mt-0 d-mt-70 hidden-on-sticky">
+          Crafted from Experience
+        </h1>
+        <p
+          class="text-center mt-0 m-pl-40 m-pr-40 m-mb-40 d-mb-0 hidden-on-sticky"
         >
-          <LayoutGrid class="p-0">
-            <Cell spanDevices={{ desktop: 4 }}>
-              <div class="form-control">
-                <Textfield
-                  variant="outlined"
-                  bind:value={query}
-                  on:input={onQueryInput}
-                  label="Search by name"
-                  withTrailingIcon={false}
+          First hand experience, ready to craft your perfect vacation.
+        </p>
+        <div class="d-none m-block">
+          <Button
+            on:click={() => {
+              contentHeaderActionMobile = 'advisor-search';
+            }}
+            type="button"
+            style="width: 100%"
+            variant="outlined"><Label>Filter Your Results</Label></Button
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+  <section
+    class="header-title d-pt-120 d-pb-95 m-pt-100 m-pb-25 full-width is_sticky fixed"
+  >
+    <div class="content-wrap">
+      <div class="container">
+        <div class="d-none m-block">
+          <Button
+            on:click={() => {
+              contentHeaderActionMobile = 'advisor-search';
+            }}
+            type="button"
+            style="width: 100%"
+            variant="outlined"><Label>Filter Your Results</Label></Button
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="d-pt-80 d-pb-200 m-pt-40 m-pb-95">
+    <div class="container">
+      <form
+        class="m-none search-form-advisor mb-50"
+        on:submit|preventDefault={() => {
+          go({});
+        }}
+      >
+        <LayoutGrid class="p-0">
+          <Cell spanDevices={{ desktop: 4 }}>
+            <div class="form-control">
+              <Textfield
+                variant="outlined"
+                bind:value={query}
+                on:input={onQueryInput}
+                label="Search by name"
+                withTrailingIcon={false}
+              >
+                <Icon slot="trailingIcon"
+                  ><img src="/img/icons/icon-search.svg" /></Icon
                 >
-                  <Icon slot="trailingIcon"
-                    ><img src="/img/icons/icon-search.svg" /></Icon
+              </Textfield>
+            </div>
+          </Cell>
+          <Cell
+            spanDevices={{ desktop: 8 }}
+            class="form-inline d-desktop text-right"
+          >
+            <div>
+              <div class="form-control text-left">
+                <label class="text-h3">Filter by Speciality</label>
+                <Dropdown
+                  label=""
+                  blankItem="All"
+                  items={advisorTypes}
+                  value={type}
+                  on:MDCSelect:change={onTypeChange}
+                />
+              </div>
+              <div class="form-control text-left">
+                <label class="text-h3">By Country</label>
+                <Dropdown
+                  label=""
+                  blankItem="All"
+                  items={countries}
+                  value={country}
+                  on:MDCSelect:change={onCountryChange}
+                />
+              </div>
+            </div>
+          </Cell>
+          <Cell
+            spanDevices={{ desktop: 4 }}
+            class="form-inline d-tablet text-right"
+          >
+            <div>
+              <div class="form-control text-left">
+                <Dropdown
+                  label="Filter by Speciality"
+                  blankItem="All"
+                  items={advisorTypes}
+                  value={type}
+                  on:MDCSelect:change={onTypeChange}
+                />
+              </div>
+            </div>
+          </Cell>
+          <Cell
+            spanDevices={{ desktop: 4 }}
+            class="form-inline d-tablet text-right"
+          >
+            <div>
+              <div class="form-control text-left">
+                <Dropdown
+                  label="By Country"
+                  blankItem="All"
+                  items={countries}
+                  value={country}
+                  on:MDCSelect:change={onCountryChange}
+                />
+              </div>
+            </div>
+          </Cell>
+        </LayoutGrid>
+      </form>
+      <div class="d-pl-100 d-pr-100 m-d-0 m-none">
+        <DataTable style="width: 100%;">
+          <Head>
+            <Row>
+              <CellTable style="width: 10%" />
+              <CellTable style="width: 35%;">Name</CellTable>
+              <CellTable style="width: 35%;">Specialties</CellTable>
+              <CellTable style="width: 20%;">Location</CellTable>
+            </Row>
+          </Head>
+          <Body>
+            {#if advisors && advisors.items.length}
+              {#each advisors.items as item}
+                <Row class="item-advisor">
+                  <CellTable style="width: 10%"
+                    ><a href={makeLink('/advisor', item)}
+                      ><div
+                        class="image-cover"
+                        style="width: 100px;padding-top: 0; height: 100px"
+                      >
+                        <BlurImage {...item.avatar} />
+                      </div></a
+                    ></CellTable
                   >
-                </Textfield>
-              </div>
-            </Cell>
-            <Cell
-              spanDevices={{ desktop: 8 }}
-              class="form-inline d-desktop text-right"
-            >
-              <div>
-                <div class="form-control text-left">
-                  <label class="text-h3">Filter by Speciality</label>
-                  <Dropdown
-                    label=""
-                    blankItem="All"
-                    items={specialities}
-                    value={speciality}
-                    on:MDCSelect:change={onSpecialityChange}
-                  />
-                </div>
-                <div class="form-control text-left">
-                  <label class="text-h3">By Country</label>
-                  <Dropdown
-                    label=""
-                    blankItem="All"
-                    items={countries}
-                    value={country}
-                    on:MDCSelect:change={onCountryChange}
-                  />
-                </div>
-              </div>
-            </Cell>
-            <Cell
-              spanDevices={{ desktop: 4 }}
-              class="form-inline d-tablet text-right"
-            >
-              <div>
-                <div class="form-control text-left">
-                  <Dropdown
-                    label="Filter by Speciality"
-                    blankItem="All"
-                    items={specialities}
-                    value={speciality}
-                    on:MDCSelect:change={onSpecialityChange}
-                  />
-                </div>
-              </div>
-            </Cell>
-            <Cell
-              spanDevices={{ desktop: 4 }}
-              class="form-inline d-tablet text-right"
-            >
-              <div>
-                <div class="form-control text-left">
-                  <Dropdown
-                    label="By Country"
-                    blankItem="All"
-                    items={countries}
-                    value={country}
-                    on:MDCSelect:change={onCountryChange}
-                  />
-                </div>
-              </div>
-            </Cell>
-          </LayoutGrid>
-        </form>
-        <div class="d-pl-100 d-pr-100 m-d-0 m-none">
-          <DataTable style="width: 100%;">
-            <Head>
-              <Row>
-                <CellTable style="width: 10%" />
-                <CellTable style="width: 35%;">Name</CellTable>
-                <CellTable style="width: 35%;">Specialties</CellTable>
-                <CellTable style="width: 20%;">Location</CellTable>
-              </Row>
-            </Head>
-            <Body>
+                  <CellTable style="width: 35%;"
+                    ><a href={makeLink('/advisor', item)}
+                      ><p class="name text-h3">
+                        {item.name}
+                      </p></a
+                    ></CellTable
+                  >
+                  <CellTable style="width: 35%;"
+                    ><p>
+                      {implodeString(
+                        [item.type1?.name, item.type2?.name, item.type3?.name],
+                        ', ',
+                      )}
+                    </p></CellTable
+                  >
+                  <CellTable style="width: 20%;"
+                    ><p>
+                      {item.country?.name || ''}
+                    </p></CellTable
+                  >
+                </Row>
+              {/each}
+            {/if}
+          </Body>
+        </DataTable>
+      </div>
+      <div class="d-none m-block">
+        <div class="advisors-list">
+          <LayoutGrid class="p-0">
+            <Cell span={12}>
               {#if advisors && advisors.items.length}
                 {#each advisors.items as item}
-                  <Row class="item-advisor">
-                    <CellTable style="width: 10%"
-                      ><a href={makeLink('/advisor', item)}
-                        ><div
-                          class="image-cover"
-                          style="width: 100px;padding-top: 0; height: 100px"
-                        >
-                          <BlurImage {...item.avatar} />
-                        </div></a
-                      ></CellTable
-                    >
-                    <CellTable style="width: 35%;"
-                      ><a href={makeLink('/advisor', item)}
-                        ><p class="name text-h2">
-                          {item.name}
-                        </p></a
-                      ></CellTable
-                    >
-                    <CellTable style="width: 35%;"
-                      ><p>
-                        {implodeString(
-                          [
-                            item.speciality1?.name,
-                            item.speciality2?.name,
-                            item.speciality3?.name,
-                          ],
-                          ', ',
-                        )}
-                      </p></CellTable
-                    >
-                    <CellTable style="width: 20%;"
-                      ><p>
-                        {item.country?.name || ''}
-                      </p></CellTable
-                    >
-                  </Row>
+                  <div class="item-advisor">
+                    <a href={makeLink('/advisor', item)}>
+                      <LayoutGrid class="p-0">
+                        <Cell spanDevices={{ phone: 1, tablet: 2, desktop: 4 }}>
+                          <div class="thumbnail">
+                            <div
+                              class="image-cover"
+                              style="width:100%; padding-top: 100%"
+                            >
+                              {#if item.avatar}
+                                <BlurImage {...item.avatar} />
+                              {/if}
+                            </div>
+                          </div>
+                        </Cell>
+                        <Cell spanDevices={{ phone: 3, tablet: 6, desktop: 8 }}>
+                          <h3 class="mt-0 mb-15">
+                            {item.name}
+                          </h3>
+                          <p class="mt-0 mb-30">
+                            {item.country?.name || ''}
+                          </p>
+                          <p class="m-0">
+                            {implodeString(
+                              [
+                                item.type1?.name,
+                                item.type2?.name,
+                                item.type3?.name,
+                              ],
+                              ', ',
+                            ).substr(0, 80)}
+                          </p>
+                        </Cell>
+                      </LayoutGrid>
+                    </a>
+                  </div>
                 {/each}
               {/if}
-            </Body>
-          </DataTable>
-        </div>
-        <div class="d-none m-block">
-          <div class="advisors-list">
-            <LayoutGrid class="p-0">
-              <Cell span={12}>
-                {#if advisors && advisors.items.length}
-                  {#each advisors.items as item}
-                    <div class="item-advisor">
-                      <a href={makeLink('/advisor', item)}>
-                        <LayoutGrid class="p-0">
-                          <Cell
-                            spanDevices={{ phone: 1, tablet: 2, desktop: 4 }}
-                          >
-                            <div class="thumbnail">
-                              <div
-                                class="image-cover"
-                                style="width:100%; padding-top: 100%"
-                              >
-                                <BlurImage {...item.avatar} />
-                              </div>
-                            </div>
-                          </Cell>
-                          <Cell
-                            spanDevices={{ phone: 3, tablet: 6, desktop: 8 }}
-                          >
-                            <h2 class="mt-0 mb-15">
-                              {item.name}
-                            </h2>
-                            <p class="mt-0 mb-30">
-                              {item.country?.name || ''}
-                            </p>
-                            <p class="m-0">
-                              {implodeString(
-                                [
-                                  item.speciality1?.name,
-                                  item.speciality2?.name,
-                                  item.speciality3?.name,
-                                ],
-                                ', ',
-                              ).substr(0, 80)}
-                            </p>
-                          </Cell>
-                        </LayoutGrid>
-                      </a>
-                    </div>
-                  {/each}
-                {/if}
-              </Cell>
-            </LayoutGrid>
-          </div>
+            </Cell>
+          </LayoutGrid>
         </div>
       </div>
-    </section>
-  </div>
-</Layout>
+    </div>
+  </section>
+</div>
 
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  {specialities}
+  {advisorTypes}
   countries={sortByName(Object.values($countryStore.items))}
   on:close={onSearchSubmitMobile}
-  searchModel={{ speciality: speciality, country: country }}
+  searchModel={{ type: type, country: country }}
 />
 
 <style lang="scss" global>
-  .page-advisors {
+  .advisor-listing-page {
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/sticky.scss';
+    @import './src/style/partial/form.scss';
     .header-title {
       background-color: #f0f7f8;
     }

@@ -1,12 +1,12 @@
 <script lang="ts">
   import '$lib/firebase';
-  import Dialog from '@smui/dialog/Dialog.svelte';
-  import Content from '@smui/dialog/Content';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Dialog from '@smui/dialog';
+  import { Content } from '@smui/dialog';
+  import IconButton from '@smui/icon-button';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
   import { createEventDispatcher } from 'svelte';
   export let open: boolean;
   const dispatch = createEventDispatcher();
@@ -71,7 +71,7 @@
 
 <style lang="scss" global>
   @import './src/style/partial/inquiry-modal.scss';
-  #inquiry-modal{
+  #inquiry-modal {
     .btn-find-advisor {
       top: 50%;
       transform: translateY(-50%);

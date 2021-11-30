@@ -1,12 +1,12 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
 
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import Textfield from '@smui/textfield/Textfield.svelte';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import { Icon } from '@smui/icon-button';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import Textfield from '@smui/textfield';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import Icon from '@smui/icon-button';
   import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import { Nameable } from '$lib/store/types';
@@ -89,7 +89,9 @@
             pack: item.pack,
             destinations: item.destinations,
             country: countries.items[item.country],
-            type: types.items[item.type],
+            type1: types.items[item.type1],
+            type2: types.items[item.type2],
+            type3: types.items[item.type3],
             created_at: item.created_at,
             updated_at: item.updated_at,
             published_at: item.published_at,
@@ -146,10 +148,10 @@
 
   function go(params: SearchParams) {
     search({
-      q: query,
-      t: type?.id,
-      c: country?.id,
-      o: ordering.key,
+      [QUERY]: query,
+      [TYPE]: type?.id,
+      [COUNTRY]: country?.id,
+      [ORDERING]: ordering.key,
       ...params,
     });
   }
@@ -163,23 +165,23 @@
   }
 
   function onTypeChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ t: event.detail.value.id });
+    go({ [TYPE]: event.detail.value.id });
   }
 
   function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
-    go({ c: event.detail.value.id });
+    go({ [COUNTRY]: event.detail.value.id });
   }
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
-    go({ o: event.detail.value.key });
+    go({ [ORDERING]: event.detail.value.key });
   }
 
   function onSearchSubmitMobile(event: CustomEvent) {
     contentHeaderActionMobile = '';
     go({
-      c: event.detail.country?.id || '',
-      t: event.detail.experience_type?.id || '',
-      o: event.detail.ordering?.key || '',
+      [COUNTRY]: event.detail.country?.id || '',
+      [TYPE]: event.detail.experience_type?.id || '',
+      [ORDERING]: event.detail.ordering?.key || '',
     });
   }
 
@@ -234,30 +236,30 @@
     }
   }
 
-  function onScrollFixedHeader() {
-    let eleHiddenOnScrolls = document.querySelectorAll(
-      '.header-title .hidden-on-sticky',
-    );
-    if (
-      document.body.scrollTop > 450 ||
-      document.documentElement.scrollTop > 450
-    ) {
-      document.getElementById('header').classList.add('fixed');
-      document.querySelector('header').style.zIndex = 8;
-      document.querySelector('header').style.position = 'relative';
-      document.querySelector('.header-title.is_sticky').classList.add('show');
-    } else {
-      document.getElementById('header').classList.remove('fixed');
-      document.querySelector('header').style.zIndex = 'auto';
-      document.querySelector('header').style.position = 'relative';
-      document
-        .querySelector('.header-title.is_sticky')
-        .classList.remove('show');
-    }
-  }
+  // function onScrollFixedHeader() {
+  //   let eleHiddenOnScrolls = document.querySelectorAll(
+  //     '.header-title .hidden-on-sticky',
+  //   );
+  //   if (
+  //     document.body.scrollTop > 450 ||
+  //     document.documentElement.scrollTop > 450
+  //   ) {
+  //     document.getElementById('header').classList.add('fixed');
+  //     document.querySelector('header').style.zIndex = 8;
+  //     document.querySelector('header').style.position = 'relative';
+  //     document.querySelector('.header-title.is_sticky').classList.add('show');
+  //   } else {
+  //     document.getElementById('header').classList.remove('fixed');
+  //     document.querySelector('header').style.zIndex = 'auto';
+  //     document.querySelector('header').style.position = 'relative';
+  //     document
+  //       .querySelector('.header-title.is_sticky')
+  //       .classList.remove('show');
+  //   }
+  // }
 </script>
 
-<svelte:window
+<!-- <svelte:window
   on:load={() => {
     onScrollFixedHeader();
   }}
@@ -265,186 +267,182 @@
   on:scroll={() => {
     onScrollFixedHeader();
   }}
-/>
-<Layout config={configPage} on:refreshPage={() => {}}>
-  <div class="content">
-    <section class="header-title d-pt-130 d-pb-95 m-pt-80 m-pb-25 full-width">
-      <div class="content-wrap">
-        <div class="container m-none">
-          <form
-            class="search-form-experiences"
-            method="GET"
-            on:submit|preventDefault={() => {
-              go({});
-            }}
-          >
-            <LayoutGrid class="p-0">
-              <Cell span="6">
-                <div class="form-control">
-                  <Textfield
-                    variant="outlined"
-                    bind:value={query}
-                    on:input={onQueryInput}
-                    label="Start with a search"
-                    withTrailingIcon={false}
-                  >
-                    <Icon slot="trailingIcon"
-                      ><img src="/img/icons/icon-search.svg" /></Icon
-                    >
-                  </Textfield>
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Dropdown
-                    label="By Experience"
-                    blankItem="All"
-                    items={experienceTypes}
-                    value={type}
-                    on:MDCSelect:change={onTypeChange}
-                  />
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Dropdown
-                    label="By Country"
-                    blankItem="All"
-                    items={countries}
-                    value={country}
-                    on:MDCSelect:change={onCountryChange}
-                  />
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Dropdown
-                    label="Sort By"
-                    items={experienceOrderings}
-                    value={ordering}
-                    on:MDCSelect:change={onSortChange}
-                  />
-                </div>
-              </Cell>
-            </LayoutGrid>
-          </form>
-          <LayoutGrid class="p-0 hidden-on-sticky">
-            <Cell span="12">
-              <h1 class="text-center d-mt-115 d-mb-20">
-                Choose Your Experience
-              </h1>
-              <p class="text-center m-0">
-                Bespoke experiences created by our leading tastemakers.
-              </p>
-            </Cell>
-          </LayoutGrid>
-        </div>
-        <div class="container m-block d-none">
+/> -->
+<div class="content experiences-listing-content">
+  <section class="header-title d-pt-130 d-pb-95 m-pt-80 m-pb-25 full-width">
+    <div class="content-wrap">
+      <div class="container m-none">
+        <form
+          class="search-form-experiences"
+          method="GET"
+          on:submit|preventDefault={() => {
+            go({});
+          }}
+        >
           <LayoutGrid class="p-0">
-            <Cell span="12">
-              <Button
-                style="width: 100%"
-                variant="outlined"
-                on:click={() => {
-                  contentHeaderActionMobile = 'experience-search';
-                }}><Label>Filter Your Results</Label></Button
-              >
-            </Cell>
-          </LayoutGrid>
-        </div>
-      </div>
-    </section>
-    <section
-      class="header-title d-pt-130 d-pb-60 m-pt-80 m-pb-25 full-width is_sticky fixed hidden"
-    >
-      <div class="content-wrap">
-        <div class="container m-none">
-          <form
-            class="search-form-experiences"
-            method="GET"
-            on:submit|preventDefault={() => {
-              go({});
-            }}
-          >
-            <LayoutGrid class="p-0">
-              <Cell span="6">
-                <div class="form-control">
-                  <Textfield
-                    variant="outlined"
-                    bind:value={query}
-                    on:input={onQueryInput}
-                    label="Start with a search"
-                    withTrailingIcon={false}
+            <Cell span="6">
+              <div class="form-control">
+                <Textfield
+                  variant="outlined"
+                  bind:value={query}
+                  on:input={onQueryInput}
+                  label="Start with a search"
+                  withTrailingIcon={false}
+                >
+                  <Icon slot="trailingIcon"
+                    ><img src="/img/icons/icon-search.svg" /></Icon
                   >
-                    <Icon slot="trailingIcon"
-                      ><img src="/img/icons/icon-search.svg" /></Icon
-                    >
-                  </Textfield>
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Dropdown
-                    label="By Experience"
-                    blankItem="All"
-                    items={experienceTypes}
-                    value={type}
-                    on:MDCSelect:change={onTypeChange}
-                  />
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Dropdown
-                    label="By Country"
-                    blankItem="All"
-                    items={countries}
-                    value={country}
-                    on:MDCSelect:change={onCountryChange}
-                  />
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Dropdown
-                    label="Sort By"
-                    items={experienceOrderings}
-                    value={ordering}
-                    on:MDCSelect:change={onSortChange}
-                  />
-                </div>
-              </Cell>
-            </LayoutGrid>
-          </form>
-        </div>
-        <div class="container m-block d-none">
-          <LayoutGrid class="p-0">
-            <Cell span="12">
-              <Button
-                style="width: 100%"
-                variant="outlined"
-                on:click={() => {
-                  contentHeaderActionMobile = 'experience-search';
-                }}><Label>Filter Your Results</Label></Button
-              >
+                </Textfield>
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <Dropdown
+                  label="By Experience"
+                  blankItem="All"
+                  items={experienceTypes}
+                  value={type}
+                  on:MDCSelect:change={onTypeChange}
+                />
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <Dropdown
+                  label="By Country"
+                  blankItem="All"
+                  items={countries}
+                  value={country}
+                  on:MDCSelect:change={onCountryChange}
+                />
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <Dropdown
+                  label="Sort By"
+                  items={experienceOrderings}
+                  value={ordering}
+                  on:MDCSelect:change={onSortChange}
+                />
+              </div>
             </Cell>
           </LayoutGrid>
-        </div>
+        </form>
+        <LayoutGrid class="p-0 hidden-on-sticky">
+          <Cell span="12">
+            <h1 class="text-center d-mt-115 d-mb-20">Choose Your Experience</h1>
+            <p class="text-center m-0">
+              Bespoke experiences created by our leading tastemakers.
+            </p>
+          </Cell>
+        </LayoutGrid>
       </div>
+      <div class="container m-block d-none">
+        <LayoutGrid class="p-0">
+          <Cell span="12">
+            <Button
+              style="width: 100%"
+              variant="outlined"
+              on:click={() => {
+                contentHeaderActionMobile = 'experience-search';
+              }}><Label>Filter Your Results</Label></Button
+            >
+          </Cell>
+        </LayoutGrid>
+      </div>
+    </div>
+  </section>
+  <section
+    class="header-title d-pt-130 d-pb-60 m-pt-80 m-pb-25 full-width is_sticky fixed hidden"
+  >
+    <div class="content-wrap">
+      <div class="container m-none">
+        <form
+          class="search-form-experiences"
+          method="GET"
+          on:submit|preventDefault={() => {
+            go({});
+          }}
+        >
+          <LayoutGrid class="p-0">
+            <Cell span="6">
+              <div class="form-control">
+                <Textfield
+                  variant="outlined"
+                  bind:value={query}
+                  on:input={onQueryInput}
+                  label="Start with a search"
+                  withTrailingIcon={false}
+                >
+                  <Icon slot="trailingIcon"
+                    ><img src="/img/icons/icon-search.svg" /></Icon
+                  >
+                </Textfield>
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <Dropdown
+                  label="By Experience"
+                  blankItem="All"
+                  items={experienceTypes}
+                  value={type}
+                  on:MDCSelect:change={onTypeChange}
+                />
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <Dropdown
+                  label="By Country"
+                  blankItem="All"
+                  items={countries}
+                  value={country}
+                  on:MDCSelect:change={onCountryChange}
+                />
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <Dropdown
+                  label="Sort By"
+                  items={experienceOrderings}
+                  value={ordering}
+                  on:MDCSelect:change={onSortChange}
+                />
+              </div>
+            </Cell>
+          </LayoutGrid>
+        </form>
+      </div>
+      <div class="container m-block d-none">
+        <LayoutGrid class="p-0">
+          <Cell span="12">
+            <Button
+              style="width: 100%"
+              variant="outlined"
+              on:click={() => {
+                contentHeaderActionMobile = 'experience-search';
+              }}><Label>Filter Your Results</Label></Button
+            >
+          </Cell>
+        </LayoutGrid>
+      </div>
+    </div>
+  </section>
+  {#if experienceTypes.length > 0}
+    <section class="d-pt-85 d-pb-95 m-pt-50 m-pb-70">
+      <SearchResult
+        pathPrefix="/experience"
+        categories={experienceTypes}
+        groups={experiences}
+        showHeadings={!type}
+        on:likeItem={likeExperience}
+      />
     </section>
-    {#if experienceTypes.length > 0}
-      <section class="d-pt-85 d-pb-95 m-pt-50 m-pb-70">
-        <SearchResult
-          pathPrefix="/experience"
-          categories={experienceTypes}
-          groups={experiences}
-          showHeadings={!type}
-          on:likeItem={likeExperience}
-        />
-      </section>
-    {/if}
-  </div>
-</Layout>
+  {/if}
+</div>
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
   searchModel={{ experience_type: type, ordering, country }}
@@ -457,13 +455,8 @@
 <OyNotification />
 
 <style lang="scss" global>
-  $desktop-width: 950px;
-  @mixin desktop {
-    @media (min-width: #{$desktop-width}) {
-      @content;
-    }
-  }
-  .page-experiences {
+  @use '../../theme/mixins';
+  .experiences-listing-content {
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/sticky.scss';
     @import './src/style/partial/experiences-search-form.scss';
@@ -471,7 +464,7 @@
       background-color: #f0f7f8;
     }
     .header-title:global(.is_sticky) {
-      @include desktop {
+      @include mixins.desktop {
         padding-bottom: 55px !important;
       }
     }

@@ -1,0 +1,47 @@
+<script lang="ts">
+import { Action } from '$lib/store/action';
+import { UploadFile } from '$lib/store/upload-file';
+
+  import Button from '@smui/button/Button.svelte';
+  import Label from '@smui/list/Label.svelte';
+
+  import BlurImage from './blur-image.svelte';
+  import Carousel from './Carousel.svelte';
+
+  export let name: string | undefined = undefined;
+  export let headline: string | undefined = undefined;
+  export let description: string | undefined = undefined;
+  export let actions: Action[] | undefined = undefined;
+  export let gallery: UploadFile[] | undefined = undefined;
+  export let background: UploadFile[] | undefined = undefined;
+</script>
+
+<div
+  class="what-to-wear-content d-pb-85 d-pt-85 d-pl-150 d-pr-160 d-block m-none"
+>
+  <h5>{description}</h5>
+  <h1>{name}</h1>
+  {#if actions?.length}
+    {#each actions as action}
+      <Button variant="outlined" class="hover-affect" href={action.url}
+        ><Label class="text-button2">{action.name}</Label></Button
+      >
+    {/each}
+  {/if}
+</div>
+<div class="d-none m-block container">
+  <div class="image-cover" style="padding-top: calc(375 / 319 * 100%)">
+    <img src="/img/editorial/what-to-wear-background.jpg" />
+  </div>
+  <div class="what-to-wear-content pb-50 pt-55">
+    <h5>{description}</h5>
+    <h1>{name}</h1>
+    {#if actions?.length}
+      {#each actions as action}
+        <Button variant="outlined" class="hover-affect" href={action.url}
+          ><Label class="text-button2">{action.name}</Label></Button
+        >
+      {/each}
+    {/if}
+  </div>
+</div>

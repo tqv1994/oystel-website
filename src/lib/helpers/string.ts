@@ -1,6 +1,6 @@
 import { Country } from '$lib/store/country';
 import { Language } from '$lib/store//language';
-import { Speciality } from '$lib/store/speciality';
+import { Category } from '$lib/store/advisor-type';
 import { cmsUrlPrefix } from '$lib/env';
 
 export const stringHelper = {
@@ -102,10 +102,10 @@ export const stringHelper = {
     return "";
   },
 
-  getSpecialtiesString: function(specialities?: Speciality[],emptyValue?: string){
+  getSpecialtiesString: function(advisorTypes?: Category[],emptyValue?: string){
     let result = '';
-    if (specialities && specialities.length > 0) {
-        specialities.map((item: Speciality, index) => {
+    if (advisorTypes && advisorTypes.length > 0) {
+        advisorTypes.map((item: Category, index) => {
             if (index == 0) {
                 result = item.name;
             } else {

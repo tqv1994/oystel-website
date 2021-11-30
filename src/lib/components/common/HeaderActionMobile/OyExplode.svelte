@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Icon from '@smui/common/CommonIcon.svelte';
-  import Textfield from '@smui/textfield/Textfield.svelte';
+  import { Icon } from '@smui/common';
+  import Textfield from '@smui/textfield';
   import { createEventDispatcher, afterUpdate, onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { searchKeys } from '$lib/const';

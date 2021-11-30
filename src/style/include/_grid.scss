@@ -1,0 +1,27 @@
+@use "../../theme/mixins";
+@use "../../theme/variables" as v;
+$columns: 12;
+.row {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    // grid-column-gap: 2em;
+    grid-column-gap: var(--mdc-layout-grid-gutter-desktop,2em);
+    grid-row-gap: var(--mdc-layout-grid-gutter-desktop,20px);
+    @include mixins.mobile{
+        grid-column-gap: var(--mdc-layout-grid-gutter-mobile,2em);
+        grid-row-gap: var(--mdc-layout-grid-gutter-mobile,20px);
+    }
+    
+    @for $i from 1 through $columns {
+        @include mixins.desktop {
+            .d-col-#{$i} {
+                grid-column-end: span #{$i};
+            }
+        }
+        @include mixins.mobile {
+            .m-col-#{$i} {
+                grid-column-end: span #{$i};
+            }
+        }
+    }
+}

@@ -1,7 +1,11 @@
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { ExperienceSearchResultItem } from '$lib/store/experience';
-import { DESTINATION_TYPE, EXPERIENCE_TYPE, searchClient, SearchResultGroup } from '$lib/store/search';
+import {
+  EXPERIENCE_TYPE,
+  searchClient,
+  SearchResultGroup,
+} from '$lib/store/search';
 import { Identifiable } from '$lib/store/types';
 import {
   COUNTRY,
@@ -21,15 +25,22 @@ const dIndex = searchClient.index('experience');
 export const get: RequestHandler = async (request: Request) => {
   try {
     const params = parseSearchParams(request.query);
-    const result: SearchResultGroup<ExperienceSearchResultItem | DestinationSearchResultItem>
-        = await search<ExperienceSearchResultItem | DestinationSearchResultItem>(params);
+    const result: SearchResultGroup<
+      ExperienceSearchResultItem | DestinationSearchResultItem
+    > = await search<ExperienceSearchResultItem | DestinationSearchResultItem>(
+      params,
+    );
     return {
       body: JSON.stringify(result),
     };
   } catch (error) {
     console.error('Error searching for search page', error);
   }
-  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error searching for search page');
+  return makeErrorResponse(
+    500,
+    'INTERNAL_SERVER_ERROR',
+    'Error searching for search page',
+  );
 };
 
 async function search<T extends Identifiable>(

@@ -2,7 +2,15 @@ import type { RequestHandler, Request } from '@sveltejs/kit';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { searchClient, SearchResultGroup } from '$lib/store/search';
 import { Identifiable } from '$lib/store/types';
-import { COUNTRY, LIMIT, ORDERING, parseSearchParams, QUERY, SearchParams, SPECIALITY } from '$lib/store/search';
+import {
+  COUNTRY,
+  LIMIT,
+  ORDERING,
+  parseSearchParams,
+  QUERY,
+  SearchParams,
+  TYPE,
+} from '$lib/store/search';
 import { orderings, ORDER_BY_NAME_ASC } from '$lib/store/order';
 import { Advisor } from '$lib/store/advisor';
 
@@ -21,18 +29,22 @@ export const get: RequestHandler = async (request: Request) => {
   } catch (error) {
     console.error('Error searching for destinations', error);
   }
-  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error searching for destinations');
+  return makeErrorResponse(
+    500,
+    'INTERNAL_SERVER_ERROR',
+    'Error searching for destinations',
+  );
 };
 
 async function search<T extends Identifiable>(
   params: SearchParams,
 ): Promise<SearchResultGroup<T>> {
   const filter: Array<string | Array<string>> = [];
-  if (params[SPECIALITY]) {
+  if (params[TYPE]) {
     filter.push([
-      `speciality1 = ${params[SPECIALITY]}`,
-      `speciality2 = ${params[SPECIALITY]}`,
-      `speciality3 = ${params[SPECIALITY]}`,
+      `type1 = ${params[TYPE]}`,
+      `type2 = ${params[TYPE]}`,
+      `type3 = ${params[TYPE]}`,
     ]);
   }
   if (params[COUNTRY]) {

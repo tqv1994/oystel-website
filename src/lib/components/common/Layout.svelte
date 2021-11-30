@@ -1,20 +1,20 @@
 <script lang="ts">
   import { authStore } from '$lib/store/auth';
   import { goto } from '$app/navigation';
-  import TopAppBar from '@smui/top-app-bar/TopAppBar.svelte';
-  import Row from '@smui/top-app-bar/Row';
-  import Section from '@smui/top-app-bar/Section.svelte';
-  import Title from '@smui/top-app-bar/Title';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import Wrapper from '@smui/tooltip/Wrapper.svelte';
-  import Textfield from '@smui/textfield/Textfield.svelte';
+  import TopAppBar from '@smui/top-app-bar';
+  import { Row } from '@smui/top-app-bar';
+  import { Section } from '@smui/top-app-bar';
+  import { Title } from '@smui/top-app-bar';
+  import IconButton from '@smui/icon-button';
+  import { Icon } from '@smui/common';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import { Wrapper } from '@smui/tooltip';
+  import Textfield from '@smui/textfield';
   import A from '@smui/common/elements/A.svelte';
   import Svg from '@smui/common/elements/Svg.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import { Cell } from '@smui/layout-grid';
+  import LayoutGrid from '@smui/layout-grid';
   import { onMount, afterUpdate, createEventDispatcher } from 'svelte';
   import OySubMenu from '$lib/components/common/OySubMenu.svelte';
   import SignupModal from '$lib/components/modals/SignupModal.svelte';
@@ -28,6 +28,7 @@
   import '/src/style/partial/form.scss';
   import OysteoLogo from '$lib/components/OysteoLogo.svelte';
   import { hoverOutside } from '$lib/components/events/hoverOutside';
+  import SearchIcon from '$lib/icons/SearchIcon.svelte';
 
   let miniWindow = false;
   let searchResult = '';
@@ -111,7 +112,7 @@
 
   function handleOpenSubMenu(menuItem: Menu) {
     if (menuItem.submenu.length > 0) {
-      if(!openSubMenu){
+      if (!openSubMenu) {
         documentHelper.changeBackgroundHeader('#000');
       }
       if (!openSubMenu || menuItem.link != urlViewAllSubmenu) {
@@ -125,8 +126,8 @@
 
   function handleCloseSubMenu() {
     const elHeader = document.getElementById('header');
-    if(openSubMenu){
-      if(!elHeader?.classList.contains('scrolling')){
+    if (openSubMenu) {
+      if (!elHeader?.classList.contains('scrolling')) {
         documentHelper.changeBackgroundHeader();
       }
       openSubMenu = false;
@@ -177,43 +178,44 @@
               align="center"
               style="z-index: 2"
             >
-            <div use:hoverOutside
-            on:hover_outside={()=>{
-              handleCloseSubMenu();
-            }}>
-              <ul id="main-menu" class="m-0" >
-                {#if typeof menus != 'undefined' && menus.length > 0}
-                  {#each menus as item, i}
-                    <li
-                      class={(config.header.currentMenu == item.slug
-                        ? 'active-static'
-                        : '') +
-                        ' ' +
-                        (item.submenu.length > 0 ? 'has-submenu' : '')}
-                      id="menu-item-{item.slug}"
-                      
-                      on:mouseenter={() => {
-                        handleOpenSubMenu(item);
-                      }}
-                    >
-                      <a
-                        href={item.submenu.length
-                          ? 'javascript:void(0)'
-                          : item.link}>{item.name}</a
+              <div
+                use:hoverOutside
+                on:hover_outside={() => {
+                  handleCloseSubMenu();
+                }}
+              >
+                <ul id="main-menu" class="m-0">
+                  {#if typeof menus != 'undefined' && menus.length > 0}
+                    {#each menus as item, i}
+                      <li
+                        class={(config.header.currentMenu == item.slug
+                          ? 'active-static'
+                          : '') +
+                          ' ' +
+                          (item.submenu.length > 0 ? 'has-submenu' : '')}
+                        id="menu-item-{item.slug}"
+                        on:mouseenter={() => {
+                          handleOpenSubMenu(item);
+                        }}
                       >
-                    </li>
-                  {/each}
+                        <a
+                          href={item.submenu.length
+                            ? 'javascript:void(0)'
+                            : item.link}>{item.name}</a
+                        >
+                      </li>
+                    {/each}
+                  {/if}
+                </ul>
+                {#if tabsSubMenu && tabsSubMenu.length > 0}
+                  <OySubMenu
+                    bind:open={openSubMenu}
+                    bind:menuId={menuItemActive}
+                    tabs={tabsSubMenu}
+                    active={tabsSubMenu[0]}
+                    urlViewAll={urlViewAllSubmenu}
+                  />
                 {/if}
-              </ul>
-              {#if tabsSubMenu && tabsSubMenu.length > 0}
-                <OySubMenu
-                  bind:open={openSubMenu}
-                  bind:menuId={menuItemActive}
-                  tabs={tabsSubMenu}
-                  active={tabsSubMenu[0]}
-                  urlViewAll={urlViewAllSubmenu}
-                />
-              {/if}
               </div>
             </Section>
             <Section class="d-none m-block pr-0" align="end" toolbar>
@@ -252,11 +254,7 @@
                       openSearch = true;
                     }}
                   >
-                    <Icon component={Svg} viewBox="-4 -4 24 24">
-                      <path
-                        d="M6.684 0C3.786 0 1.218 1.867.325 4.623s.091 5.775 2.438 7.474 5.522 1.693 7.862-.016l.283-.207 3.958 3.827c.558.563 1.525-.406.965-.965l-3.956-3.83.207-.283a6.6 6.6 0 0 0 1.285-3.939h0C13.364 2.995 10.374.004 6.684 0zm0 12a5.32 5.32 0 1 1 0-10.64 5.32 5.32 0 0 1 5.32 5.32c-.003 2.937-2.383 5.317-5.32 5.32z"
-                      />
-                    </Icon>
+                    <SearchIcon />
                   </IconButton>
                   <IconButton>
                     <Icon component={Svg} viewBox="-4 -4 24 24">
@@ -473,9 +471,9 @@
     .mdc-icon-buttob {
       min-width: auto;
     }
-    .menu-wrap{
+    .menu-wrap {
       justify-content: center;
-      > div{
+      > div {
         height: 100%;
         overflow: hidden;
       }
@@ -485,49 +483,49 @@
     line-height: 0;
   }
 
-  footer {
-    .widget-title {
-      font-size: 16px;
-      line-height: 34px;
-      font-weight: 300;
-    }
-    .widget-content {
-      --mdc-typography-button-font-size: 13px;
-      --mdc-typography-button-line-height: 30px;
-      --mdc-typography-button-letter-spacing: 0.2;
-    }
-  }
+  // footer {
+  //   .widget-title {
+  //     font-size: 16px;
+  //     line-height: 34px;
+  //     font-weight: 300;
+  //   }
+  //   .widget-content {
+  //     --mdc-typography-button-font-size: 13px;
+  //     --mdc-typography-button-line-height: 30px;
+  //     --mdc-typography-button-letter-spacing: 0.2;
+  //   }
+  // }
 
-  @media screen and (max-width: 949px) {
-    footer {
-      --mdc-typography-form-font-size: 12px;
-      --mdc-typography-form-line-height: 17px;
-      --mdc-typography-form-letter-spacing: 0.05;
-      .widget-title {
-        font-size: 14px;
-        line-height: 23px;
-        letter-spacing: 0;
-      }
-      .widget-content {
-        --mdc-typography-button-font-size: 14px;
-        --mdc-typography-button-line-height: 40px;
-        --mdc-typography-button-letter-spacing: 0.2;
-        p {
-          font-size: 16px;
-          line-height: 29px;
-          letter-spacing: 0;
-        }
-      }
-    }
-    footer :global(.mdc-button) {
-      width: 170px;
-    }
-    .button-socials a {
-      padding: 10px;
-      margin-right: 30px !important;
-    }
-    .button-socials img {
-      width: 24px;
-    }
-  }
+  // @media screen and (max-width: 949px) {
+  //   footer {
+  //     --mdc-typography-form-font-size: 12px;
+  //     --mdc-typography-form-line-height: 17px;
+  //     --mdc-typography-form-letter-spacing: 0.05;
+  //     .widget-title {
+  //       font-size: 14px;
+  //       line-height: 23px;
+  //       letter-spacing: 0;
+  //     }
+  //     .widget-content {
+  //       --mdc-typography-button-font-size: 14px;
+  //       --mdc-typography-button-line-height: 40px;
+  //       --mdc-typography-button-letter-spacing: 0.2;
+  //       p {
+  //         font-size: 16px;
+  //         line-height: 29px;
+  //         letter-spacing: 0;
+  //       }
+  //     }
+  //   }
+  //   footer :global(.mdc-button) {
+  //     width: 170px;
+  //   }
+  //   .button-socials a {
+  //     padding: 10px;
+  //     margin-right: 30px !important;
+  //   }
+  //   .button-socials img {
+  //     width: 24px;
+  //   }
+  // }
 </style>

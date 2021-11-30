@@ -1,9 +1,6 @@
 import { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
-import { AdvisorPageData, AdvisorsPageData, HomePageData } from '$lib/store/pages';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { stringHelper } from '$lib/helpers';
-import { Advisor } from '$lib/store/advisor';
 
 /**
  * @type {import('@sveltejs/kit').Get}
@@ -18,8 +15,8 @@ export const get: RequestHandler = async (request: Request) => {
         userMe {
           ...userFields
         }
-        specialities {
-          ...specialityFields
+        advisorTypes {
+          ....advisorTypeFields
         }
         countries {
           ...countryFields
@@ -66,7 +63,7 @@ export const get: RequestHandler = async (request: Request) => {
         }
       }
     }
-    fragment specialityFields on speciality {
+    fragment .advisorTypeFields on AdvisorType {
       id
       name
     }

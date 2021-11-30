@@ -1,6 +1,6 @@
 <script lang="ts">
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { Exhibitable } from '$lib/store/types';
 
@@ -23,7 +23,7 @@
               {/if}
             </div>
           </div>
-          <h4 class="text-h2 mt-30 title">
+          <h4 class="text-h3 mt-30 title">
             {item.name}
           </h4>
         </div>

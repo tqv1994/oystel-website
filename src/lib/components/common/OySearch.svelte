@@ -1,7 +1,7 @@
 <script lang="ts">
   import { clickOutside } from '$lib/components/events/clickOutside.js';
-  import Textfield from '@smui/textfield/Textfield.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
+  import Textfield from '@smui/textfield';
+  import { Icon } from '@smui/common';
   import { searchKeys } from '$lib/const';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
@@ -149,8 +149,8 @@
       :global(.mdc-text-field.mdc-text-field *) {
         border-color: transparent;
       }
-      :global(.mdc-text-field.mdc-text-field--focused){
-        :global(.mdc-floating-label){
+      :global(.mdc-text-field.mdc-text-field--focused) {
+        :global(.mdc-floating-label) {
           display: none;
         }
       }

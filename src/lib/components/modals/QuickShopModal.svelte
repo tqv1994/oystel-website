@@ -1,8 +1,8 @@
 <script lang="ts">
   import IconButton from '@smui/icon-button';
-  import Icon from '@smui/common/CommonIcon.svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
+  import { Icon } from '@smui/common';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
   import Svg from '@smui/common/elements/Svg.svelte';
   import ProductSliderModal from './ProductSliderModal.svelte';
   import { productStore } from '$lib/store/product';

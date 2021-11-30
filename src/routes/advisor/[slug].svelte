@@ -1,12 +1,12 @@
 <script context="module" lang="ts">
   import type { Load } from '@sveltejs/kit';
   import { onMount, afterUpdate, beforeUpdate } from 'svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import IconButton from '@smui/icon-button';
+  import { Icon } from '@smui/common';
   import Svg from '@smui/common/elements/Svg.svelte';
   import { documentHelper, stringHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
@@ -29,8 +29,8 @@
       let destinationOfType1: Destination[] = [];
       const destinationOfType2: Destination[] = [];
       const destinationOfType3: Destination[] = [];
-      for(let destination of (data.destinations || [])){
-        switch(destination.type?.id){
+      for (let destination of data.destinations || []) {
+        switch (destination.type?.id) {
           case data.destinationTypes1?.id:
             destinationOfType1.push(destination);
             break;
@@ -43,7 +43,14 @@
         }
       }
       insertToStore(advisorStore, [data]);
-      return { props: { id, destinationOfType1, destinationOfType2, destinationOfType3 } };
+      return {
+        props: {
+          id,
+          destinationOfType1,
+          destinationOfType2,
+          destinationOfType3,
+        },
+      };
     } else {
       const error = await res.json();
       console.log(error);
@@ -74,22 +81,21 @@
   onMount(async () => {});
 
   function onScrollFixedContactInfo() {
-    const classList = document.querySelector('.contact-info')?.classList;
-    const footer = document.querySelector('footer');
-
-    if (
-      document.documentElement.clientWidth >= 950 &&
-      (document.body.scrollTop > 100 ||
-        document.documentElement.scrollTop > 100)
-    ) {
-      classList?.add('fixed');
-      documentHelper.checkOffset(
-        document.querySelector('.contact-info'),
-        footer,
-      );
-    } else {
-      classList?.remove('fixed');
-    }
+    // const classList = document.querySelector('.contact-info')?.classList;
+    // const footer = document.querySelector('footer');
+    // if (
+    //   document.documentElement.clientWidth >= 950 &&
+    //   (document.body.scrollTop > 100 ||
+    //     document.documentElement.scrollTop > 100)
+    // ) {
+    //   classList?.add('fixed');
+    //   documentHelper.checkOffset(
+    //     document.querySelector('.contact-info'),
+    //     footer,
+    //   );
+    // } else {
+    //   classList?.remove('fixed');
+    // }
   }
 </script>
 
@@ -101,405 +107,393 @@
     onScrollFixedContactInfo();
   }}
 />
-<Layout config={configPage}>
-  {#if advisor}
-    <div class="content d-mt-25">
-      <section
-        class="header-title full-width"
-        style="background-image: url(/img/advisors/detail-advisor-banner.jpg)"
-      >
-        <div class="content-wrap m-none">
-          <div class="container">
-            <div
-              class="contact-info d-p-45 d-pt-80 d-pb-85 t-pt-80 t-pb-85 m-pt-30 m-pb-45"
-            >
-              <IconButton class="btn-share d-none t-none m-block">
-                <Icon component={Svg} viewBox="0 0 16.833 24.384">
-                  <g
-                    id="Group_439"
-                    data-name="Group 439"
-                    transform="translate(-1661.127 -152.323)"
-                  >
-                    <path
-                      id="Path_319"
-                      data-name="Path 319"
-                      d="M156.364-5869.48l4.489-4.489,4.489,4.489"
-                      transform="translate(1508.69 6027)"
-                      fill="none"
-                      stroke="#000"
-                      stroke-width="1"
-                    />
-                    <g id="Group_438" data-name="Group 438">
-                      <path
-                        id="Path_318"
-                        data-name="Path 318"
-                        d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
-                        transform="translate(1510.927 6027.899)"
-                        fill="none"
-                        stroke="#000"
-                        stroke-width="1"
-                      />
-                      <path
-                        id="Path_320"
-                        data-name="Path 320"
-                        d="M161.543-5858.913v-14.377"
-                        transform="translate(1508 6027)"
-                        fill="none"
-                        stroke="#000"
-                        stroke-width="1"
-                      />
-                    </g>
-                  </g>
-                </Icon>
-              </IconButton>
-              <LayoutGrid class="p-0">
-                <Cell
-                  spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
-                  class="text-left"
-                >
-                  <div class="thumbnail">
-                    <div class="image-cover" style="padding-top: 100%">
-                      <BlurImage {...advisor.avatar} />
-                    </div>
-                  </div>
-                </Cell>
-                <Cell
-                  spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
-                  class="text-right t-block m-none"
-                >
-                  <IconButton class="btn-share">
-                    <Icon component={Svg} viewBox="0 0 16.833 24.384">
-                      <g
-                        id="Group_439"
-                        data-name="Group 439"
-                        transform="translate(-1661.127 -152.323)"
-                      >
-                        <path
-                          id="Path_319"
-                          data-name="Path 319"
-                          d="M156.364-5869.48l4.489-4.489,4.489,4.489"
-                          transform="translate(1508.69 6027)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                        <g id="Group_438" data-name="Group 438">
-                          <path
-                            id="Path_318"
-                            data-name="Path 318"
-                            d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
-                            transform="translate(1510.927 6027.899)"
-                            fill="none"
-                            stroke="#000"
-                            stroke-width="1"
-                          />
-                          <path
-                            id="Path_320"
-                            data-name="Path 320"
-                            d="M161.543-5858.913v-14.377"
-                            transform="translate(1508 6027)"
-                            fill="none"
-                            stroke="#000"
-                            stroke-width="1"
-                          />
-                        </g>
-                      </g>
-                    </Icon>
-                  </IconButton>
-                </Cell>
-              </LayoutGrid>
-              <h1 class="mt-30 mb-10">
-                {advisor && advisor.name}
-              </h1>
-              <p class="mt-0 d-mb-25 m-mb-20 description">
-                {@html advisor.description || ''}
-              </p>
-              <h4 class="mt-0 d-mb-55 m-mb-40">
-                Advisor | {advisor.country?.name || ''}
-              </h4>
-              <Button variant="outlined" class="hover-affect"
-                ><Label>Contact Me</Label></Button
-              >
-            </div>
-          </div>
-        </div>
-      </section>
-      <section id="contact-info-mobile" class="d-none m-block">
-        <div class="content-wrap">
-          <div class="container">
-            <div
-              class="contact-info d-p-45 d-pt-80 d-pb-85 t-pt-80 t-pb-85 m-pt-30 m-pb-45"
-            >
-              <IconButton class="btn-share d-none t-none m-block">
-                <Icon component={Svg} viewBox="0 0 16.833 24.384">
-                  <g
-                    id="Group_439"
-                    data-name="Group 439"
-                    transform="translate(-1661.127 -152.323)"
-                  >
-                    <path
-                      id="Path_319"
-                      data-name="Path 319"
-                      d="M156.364-5869.48l4.489-4.489,4.489,4.489"
-                      transform="translate(1508.69 6027)"
-                      fill="none"
-                      stroke="#000"
-                      stroke-width="1"
-                    />
-                    <g id="Group_438" data-name="Group 438">
-                      <path
-                        id="Path_318"
-                        data-name="Path 318"
-                        d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
-                        transform="translate(1510.927 6027.899)"
-                        fill="none"
-                        stroke="#000"
-                        stroke-width="1"
-                      />
-                      <path
-                        id="Path_320"
-                        data-name="Path 320"
-                        d="M161.543-5858.913v-14.377"
-                        transform="translate(1508 6027)"
-                        fill="none"
-                        stroke="#000"
-                        stroke-width="1"
-                      />
-                    </g>
-                  </g>
-                </Icon>
-              </IconButton>
-              <LayoutGrid class="p-0">
-                <Cell
-                  spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
-                  class="text-left"
-                >
-                  <div class="thumbnail">
-                    <div class="image-cover" style="padding-top: 100%">
-                      <BlurImage {...advisor.avatar} />
-                    </div>
-                  </div>
-                </Cell>
-                <Cell
-                  spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
-                  class="text-center t-block m-none"
-                >
-                  <IconButton class="btn-share">
-                    <Icon component={Svg} viewBox="0 0 16.833 24.384">
-                      <g
-                        id="Group_439"
-                        data-name="Group 439"
-                        transform="translate(-1661.127 -152.323)"
-                      >
-                        <path
-                          id="Path_319"
-                          data-name="Path 319"
-                          d="M156.364-5869.48l4.489-4.489,4.489,4.489"
-                          transform="translate(1508.69 6027)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                        <g id="Group_438" data-name="Group 438">
-                          <path
-                            id="Path_318"
-                            data-name="Path 318"
-                            d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
-                            transform="translate(1510.927 6027.899)"
-                            fill="none"
-                            stroke="#000"
-                            stroke-width="1"
-                          />
-                          <path
-                            id="Path_320"
-                            data-name="Path 320"
-                            d="M161.543-5858.913v-14.377"
-                            transform="translate(1508 6027)"
-                            fill="none"
-                            stroke="#000"
-                            stroke-width="1"
-                          />
-                        </g>
-                      </g>
-                    </Icon>
-                  </IconButton>
-                </Cell>
-              </LayoutGrid>
-              <h1 class="mt-30 mb-10">
-                {advisor.name}
-              </h1>
-              <p class="mt-0 d-mb-25 m-mb-20 description">
-                {@html advisor.description || ''}
-              </p>
-              <h4 class="mt-0 d-mb-55 m-mb-40">
-                Advisor | {advisor.address ? advisor.address.line1 : ''}
-              </h4>
-              <Button variant="outlined" class="hover-affect"
-                ><Label>Contact Me</Label></Button
-              >
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="d-pt-80 d-pb-100 m-pt-55 m-pb-80">
+{#if advisor}
+  <div class="content d-mt-25 advisor-detail">
+    <section
+      class="header-title full-width"
+      style="background-image: url(/img/advisors/detail-advisor-banner.jpg)"
+    >
+      <div class="content-wrap m-none">
         <div class="container">
-          <LayoutGrid class="p-0 d-pl-105 d-pr-105 t-pl-0 t-pr-0">
-            <Cell spanDevices={{ desktop: 6 }} class="m-none t-block" />
-            <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
-              <div class="destinations-wrap">
-                <h1 class="mt-0">Destinations</h1>
-                <LayoutGrid class="p-0">
-                  {#if advisor.destinationTypes1 || advisor.destinationTypes2}
-                    <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
-                      {#if advisor.destinationTypes1}
-                        <div class="mb-30">
-                          <h5 class="mb-10 mt-0">
-                            {advisor.destinationTypes1.name}
-                          </h5>
-                          {#each (destinationOfType1 || []) as destination, indexChild}
-                                <p
-                                  class={indexChild + 1 < destinationOfType1.length
-                                    ? 'mb-10 mt-0'
-                                    : 'm-0'}
-                                >
-                                  {destination.name}
-                                </p>
-                              {/each}
-                        </div>
-                      {/if}
-                      {#if advisor.destinationTypes2}
-                        <div class="mb-0">
-                          <h5 class="mb-10 mt-0">
-                            {advisor.destinationTypes2.name}
-                          </h5>
-                          {#each destinationOfType2 || [] as destination, indexChild}
-                                <p
-                                  class={indexChild + 1 < destinationOfType2.length
-                                    ? 'mb-10 mt-0'
-                                    : 'm-0'}
-                                >
-                                  {destination.name}
-                                </p>
-                              {/each}
-                        </div>
-                      {/if}
-                    </Cell>
-                    {#if advisor.destinationTypes3}
-                      <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
-                        <div class="mb-0">
-                          <h5 class="mb-15 mt-0">
-                            {advisor.destinationTypes3.name}
-                          </h5>
-                          {#each destinationOfType3 || [] as destination, indexChild}
-                                    <p
-                                    class={indexChild + 1 < destinationOfType2.length
-                                        ? 'mb-10 mt-0'
-                                        : 'm-0'}
-                                    >
-                                    {destination.name}
-                                    </p>
-                                {/each}
-                        </div>
-                      </Cell>
-                    {/if}
-                  {/if}
-                </LayoutGrid>
-              </div>
-              <div class="pt-90 m-pt-80">
-                <h1 class="mt-0">My Recent Trips</h1>
-                <p class="mt-0 mb-30 text-eyebrow">Travel Advisor Insight</p>
-                <p class="mt-0 d-mb-50 m-mb-45">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem
-                  ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
-                <LayoutGrid class="p-0">
-                  {#if advisor.experiences && advisor.experiences.length > 0}
-                    {#each advisor.experiences as item}
-                      <Cell
-                        spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}
-                        class="d-mb-20 m-mb-25"
-                      >
-                        <a href={makeLink('/experience', item)}>
-                          <div class="trip-item">
-                            <div class="thumbnail">
-                              <div
-                                class="image-cover"
-                                style="padding-top: calc(335 / 258 * 100%)"
-                              >
-                                <BlurImage {...item.gallery[0]} />
-                              </div>
-                            </div>
-                            <LayoutGrid class="p-0">
-                              <Cell
-                                spanDevices={{
-                                  desktop: 12,
-                                  phone: 4,
-                                  tablet: 8,
-                                }}
-                                ><p
-                                  class="text-eyebrow text-left d-mt-25 d-mb-25 m-mt-15 m-mb-15"
-                                >
-                                  {item.country ? item.country.name : 'country'}
-                                </p></Cell
-                              >
-                            </LayoutGrid>
-                            <div class="divider" />
-                            <h4 class="text-h2 title mt-25 mb-0">
-                              {item.name}
-                            </h4>
-                          </div>
-                        </a>
-                      </Cell>
-                    {/each}
-                  {/if}
-                </LayoutGrid>
-              </div>
-              <div class="d-pt-80 m-pt-20 qualifications-wrap">
-                <h1 class="mt-0">Qualifications</h1>
-                <p class="title mt-0 mb-30 label-specialities">Specialties</p>
-                <p class="text-content mt-0 mb-55">
-                  {implodeString(
-                    [
-                      advisor.speciality1?.name,
-                      advisor.speciality2?.name,
-                      advisor.speciality3?.name,
-                    ],
-                    ', ',
-                  )}
-                </p>
-                <p class="title mt-0 mb-30">Languages</p>
-                <p class="text-content mt-0">
-                  {implodeString(
-                    [
-                      advisor.language1?.name,
-                      advisor.language2?.name,
-                      advisor.language3?.name,
-                    ],
-                    ', ',
-                  )}
-                </p>
-              </div>
-            </Cell>
-          </LayoutGrid>
+          <div
+            class="contact-info d-p-45 d-pt-80 d-pb-85 t-pt-80 t-pb-85 m-pt-30 m-pb-45"
+          >
+            <IconButton class="btn-share d-none t-none m-block">
+              <Icon component={Svg} viewBox="0 0 16.833 24.384">
+                <g
+                  id="Group_439"
+                  data-name="Group 439"
+                  transform="translate(-1661.127 -152.323)"
+                >
+                  <path
+                    id="Path_319"
+                    data-name="Path 319"
+                    d="M156.364-5869.48l4.489-4.489,4.489,4.489"
+                    transform="translate(1508.69 6027)"
+                    fill="none"
+                    stroke="#000"
+                    stroke-width="1"
+                  />
+                  <g id="Group_438" data-name="Group 438">
+                    <path
+                      id="Path_318"
+                      data-name="Path 318"
+                      d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
+                      transform="translate(1510.927 6027.899)"
+                      fill="none"
+                      stroke="#000"
+                      stroke-width="1"
+                    />
+                    <path
+                      id="Path_320"
+                      data-name="Path 320"
+                      d="M161.543-5858.913v-14.377"
+                      transform="translate(1508 6027)"
+                      fill="none"
+                      stroke="#000"
+                      stroke-width="1"
+                    />
+                  </g>
+                </g>
+              </Icon>
+            </IconButton>
+            <LayoutGrid class="p-0">
+              <Cell
+                spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
+                class="text-left"
+              >
+                <div class="thumbnail">
+                  <div class="image-cover" style="padding-top: 100%">
+                    <BlurImage {...advisor.avatar} />
+                  </div>
+                </div>
+              </Cell>
+              <Cell
+                spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
+                class="text-right t-block m-none"
+              >
+                <IconButton class="btn-share">
+                  <Icon component={Svg} viewBox="0 0 16.833 24.384">
+                    <g
+                      id="Group_439"
+                      data-name="Group 439"
+                      transform="translate(-1661.127 -152.323)"
+                    >
+                      <path
+                        id="Path_319"
+                        data-name="Path 319"
+                        d="M156.364-5869.48l4.489-4.489,4.489,4.489"
+                        transform="translate(1508.69 6027)"
+                        fill="none"
+                        stroke="#000"
+                        stroke-width="1"
+                      />
+                      <g id="Group_438" data-name="Group 438">
+                        <path
+                          id="Path_318"
+                          data-name="Path 318"
+                          d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
+                          transform="translate(1510.927 6027.899)"
+                          fill="none"
+                          stroke="#000"
+                          stroke-width="1"
+                        />
+                        <path
+                          id="Path_320"
+                          data-name="Path 320"
+                          d="M161.543-5858.913v-14.377"
+                          transform="translate(1508 6027)"
+                          fill="none"
+                          stroke="#000"
+                          stroke-width="1"
+                        />
+                      </g>
+                    </g>
+                  </Icon>
+                </IconButton>
+              </Cell>
+            </LayoutGrid>
+            <h1 class="mt-30 mb-10">
+              {advisor && advisor.name}
+            </h1>
+            <p class="mt-0 d-mb-25 m-mb-20 description">
+              {@html advisor.description || ''}
+            </p>
+            <h4 class="mt-0 d-mb-55 m-mb-40">
+              Advisor | {advisor.country?.name || ''}
+            </h4>
+            <Button variant="outlined" class="hover-affect"
+              ><Label>Contact Me</Label></Button
+            >
+          </div>
         </div>
-      </section>
-    </div>
-  {/if}
-</Layout>
+      </div>
+    </section>
+    <section id="contact-info-mobile" class="d-none m-block">
+      <div class="content-wrap">
+        <div class="container">
+          <div
+            class="contact-info d-p-45 d-pt-80 d-pb-85 t-pt-80 t-pb-85 m-pt-30 m-pb-45"
+          >
+            <IconButton class="btn-share d-none t-none m-block">
+              <Icon component={Svg} viewBox="0 0 16.833 24.384">
+                <g
+                  id="Group_439"
+                  data-name="Group 439"
+                  transform="translate(-1661.127 -152.323)"
+                >
+                  <path
+                    id="Path_319"
+                    data-name="Path 319"
+                    d="M156.364-5869.48l4.489-4.489,4.489,4.489"
+                    transform="translate(1508.69 6027)"
+                    fill="none"
+                    stroke="#000"
+                    stroke-width="1"
+                  />
+                  <g id="Group_438" data-name="Group 438">
+                    <path
+                      id="Path_318"
+                      data-name="Path 318"
+                      d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
+                      transform="translate(1510.927 6027.899)"
+                      fill="none"
+                      stroke="#000"
+                      stroke-width="1"
+                    />
+                    <path
+                      id="Path_320"
+                      data-name="Path 320"
+                      d="M161.543-5858.913v-14.377"
+                      transform="translate(1508 6027)"
+                      fill="none"
+                      stroke="#000"
+                      stroke-width="1"
+                    />
+                  </g>
+                </g>
+              </Icon>
+            </IconButton>
+            <LayoutGrid class="p-0">
+              <Cell
+                spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
+                class="text-left"
+              >
+                <div class="thumbnail">
+                  <div class="image-cover" style="padding-top: 100%">
+                    <BlurImage {...advisor.avatar} />
+                  </div>
+                </div>
+              </Cell>
+              <Cell
+                spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
+                class="text-center t-block m-none"
+              >
+                <IconButton class="btn-share">
+                  <Icon component={Svg} viewBox="0 0 16.833 24.384">
+                    <g
+                      id="Group_439"
+                      data-name="Group 439"
+                      transform="translate(-1661.127 -152.323)"
+                    >
+                      <path
+                        id="Path_319"
+                        data-name="Path 319"
+                        d="M156.364-5869.48l4.489-4.489,4.489,4.489"
+                        transform="translate(1508.69 6027)"
+                        fill="none"
+                        stroke="#000"
+                        stroke-width="1"
+                      />
+                      <g id="Group_438" data-name="Group 438">
+                        <path
+                          id="Path_318"
+                          data-name="Path 318"
+                          d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
+                          transform="translate(1510.927 6027.899)"
+                          fill="none"
+                          stroke="#000"
+                          stroke-width="1"
+                        />
+                        <path
+                          id="Path_320"
+                          data-name="Path 320"
+                          d="M161.543-5858.913v-14.377"
+                          transform="translate(1508 6027)"
+                          fill="none"
+                          stroke="#000"
+                          stroke-width="1"
+                        />
+                      </g>
+                    </g>
+                  </Icon>
+                </IconButton>
+              </Cell>
+            </LayoutGrid>
+            <h1 class="mt-30 mb-10">
+              {advisor.name}
+            </h1>
+            <p class="mt-0 d-mb-25 m-mb-20 description">
+              {@html advisor.description || ''}
+            </p>
+            <h4 class="mt-0 d-mb-55 m-mb-40">
+              Advisor | {advisor.address ? advisor.address.line1 : ''}
+            </h4>
+            <Button variant="outlined" class="hover-affect"
+              ><Label>Contact Me</Label></Button
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="d-pt-80 d-pb-100 m-pt-55 m-pb-80">
+      <div class="container">
+        <LayoutGrid class="p-0 d-pl-105 d-pr-105 t-pl-0 t-pr-0">
+          <Cell spanDevices={{ desktop: 6 }} class="m-none t-block" />
+          <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
+            <div class="destinations-wrap">
+              <h1 class="mt-0">Destinations</h1>
+              <LayoutGrid class="p-0">
+                {#if advisor.destinationTypes1 || advisor.destinationTypes2}
+                  <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
+                    {#if advisor.destinationTypes1}
+                      <div class="mb-30">
+                        <h5 class="mb-10 mt-0">
+                          {advisor.destinationTypes1.name}
+                        </h5>
+                        {#each destinationOfType1 || [] as destination, indexChild}
+                          <p
+                            class={indexChild + 1 < destinationOfType1.length
+                              ? 'mb-10 mt-0'
+                              : 'm-0'}
+                          >
+                            {destination.name}
+                          </p>
+                        {/each}
+                      </div>
+                    {/if}
+                    {#if advisor.destinationTypes2}
+                      <div class="mb-0">
+                        <h5 class="mb-10 mt-0">
+                          {advisor.destinationTypes2.name}
+                        </h5>
+                        {#each destinationOfType2 || [] as destination, indexChild}
+                          <p
+                            class={indexChild + 1 < destinationOfType2.length
+                              ? 'mb-10 mt-0'
+                              : 'm-0'}
+                          >
+                            {destination.name}
+                          </p>
+                        {/each}
+                      </div>
+                    {/if}
+                  </Cell>
+                  {#if advisor.destinationTypes3}
+                    <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
+                      <div class="mb-0">
+                        <h5 class="mb-15 mt-0">
+                          {advisor.destinationTypes3.name}
+                        </h5>
+                        {#each destinationOfType3 || [] as destination, indexChild}
+                          <p
+                            class={indexChild + 1 < destinationOfType2.length
+                              ? 'mb-10 mt-0'
+                              : 'm-0'}
+                          >
+                            {destination.name}
+                          </p>
+                        {/each}
+                      </div>
+                    </Cell>
+                  {/if}
+                {/if}
+              </LayoutGrid>
+            </div>
+            <div class="pt-90 m-pt-80">
+              <h1 class="mt-0">My Recent Trips</h1>
+              <p class="mt-0 mb-30 text-eyebrow">Travel Advisor Insight</p>
+              <p class="mt-0 d-mb-50 m-mb-45">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem
+                ipsum dolor sit amet, consectetur adipiscing elit.
+              </p>
+              <LayoutGrid class="p-0">
+                {#if advisor.experiences && advisor.experiences.length > 0}
+                  {#each advisor.experiences as item}
+                    <Cell
+                      spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}
+                      class="d-mb-20 m-mb-25"
+                    >
+                      <a href={makeLink('/experience', item)}>
+                        <div class="trip-item">
+                          <div class="thumbnail">
+                            <div
+                              class="image-cover"
+                              style="padding-top: calc(335 / 258 * 100%)"
+                            >
+                              <BlurImage {...item.gallery[0]} />
+                            </div>
+                          </div>
+                          <LayoutGrid class="p-0">
+                            <Cell
+                              spanDevices={{
+                                desktop: 12,
+                                phone: 4,
+                                tablet: 8,
+                              }}
+                              ><p
+                                class="text-eyebrow text-left d-mt-25 d-mb-25 m-mt-15 m-mb-15"
+                              >
+                                {item.country ? item.country.name : 'country'}
+                              </p></Cell
+                            >
+                          </LayoutGrid>
+                          <div class="divider" />
+                          <h4 class="text-h3 title mt-25 mb-0">
+                            {item.name}
+                          </h4>
+                        </div>
+                      </a>
+                    </Cell>
+                  {/each}
+                {/if}
+              </LayoutGrid>
+            </div>
+            <div class="d-pt-80 m-pt-20 qualifications-wrap">
+              <h1 class="mt-0">Qualifications</h1>
+              <p class="title mt-0 mb-30 label-specialities">Specialties</p>
+              <p class="text-content mt-0 mb-55">
+                {implodeString(
+                  [
+                    advisor.type1?.name,
+                    advisor.type2?.name,
+                    advisor.type3?.name,
+                  ],
+                  ', ',
+                )}
+              </p>
+              <p class="title mt-0 mb-30">Languages</p>
+              <p class="text-content mt-0">
+                {implodeString(
+                  [
+                    advisor.language1?.name,
+                    advisor.language2?.name,
+                    advisor.language3?.name,
+                  ],
+                  ', ',
+                )}
+              </p>
+            </div>
+          </Cell>
+        </LayoutGrid>
+      </div>
+    </section>
+  </div>
+{/if}
 
 <style lang="scss" global>
-  $desktop-width: 950px;
-  @mixin mobile {
-    @media (max-width: #{$desktop-width - 1px}) {
-      @content;
-    }
-  }
-  @mixin desktop {
-    @media (min-width: #{$desktop-width}) {
-      @content;
-    }
-  }
-  .page-advisor-detail {
+   @use '../../theme/mixins';
+  .advisor-detail {
     @import './src/style/partial/thumbnail.scss';
     .header-title {
       height: 100vh;
@@ -509,9 +503,10 @@
     }
     .contact-info {
       --mdc-typography-button-font-size: 16px;
-      top: 80px;
+      top: 50%;
+      transform: translateY(-50%);
       position: absolute;
-      @include mobile {
+      @include mixins.mobile {
         position: relative;
         top: auto;
         left: auto;
@@ -583,7 +578,7 @@
       --mdc-typography-body1-font-size: 17px;
     }
 
-    @include mobile {
+    @include mixins.mobile {
       .header-title {
         height: auto;
         padding-bottom: 82.67%;

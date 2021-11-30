@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
-  import Select from '@smui/select/Select.svelte';
-  import Option from '@smui/select/Option.svelte';
+  import Select from '@smui/select';
+  import { Option } from '@smui/select';
   import { Nameable } from '$lib/store/types';
 
   export type DropdownValue<T extends Nameable> = {

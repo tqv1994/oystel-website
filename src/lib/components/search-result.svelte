@@ -1,8 +1,8 @@
 <script lang="ts" context="module">
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import IconButton from '@smui/icon-button';
+  import { Icon } from '@smui/common';
   import Svg from '@smui/common/elements/Svg.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { makeLink } from '$lib/utils/link';
@@ -12,7 +12,7 @@
   import { Product } from '$lib/store/product';
   import { Destination } from '$lib/store/destination';
   import { Experience } from '$lib/store/experience';
-  import Item  from '$lib/components/Item.svelte';
+  import Item from '$lib/components/Item.svelte';
 </script>
 
 <script lang="ts">
@@ -26,8 +26,11 @@
   export let showHeadings: boolean = true;
   function callLikeItem(event: CustomEvent) {
     setTimeout(() => {
-      if(event.detail.group_id && event.detail.key){
-        dispathcher('likeItem', { group_id:event.detail.group_id, key: event.detail.key });
+      if (event.detail.group_id && event.detail.key) {
+        dispathcher('likeItem', {
+          group_id: event.detail.group_id,
+          key: event.detail.key,
+        });
       }
     }, 0);
   }
@@ -51,7 +54,14 @@
         <LayoutGrid class="p-0">
           {#each groups[cat.id].items as d, index}
             <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-              <Item bind:pathPrefix bind:item={d} group_id={cat.id} key={index} on:likeItem={callLikeItem} />
+              <Item
+                {...d}
+                bind:pathPrefix
+                bind:item={d}
+                group_id={cat.id}
+                key={index}
+                on:likeItem={callLikeItem}
+              />
             </Cell>
           {/each}
           {#if groups[cat.id].hasMore}
@@ -75,12 +85,7 @@
 {/each}
 
 <style lang="scss">
-  $desktop-width: 950px;
-  @mixin mobile {
-    @media (max-width: #{$desktop-width - 1px}) {
-      @content;
-    }
-  }
+  @use '../../theme/mixins';
 
   /* Section title */
   .section-title .title {
@@ -115,7 +120,7 @@
     top: 5px;
   }
 
-  @include mobile {
+  @include mixins.mobile {
     .section-title .title:after {
       margin-left: 20px;
     }

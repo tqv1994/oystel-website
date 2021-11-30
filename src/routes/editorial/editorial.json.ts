@@ -1,34 +1,59 @@
 import { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Experience, experienceFieldsFragment } from '$lib/store/experience';
+import { experienceFieldsFragment, experienceGalleryFieldsFragment } from '$lib/store/experience';
 import { countryFieldsFragment } from '$lib/store/country';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
+import { dropFieldsFragment, dropGalleryFieldsFragment } from '$lib/store/drop';
+import { destinationFieldsFragment, destinationGalleryFieldsFragment } from '$lib/store/destination';
+import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
+import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
+import { productFieldsFragment } from '$lib/store/product';
+import { bannerFieldsFragment } from '$lib/store/banner';
+import { actionFieldsFragment } from '$lib/store/action';
+import { pageFieldsFragment, PageQueryResult } from '$lib/store/page';
 
-export type EditorialPageData = {
-  experiences: Experience[];
+
+type QueryResult = {
+  editorialPage: PageQueryResult;
 };
 
 const query = `query {
-  experiences(limit: 7, sort: "published_at:desc") {
-    ...experienceFields
+  editorialPage {
+    page {
+      ...pageFields
+    }
   }
 }
+${dropFieldsFragment}
 ${experienceFieldsFragment}
+${destinationFieldsFragment}
+${experienceTypeFieldsFragment}
+${destinationTypeFieldsFragment}
 ${countryFieldsFragment}
+${productFieldsFragment}
 ${uploadFileFieldsFragment}
+${dropGalleryFieldsFragment}
+${experienceGalleryFieldsFragment}
+${destinationGalleryFieldsFragment}
+${bannerFieldsFragment}
+${actionFieldsFragment}
+${pageFieldsFragment}
 `;
+
+export type EditorialPageData = PageQueryResult;
 
 /**
  * @type {import('@sveltejs/kit').Get}
  */
 export const get: RequestHandler = async (request: Request) => {
+  // console.log(query)
   try {
     const client = createGraphClientFromRequest(request);
-    const res = await client.query<EditorialPageData>(query).toPromise();
+    const res = await client.query<QueryResult>(query).toPromise();
     if (res.data) {
       return {
-        body: JSON.stringify(res.data),
+        body: JSON.stringify(res.data.editorialPage),
       };
     }
     if (res.error) {

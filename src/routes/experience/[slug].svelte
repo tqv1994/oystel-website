@@ -1,12 +1,12 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import InnerGrid from '@smui/layout-grid/InnerGrid.svelte';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import InnerGrid from '@smui/layout-grid';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import IconButton from '@smui/icon-button';
+  import { Icon } from '@smui/common';
   import Svg from '@smui/common/elements/Svg.svelte';
   import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
@@ -26,6 +26,7 @@
   import { DestinationLikeData } from '../destination/like.json';
   import { ProductLikeData } from '../product/like.json';
   import Item from '$lib/components/Item.svelte';
+  import Carousel from '$lib/components/Carousel.svelte';
 
   export const load: Load = async ({ fetch, session, page }) => {
     const id = parseId(page.params.slug);
@@ -62,6 +63,8 @@
 </script>
 
 <script type="ts">
+  import DetailSlide from '$lib/components/DetailSlide.svelte';
+
   let configPage = {
     header: {
       page: 'experience-detail',
@@ -216,28 +219,28 @@
   }
 
   function onScrollFixedHeader() {
-    const header = document.getElementById('header');
-    const headerTitle = document.querySelector('.header-title.is_sticky');
-    if (header && headerTitle) {
-      if (document.documentElement.clientWidth > 949) {
-        if (
-          document.body.scrollTop > 900 ||
-          document.documentElement.scrollTop > 900
-        ) {
-          header.classList.add('fixed');
-          header.style.setProperty('z-index','100','important');
-          headerTitle.classList.add('show');
-        } else {
-          header.classList.remove('fixed');
-          header.style.setProperty('z-index','');
-          headerTitle.classList.remove('show');
-        }
-      } else {
-        header.classList.remove('fixed');
-        header.style.setProperty('z-index','');
-        headerTitle.classList.remove('show');
-      }
-    }
+    // const header = document.getElementById('header');
+    // const headerTitle = document.querySelector('.header-title.is_sticky');
+    // if (header && headerTitle) {
+    //   if (document.documentElement.clientWidth > 949) {
+    //     if (
+    //       document.body.scrollTop > 900 ||
+    //       document.documentElement.scrollTop > 900
+    //     ) {
+    //       header.classList.add('fixed');
+    //       header.style.setProperty('z-index', '100', 'important');
+    //       headerTitle.classList.add('show');
+    //     } else {
+    //       header.classList.remove('fixed');
+    //       header.style.setProperty('z-index', '');
+    //       headerTitle.classList.remove('show');
+    //     }
+    //   } else {
+    //     header.classList.remove('fixed');
+    //     header.style.setProperty('z-index', '');
+    //     headerTitle.classList.remove('show');
+    //   }
+    // }
   }
 </script>
 
@@ -246,259 +249,33 @@
     onScrollFixedHeader();
   }}
 />
-<Layout config={configPage}>
-  {#if experience}
-    <div class="content experience-detail d-pb-100">
-      <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-60 full-width">
-        <div class="content-wrap">
-          <div class="container">
-            <LayoutGrid class="p-0 hidden-on-sticky">
-              <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
-                <div class="experience-detail-image">
-                  <div class="image-cover" style="padding-top: 0; height: 90vh">
-                    <BlurImage {...experience?.gallery[0]} />
-                  </div>
-                </div>
-              </Cell>
-              <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
-                <div class="d-pt-25-vh m-pt-45">
-                  <p class="text-eyebrow m-m-0">{experience?.country.name}</p>
-                  <h1 class="m-mt-30 m-mb-15">{experience?.name}</h1>
-                  <p class="mb-30 short-description m-mt-0">
-                    {experience.intro ? experience.intro : ''}
-                  </p>
-                  <Button variant="outlined" class="mb-15"
-                    ><Label>Find My Advisor</Label></Button
-                  >
-                  <br />
-                  <Button variant="outlined"><Label>What to Pack</Label></Button
-                  >
-                </div>
-                <div class="action-buttons m-none">
-                  <IconButton>
-                    <Icon component={Svg} viewBox="0 0 13.246 19.134">
-                      <g
-                        id="Icon_-_Share"
-                        data-name="Icon - Share"
-                        transform="translate(0.5 1.233)"
-                      >
-                        <path
-                          id="Path_318"
-                          data-name="Path 318"
-                          d="M153.689-5867H150.7v11.841h12.246V-5867h-2.889"
-                          transform="translate(-150.699 5872.56)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                        <path
-                          id="Path_320"
-                          data-name="Path 320"
-                          d="M161.543-5862.169v-11.12"
-                          transform="translate(-155.42 5873.29)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                        <path
-                          id="Line"
-                          d="M156.364-5870.5l3.472-3.473,3.472,3.473"
-                          transform="translate(-153.713 5873.443)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                      </g>
-                    </Icon>
-                  </IconButton>
-                  <IconButton
-                    class="btn-favorite {experience.liked ? 'liked' : ''}"
-                    on:click={likeExperience}
-                  >
-                    <Icon
-                      class="like"
-                      component={Svg}
-                      viewBox="0 0 16.249 14.588"
-                    >
-                      <g
-                        data-name="Icon - Heart"
-                        transform="translate(0.125 0.125)"
-                      >
-                        <path
-                          id="Heart_Off"
-                          data-name="Heart Off"
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.8,4.8,0,0,0,7.943,1.769,4.789,4.789,0,0,0,4.726.146H4.579A4.528,4.528,0,0,0,0,4.579c-.089,2.3,1.438,4.236,2.6,5.5A25.674,25.674,0,0,0,7.78,14.236a.775.775,0,0,0,.805-.021A25.736,25.736,0,0,0,13.6,9.846c1.107-1.308,2.558-3.313,2.384-5.6A4.536,4.536,0,0,0,11.453,0m0,1.367a3.2,3.2,0,0,1,3.2,2.985c.135,1.776-1.113,3.474-2.062,4.6a24.721,24.721,0,0,1-4.44,3.924A24.207,24.207,0,0,1,3.569,9.138c-.991-1.081-2.3-2.724-2.234-4.506a3.161,3.161,0,0,1,3.237-3.12h.115a3.48,3.48,0,0,1,2.3,1.209l1,1.053.955-1.093a3.485,3.485,0,0,1,2.261-1.3c.084-.008.17-.01.255-.01"
-                          transform="translate(0.001)"
-                          stroke="#f0f7f8"
-                          stroke-width="0.25"
-                          fill-rule="evenodd"
-                        />
-                      </g>
-                    </Icon>
-                    <Icon
-                      class="liked"
-                      component={Svg}
-                      viewBox="0 0 16.249 14.588"
-                    >
-                      <path
-                        d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                        transform="translate(0)"
-                        fill="#000"
-                        fill-rule="evenodd"
-                      />
-                    </Icon>
-                  </IconButton>
-                </div>
-              </Cell>
-            </LayoutGrid>
-          </div>
-        </div>
-      </section>
-      <section
-        class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-60 full-width is_sticky fixed m-none"
-      >
-        <div class="content-wrap">
-          <div class="container">
-            <LayoutGrid class="p-0 show-on-sticky m-none">
-              <Cell spanDevices={{ desktop: 8 }}
-                ><div>
-                  <span class="text-eyebrow">{experience.country?.name}</span>
-                  <IconButton>
-                    <Icon component={Svg} viewBox="0 0 13.246 19.134">
-                      <g
-                        id="Icon_-_Share"
-                        data-name="Icon - Share"
-                        transform="translate(0.5 1.233)"
-                      >
-                        <path
-                          id="Path_318"
-                          data-name="Path 318"
-                          d="M153.689-5867H150.7v11.841h12.246V-5867h-2.889"
-                          transform="translate(-150.699 5872.56)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                        <path
-                          id="Path_320"
-                          data-name="Path 320"
-                          d="M161.543-5862.169v-11.12"
-                          transform="translate(-155.42 5873.29)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                        <path
-                          id="Line"
-                          d="M156.364-5870.5l3.472-3.473,3.472,3.473"
-                          transform="translate(-153.713 5873.443)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                      </g>
-                    </Icon>
-                  </IconButton>
-                  <IconButton
-                    class="btn-favorite {experience.liked ? 'liked' : ''}"
-                    on:click={likeExperience}
-                  >
-                    <Icon
-                      class="like"
-                      component={Svg}
-                      viewBox="0 0 16.249 14.588"
-                    >
-                      <g
-                        data-name="Icon - Heart"
-                        transform="translate(0.125 0.125)"
-                      >
-                        <path
-                          id="Heart_Off"
-                          data-name="Heart Off"
-                          d="M11.453,0c-.121,0-.245,0-.365.014A4.8,4.8,0,0,0,7.943,1.769,4.789,4.789,0,0,0,4.726.146H4.579A4.528,4.528,0,0,0,0,4.579c-.089,2.3,1.438,4.236,2.6,5.5A25.674,25.674,0,0,0,7.78,14.236a.775.775,0,0,0,.805-.021A25.736,25.736,0,0,0,13.6,9.846c1.107-1.308,2.558-3.313,2.384-5.6A4.536,4.536,0,0,0,11.453,0m0,1.367a3.2,3.2,0,0,1,3.2,2.985c.135,1.776-1.113,3.474-2.062,4.6a24.721,24.721,0,0,1-4.44,3.924A24.207,24.207,0,0,1,3.569,9.138c-.991-1.081-2.3-2.724-2.234-4.506a3.161,3.161,0,0,1,3.237-3.12h.115a3.48,3.48,0,0,1,2.3,1.209l1,1.053.955-1.093a3.485,3.485,0,0,1,2.261-1.3c.084-.008.17-.01.255-.01"
-                          transform="translate(0.001)"
-                          stroke="#f0f7f8"
-                          stroke-width="0.25"
-                          fill-rule="evenodd"
-                        />
-                      </g>
-                    </Icon>
-                    <Icon
-                      class="liked"
-                      component={Svg}
-                      viewBox="0 0 16.249 14.588"
-                    >
-                      <path
-                        d="M11.453,0c-.121,0-.245,0-.365.014A4.827,4.827,0,0,0,7.943,1.725,4.829,4.829,0,0,0,4.726.142H4.579A4.477,4.477,0,0,0,0,4.466C-.086,6.7,1.441,8.6,2.6,9.826A25.576,25.576,0,0,0,7.78,13.883a.792.792,0,0,0,.805-.021A25.564,25.564,0,0,0,13.6,9.6c1.107-1.276,2.558-3.231,2.384-5.462A4.49,4.49,0,0,0,11.453,0"
-                        transform="translate(0)"
-                        fill="#000"
-                        fill-rule="evenodd"
-                      />
-                    </Icon>
-                  </IconButton>
-                </div>
-                <h1 class="mb-0 mt-40">{experience?.name}</h1>
-              </Cell>
-              <Cell spanDevices={{ desktop: 4 }} class="text-right">
-                <div class="mt-100">
-                  <Button variant="outlined" class="d-mr-20"
-                    ><Label>Find My Advisor</Label></Button
-                  >
-                  <Button variant="outlined"><Label>What to Pack</Label></Button
-                  >
-                </div>
-              </Cell>
-            </LayoutGrid>
-          </div>
-        </div>
-      </section>
-      <section class="d-pt-70 d-pb-40 m-pt-50 m-pb-35 detail-content">
+{#if experience}
+  <div class="content experience-detail d-pb-100">
+    <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-60 full-width">
+      <div class="content-wrap">
         <div class="container">
-          <LayoutGrid class="p-0">
-            <Cell spanDevices={{ desktop: 8, tablet: 8, phone: 4 }}>
-              <div>{@html experience.description}</div>
-            </Cell>
-            <Cell
-              spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}
-              class="m-none"
-            >
-              <h1 class="mt-0 mb-40">My Favorites Places</h1>
-              <div class="experiences-list">
-                <LayoutGrid class="p-0">
-                  {#each experience.destinations || [] as item}
-                    <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 4 }}>
-                      <Item
-                        pathPrefix="destination"
-                        bind:item
-                        on:likeItem={likeDestination}
-                      />
-                    </Cell>
-                  {/each}
-                </LayoutGrid>
-              </div>
-            </Cell>
-          </LayoutGrid>
+          <DetailSlide data={experience} on:like={likeExperience} />
         </div>
-      </section>
-      {#if experience.looks && experience.looks.length}
-        <LookShow title="Shop by look" items={experience.looks} />
-      {/if}
-      {#if experience.pack?.length}
-        <ProductShow
-          title="What to pack"
-          items={experience.pack}
-          on:likeItem={likeProduct}
-        />
-      {/if}
-      {#if experience.destinations?.length}
-        <section class="m-pt-50 m-pb-85 d-none m-block">
-          <div class="container">
-            <h1 class="mt-0 d-mb-80 m-mb-35">My Favorite Places</h1>
+      </div>
+    </section>
+
+    <section class="d-pt-70 d-pb-40 m-pt-50 m-pb-35 detail-content">
+      <div class="container">
+        <LayoutGrid class="p-0">
+          <Cell spanDevices={{ desktop: 8, tablet: 8, phone: 4 }}>
+            <div>{@html experience.description}</div>
+          </Cell>
+          <Cell
+            spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}
+            class="m-none"
+          >
+            <h1 class="mt-0 mb-40">My Favorites Places</h1>
             <div class="experiences-list">
               <LayoutGrid class="p-0">
-                {#each experience.destinations as item}
-                  <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
+                {#each experience.destinations || [] as item}
+                  <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 4 }}>
                     <Item
+                      {...item}
                       pathPrefix="destination"
                       bind:item
                       on:likeItem={likeDestination}
@@ -507,12 +284,43 @@
                 {/each}
               </LayoutGrid>
             </div>
+          </Cell>
+        </LayoutGrid>
+      </div>
+    </section>
+    {#if experience.looks && experience.looks.length}
+      <LookShow title="Shop by look" items={experience.looks} />
+    {/if}
+    {#if experience.pack?.length}
+      <ProductShow
+        title="What to pack"
+        items={experience.pack}
+        on:likeItem={likeProduct}
+      />
+    {/if}
+    {#if experience.destinations?.length}
+      <section class="m-pt-50 m-pb-85 d-none m-block">
+        <div class="container">
+          <h1 class="mt-0 d-mb-80 m-mb-35">My Favorite Places</h1>
+          <div class="experiences-list">
+            <LayoutGrid class="p-0">
+              {#each experience.destinations as item}
+                <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
+                  <Item
+                    {...item}
+                    pathPrefix="destination"
+                    bind:item
+                    on:likeItem={likeDestination}
+                  />
+                </Cell>
+              {/each}
+            </LayoutGrid>
           </div>
-        </section>
-      {/if}
-    </div>
-  {/if}
-</Layout>
+        </div>
+      </section>
+    {/if}
+  </div>
+{/if}
 <ProductSliderModal
   bind:open={productSliderOpen}
   products={experience.pack}
@@ -521,24 +329,20 @@
 <OyNotification />
 
 <style lang="scss" global>
-  $desktop-width: 950px;
-  @mixin mobile {
-    @media (max-width: #{$desktop-width - 1px}) {
-      @content;
-    }
-  }
-  @mixin desktop {
-    @media (min-width: #{$desktop-width}) {
-      @content;
-    }
-  }
-  .page-experience-detail {
+  @use '../../theme/mixins';
+  .experience-detail {
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/sticky.scss';
-    .content .mdc-button {
+    .mdc-button {
       width: 180px;
       min-width: 180px;
       padding: 0 15px;
+    }
+
+    @include mixins.desktop {
+      .d-pt-25-vh {
+        padding-top: 25vh;
+      }
     }
     /* Header title */
     .header-title {
@@ -571,22 +375,13 @@
       }
     }
 
-    .experience-detail-image {
-      width: 100%;
-      height: 100%;
-    }
-    .experience-detail-image .thumbnail {
-      height: 100%;
-      background-size: cover;
-      background-repeat: no-repeat;
-    }
     .header-title .action-buttons {
       position: absolute;
       top: 24vh;
       right: 100px;
     }
     .header-title .short-description {
-      @include desktop {
+      @include mixins.desktop {
         width: 80%;
       }
     }
@@ -707,7 +502,7 @@
     }
 
     :global(.products-list .item-product) {
-      @include mobile {
+      @include mixins.mobile {
         h3 {
           --mdc-typography-headline3-font-size: 14px;
         }
@@ -725,7 +520,7 @@
       background-color: rgba(0, 0, 0, 0.2);
     }
     .experience-item .title {
-      @include desktop {
+      @include mixins.desktop {
         height: 50px;
         overflow: hidden;
       }
@@ -767,23 +562,6 @@
     }
 
     @media screen and (max-width: 949px) {
-      .experience-detail-image {
-        position: relative;
-        width: 100%;
-        .image-cover {
-          padding-bottom: 65.625% !important;
-          height: auto !important;
-        }
-      }
-      .experience-detail-image .thumbnail {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-size: cover;
-        background-repeat: no-repeat;
-      }
       .products-list :global(.mdc-layout-grid__inner) {
         margin-bottom: 45px;
       }

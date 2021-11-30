@@ -1,9 +1,9 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import IconButton from '@smui/icon-button';
+  import { Icon } from '@smui/common';
   import Svg from '@smui/common/elements/Svg.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { destinationStore } from '$lib/store/destination';
@@ -34,7 +34,6 @@
 </script>
 
 <script type="ts">
-
   export let title: string;
   export let items: Look[];
 </script>
@@ -52,9 +51,7 @@
               class="image-cover"
               style="padding-top: calc( 142 / 165 * 100% );"
             >
-              <BlurImage
-                {...items[0].gallery[0]}
-              />
+              <BlurImage {...items[0].gallery[0]} />
             </div>
           </div>
           <div class="title-wrap">

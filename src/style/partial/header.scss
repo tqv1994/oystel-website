@@ -1,3 +1,5 @@
+@use "../../theme/colors";
+@use "../../theme/sizes";
 @use "../../theme/variables" as v;
 @use '@material/textfield';
 @use '@material/button';
@@ -5,17 +7,7 @@
 @use '@material/typography/mdc-typography';
 @use '@material/typography/index' as typography;
 @use '@material/theme/index' as theme;
-@mixin mobile {
-    @media (max-width: #{ v.$desktop-width - 1px}) {
-        @content;
-    }
-}
-
-@mixin desktop {
-    @media (min-width: #{ v.$desktop-width}) {
-        @content;
-    }
-}
+@use '../../theme/mixins';
 header {
     &.header-transparent {
         position: absolute;
@@ -27,7 +19,7 @@ header {
         background-color: transparent;
     }
     &#header {
-        @include desktop {
+        @include mixins.desktop {
             .mdc-top-app-bar__row {
                 position: static;
                 height: 116px;

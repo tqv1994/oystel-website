@@ -1,13 +1,13 @@
 <script lang="ts">
   import '$lib/firebase';
   import Dialog, { Content } from '@smui/dialog';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import Textfield from '@smui/textfield/Textfield.svelte';
+  import IconButton from '@smui/icon-button';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import { Icon } from '@smui/common';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import Textfield from '@smui/textfield';
   import Svg from '@smui/common/elements/Svg.svelte';
   import {
     createUserWithEmailAndPassword,

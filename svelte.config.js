@@ -3,8 +3,12 @@ import vercel from '@sveltejs/adapter-vercel';
 
 /** @type {import('@sveltejs/kit').PrerenderErrorHandler} */
 const handleError = ({ status, path, referrer, referenceType }) => {
-	// if (path.startsWith('/blog')) throw new Error('Missing a blog page!');
-	console.warn(`Render error: ${status} ${path}${referrer ? ` (${referenceType} from ${referrer})` : ''}`);
+  // if (path.startsWith('/blog')) throw new Error('Missing a blog page!');
+  console.warn(
+    `Render error: ${status} ${path}${
+      referrer ? ` (${referenceType} from ${referrer})` : ''
+    }`,
+  );
 };
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -17,9 +21,9 @@ const config = {
     adapter: vercel(),
     target: '#svelte',
 
-		prerender: {
-			onError: handleError
-		}
+    prerender: {
+      onError: handleError,
+    },
   },
 };
 

@@ -8,12 +8,19 @@ import { countryFieldsFragment } from '$lib/store/country';
 import { lookFieldsFragment } from '$lib/store/look';
 import { destinationFieldsFragment } from '$lib/store/destination';
 import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
+import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
 
 const query = `
 query($id: ID!) {
   experience(id: $id) {
     ...experienceFields
-    type {
+    type1 {
+      ...experienceTypeFields
+    }
+    type2 {
+      ...experienceTypeFields
+    }
+    type3 {
       ...experienceTypeFields
     }
     destinations {
@@ -30,6 +37,7 @@ query($id: ID!) {
 ${experienceTypeFieldsFragment}
 ${experienceFieldsFragment}
 ${destinationFieldsFragment}
+${destinationTypeFieldsFragment}
 ${lookFieldsFragment}
 ${countryFieldsFragment}
 ${productFieldsFragment}
@@ -49,10 +57,10 @@ export const get: RequestHandler = async (request: Request) => {
       };
     }
     if (res.error) {
-      console.log(JSON.stringify(res.error, null, 2));
+      console.error('Query rejected by server', request.params, query, JSON.stringify(res.error, null, 2));
     }
   } catch (error) {
-    console.error('Error getting destinations', error);
+    console.error('Error getting destinations', query, error);
   }
-  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the destinations');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the experiences');
 };

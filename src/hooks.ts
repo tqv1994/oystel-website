@@ -1,16 +1,24 @@
+import type { ResponseHeaders } from '@sveltejs/kit/types/helper';
 import { createGraphClient } from '$lib/utils/graph';
 import { GetSession, Handle } from '@sveltejs/kit';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
 import { getSessionCookie } from '$lib/utils/session';
-import { specialityFieldsFragment } from '$lib/store/speciality';
+import { advisorTypeFieldsFragment } from '$lib/store/advisor-type';
 import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
 import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
 import { languageFieldsFragment } from '$lib/store/language';
 import { countryFieldsFragment } from '$lib/store/country';
-import { Metadata } from './routes/metadata.json';
 import { Locals } from '$lib/store/locals';
 import { User } from '$lib/store/auth';
-import type { ResponseHeaders } from '@sveltejs/kit/types/helper';
+import { makeErrorResponse } from '$lib/utils/fetch';
+import { destinationFieldsFragment } from '$lib/store/destination';
+import { advisorFieldsFragment } from '$lib/store/advisor';
+import { experienceFieldsFragment } from '$lib/store/experience';
+import { Metadata } from '$lib/store/metadata';
+import { subTravellerFieldsFragment, travellerFieldsFragment } from '$lib/store/traveller';
+import { visaFieldsFragment } from '$lib/store/visa';
+import { salutationFieldsFragment } from '$lib/store/salutation';
+import { identificationFieldsFragment } from '$lib/store/identification';
 
 type QueryData = {
   me?: User;
@@ -31,15 +39,15 @@ const meQuery = `query {
     avatar {
       ...uploadFileFields
     }
-    destination_likes {
+    destinationLikes {
       id
       name
     }
-    experience_likes {
+    experienceLikes {
       id
       name
     }
-    product_likes {
+    productLikes {
       id
       name
     }
@@ -50,18 +58,26 @@ const meQuery = `query {
         ...uploadFileFields
       }
     }
-
+    travellerMe {
+      ...travellerFields
+    }
     advisorMe {
       id
     }
   }
 }
 ${uploadFileFieldsFragment}
+${travellerFieldsFragment}
+${visaFieldsFragment}
+${salutationFieldsFragment}
+${identificationFieldsFragment}
+${countryFieldsFragment}
+${subTravellerFieldsFragment}
 `;
 
 const metadataQuery = `query {
-  specialities {
-    ...specialityFields
+  advisorTypes {
+    ...advisorTypeFields
   }
   destinationTypes {
     ...destinationTypeFields
@@ -75,12 +91,31 @@ const metadataQuery = `query {
   languages {
     ...languageFields
   }
+  feature {
+    advisors {
+      ...advisorFields
+    }
+    experiences {
+      ...experienceFields
+    }
+    destinations {
+      ...destinationFields
+    }
+  }
+  salutations {
+    ...salutationFields
+  }
 }
 ${destinationTypeFieldsFragment}
 ${experienceTypeFieldsFragment}
-${specialityFieldsFragment}
+${advisorTypeFieldsFragment}
 ${languageFieldsFragment}
 ${countryFieldsFragment}
+${advisorFieldsFragment}
+${experienceFieldsFragment}
+${destinationFieldsFragment}
+${uploadFileFieldsFragment}
+${salutationFieldsFragment}
 `;
 
 let counter = 0;
@@ -88,7 +123,7 @@ let metadata: Metadata;
 
 /** @type {import('@sveltejs/kit').Handle} */
 export const handle: Handle<Locals> = async ({ request, resolve }) => {
-  console.log('Handling', request.path, request.query, ++counter);
+  console.log('Handling', request.path, request.query.toString(), ++counter);
 
   if (metadata) {
     request.locals.metadata = metadata;
@@ -132,16 +167,24 @@ export const handle: Handle<Locals> = async ({ request, resolve }) => {
     }
   }
 
-  console.log('Resuming request...', request.path, counter);
-  const response = await resolve(request);
+  try {
+    console.log('Resuming request...', request.path, counter);
+    const response = await resolve(request);
 
-  return {
-    ...response,
-    headers: {
-      ...response.headers,
-      ...headers,
-    },
-  };
+    return {
+      ...response,
+      headers: {
+        ...response.headers,
+        ...headers,
+      },
+    };
+  } catch (err) {
+    return makeErrorResponse(
+      500,
+      'INTERNAL_SERVER_ERROR',
+      `There was an error loading ${request.path}: ${err.message}`,
+    );
+  }
 };
 
 /** @type {import('@sveltejs/kit').GetSession} */

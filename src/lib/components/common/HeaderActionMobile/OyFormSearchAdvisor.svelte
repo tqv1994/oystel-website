@@ -1,28 +1,28 @@
 <script lang="ts">
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
   import { createEventDispatcher } from 'svelte';
   import { Country } from '$lib/store/country';
-  import { Speciality } from '$lib/store/speciality';
+  import { Category } from '$lib/store/category';
   import Dropdown from '$lib/components/Dropdown.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
   let menuActive;
   export let searchModel: {
-    speciality: Speciality | undefined;
+    type: Category | undefined;
     country: Country | undefined;
   } = {
-    speciality: undefined,
+    type: undefined,
     country: undefined,
   };
   export let locations: Country[];
-  export let specialities: Speciality[];
+  export let advisorTypes: Category[];
   let country: Country | undefined = searchModel.country;
-  let speciality: Speciality | undefined = searchModel.speciality;
+  let type: Category | undefined = searchModel.type;
   function onSearchSubmit() {
     setTimeout(() => {
-      dispatch('close', { country, speciality });
+      dispatch('close', { country, type });
     }, 0);
   }
 </script>
@@ -37,8 +37,8 @@
       <Dropdown
         label="By Speciality"
         blankItem="All"
-        items={specialities}
-        value={speciality}
+        items={advisorTypes}
+        value={type}
       />
     </div>
     <div class="form-control mb-40">

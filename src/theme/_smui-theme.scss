@@ -1,4 +1,7 @@
 @use 'sass:color';
+@use './colors';
+@use './sizes';;
+@use './mixins';;
 
 @use '@material/theme/color-palette';
 
@@ -13,7 +16,6 @@
   );
 @use './variables' as v;
 @use './spacing-helpers';
-@use './spacing-vh-helpers';
 // use Typeography
 @use '@material/typography/mdc-typography';
 // use Textfield
@@ -34,7 +36,7 @@
 
 @use '@material/layout-grid/index' as layoutgrid with (
   $breakpoints: (
-    desktop: v.$desktop-width,
+    desktop: sizes.$desktop-width,
     tablet: 600px,
     phone: 0px,
   )
@@ -65,44 +67,15 @@
   font-weight: 300;
 }
 /* Variables */
-$contentMaxWidth: v.$contentMaxWidth;
-$containerWith: calc(v.$contentMaxWidth - var(--mdc-layout-grid-margin-desktop));
-$whiteColor: v.$whiteColor;
-$blackColor: v.$blackColor;
-$brownColor: v.$brownColor;
-$blueColor: v.$blueColor;
+// $contentMaxWidth: sizes.$contentMaxWidth;
+// $containerWith: 1246px;
+// colors.$white: #{colors.$white};
+// colors.$black: #{colors.$black};
+// $brownColor: v.$brownColor;
+// colors.$blue: #{colors.$blue};
 /* Responsive */
-$mobile-width: #{v.$desktop-width - 1px};
-$desktop-width: v.$desktop-width;
-@mixin mobile {
-  @media (max-width: #{ v.$desktop-width - 1px}) {
-    @content;
-  }
-}
-
-@mixin desktop {
-  @media (min-width: #{ v.$desktop-width}) {
-    @content;
-  }
-}
-
-@mixin desktopLarge {
-  @media (min-width: #{$contentMaxWidth}) {
-    @content;
-  }
-}
-
-@mixin light {
-  .light {
-    @content;
-  }
-}
-
-@mixin dark {
-  .dark {
-    @content;
-  }
-}
+$mobile-width: #{sizes.$desktop-width - 1px};
+$desktop-width: sizes.$desktop-width;
 
 //@media screen and (max-width: 1239px) and (min-width: 905px){
 //  body{
@@ -162,11 +135,11 @@ body {
 
 a {
   @include typography.typography('button');
-  color: $blackColor;
+  color: #{colors.$black};
   text-decoration: none;
 }
 a:visited {
-  color: color.scale($blackColor, $lightness: -35%);
+  color: color.scale(colors.$black, $lightness: -35%);
 }
 
 h1,
@@ -254,10 +227,10 @@ select,
   font-style: normal;
 }
 button.mdc-button, a.mdc-button {
-  --mdc-theme-primary: $blackColor;
+  --mdc-theme-primary: #{colors.$black};
   @include button.outline-color(#000);
   @include button.outline-width(1px, 45px);
-  @include mobile {
+  @include mixins.mobile {
     @include button.outline-width(1px, 20px);
   }
   &,
@@ -267,7 +240,7 @@ button.mdc-button, a.mdc-button {
   }
   min-width: 193px;
   overflow: hidden;
-  @include mobile {
+  @include mixins.mobile {
     &.mdc-button {
       min-width: 170px;
     }
@@ -298,7 +271,7 @@ button.mdc-button, a.mdc-button {
       left: 0;
       right: 0;
       bottom: 0;
-      background: $blackColor;
+      background: #{colors.$black};
       -webkit-transform: scaleX(0);
       transform: scaleX(0);
       -webkit-transform-origin: 0 50%;
@@ -365,7 +338,7 @@ button.mdc-button, a.mdc-button {
       background-color: #d3d3d3;
     }
     &::-webkit-scrollbar-thumb {
-      background-color: $blueColor;
+      background-color: #{colors.$blue};
     }
     td{
       word-break: break-word;
@@ -374,14 +347,11 @@ button.mdc-button, a.mdc-button {
 }
 
 .content-wrap {
-  @media screen and (min-width: 1921px) {
-    max-width: $contentMaxWidth;
-  }
   width: 100%;
   margin-left: auto;
   margin-right: auto;
   .container{
-    max-width: $contentMaxWidth;
+    max-width: sizes.$contentMaxWidth;
     margin-left: var(--mdc-layout-grid-margin-desktop);
     margin-right: var(--mdc-layout-grid-margin-desktop);
   }
@@ -408,7 +378,7 @@ button.mdc-button, a.mdc-button {
 //    display: none !important;
 //  }
 //}
-@include mobile {
+@include mixins.mobile {
   .m-block {
     display: block !important;
   }
@@ -425,65 +395,61 @@ button.mdc-button, a.mdc-button {
   }
 }
 
-@include dark {
+@include mixins.dark {
   *,
   .mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input {
-    color: $whiteColor !important;
+    color: colors.$white !important;
   }
   .smui-text-field--standard:not(.mdc-text-field--disabled)
     .mdc-line-ripple::before,
   .smui-text-field--standard:not(.mdc-text-field--disabled):hover
     .mdc-line-ripple::before {
-    border-bottom-color: $whiteColor;
+    border-bottom-color: #{colors.$white};
   }
   .mdc-button {
-    @include button.outline-color($whiteColor);
+    @include button.outline-color(colors.$white);
   }
   .mdc-tab {
-    --mdc-theme-primary: $whiteColor;
+    --mdc-theme-primary: #{colors.$white};
   }
   a {
-    color: $whiteColor;
+    color: #{colors.$white};
   }
   .divider {
-    &::after {
-      background-color: $whiteColor;
-    }
+    --divider-line-color: #{colors.$white};
   }
   svg{
     filter: none;
   }
 }
 
-@include light {
+@include mixins.light {
   *,
   .mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input {
-    color: $blackColor !important;
+    color: colors.$black !important;
   }
   .smui-text-field--standard:not(.mdc-text-field--disabled)
     .mdc-line-ripple::before,
   .smui-text-field--standard:not(.mdc-text-field--disabled):hover
     .mdc-line-ripple::before {
-    border-bottom-color: $blackColor;
+    border-bottom-color: #{colors.$black};
   }
   .mdc-button {
-    @include button.outline-color($blackColor);
+    @include button.outline-color(colors.$black);
     &.hover-affect {
       &:hover {
         &,
         & * {
-          color: $whiteColor !important;
+          color: colors.$white !important;
         }
       }
     }
   }
   .mdc-tab {
-    --mdc-theme-primary: $blackColor;
+    --mdc-theme-primary: #{colors.$black};
   }
   .divider {
-    &::after {
-      background-color: $blackColor;
-    }
+    --divider-line-color: #{colors.$black};
   }
   svg{
     filter: brightness(0.1);
@@ -520,7 +486,7 @@ section {
   min-width: 170px;
   padding-left: 0;
 }
-@include desktop {
+@include mixins.desktop {
   .page.page-home{
     #logo{
       margin-left: 100px;
@@ -528,28 +494,28 @@ section {
   }
 }
 
-@include light {
+@include mixins.light {
   #logo {
     filter: brightness(0.1);
   }
   .mdc-top-app-bar__section {
     #main-menu li {
       a {
-        color: $blackColor;
+        color: #{colors.$black};
       }
 
       &:hover,
       &.active,
       &.active-static {
         &::after {
-          background: $blackColor;
+          background: #{colors.$black};
         }
       }
     }
   }
   .mdc-top-app-bar__section--align-end {
     .btn-plan-your-trip {
-      @include button.outline-color($blackColor);
+      @include button.outline-color(colors.$black);
     }
     a {
     }
@@ -558,8 +524,8 @@ section {
     .mdc-text-field {
       width: 300px;
       @include textfield.outlined-height(35px);
-      @include textfield.outline-color($blackColor);
-      @include textfield.hover-outline-color($blackColor);
+      @include textfield.outline-color(colors.$black);
+      @include textfield.hover-outline-color(colors.$black);
       //@include textfield.label-color(#fff);
       padding-right: 15px;
     }
@@ -575,10 +541,10 @@ section {
       .mdc-button {
         &,
         .mdc-button__label {
-          color: $whiteColor !important;
+          color: colors.$white !important;
         }
 
-        border: 1px solid $blackColor;
+        border: 1px solid #{colors.$black};
       }
     }
   }
@@ -593,14 +559,6 @@ section {
 }
 
 .full-width {
-  @include desktopLarge {
-    margin-left: calc(calc(100vw / 2 - $contentMaxWidth / 2) * -1);
-    margin-right: calc(calc(100vw / 2 - $contentMaxWidth / 2) * -1);
-  }
-  //@include onlyDesktop {
-  //  margin-left: -30px;
-  //  margin-right: -30px;
-  //}
   .content-wrap {
     position: relative;
     height: 100%;
@@ -625,7 +583,7 @@ body.mdc-dialog-scroll-lock{ // Fixed error jumpled screen when open dialog
     left: 0;
     width: 100%;
     height: 1px;
-    background-color: $whiteColor;
+    background-color: var(--divider-line-color,#{colors.$white});
   }
 }
 
@@ -653,7 +611,7 @@ body.mdc-dialog-scroll-lock{ // Fixed error jumpled screen when open dialog
   }
 }
 
-@include mobile {
+@include mixins.mobile {
   .trips-list-wrap .list-featured-drop {
     .item-featured-drop {
       .title {

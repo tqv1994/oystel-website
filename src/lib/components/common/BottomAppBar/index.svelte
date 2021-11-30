@@ -1,10 +1,10 @@
 <script>
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import { Icon } from '@smui/common';
   import { goto } from '$app/navigation';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
   import Svg from '@smui/common/elements/Svg.svelte';
   import { createEventDispatcher } from 'svelte';
   import { authStore } from '$lib/store/auth';

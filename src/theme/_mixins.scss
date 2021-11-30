@@ -1,0 +1,41 @@
+@use './sizes';;
+
+@mixin mobile {
+  @media screen and (max-width: 959px) {
+    @content;
+  }
+}
+@mixin desktop {
+  @media screen and (min-width: 960px) {
+    @content;
+  }
+}
+@mixin mobile {
+  @media (max-width: #{sizes.$desktop-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{sizes.$desktop-width}) {
+    @content;
+  }
+}
+
+@mixin desktopLarge {
+  @media (min-width: #{sizes.$contentMaxWidth}) {
+    @content;
+  }
+}
+
+@mixin light {
+  .light {
+    @content;
+  }
+}
+
+@mixin dark {
+  .dark {
+    @content;
+  }
+}

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Button from '@smui/button/Button.svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import Tab from '@smui/tab/Tab.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import TabBar from '@smui/tab-bar/TabBar.svelte';
+  import Button from '@smui/button';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import Tab from '@smui/tab';
+  import { Label } from '@smui/common';
+  import TabBar from '@smui/tab-bar';
   import { afterUpdate, onDestroy } from 'svelte';
   import { documentHelper, routerHelper } from '$lib/helpers';
   import { goto } from '$app/navigation';

@@ -2,11 +2,11 @@
   import type { Load } from '@sveltejs/kit';
   import { authStore } from '$lib/store/auth';
   import Layout from '$lib/components/common/Layout.svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import { Icon } from '@smui/common';
+  import IconButton from '@smui/icon-button';
   import Svg from '@smui/common/elements/Svg.svelte';
   import OySlideProducts from '$lib/components/common/OySlideProducts.svelte';
   import { Product } from '$lib/store/product';
@@ -34,6 +34,8 @@
 </script>
 
 <script lang="ts">
+  import Carousel from '$lib/components/Carousel.svelte';
+
   let userModel = $authStore.user;
   let imageSlidesProduct = [
     '/img/shop/slide-1.jpg',
@@ -54,6 +56,13 @@
       currentMenu: 'shop',
     },
   };
+  const carouselConfig = {
+    autoplayDuration: 8000,
+    duration: 1500,
+    infinite: true,
+    particlesToShow: 1,
+    chevronPosition: 'inside',
+  };
 
   let products: Product[] = [];
   productStore.subscribe(({ items }) => {
@@ -71,22 +80,20 @@
           <LayoutGrid class="p-0 mb-15">
             <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
               <div class="shop-slides">
-                <OyCarousel perPage={{ 800: 1 }} draggable={false}>
-                  <span class="control" slot="left-control">
-                    <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon>
-                  </span>
-                  <div
-                    class="slide-content slide-item"
-                    style="background-image: url(/img/slides/shop-slide-2.jpg)"
-                  />
-                  <div
-                    class="slide-content slide-item"
-                    style="background-image: url(/img/slides/shop-slide-1.jpg)"
-                  />
-                  <span class="control" slot="right-control">
-                    <Icon><img src="/img/icons/icon-right-arrow.svg" /></Icon>
-                  </span>
-                </OyCarousel>
+                <Carousel {...carouselConfig}>
+                  <div class="slides">
+                    <div
+                      class="slide-content slide-item"
+                      style="background-image: url(/img/slides/shop-slide-2.jpg)"
+                    />
+                  </div>
+                  <div class="slides">
+                    <div
+                      class="slide-content slide-item"
+                      style="background-image: url(/img/slides/shop-slide-1.jpg)"
+                    />
+                  </div>
+                </Carousel>
               </div>
             </Cell>
             <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
@@ -154,7 +161,7 @@
                           style="background-image: url(/img/products/product-7.png)"
                         >
                           <IconButton class="btn-favorite">
-                            <Icon2
+                            <Icon
                               class="like"
                               component={Svg}
                               viewBox="-4 -4 24 24"
@@ -165,8 +172,8 @@
                                 fill="#fff"
                                 fill-rule="evenodd"
                               />
-                            </Icon2>
-                            <Icon2
+                            </Icon>
+                            <Icon
                               class="liked"
                               component={Svg}
                               viewBox="-4 -4 24 24"
@@ -177,7 +184,7 @@
                                 fill="#fff"
                                 fill-rule="evenodd"
                               />
-                            </Icon2>
+                            </Icon>
                           </IconButton>
                         </div>
                         <p class="text-eyebrow mt-25">Louis Vuitton</p>
@@ -193,7 +200,7 @@
                           style="background-image: url(/img/products/product-8.png)"
                         >
                           <IconButton class="btn-favorite">
-                            <Icon2
+                            <Icon
                               class="like"
                               component={Svg}
                               viewBox="-4 -4 24 24"
@@ -204,8 +211,8 @@
                                 fill="#fff"
                                 fill-rule="evenodd"
                               />
-                            </Icon2>
-                            <Icon2
+                            </Icon>
+                            <Icon
                               class="liked"
                               component={Svg}
                               viewBox="-4 -4 24 24"
@@ -216,7 +223,7 @@
                                 fill="#fff"
                                 fill-rule="evenodd"
                               />
-                            </Icon2>
+                            </Icon>
                           </IconButton>
                         </div>
                         <p class="text-eyebrow mt-25">Louis Vuitton</p>
@@ -232,7 +239,7 @@
                           style="background-image: url(/img/products/product-9.png)"
                         >
                           <IconButton class="btn-favorite">
-                            <Icon2
+                            <Icon
                               class="like"
                               component={Svg}
                               viewBox="-4 -4 24 24"
@@ -243,8 +250,8 @@
                                 fill="#fff"
                                 fill-rule="evenodd"
                               />
-                            </Icon2>
-                            <Icon2
+                            </Icon>
+                            <Icon
                               class="liked"
                               component={Svg}
                               viewBox="-4 -4 24 24"
@@ -255,7 +262,7 @@
                                 fill="#fff"
                                 fill-rule="evenodd"
                               />
-                            </Icon2>
+                            </Icon>
                           </IconButton>
                         </div>
                         <p class="text-eyebrow mt-25">Louis Vuitton</p>
@@ -326,17 +333,7 @@
 </Layout>
 
 <style lang="scss">
-  $desktop-width: 950px;
-  @mixin mobile {
-    @media (max-width: #{$desktop-width - 1px}) {
-      @content;
-    }
-  }
-  @mixin desktop {
-    @media (min-width: #{$desktop-width}) {
-      @content;
-    }
-  }
+  @use '../../theme/mixins';
   .header-title {
     background-color: #000;
   }
@@ -347,6 +344,19 @@
     height: 100%;
     width: 100%;
     --wrap-width: 100%;
+    position: relative;
+
+    .sc-carousel-dots__container {
+      position: absolute;
+      bottom: 45px;
+      --sc-color-rgb-light: #fff;
+      @include mixins.desktop {
+        display: none;
+      }
+      .sc-carousel-dot__dot_active {
+        opacity: 1;
+      }
+    }
   }
 
   .shop-slides :global(.dots) {
@@ -374,7 +384,7 @@
   }
 
   :global(.products-list .item-product) {
-    @include mobile {
+    @include mixins.mobile {
       h3 {
         --mdc-typography-headline3-font-size: 14px;
       }
@@ -398,7 +408,7 @@
     filter: brightness(0);
   }
 
-  @include mobile {
+  @include mixins.mobile {
     .shop-slides :global(.carousel),
     .shop-slides :global(.slides),
     .shop-slides :global(.slides div) {
@@ -438,7 +448,7 @@
     }
   }
 
-  @include mobile {
+  @include mixins.mobile {
     #shop-by-look-wrap h5 {
       text-align: center;
     }

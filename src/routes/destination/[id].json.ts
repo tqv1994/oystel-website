@@ -11,12 +11,19 @@ import { countryFieldsFragment } from '$lib/store/country';
 import { lookFieldsFragment } from '$lib/store/look';
 import { experienceFieldsFragment } from '$lib/store/experience';
 import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
+import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
 
 const query = `
 query($id: ID!) {
   destination(id: $id) {
     ...destinationFields
-    type {
+    type1 {
+      ...destinationTypeFields
+    }
+    type2 {
+      ...destinationTypeFields
+    }
+    type3 {
       ...destinationTypeFields
     }
     experiences {
@@ -42,6 +49,7 @@ query($id: ID!) {
 ${destinationTypeFieldsFragment}
 ${destinationFieldsFragment}
 ${experienceFieldsFragment}
+${experienceTypeFieldsFragment}
 ${lookFieldsFragment}
 ${countryFieldsFragment}
 ${productFieldsFragment}
@@ -50,7 +58,6 @@ ${attractionFieldsFragment}
 ${restaurantFieldsFragment}
 ${accommodationFieldsFragment}
 `;
-
 /**
  * @type {import('@sveltejs/kit').Get}
  */
@@ -64,10 +71,10 @@ export const get: RequestHandler = async (request: Request) => {
       };
     }
     if (res.error) {
-      console.log(JSON.stringify(res.error, null, 2));
+      console.error('Query rejected by server', request.params, query, JSON.stringify(res.error, null, 2));
     }
   } catch (error) {
-    console.error('Error getting experiences', error);
+    console.error('Error getting destination', error);
   }
-  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the experiences');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the destination');
 };

@@ -1,13 +1,13 @@
 <script lang="ts">
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
   import { createEventDispatcher } from 'svelte';
   import { Destination } from '$lib/store/destination';
   import { Experience } from '$lib/store/experience';
   import { Country } from '$lib/store/country';
   import { Category } from '$lib/store/category';
   import { Nameable } from '$lib/store/types';
-import Dropdown from '$lib/components/Dropdown.svelte';
+  import Dropdown from '$lib/components/Dropdown.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;

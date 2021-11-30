@@ -1,8 +1,6 @@
 <script lang="ts">
-  import { BlurhashImage } from 'svelte-blurhash/src';
+  import BlurhashImage from '$lib/components/svelte-blurhash/BlurhashImage.svelte';
 
-  let className: string = '';
-  export { className as class };
   export let url: string;
   export let width: number | undefined = undefined;
   export let height: number | undefined = undefined;
@@ -11,7 +9,6 @@
 
 {#if url}
   <BlurhashImage
-    class={className}
     fadeDuration={1000}
     src={url}
     {width}

@@ -1,0 +1,40 @@
+<script lang="ts">
+  import H1 from '@smui/common/elements/H1.svelte';
+  let className: string = '';
+  export { className as class };
+  export let title: string;
+  export let subtitle: string | undefined = undefined;
+</script>
+
+<div class="root {className}">
+  <H1 class="mdc-typography--headline1 mb-20 title">{title}</H1>
+  {#if subtitle}
+    <p >{subtitle}</p>
+  {/if}
+  <div class="content d-pt-30 m-pt-15">
+    <slot />
+  </div>
+</div>
+
+<style lang="scss">
+  .root {
+    text-align: center;
+    --mdc-typography-headline2-font-family: GTSupper;
+    :global(.title){
+      max-width: 710px;
+      margin: 0 auto;
+    }
+    p{
+      max-width: 461px;
+      margin: 0 auto;
+    }
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    max-width: 45em;
+    width: 100%;
+    margin: 0 auto;
+  }
+</style>

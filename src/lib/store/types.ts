@@ -34,12 +34,16 @@ export type Nameable = {
   name: string;
 };
 
+export type Linkable = Identifiable & Nameable;
+
 export type Nationalizable = {
   country: Country;
 };
 
 export type Categorizable = {
-  type: Category;
+  type1: Category;
+  type2: Category;
+  type3: Category;
 };
 
 export type Recordable = {
@@ -53,11 +57,18 @@ export type Publishable = Base & {
   published_at: string;
 };
 
+export type Likeable = {
+  liked?: boolean;
+};
+
+export type Listable = Identifiable & Nameable & Categorizable;
+
 export type Exhibitable = Publishable &
-  Nameable & {
+  Nameable &
+  Categorizable &
+  Likeable & {
     description: string;
     gallery: UploadFile[];
-    liked?: boolean;
   };
 
 export type Searchable = Exhibitable & Nationalizable & Categorizable;

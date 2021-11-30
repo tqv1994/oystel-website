@@ -1,22 +1,14 @@
+@use "../../theme/colors";
+@use "../../theme/sizes";
 @use "../../theme/variables" as v;
-@mixin mobile {
-    @media (max-width: #{ v.$desktop-width - 1px}) {
-        @content;
-    }
-}
-
-@mixin desktop {
-    @media (min-width: #{ v.$desktop-width}) {
-        @content;
-    }
-}
+@use '../../theme/mixins';
 #signup-section {
     & > .content-wrap > .mdc-layout-grid {
-        @include desktop {
+        @include mixins.desktop {
             padding-left: calc(100px + var(--mdc-layout-grid-margin-desktop));
         }
     }
-    @include desktop {
+    @include mixins.desktop {
         .content-right {
             padding-top: 40%;
         }
@@ -29,7 +21,7 @@
             padding-top: 20%;
         }
     }
-    @include mobile {
+    @include mixins.mobile {
         text-align: center;
     }
     .mdc-layout-grid {
@@ -67,7 +59,7 @@
             position: absolute;
             bottom: -20px;
             width: calc(100% - 25px);
-            background-color: v.$blueColor;
+            background-color: #{colors.$blue};
             left: 50%;
             transform: translateX(-50%);
             padding: 10px 0;

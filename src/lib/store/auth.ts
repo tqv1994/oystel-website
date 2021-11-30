@@ -4,6 +4,7 @@ import { Experience } from './experience';
 import { UploadFile } from './upload-file';
 import { Product } from './product';
 import { AsyncStore, Publishable } from './types';
+import { Traveller } from './traveller';
 
 export const authStore = writable<
   AsyncStore & {
@@ -32,4 +33,29 @@ export type User = Publishable & {
   experienceLikes?: Experience[];
   productLikes?: Product[];
   avatar: UploadFile;
+  travellerMe: Traveller
 };
+
+export const userFieldsFragment = `
+fragment userFields on UsersPermissionsUser  {
+    id
+    name
+    username
+    email
+    confirmed
+    blocked
+    role {
+      name
+      description
+    }
+    avatar {
+      ...uploadFileFields
+    }
+    travellerMe {
+      ...travellerFields
+    }
+    advisorMe {
+      id
+    }
+}
+`;

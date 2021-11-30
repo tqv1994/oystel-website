@@ -1,13 +1,14 @@
 <script>
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import Checkbox from '@smui/checkbox/Checkbox.svelte';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import Checkbox from '@smui/checkbox';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import IconButton from '@smui/icon-button';
+  import { Icon } from '@smui/common';
   import Svg from '@smui/common/elements/Svg.svelte';
   import OysteoLogo from '$lib/components/OysteoLogo.svelte';
+  import CloseIcon from '$lib/icons/CloseIcon.svelte';
 
   let stepItems;
   let model = [
@@ -102,32 +103,7 @@
             </div>
           </div>
           <IconButton class="d-none t-none m-block btn-close">
-            <Icon component={Svg} viewBox="0 0 18.858 18.858">
-              <g
-                id="Icon_-_Close"
-                data-name="Icon - Close"
-                transform="translate(-331.071 -23.571)"
-              >
-                <line
-                  id="Line"
-                  y1="17"
-                  x2="18"
-                  transform="translate(331.5 24.5)"
-                  fill="none"
-                  stroke="#000"
-                  stroke-width="1.25"
-                />
-                <path
-                  id="Line-2"
-                  data-name="Line"
-                  d="M0,17,9,8.5,18,0"
-                  transform="translate(349 24) rotate(90)"
-                  fill="none"
-                  stroke="#000"
-                  stroke-width="1.25"
-                />
-              </g>
-            </Icon>
+            <CloseIcon />
           </IconButton>
         </div>
       </div>

@@ -1,24 +1,16 @@
 import type { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Country, countryFieldsFragment } from '$lib/store/country';
+import { countryFieldsFragment } from '$lib/store/country';
 import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
 import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
-import { Speciality, specialityFieldsFragment } from '$lib/store/speciality';
-import { Category } from '$lib/store/category';
-import { Language, languageFieldsFragment } from '$lib/store/language';
-
-export type Metadata = {
-  specialities: Speciality[];
-  destinationTypes: Category[];
-  experienceTypes: Category[];
-  countries: Country[];
-  languages: Language[];
-};
+import { advisorTypeFieldsFragment } from '$lib/store/advisor-type';
+import { languageFieldsFragment } from '$lib/store/language';
+import { Metadata } from '$lib/store/metadata';
 
 const query = `query {
-  specialities {
-    ...specialityFields
+  advisorTypes {
+    ...advisorTypeFields
   }
   destinationTypes {
     ...destinationTypeFields
@@ -33,7 +25,7 @@ const query = `query {
     ...languageFields
   }
 }
-${specialityFieldsFragment}
+${advisorTypeFieldsFragment}
 ${destinationTypeFieldsFragment}
 ${experienceTypeFieldsFragment}
 ${countryFieldsFragment}

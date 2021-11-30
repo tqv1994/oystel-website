@@ -1,21 +1,10 @@
+@use "../../theme/colors";
+@use "../../theme/sizes";
 @use "../../theme/variables" as v;
 @use "@material/button";
-@mixin mobile {
-    @media (max-width: #{ v.$desktop-width - 1px}) {
-        @content;
-    }
-}
-
-@mixin desktop {
-    @media (min-width: #{ v.$desktop-width}) {
-        @content;
-    }
-}
-$whiteColor: v.$whiteColor;
-$blackColor: v.$blackColor;
-$blueColor: v.$blueColor;
+@use '../../theme/mixins';
 #featured-drops {
-    @include desktop {
+    @include mixins.desktop {
         margin-left: 100px;
     }
     .list-featured-drop {
@@ -24,6 +13,7 @@ $blueColor: v.$blueColor;
         .mdc-layout-grid .mdc-layout-grid__inner {
             height: 100%;
             margin-right: -15px;
+            position: relative;
         }
     }
     .list-featured-drop .mdc-layout-grid__inner {
@@ -36,14 +26,14 @@ $blueColor: v.$blueColor;
             background-color: #d3d3d3;
         }
         &::-webkit-scrollbar-thumb {
-            background-color: $blackColor;
+            background-color: #{colors.$black};
         }
 
-        @include mobile {
+        @include mixins.mobile {
             padding-bottom: 30px;
         }
     }
-    @include desktop {
+    @include mixins.desktop {
         &::-webkit-scrollbar {
             position: absolute;
             bottom: 0;
@@ -57,7 +47,7 @@ $blueColor: v.$blueColor;
                 position: absolute;
                 bottom: -20px;
                 width: calc(100% - 35px);
-                background-color: $blueColor;
+                background-color: #{colors.$blue};
                 left: 50%;
                 transform: translateX(-50%);
                 padding: 10px 0;
@@ -65,7 +55,7 @@ $blueColor: v.$blueColor;
                     width: 100%;
                     display: inline-block;
                     text-align: center;
-                    @include mobile {
+                    @include mixins.mobile {
                         font-size: 12px;
                         font-weight: 300;
                         letter-spacing: 0.1;
@@ -77,12 +67,12 @@ $blueColor: v.$blueColor;
         &.coming {
             .thumbnail {
                 .caption {
-                    background-color: $blueColor;
+                    background-color: #{colors.$blue};
                 }
             }
         }
         .caption {
-            @include desktop {
+            @include mixins.desktop {
                 font-size: 12px;
                 line-height: 22px;
                 letter-spacing: 0.1px;
@@ -90,7 +80,7 @@ $blueColor: v.$blueColor;
         }
         &.new {
             .caption {
-                @include mobile {
+                @include mixins.mobile {
                     width: calc(100% - 55px);
                 }
             }
@@ -180,30 +170,10 @@ $blueColor: v.$blueColor;
             }
         }
     }
-    .dots{
-        @include desktop{
+    .sc-carousel-dots__container{
+        @include mixins.desktop{
             display: none;
         }
         margin-top: 30px;
-        li{
-            background-color: rgba(0,0,0,0.3);
-            &.active{
-                background-color: #000;
-            }
-        }
-    }
-    .wrap-control{
-        width: 200px;
-        top: -65px;
-        right: 0;
-        left: auto;
-        transform: translateX(0);
-        img{
-            cursor: pointer;
-            filter: brightness(0%);
-            &:hover{
-                filter: invert(43%) sepia(89%) saturate(304%) hue-rotate(177deg) brightness(91%) contrast(94%);
-            }
-        }
     }
 }

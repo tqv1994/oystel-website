@@ -1,17 +1,27 @@
 <script lang="ts">
   import IconButton from '@smui/icon-button';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import { Icon } from '@smui/common';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
   import Svg from '@smui/common/elements/Svg.svelte';
   import OyCarousel from '../common/OyCarousel.svelte';
   import { Product } from '$lib/store/product';
   import BlurImage from '../blur-image.svelte';
+  import { onMount } from 'svelte';
+  import Carousel from '../Carousel.svelte';
   export let open = false;
   export let products: Product[];
   export let active: number;
+
+  const carouselConfig = {
+    autoplayDuration: 8000,
+    duration: 1500,
+    infinite: true,
+    particlesToShow: 1,
+    chevronPosition: 'inside',
+  };
 </script>
 
 <div class="content-wrap popup-products {open ? 'open' : 'close'}">
@@ -49,15 +59,7 @@
               </g>
             </Icon>
           </IconButton>
-          <OyCarousel
-            perPage={{ 800: 1 }}
-            draggable={false}
-            bind:startIndex={active}
-          >
-            <span class="control" slot="left-control">
-              <Icon><img src="/img/icons/icon-left-arrow.svg" /></Icon> Previous
-            </span>
-
+          <Carousel {...carouselConfig}>
             {#each products as item}
               <div class="slide-content slide-item">
                 <LayoutGrid class="p-0">
@@ -87,11 +89,7 @@
                 </LayoutGrid>
               </div>
             {/each}
-
-            <span class="control" slot="right-control">
-              Next <Icon><img src="/img/icons/icon-right-arrow.svg" /></Icon>
-            </span>
-          </OyCarousel>
+          </Carousel>
         </div>
       </div>
     </section>
@@ -99,18 +97,8 @@
 </div>
 
 <style lang="scss" global>
-  $desktop-width: 950px;
-  @mixin mobile {
-    @media (max-width: #{$desktop-width - 1px}) {
-      @content;
-    }
-  }
-  @mixin desktop {
-    @media (min-width: #{$desktop-width}) {
-      @content;
-    }
-  }
-  @include mobile {
+  @use '../../../theme/mixins';
+  @include mixins.mobile {
     .slide-item {
       .thumbnail {
         margin: auto calc(100px - var(--mdc-layout-grid-margin-phone));
@@ -123,6 +111,35 @@
     section {
       --mdc-layout-grid-gutter-desktop: 100px;
       background-color: #fff;
+    }
+
+    .arrow {
+      @include mixins.mobile {
+        display: none;
+      }
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      &:hover {
+        color: #fff;
+      }
+      &.left {
+        left: 20px;
+      }
+      &.right {
+        right: 20px;
+      }
+    }
+    .sc-carousel-dots__container {
+      position: absolute;
+      bottom: 45px;
+      --sc-color-rgb-light: #fff;
+      @include mixins.desktop {
+        display: none;
+      }
+      .sc-carousel-dot__dot_active {
+        opacity: 1;
+      }
     }
     .divider:after {
       background-color: rgba(0, 0, 0, 0.2);
@@ -149,7 +166,7 @@
       z-index: 7;
     }
 
-    .wrap-control{
+    .wrap-control {
       top: 38%;
     }
     .carousel .wrap-control button.left .control,

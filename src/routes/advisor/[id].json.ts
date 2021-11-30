@@ -2,7 +2,7 @@ import type { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { countryFieldsFragment } from '$lib/store/country';
-import { specialityFieldsFragment } from '$lib/store/speciality';
+import { advisorTypeFieldsFragment } from '$lib/store/advisor-type';
 import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
 import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
 import { languageFieldsFragment } from '$lib/store/language';
@@ -20,9 +20,6 @@ query($id: ID!) {
     }
     destinations {
       ...destinationFields
-      type{
-        ...destinationTypeFields
-      }
     }
   }
 }
@@ -31,7 +28,7 @@ ${destinationTypeFieldsFragment}
 ${experienceTypeFieldsFragment}
 ${languageFieldsFragment}
 ${countryFieldsFragment}
-${specialityFieldsFragment}
+${advisorTypeFieldsFragment}
 ${uploadFileFieldsFragment}
 ${experienceFieldsFragment}
 ${destinationFieldsFragment}
@@ -39,6 +36,7 @@ ${destinationFieldsFragment}
 /**
  * @type {import('@sveltejs/kit').Get}
  */
+console.log(query);
 export const get: RequestHandler = async (request: Request) => {
   try {
     const client = createGraphClientFromRequest(request);

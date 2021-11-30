@@ -1,6 +1,6 @@
 <script lang="ts">
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
   export let images: string[] = [];
   let featuredImage: string;
   if (images.length > 0) {

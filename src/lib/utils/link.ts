@@ -1,7 +1,7 @@
-import { Identifiable, Nameable } from '$lib/store/types';
+import { Linkable } from '$lib/store/types';
 import slugify from 'slugify';
 
-export const makeLink = <T extends Identifiable & Nameable>(
+export const makeLink = <T extends Linkable>(
   prefix: string,
   o: T,
 ): string => `${prefix}/${slugify(o.name || '')}-${o.id}`;

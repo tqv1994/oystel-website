@@ -1,21 +1,21 @@
 <script lang="ts">
-  import TopAppBar from '@smui/top-app-bar/TopAppBar.svelte';
-  import Section from '@smui/top-app-bar/Section.svelte';
-  import Row from '@smui/top-app-bar/Row';
-  import Title from '@smui/top-app-bar/Title';
+  import TopAppBar from '@smui/top-app-bar';
+  import { Section } from '@smui/top-app-bar';
+  import { Row } from '@smui/top-app-bar';
+  import { Title } from '@smui/top-app-bar';
   import { createEventDispatcher } from 'svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
+  import { Icon } from '@smui/common';
   import Svg from '@smui/common/elements/Svg.svelte';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import IconButton from '@smui/icon-button';
   import OyMenu from './OyMenu.svelte';
   import OyExplode from './OyExplode.svelte';
   import OyFormSearchExperience from './OyFormSearchExperience.svelte';
   import OyFormSearchAdvisor from './OyFormSearchAdvisor.svelte';
   import { Country } from '$lib/store/country';
-  import { Speciality } from '$lib/store/speciality';
   import { Category } from '$lib/store/category';
   import { Nameable } from '$lib/store/types';
   import OysteoLogo from '$lib/components/OysteoLogo.svelte';
+import CloseIcon from '$lib/icons/CloseIcon.svelte';
 
   let dispathcher = createEventDispatcher();
   export let open = false;
@@ -24,7 +24,7 @@
   export let experience_types: Category[] = [];
   export let destination_types: Category[] = [];
   export let countries: Country[] = [];
-  export let specialities: Speciality[] = [];
+  export let advisorTypes: Category[] = [];
   export let orderings: Nameable[] = [];
   function callCloseHeaderActionMobile(event: CustomEvent) {
     dispathcher('close', event.detail);
@@ -37,7 +37,7 @@
       <TopAppBar variant="static" class="demo-top-app-bar light">
         <Row>
           <Section class="pl-0">
-            <Title id="logo" href="/" class="mdc-theme--primary pl-0">
+            <Title href="/" class="mdc-theme--primary pl-0">
               <OysteoLogo />
             </Title>
           </Section>
@@ -48,33 +48,7 @@
                   content = '';
                 }}
               >
-                <Icon component={Svg} viewBox="0 0 18.858 18.858">
-                  <g
-                    id="Icon_-_Close"
-                    data-name="Icon - Close"
-                    transform="translate(-331.071 -23.571)"
-                  >
-                    <line
-                      id="Line"
-                      y1="17"
-                      x2="18"
-                      transform="translate(331.5 24.5)"
-                      fill="none"
-                      stroke="#000"
-                      stroke-width="1.25"
-                    />
-                    <line
-                      id="Line-2"
-                      data-name="Line"
-                      y1="17"
-                      x2="18"
-                      transform="translate(349 24) rotate(90)"
-                      fill="none"
-                      stroke="#000"
-                      stroke-width="1.25"
-                    />
-                  </g>
-                </Icon>
+                <CloseIcon />
               </IconButton>
             </div>
           </Section>
@@ -100,7 +74,7 @@
           <OyFormSearchAdvisor
             bind:searchModel
             bind:locations={countries}
-            bind:specialities
+            bind:advisorTypes
             on:close={callCloseHeaderActionMobile}
             >no content</OyFormSearchAdvisor
           >

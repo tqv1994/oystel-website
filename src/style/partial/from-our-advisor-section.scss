@@ -1,17 +1,9 @@
+@use "../../theme/colors";
+@use "../../theme/sizes";
 @use "../../theme/variables" as v;
-@mixin mobile {
-    @media (max-width: #{ v.$desktop-width - 1px}) {
-        @content;
-    }
-}
-
-@mixin desktop {
-    @media (min-width: #{ v.$desktop-width}) {
-        @content;
-    }
-}
+@use '../../theme/mixins';
 #from-advisors {
-    //@include desktop{
+    //@include mixins.desktop{
     //  --mdc-layout-grid-margin-desktop: 0;
     //}
     .item-experience {
@@ -22,7 +14,7 @@
         }
         .title {
             height: 45px;
-            @include mobile {
+            @include mixins.mobile {
                 height: 38px;
             }
             overflow: hidden;
@@ -32,7 +24,7 @@
 
 .page-home {
     #from-advisors {
-        @include mobile {
+        @include mixins.mobile {
             button .text-eyebrow,
             .mdc-button .text-eyebrow,
             .text-eyebrow {

@@ -8,7 +8,8 @@ export const makeErrorResponse = (
   code: string,
   message: string,
 ) => ({
-  status: status,
+  status,
+  headers: {},
   body: JSON.stringify({
     code,
     status,

@@ -6,19 +6,19 @@ export const FileStore = writable<CollectionStore<File>>({
 });
 
 export type UploadFile = Publishable & {
-  name: string;
-  alternativeText: string;
-  caption: string;
-  width: number;
-  height: number;
+  name?: string;
+  alternativeText?: string;
+  caption?: string;
+  width?: number;
+  height?: number;
   url: string;
-  formats: {
+  formats?: {
     thumbnail: Image;
     medium: Image;
     small: Image;
   };
-  blurHash: string;
-  hash: string;
+  blurHash?: string;
+  hash?: string;
 };
 
 export type Image = {

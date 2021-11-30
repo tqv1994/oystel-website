@@ -1,23 +1,15 @@
+@use "../../theme/colors";
+@use "../../theme/sizes";
 @use "../../theme/variables" as v;
-@mixin mobile {
-    @media (max-width: #{ v.$desktop-width - 1px}) {
-        @content;
-    }
-}
-
-@mixin desktop {
-    @media (min-width: #{ v.$desktop-width}) {
-        @content;
-    }
-}
+@use '../../theme/mixins';
 footer {
-    background-color: v.$blackColor;
+    background-color: #{colors.$black};
     .mdc-layout-grid {
-        @include mobile {
+        @include mixins.mobile {
             padding-top: 90px;
             padding-bottom: 90px;
         }
-        @include desktop {
+        @include mixins.desktop {
             padding: 95px 126px 50px calc(100px + var(--mdc-layout-grid-margin-desktop));
         }
         .mdc-layout-grid {
@@ -47,10 +39,10 @@ footer {
     form {
         .mdc-button {
             &:hover {
-                border-color: v.$blackColor;
-                background-color: v.$whiteColor;
+                border-color: #{colors.$black};
+                background-color: #{colors.$white};
                 .mdc-button__label {
-                    color: v.$blackColor !important;
+                    color: colors.$black !important;
                 }
             }
         }

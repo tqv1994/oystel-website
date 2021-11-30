@@ -12,16 +12,16 @@
   import { destinationTypeStore } from '$lib/store/destination-type';
   import { countryStore } from '$lib/store/country';
   import { onMount } from 'svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
   import { goto } from '$app/navigation';
-  import Textfield from '@smui/textfield/Textfield.svelte';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
-  import Select from '@smui/select/Select.svelte';
-  import Option from '@smui/select/Option.svelte';
+  import Textfield from '@smui/textfield';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import IconButton from '@smui/icon-button';
+  import { Icon } from '@smui/common';
+  import Select from '@smui/select';
+  import { Option } from '@smui/select';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
   import Svg from '@smui/common/elements/Svg.svelte';
   import { stringHelper } from '$lib/helpers';
@@ -97,7 +97,9 @@
           created_at: item.created_at,
           updated_at: item.updated_at,
           published_at: item.published_at,
-          type: experienceTypes.items[item.type],
+          type1: experienceTypes.items[item.type1],
+          type2: experienceTypes.items[item.type2],
+          type3: experienceTypes.items[item.type3],
           liked: contains(session.user?.experienceLikes || [], 'id', item.id),
         });
       }
@@ -124,7 +126,9 @@
           restaurants: item.restaurants,
           attractions: item.attractions,
           country: countries.items[item.country],
-          type: destinationTypes.items[item.type],
+          type1: destinationTypes.items[item.type1],
+          type2: destinationTypes.items[item.type2],
+          type3: destinationTypes.items[item.type3],
           created_at: item.created_at,
           updated_at: item.updated_at,
           published_at: item.published_at,
@@ -365,124 +369,122 @@
     onScrollFixedHeader();
   }}
 />
-<Layout config={configPage}>
-  <div class="content">
-    <section class="header-title d-pt-120 d-pb-55 m-pt-90 m-pb-25 full-width">
-      <div class="content-wrap">
-        <div class="container m-none">
-          <form
-            class="search-form-experiences"
-            method="GET"
-            on:submit|preventDefault={() => {
-              go({});
-            }}
-          >
-            <LayoutGrid class="p-0">
-              <Cell span="4">
-                <div class="form-control">
-                  <Textfield
-                    variant="outlined"
-                    bind:value={query}
-                    label="Start with a search"
-                    withTrailingIcon={false}
-                    on:input={onQueryInput}
-                  >
-                    <Icon slot="trailingIcon"
-                      ><img src="/img/icons/icon-search.svg" /></Icon
-                    >
-                  </Textfield>
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Dropdown
-                    label="By Experience Type"
-                    blankItem="All"
-                    items={experienceTypes}
-                    value={experience_type}
-                    on:MDCSelect:change={onExperienceTypeChange}
-                  />
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Dropdown
-                    label="By Destination Type"
-                    blankItem="All"
-                    items={destinationTypes}
-                    value={destination_type}
-                    on:MDCSelect:change={onDestinationTypeChange}
-                  />
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Dropdown
-                    label="By Country"
-                    blankItem="All"
-                    items={countries}
-                    value={country}
-                    on:MDCSelect:change={onCountryChange}
-                  />
-                </div>
-              </Cell>
-              <Cell span="2">
-                <div class="form-control">
-                  <Dropdown
-                    label="Short By"
-                    blankItem="All"
-                    items={Orderings}
-                    value={ordering}
-                    on:MDCSelect:change={onSortChange}
-                  />
-                </div>
-              </Cell>
-            </LayoutGrid>
-          </form>
-        </div>
-        <div class="container m-block d-none">
+<div class="content search-page-content">
+  <section class="header-title d-pt-120 d-pb-55 m-pt-90 m-pb-25 full-width">
+    <div class="content-wrap">
+      <div class="container m-none">
+        <form
+          class="search-form-experiences"
+          method="GET"
+          on:submit|preventDefault={() => {
+            go({});
+          }}
+        >
           <LayoutGrid class="p-0">
-            <Cell span="12">
-              <Button
-                on:click={() => {
-                  contentHeaderActionMobile = 'experience-search';
-                }}
-                style="width: 100%"
-                variant="outlined"><Label>Filter Your Results</Label></Button
-              >
+            <Cell span="4">
+              <div class="form-control">
+                <Textfield
+                  variant="outlined"
+                  bind:value={query}
+                  label="Start with a search"
+                  withTrailingIcon={false}
+                  on:input={onQueryInput}
+                >
+                  <Icon slot="trailingIcon"
+                    ><img src="/img/icons/icon-search.svg" /></Icon
+                  >
+                </Textfield>
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <Dropdown
+                  label="By Experience Type"
+                  blankItem="All"
+                  items={experienceTypes}
+                  value={experience_type}
+                  on:MDCSelect:change={onExperienceTypeChange}
+                />
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <Dropdown
+                  label="By Destination Type"
+                  blankItem="All"
+                  items={destinationTypes}
+                  value={destination_type}
+                  on:MDCSelect:change={onDestinationTypeChange}
+                />
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <Dropdown
+                  label="By Country"
+                  blankItem="All"
+                  items={countries}
+                  value={country}
+                  on:MDCSelect:change={onCountryChange}
+                />
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <Dropdown
+                  label="Short By"
+                  blankItem="All"
+                  items={Orderings}
+                  value={ordering}
+                  on:MDCSelect:change={onSortChange}
+                />
+              </div>
             </Cell>
           </LayoutGrid>
-        </div>
+        </form>
       </div>
-    </section>
-    <section class="d-pt-85 d-pb-95 m-pt-50 m-pb-70">
-      <div class="container">
-        <div class="section-content">
-          <LayoutGrid class="p-0">
-            {#each searchResultDestination || [] as item, i}
-              <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-                <Item
-                  pathPrefix="/destination"
-                  bind:item
-                  on:likeItem={likeDestination}
-                />
-              </Cell>
-            {/each}
-            {#each searchResultExperience || [] as item, i}
-              <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-                <Item
-                  pathPrefix="/experience"
-                  bind:item
-                  on:likeItem={likeExperience}
-                />
-              </Cell>
-            {/each}
-          </LayoutGrid>
-        </div>
+      <div class="container m-block d-none">
+        <LayoutGrid class="p-0">
+          <Cell span="12">
+            <Button
+              on:click={() => {
+                contentHeaderActionMobile = 'experience-search';
+              }}
+              style="width: 100%"
+              variant="outlined"><Label>Filter Your Results</Label></Button
+            >
+          </Cell>
+        </LayoutGrid>
       </div>
-    </section>
-  </div>
-</Layout>
+    </div>
+  </section>
+  <section class="d-pt-85 d-pb-95 m-pt-50 m-pb-70">
+    <div class="container">
+      <div class="section-content">
+        <LayoutGrid class="p-0">
+          {#each searchResultDestination || [] as item, i}
+            <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
+              <Item
+                pathPrefix="/destination"
+                bind:item
+                on:likeItem={likeDestination}
+              />
+            </Cell>
+          {/each}
+          {#each searchResultExperience || [] as item, i}
+            <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
+              <Item
+                pathPrefix="/experience"
+                bind:item
+                on:likeItem={likeExperience}
+              />
+            </Cell>
+          {/each}
+        </LayoutGrid>
+      </div>
+    </div>
+  </section>
+</div>
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
   searchModel={{ experience_type, destination_type, ordering, country }}
@@ -495,7 +497,7 @@
 <OyNotification />
 
 <style lang="scss" global>
-  .page-search {
+  .search-page-content {
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/experiences-search-form.scss';
     .header-title {

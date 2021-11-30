@@ -1,11 +1,11 @@
 <script>
-  import Dialog from '@smui/dialog/Dialog.svelte';
-  import Title from '@smui/dialog/Title';
-  import Content from '@smui/dialog/Content';
-  import Actions from '@smui/dialog/Actions';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import Textfield from '@smui/textfield/Textfield.svelte';
+  import Dialog from '@smui/dialog';
+  import { Title } from '@smui/dialog';
+  import { Content } from '@smui/dialog';
+  import { Actions } from '@smui/dialog';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import Textfield from '@smui/textfield';
   import { createEventDispatcher } from 'svelte';
   export let open;
   const dispatch = createEventDispatcher();

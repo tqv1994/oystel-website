@@ -1,3 +1,5 @@
+import { Country } from "$lib/store/country";
+
 export function implodeString(arrStr: (string|undefined)[],separator: string){
     let arr = [];
     for(let i in arrStr){
@@ -7,4 +9,9 @@ export function implodeString(arrStr: (string|undefined)[],separator: string){
         arr.push(arrStr[i]);
     }
     return arr.join(separator);
+}
+
+export function createPatternPhoneCode(countries: Country[]): RegExp{
+    let strRegex = countries.reduce((acc, item)=>item.phone == null ? acc : `${acc}${item.phone}|`,'');
+    return new RegExp(`^\\+?(${strRegex})`,'gm');
 }

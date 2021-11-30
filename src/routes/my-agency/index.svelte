@@ -1,15 +1,15 @@
 <script>
   import { authStore } from '$lib/store/auth';
   import { onMount, afterUpdate } from 'svelte';
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/common/CommonLabel.svelte';
-  import Icon from '@smui/common/CommonIcon.svelte';
-  import Checkbox from '@smui/checkbox/Checkbox.svelte';
-  import Radio from '@smui/radio/Radio.svelte';
-  import FormField from '@smui/form-field/FormField.svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import Textfield from '@smui/textfield/Textfield.svelte';
+  import Button from '@smui/button';
+  import { Label } from '@smui/common';
+  import { Icon } from '@smui/common';
+  import Checkbox from '@smui/checkbox';
+  import Radio from '@smui/radio';
+  import FormField from '@smui/form-field';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import Textfield from '@smui/textfield';
   import InviteMembersModal from '$lib/components/modals/InviteMembersModal.svelte';
   import { goto } from '$app/navigation';
   import Layout from '$lib/components/common/Layout.svelte';

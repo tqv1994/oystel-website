@@ -7,7 +7,6 @@ import { Destination } from './destination';
 import { Experience } from './experience';
 import { Language } from './language';
 import { Ordering, ORDER_BY_NAME_ASC, ORDER_BY_NAME_DESC } from './order';
-import { Speciality } from './speciality';
 import { CollectionStore, Exhibitable } from './types';
 import { UploadFile } from './upload-file';
 
@@ -34,12 +33,12 @@ export type Advisor = AdvisorBase & {
   experienceType1?: Category;
   experienceType2?: Category;
   experienceType3?: Category;
-  destinationTypes1?: Category;
-  destinationTypes2?: Category;
-  destinationTypes3?: Category;
-  speciality1?: Speciality;
-  speciality2?: Speciality;
-  speciality3?: Speciality;
+  destinationType1?: Category;
+  destinationType2?: Category;
+  destinationType3?: Category;
+  type1?: Category;
+  type2?: Category;
+  type3?: Category;
   language1?: Language;
   language2?: Language;
   language3?: Language;
@@ -102,14 +101,14 @@ fragment advisorFields on Advisor {
   language3 {
     ...languageFields
   }
-  speciality1 {
-    ...specialityFields
+  type1 {
+    ...advisorTypeFields
   }
-  speciality2 {
-    ...specialityFields
+  type2 {
+    ...advisorTypeFields
   }
-  speciality3 {
-    ...specialityFields
+  type3 {
+    ...advisorTypeFields
   }
   country {
     ...countryFields
@@ -193,14 +192,14 @@ fragment advisorFields on Advisor {
   trips {
     ...tripFields
   }
-  speciality1 {
-    ...specialityFields
+  type1 {
+    ...advisorTypeFields
   }
-  speciality2 {
-    ...specialityFields
+  type2 {
+    ...advisorTypeFields
   }
-  speciality3 {
-    ...specialityFields
+  type3 {
+    ...advisorTypeFields
   }
   country {
     ...countryFields

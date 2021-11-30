@@ -1,4 +1,4 @@
-@use "../../theme/variables" as v;
+@use "../../theme/colors";
 form {
     --mdc-shape-small: 25px;
     .mdc-notched-outline__leading,
@@ -28,8 +28,11 @@ form {
                 background-color: #d3d3d3;
             }
             &::-webkit-scrollbar-thumb {
-                background-color: v.$blackColor;
+                background-color: #{colors.$black};
             }
         }
+    }
+    .mdc-checkbox{
+        --mdc-theme-secondary: #000;
     }
 }
