@@ -8,6 +8,6 @@ export const dateTimeHelper = {
     const dateData = new Date(date);
     const month = dateData.toLocaleString('en', { month: 'long'});
     
-    return `${month} ${dateData.getDate()}, ${dateData.getFullYear()}}`;
+    return `${month} ${dateData.getDate()}, ${dateData.getFullYear()}`;
   },
 };

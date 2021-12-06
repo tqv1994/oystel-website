@@ -112,7 +112,7 @@
       --mdc-typography-headline1-line-height: 60px;
       height: 385px;
       background-color: #000;
-      background-image: url(./img/profile/banner-me.jpg);
+      background-image: url(/img/profile/banner-me.jpg);
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center bottom;

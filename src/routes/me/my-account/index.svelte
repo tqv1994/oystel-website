@@ -51,7 +51,7 @@
         </div>
         <div slot="content">
           {#if active == 'Personal Information'}
-            <svelte:component this={PersonalInformation} bind:me />
+            <svelte:component this={PersonalInformation} {me} />
           {/if}
           {#if active == 'Family & Friends' && me.travellerMe}
             <svelte:component this={FamilyFriends} {me} />
