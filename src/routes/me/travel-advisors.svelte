@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" context="module">
   import { authStore, User } from '$lib/store/auth';
   import LayoutAccount from './components/LayoutAccount.svelte';
   import Tab, { Label } from '@smui/tab';
@@ -7,8 +7,47 @@
   import Select, { Option } from '@smui/select';
   import ButtonBack from './components/ButtonBack.svelte';
   import TravelAdvisorsTemplate from './components/TravelAdvisorsTemplate.svelte';
+  import type { Load } from '@sveltejs/kit';
+  import { Advisor, AdvisorBase } from '$lib/store/advisor';
+import { stringHelper } from '$lib/helpers';
 
+  export const load: Load = async ({ fetch, page }) => {
+    let advisors: Advisor[] = [];
+    let me: User | undefined;
+    authStore.subscribe(async ({ user }) => {
+      me = user;
+    });
+    if(me?.myAdvisors){
+      const advisorIds = me.myAdvisors.map((item)=>item.id);
+      const res = await fetch(`/advisor/list.json?${stringHelper.objectToQueryString({id:advisorIds})}`);
+      if (res.ok) {
+        advisors = await res.json();
+      }
+    }
+    return {
+      props: {
+        advisors
+      },
+    };
+  };
+</script>
+
+<script lang="ts">
   let me: User | undefined = $authStore.user;
+  export let advisors: Advisor[] = [];
+  let currentAdvisors: Advisor[] = advisors.reduce((acc: Advisor[], item: Advisor)=>{
+    if(item.accept == true){
+      acc.push(item);
+    }
+    return acc;
+  },[]);
+  let pastAdvisors: Advisor[] = advisors.reduce((acc: Advisor[], item: Advisor)=>{
+    if(item.accept == false){
+      acc.push(item);
+    }
+    return acc;
+  },[]);
+
   let active = 'Current';
 </script>
 
@@ -36,59 +75,13 @@
           {#if active == 'Current'}
             <svelte:component
               this={TravelAdvisorsTemplate}
-              items={[
-                {
-                  name: 'Jan Wohl',
-                  phone: '+X XXX-XXX-XXXX',
-                  email: 'name@email.com',
-                  tripDate: 'Oct 2021',
-                  numberOpenTrips: 12,
-                  numberPastTrips: 23,
-                  avatar: {
-                    url: '/img/me/advisors/advisor-1.jpg',
-                  },
-                },
-                {
-                  name: 'Mike Harden',
-                  phone: '+X XXX-XXX-XXXX',
-                  email: 'name@email.com',
-                  tripDate: 'Sept 2021',
-                  numberOpenTrips: 5,
-                  numberPastTrips: 15,
-                  avatar: {
-                    url: '/img/me/advisors/advisor-2.jpg',
-                  },
-                },
-              ]}
+              items={currentAdvisors}
             />
           {/if}
           {#if active == 'Past'}
             <svelte:component
               this={TravelAdvisorsTemplate}
-              items={[
-                {
-                  name: 'Jenny Knott',
-                  phone: '+X XXX-XXX-XXXX',
-                  email: 'name@email.com',
-                  tripDate: 'Oct 2021',
-                  numberOpenTrips: 12,
-                  numberPastTrips: 23,
-                  avatar: {
-                    url: '/img/me/advisors/advisor-3.jpg',
-                  },
-                },
-                {
-                  name: 'Sophia Gonzalez',
-                  phone: '+X XXX-XXX-XXXX',
-                  email: 'name@email.com',
-                  tripDate: 'Sept 2021',
-                  numberOpenTrips: 5,
-                  numberPastTrips: 15,
-                  avatar: {
-                    url: '/img/me/advisors/advisor-4.jpg',
-                  },
-                },
-              ]}
+              items={pastAdvisors}
               isPast={true}
             />
           {/if}

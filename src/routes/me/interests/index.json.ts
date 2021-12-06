@@ -27,7 +27,6 @@ export const put: RequestHandler = async (
           }
           ${interestFieldsFragment}
         `;
-        console.log(query);
         const res = await client.mutation<{ traveller: { interests: Interest } }>(query).toPromise();
         if (res.data) {
             return {

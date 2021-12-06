@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Advisor } from '../types';
+  import { Advisor } from '$lib/store/advisor';
   import TravelAdvisorItem from './TravelAdvisorItem.svelte';
 
   export let items: Advisor[];

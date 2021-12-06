@@ -51,10 +51,6 @@
   ];
   export let currentPage: string;
   afterUpdate(() => {
-    // console.log($authStore.user);
-    // if (!$authStore.user) {
-    //   window.location.href = '/';
-    // }
   });
 
   onMount(async () => {});

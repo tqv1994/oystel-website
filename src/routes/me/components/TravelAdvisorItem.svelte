@@ -1,12 +1,12 @@
 <script lang="ts">
   import BlurImage from '$lib/components/blur-image.svelte';
   import ChatIcon from '$lib/icons/ChatIcon.svelte';
-  import { Advisor } from '../types';
   import ButtonUnderline from './ButtonUnderline.svelte';
   import Field from './Field.svelte';
   import Modal from './Modal.svelte';
   import Button, { Label } from '@smui/button';
   import Text from './Text.svelte';
+import { Advisor, getLastTripDate, numberOfOpenTrips, numberOfPastTrips } from '$lib/store/advisor';
 
   export let item: Advisor;
   export let isPast: boolean = true;
@@ -25,20 +25,20 @@
       </div>
       <div class="d-col-8 m-col-8">
         <h3 class="mdc-typography--headline1 m-0 mb-15">{item.name}</h3>
-        <p class="m-0">{item.phone}</p>
-        <p class="m-0">{item.email}</p>
+        <p class="m-0">{item.phone_number || ''}</p>
+        <p class="m-0">{item.email2 || ''}</p>
       </div>
     </div>
     <svelte:component this={Field} label="Last Trip date"
-      ><svelte:component this={Text}>{item.tripDate}</svelte:component
+      ><svelte:component this={Text}>{getLastTripDate(item)}</svelte:component
       ></svelte:component
     >
     <svelte:component this={Field} label="Number of Open trips"
-      ><svelte:component this={Text}>{item.numberOpenTrips}</svelte:component
+      ><svelte:component this={Text}>{numberOfOpenTrips(item)}</svelte:component
       ></svelte:component
     >
     <svelte:component this={Field} label="Number of Past trips"
-      ><svelte:component this={Text}>{item.numberPastTrips}</svelte:component
+      ><svelte:component this={Text}>{numberOfPastTrips(item)}</svelte:component
       ></svelte:component
     >
   </div>

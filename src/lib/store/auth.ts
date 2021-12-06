@@ -5,6 +5,7 @@ import { UploadFile } from './upload-file';
 import { Product } from './product';
 import { AsyncStore, Publishable } from './types';
 import { Traveller } from './traveller';
+import { Advisor } from './advisor';
 
 export const authStore = writable<
   AsyncStore & {
@@ -36,6 +37,7 @@ export type User = Publishable & {
   travellerMe: Traveller;
   neverMissADrop: boolean;
   curatedForYou: boolean;
+  myAdvisors: Advisor[];
 };
 
 export const userFieldsFragment = `
@@ -59,7 +61,22 @@ fragment userFields on UsersPermissionsUser  {
     advisorMe {
       id
     }
+    myAdvisors {
+      id
+    }
     neverMissADrop
     curatedForYou
+}
+`;
+
+export const subUserFieldsFragment = `
+fragment subUserFields on UsersPermissionsUser  {
+    id
+    name
+    username
+    email
+    avatar {
+      ...uploadFileFields
+    }
 }
 `;

@@ -1,3 +1,4 @@
+import { dateTimeHelper } from '$lib/helpers/datetime';
 import { writable } from 'svelte/store';
 import { Address } from './address';
 import { User } from './auth';
@@ -7,13 +8,14 @@ import { Destination } from './destination';
 import { Experience } from './experience';
 import { Language } from './language';
 import { Ordering, ORDER_BY_NAME_ASC, ORDER_BY_NAME_DESC } from './order';
+import { Trip } from './trip';
 import { CollectionStore, Exhibitable } from './types';
 import { UploadFile } from './upload-file';
 
 export type AdvisorBase = Exhibitable & {
   avatar: UploadFile;
   description?: string;
-  accept?: string;
+  accept?: boolean;
   planningFee?: boolean;
   instagram?: string;
   twitter?: string;
@@ -27,6 +29,19 @@ export type AdvisorBase = Exhibitable & {
   address?: Address;
   website?: string;
   timezone?: string;
+  email?: string;
+  email2?: string;
+  phone_number?: string;
+  cell_mobile?: string;
+  whatsapp?: string;
+  emergency?: string;
+  phone_number_code?: string;
+  cell_mobile_code?: string;
+  whatsapp_code?: string;
+  emergency_code?: string;
+  initials?: string;
+  gallery?: UploadFile;
+  trips: Trip[];
 };
 
 export type Advisor = AdvisorBase & {
@@ -52,6 +67,37 @@ export const advisorOrderings: Ordering[] = [
   ORDER_BY_NAME_ASC,
   ORDER_BY_NAME_DESC,
 ];
+
+export const getLastTripDate = (advisor: Advisor): string =>{
+  let lastTrip: Trip|null = advisor.trips.reduce((acc: Trip,item)=>{
+    if(!acc){
+      return item;
+    }else if(item.depart_at > acc.depart_at){ 
+      return item;
+    }else{
+      return acc
+    }
+  },null);
+  return lastTrip?.depart_at ? dateTimeHelper.formatDate(lastTrip.depart_at) : "";
+}
+
+export const numberOfOpenTrips = (advisor: Advisor): number => {
+  return advisor.trips.reduce((acc: number,item)=>{
+    if(item.state == 'enquired'){
+      acc++;
+    }
+    return acc;
+  },0);
+}
+
+export const numberOfPastTrips = (advisor: Advisor): number => {
+  return advisor.trips.reduce((acc: number,item)=>{
+    if(item.state == 'completed'){
+      acc++;
+    }
+    return acc;
+  },0);
+}
 
 export const advisorFieldsFragment = `
 fragment advisorFields on Advisor {
@@ -129,38 +175,8 @@ fragment advisorFields on Advisor {
   facebook
   linkedIn
   pinterest
-  destinations {
-    ...destinationFields
-  }
-  experiences {
-    ...experienceFields
-  }
-  my_users {
-    ...userFields
-  }
-  userMe {
-    ...userFields
-  }
   agency {
     ...agencyFields
-  }
-  destinationTypes1 {
-    ...destinationTypeFields
-  }
-  destinationTypes2 {
-    ...destinationTypeFields
-  }
-  destinationTypes3 {
-    ...destinationTypeFields
-  }
-  experienceType1 {
-    ...experienceTypeFields
-  }
-  experienceType2 {
-    ...experienceTypeFields
-  }
-  experienceType3 {
-    ...experienceTypeFields
   }
   active
   reference
@@ -190,7 +206,9 @@ fragment advisorFields on Advisor {
     ...affiliateBenefitProgramFields
   }
   trips {
-    ...tripFields
+    id
+    depart_at
+    return_at
   }
   type1 {
     ...advisorTypeFields
@@ -204,5 +222,6 @@ fragment advisorFields on Advisor {
   country {
     ...countryFields
   }
+  phone_number
 }
 `;

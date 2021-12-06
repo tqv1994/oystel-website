@@ -4,45 +4,6 @@
     let me: User | undefined;
     authStore.subscribe(async ({ user }) => {
       me = user;
-      if (me && me?.travellerMe == null) {
-        const res = await fetch(`/traveller/create.json`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: me?.email,
-            forename: me?.name || '-',
-            surname: me?.name || '-',
-          }),
-        });
-        if (res.ok) {
-          const data = await res.json();
-
-          const resUpdateMe = await fetch(`/auth/update.json`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              travellerMe: data.createTraveller.traveller.id,
-            }),
-          });
-          if (resUpdateMe.ok) {
-            const dataUpdateMe = await resUpdateMe.json();
-
-            if (typeof me === 'undefined') {
-              return {
-                status: 302,
-                redirect: '/',
-              };
-            }
-          } else {
-            const dataUpdateMe = await resUpdateMe.json();
-            console.log(dataUpdateMe);
-          }
-        }
-      }
     });
     if (typeof me === 'undefined') {
       return {

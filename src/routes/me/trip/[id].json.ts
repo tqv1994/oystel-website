@@ -49,7 +49,6 @@ export const get: RequestHandler = async (request: Request) => {
     ${personalPreferenceFieldsFragment}
     ${addressFieldsFragment}
     `;
-    console.log(query);
     const res = await client.query<TripQueryResult>(query, request.params).toPromise();
     if (res.data) {
       return {

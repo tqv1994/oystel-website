@@ -5,18 +5,21 @@ import { cmsUrlPrefix } from '$lib/env';
 
 export const stringHelper = {
   objectToQueryString: function(obj: any, prefix?: string): string {
-    var str = [],
-    p;
-    for (p in obj) {
-      if (obj.hasOwnProperty(p)) {
-        var k = prefix ? prefix + "[" + p + "]" : p,
-          v = obj[p];
-        str.push((v !== null && typeof v === "object") ?
-          stringHelper.objectToQueryString(v, k) :
-          encodeURIComponent(k) + "=" + encodeURIComponent(v));
-      }
-    }
-    return str.join("&");
+    const query = Object.keys(obj).map((key) => {
+      const value  = obj[key];
+  
+      if (obj.constructor === Array)
+        key = `${prefix}[]`;
+      else if (obj.constructor === Object)
+        key = (prefix ? `${prefix}[${key}]` : key);
+  
+      if (typeof value === 'object')
+        return stringHelper.objectToQueryString(value, key);
+      else
+        return `${key}=${encodeURIComponent(value)}`;
+    });
+  
+    return [].concat.apply([], query).join('&');
   },
 
   queryURLParamToJSON: (query: string) => {
