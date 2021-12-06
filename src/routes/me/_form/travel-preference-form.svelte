@@ -16,8 +16,8 @@
   export let is_edit: boolean = true;
   export let data: TravelPreferenceType[];
   export let selected: string[];
+  export let title: string;
   export let otherPreference: TravelPreference;
-
   const dispatcher = createEventDispatcher();
 
   const onSubmit = () => {
@@ -26,7 +26,7 @@
 </script>
 
 <form>
-  <FormToggle bind:is_edit title="Travel">
+  <FormToggle bind:is_edit title={title}>
     {#each data as type}
       <Field label={type.name} column_1={3} column_2={9} class="mb-10">
         <div

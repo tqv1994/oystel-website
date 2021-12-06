@@ -41,6 +41,9 @@
           personalPreferenceSelected: me?.travellerMe.personalPreferences.map(
             (item) => item.id,
           ),
+          otherPreference: travelPreferenceTypes
+            .filter((item) => item.name == 'Hotel Amenities')[0]
+            .preferences.filter((item) => item.name == 'Other')[0],
         },
       };
     } else {
@@ -54,10 +57,9 @@
 
 <script lang="ts">
   export let me: User | undefined = $authStore.user;
+  export let otherPreference: TravelPreference;
   let travelEdit: boolean = false;
   let personalEdit: boolean = false;
-  let otherPreference: TravelPreference;
-
   export let travelPreferenceData: TravelPreferenceType[];
   export let personalPreferenceData: PersonalPreferenceType[];
   export let travelPreferenceSelected: string[];
@@ -186,6 +188,7 @@
           bind:is_edit={travelEdit}
           bind:otherPreference
           on:submit={handleTravelSubmit}
+          title="Travel"
         />
       {/if}
 
@@ -204,6 +207,7 @@
           bind:selected={personalPreferenceSelected}
           bind:is_edit={personalEdit}
           on:submit={handlePersonalSubmit}
+          title="Personal"
         />
       {/if}
     {/if}

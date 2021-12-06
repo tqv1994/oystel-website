@@ -22,6 +22,7 @@
   let myAssistantEdit: boolean = false;
   let medicalConditionsEdit: boolean = false;
 </script>
+
 <div class="personal-infomation-tab">
   {#if !isInfoEdit}
     <LayoutGrid class="p-0">
@@ -38,11 +39,13 @@
         >
           <LayoutGrid class="p-0 d-none m-block mb-20">
             <Cell spanDevices={{ phone: 2, tablet: 4 }}>
-              <div class="thumbnail user-profile-image dark">
-                <div class="image-cover" style="padding-top: 100%">
-                  <BlurImage {...me.avatar} />
+              {#if me.avatar}
+                <div class="thumbnail user-profile-image dark">
+                  <div class="image-cover" style="padding-top: 100%">
+                    <BlurImage {...me.avatar} />
+                  </div>
                 </div>
-              </div>
+              {/if}
             </Cell>
             <Cell spanDevices={{ phone: 2, tablet: 4 }}>
               <h3 class="mdc-typography--headline1 mb-15">
@@ -69,8 +72,9 @@
           </svelte:component>
           <svelte:component this={Field} label="Birthdate">
             <svelte:component this={Text}
-              >{me.travellerMe?.birthday ? dateTimeHelper.formatDate(me.travellerMe?.birthday) :
-                ''}</svelte:component
+              >{me.travellerMe?.birthday
+                ? dateTimeHelper.formatDate(me.travellerMe?.birthday)
+                : ''}</svelte:component
             >
           </svelte:component>
           <svelte:component this={Field} label="Country of Residence">
@@ -84,11 +88,13 @@
         </svelte:component>
       </Cell>
       <Cell class="m-none" spanDevices={{ desktop: 4, phone: 4, tablet: 8 }}>
-        <div class="thumbnail user-profile-image dark">
-          <div class="image-cover" style="padding-top: 100%">
-            <BlurImage {...me.avatar} />
+        {#if me.avatar}
+          <div class="thumbnail user-profile-image dark">
+            <div class="image-cover" style="padding-top: 100%">
+              <BlurImage {...me.avatar} />
+            </div>
           </div>
-        </div>
+        {/if}
       </Cell>
     </LayoutGrid>
   {/if}
