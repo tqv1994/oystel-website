@@ -36,7 +36,6 @@
   import { getItems } from '$lib/store/types';
   import BlurImage from '$lib/components/blur-image.svelte';
 
-  let openSignupModal: boolean;
   let filterActive = 'Current Drops';
   let configPage = {
     header: {
@@ -48,10 +47,6 @@
   };
 
   export let data: HomePageData[];
-  console.log(data);
-  const callOpenSignupModal = () => {
-    openSignupModal = true;
-  };
 
   const carouselConfig = {
     autoplayDuration: 8000,
@@ -113,7 +108,7 @@
         style="background-color: #F0F7F8"
       >
         <div class="content-wrap">
-          <NeverMissDrop on:click={callOpenSignupModal} {...section} />
+          <NeverMissDrop {...section} />
         </div>
       </section>
     {/if}

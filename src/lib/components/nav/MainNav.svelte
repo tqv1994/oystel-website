@@ -32,6 +32,7 @@
   import { clickOutside } from '$lib/components/events/clickOutside';
   import { authStore } from '$lib/store/auth';
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
+import SignupModal from '../modals/SignupModal.svelte';
 </script>
 
 <script lang="ts">
@@ -144,6 +145,19 @@
 
   function onWindowClick() {
     activeSubItems = undefined;
+  }
+
+  function onSignUpModalClose(event: CustomEvent){
+    signupModalOpen = false;
+    if(event.detail.type === 'open-signin'){
+      signinModalOpen = true;
+    }
+  }
+  function onSignInModalClose(event: CustomEvent){
+    signinModalOpen = false;
+    if(event.detail.type === 'open-signup'){
+      signupModalOpen = true;
+    }
   }
 </script>
 
@@ -295,7 +309,8 @@
     <slot />
   </AutoAdjust>
 </nav>
-<svelte:component this={SigninModal} bind:open={signinModalOpen} />
+<svelte:component this={SigninModal} bind:open={signinModalOpen} on:close={onSignInModalClose}/>
+<svelte:component this={SignupModal} bind:open={signupModalOpen} on:close={onSignUpModalClose}/>
 
 <style lang="scss" global>
   @use './MainNav';

@@ -67,13 +67,6 @@
   };
 
   export let data: HomePageData;
-  let openSignupModal = false;
-
-  function callOpenSignupModal() {
-    openSignupModal = true;
-  }
-
-  function callOpenSigninModal() {}
 
   async function likeExperience(event: CustomEvent) {
     let liked: boolean;
@@ -256,7 +249,7 @@
         style="background-color: #F0F7F8"
       >
         <div class="content-wrap">
-          <NeverMissDrop on:click={callOpenSignupModal} {...section} />
+          <NeverMissDrop {...section} />
         </div>
       </section>
     {/if}

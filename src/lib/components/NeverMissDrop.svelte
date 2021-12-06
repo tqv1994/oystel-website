@@ -9,6 +9,8 @@
   import { createEventDispatcher } from 'svelte';
   import BlurImage from './blur-image.svelte';
   import Carousel from './Carousel.svelte';
+  import SignupModal from './modals/SignupModal.svelte';
+import SigninModal from './modals/SigninModal.svelte';
 
   export let name: string | undefined = undefined;
   export let headline: string | undefined = undefined;
@@ -18,10 +20,8 @@
   export let background: UploadFile[] | undefined = undefined;
 
   const dispatcher = createEventDispatcher();
-
-  const openSignupModal = () => {
-    dispatcher('click');
-  };
+  let signupModalOpen = false;
+  let signinModalOpen = true;
 
   const carouselConfig = {
     autoplayDuration: 8000,
@@ -30,6 +30,19 @@
     particlesToShow: 2.5,
     chevronPosition: 'outside',
   };
+
+  function onSignUpModalClose(event: CustomEvent){
+    signupModalOpen = false;
+    if(event.detail.type === 'open-signin'){
+      signinModalOpen = true;
+    }
+  }
+  function onSignInModalClose(event: CustomEvent){
+    signinModalOpen = false;
+    if(event.detail.type === 'open-signup'){
+      signupModalOpen = true;
+    }
+  }
 </script>
 
 <LayoutGrid>
@@ -77,11 +90,12 @@
         <Button
           variant="outlined"
           class="hover-affect"
-          on:click={openSignupModal}
-          href={action.url}
+          on:click={()=>{ signupModalOpen = true; }}
           ><Label class="text-button2">{action.name}</Label></Button
         >
       {/each}
     {/if}
   </Cell>
 </LayoutGrid>
+<svelte:component this={SignupModal} bind:open={signupModalOpen} on:close={onSignUpModalClose}/>
+<svelte:component this={SigninModal} bind:open={signinModalOpen} on:close={onSignInModalClose}/>
