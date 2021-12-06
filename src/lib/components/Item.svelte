@@ -33,6 +33,7 @@
       } else {
         dispathcher('likeItem', { item });
       }
+      liked = !liked;
     }, 0);
   }
 </script>

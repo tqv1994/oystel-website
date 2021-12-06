@@ -21,7 +21,7 @@ import SigninModal from './modals/SigninModal.svelte';
 
   const dispatcher = createEventDispatcher();
   let signupModalOpen = false;
-  let signinModalOpen = true;
+  let signinModalOpen = false;
 
   const carouselConfig = {
     autoplayDuration: 8000,

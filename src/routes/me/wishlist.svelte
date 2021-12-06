@@ -7,30 +7,49 @@
   import Select, { Option } from '@smui/select';
   import ButtonBack from './components/ButtonBack.svelte';
   import WishlistLayout from './components/WishlistLayout.svelte';
+  import { onMount } from 'svelte';
+  import { Product } from '$lib/store/product';
+  import { Destination } from '$lib/store/destination';
+  import { Experience } from '$lib/store/experience';
 
   let me: User | undefined = $authStore.user;
   let active = 'All';
-
-  const unlikeProduct = async (e: CustomEvent) => {
-    let productId = e.detail.productId;
+  let data: Product[] | Experience[] | Destination[] = []
+    .concat(...me.productLikes)
+    .concat(...me.destinationLikes)
+    .concat(...me.experienceLikes);
+  const unlikeWishlist = async (e: CustomEvent) => {
+    let wishListId = e.detail.id;
+    let typeName = e.detail.typeName;
     const confirmDelete = confirm('Do you want to remove this item?');
     if (!confirmDelete) {
       return;
     }
-    let productLikedIds = me.productLikes
-      .map((item) => item.id)
-      .filter((item) => item != productId);
+
+    let config = {
+      url: `/${typeName.toLowerCase()}/like.json`,
+      objectLikes: `${typeName.toLowerCase()}Likes`,
+    };
+
+    let wishListIds = me[config.objectLikes]
+      .map((item: Product | Experience | Destination) => item.id)
+      .filter((item: Product | Experience | Destination) => item != wishListId);
     try {
-      const res = await fetch(`/product/like.json`, {
+      const res = await fetch(config.url, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(productLikedIds),
+        body: JSON.stringify(wishListIds),
       });
       if (res.ok) {
-        me.productLikes = me.productLikes.filter(
-          (item) => item.id != productId,
+        me[config.objectLikes] = me[config.objectLikes].filter(
+          (item: Product | Experience | Destination) =>
+            !(item.id == wishListId && item.__typename == typeName),
+        );
+        data = data.filter(
+          (item: Product | Experience | Destination) =>
+            !(item.id == wishListId && item.__typename == typeName),
         );
       }
     } catch (error) {
@@ -68,19 +87,26 @@
           {#if active == 'All'}
             <svelte:component
               this={WishlistLayout}
-              on:unlike={(e) => unlikeProduct(e)}
-              data={me.productLikes}
+              on:unlike={(e) => unlikeWishlist(e)}
+              {data}
             />
           {:else if active == 'Avaiable'}
             <svelte:component
               this={WishlistLayout}
-              on:unlike={(e) => unlikeProduct(e)}
-              data={me.productLikes?.filter(item => item.available)}
-            />{:else if active == 'Unavaiable'}
+              on:unlike={(e) => unlikeWishlist(e)}
+              data={data.filter(
+                (item) =>
+                  item.available || typeof item.available == 'undefined',
+              )}
+            />
+          {:else if active == 'Unavaiable'}
             <svelte:component
               this={WishlistLayout}
-              on:unlike={(e) => unlikeProduct(e)}
-              data={me.productLikes?.filter(item => !item.available)}
+              on:unlike={(e) => unlikeWishlist(e)}
+              data={data.filter(
+                (item) =>
+                  !item.available && typeof item.available != 'undefined',
+              )}
             />
           {/if}
         </div>

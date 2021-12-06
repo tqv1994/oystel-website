@@ -10,10 +10,10 @@
   import WishListItem from './WishListItem.svelte';
   const dispatcher = createEventDispatcher();
 
-  export let data: Product | [];
+  export let data: Product[] | Experience[] | Destination[] | [];
   let sort: string = 'Recently Added';
   const onUnlike = (e: CustomEvent) => {
-    dispatcher('unlike', { productId: e.detail.productId });
+    dispatcher('unlike', { id: e.detail.id, typeName: e.detail.typeName });
   };
 </script>
 

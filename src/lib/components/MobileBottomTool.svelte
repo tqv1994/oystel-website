@@ -13,15 +13,18 @@
   let openSignupModal: boolean = false;
   let openSigninModal: boolean = false;
   const itemClick = (event: CustomEvent) => {
-      let data = event.detail;
-      if(data.content){
-          content = event.detail.content;
-
-      }else if(data.link !== ''){
-          goto(data.link);
-      }else{
-          openSigninModal = true;
+    let data = event.detail;
+    if (data.content) {
+      content = event.detail.content;
+    } else if (data.link !== '') {
+      if (userModel && data.link.includes('/me')) {
+        goto(data.link);
+      } else {
+        window.pushToast('Please login to use this feature');
       }
+    } else {
+      openSigninModal = true;
+    }
   };
 
   function callOpenSignupModal(event: any) {
@@ -51,5 +54,5 @@
   bind:authModel={userModel}
   on:close={callOpenSignupModal}
 />
-<BottomAppBar on:itemClick={itemClick}/>
+<BottomAppBar on:itemClick={itemClick} />
 <HeaderActionMobile bind:content />

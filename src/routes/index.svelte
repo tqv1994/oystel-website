@@ -24,7 +24,7 @@
   import { getItems, insertToStore } from '$lib/store/types';
   import { makeLink } from '$lib/utils/link';
   import { HomePageData } from './home/index.json';
-  import { authStore } from '$lib/store/auth';
+  import { authStore, User } from '$lib/store/auth';
   import { responsePathAsArray } from 'graphql';
   import { ExperienceLikeData } from './experience/like.json';
   import { DestinationLikeData } from './destination/like.json';
@@ -56,6 +56,7 @@
   import FeatureDrops from '$lib/components/FeatureDrops.svelte';
   import CuratedExperience from '$lib/components/CuratedExperience.svelte';
   import { Page } from '$lib/store/page';
+  import { contains } from '$lib/utils/array';
 
   let configPage = {
     header: {
@@ -67,7 +68,7 @@
   };
 
   export let data: HomePageData;
-
+  let me: User | undefined = $authStore.user;
   async function likeExperience(event: CustomEvent) {
     let liked: boolean;
     if (!$authStore.user) {
@@ -227,6 +228,11 @@
                 <Item
                   {item}
                   {...item}
+                  liked={me ? contains(
+                    me.destinationLikes || [],
+                    'id',
+                    item.id,
+                  ): false}
                   pathPrefix="/destination"
                   on:likeItem={likeDestination}
                 />

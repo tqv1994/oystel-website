@@ -21,6 +21,7 @@
   import { authStore } from '$lib/store/auth';
   import { createEventDispatcher } from 'svelte';
   import * as yup from 'yup';
+import { routerHelper } from '$lib/helpers/router';
   export let open: boolean;
   export let authModel;
   const dispatch = createEventDispatcher();
@@ -76,12 +77,7 @@
             localStorage.setItem('token', token);
             const user = await res.json();
             authStore.set({ user });
-            authModel = user;
-            authModel = user;
-            dispatch('close', {
-              type: 'refresh',
-            });
-            closeModal();
+            routerHelper.redirect('/');
           }
         } catch (err) {
           console.error('Create/update user failure', err);
@@ -124,10 +120,7 @@
             const user = await res.json();
             authStore.set({ user });
             authModel = user;
-            dispatch('close', {
-              type: 'refresh',
-            });
-            closeModal();
+            routerHelper.redirect('/');
           }
           console.error('Error authenticating', res);
         } catch (error) {
@@ -191,12 +184,8 @@
           // authModel = authStore.user;
           // doAfterSignup(user);
           authModel = user;
-          dispatch('close', {
-            type: 'refresh',
-          });
-          closeModal();
           errors = {};
-          return;
+          routerHelper.redirect('/');
           // return goto('/me').then(auth.signOut);
         } else {
           const error = await res.json();

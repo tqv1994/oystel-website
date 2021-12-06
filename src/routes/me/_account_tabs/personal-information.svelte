@@ -22,7 +22,6 @@
   let myAssistantEdit: boolean = false;
   let medicalConditionsEdit: boolean = false;
 </script>
-
 <div class="personal-infomation-tab">
   {#if !isInfoEdit}
     <LayoutGrid class="p-0">
@@ -70,7 +69,7 @@
           </svelte:component>
           <svelte:component this={Field} label="Birthdate">
             <svelte:component this={Text}
-              >{dateTimeHelper.formatDate(me.travellerMe?.birthday) ||
+              >{me.travellerMe?.birthday ? dateTimeHelper.formatDate(me.travellerMe?.birthday) :
                 ''}</svelte:component
             >
           </svelte:component>

@@ -12,16 +12,26 @@
   import { createEventDispatcher } from 'svelte';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
+  import { contains } from '$lib/utils/array';
+  import { authStore, User } from '$lib/store/auth';
 
   export let experiences: Experience[];
   export let name: string | undefined = undefined;
   export let prominent: boolean = false;
   export let vertical: boolean = false;
   export let columns: number = 4;
+  let me: User | undefined = $authStore.user;
   let hero: Experience | undefined;
   let nonHeros: Experience[] | undefined;
   $: if (prominent && experiences.length) {
     experiences = storeHelper.getItems(experiences, 7);
+    if (me) {
+      experiences = experiences.map((item: Experience) => {
+        item.liked = contains(me.experienceLikes || [], 'id', item.id);
+        return item;
+      });
+    }
+
     hero = experiences[0];
     if (experiences.length > 1) {
       nonHeros = experiences.slice(1);
@@ -39,9 +49,11 @@
   const dispatcher = createEventDispatcher();
   const onLike = (event: CustomEvent, experience: Experience | undefined) => {
     if (experience) {
+      hero.liked = !experience.liked;
       dispatcher('likeItem', { data: experience });
     } else {
-      dispatcher('likeItem', { data: event.detail.item });
+      const item = event.detail.item;
+      dispatcher('likeItem', { data: item });
     }
   };
 </script>

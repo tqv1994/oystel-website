@@ -148,7 +148,6 @@
       );
       if (cred && cred.user) {
         const token = await cred.user.getIdToken();
-        console.log(token);
         const res = await fetch('/auth.json', {
           method: 'POST',
           headers: {
@@ -304,21 +303,30 @@
 </Dialog>
 
 <style lang="scss" global>
+  @use './src/theme/mixins.scss';
+  @use './src/theme/colors.scss';
   @import './src/style/partial/signin-modal.scss';
-  @import './src/theme/colors.scss';
-
-  .mdc-text-field{
-    input:-webkit-autofill,
-        input:-webkit-autofill:hover,
-        input:-webkit-autofill:focus,
-        input:-webkit-autofill:active {
-          -webkit-text-fill-color: #fff !important;
-          -webkit-box-shadow: 0 0 0 30px $blue inset;
-          box-shadow: 0 0 0 30px $blue inset;
-        }
-      }
   #signin-modal {
     @import './src/style/partial/form.scss';
+    .mdc-text-field {
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+        -webkit-text-fill-color: #fff !important;
+        -webkit-box-shadow: 0 0 0 30px colors.$blue inset;
+        box-shadow: 0 0 0 30px colors.$blue inset;
+      }
+    }
+    .mdc-dialog__content {
+      padding-left: var(--mdc-layout-grid-margin-desktop);
+      padding-right: var(--mdc-layout-grid-margin-desktop);
+      @include mixins.mobile {
+        padding-left: var(--mdc-layout-grid-margin-phone);
+        padding-right: var(--mdc-layout-grid-margin-phone);
+      }
+    }
+
     @media screen and (max-width: 999px) {
       button.mdc-button {
         min-width: auto;

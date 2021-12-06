@@ -2,13 +2,14 @@ import type { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import type { Rec } from '@sveltejs/kit/types/helper';
-import { Product } from '$lib/store/product';
+import { Product, productFieldsFragment } from '$lib/store/product';
+import { uploadFileFieldsFragment } from '$lib/store/upload-file';
 /**
  * @type {import('@sveltejs/kit').Post}
  */
- export type ProductLikeData = {
-  updateUser:{
-    user:{
+export type ProductLikeData = {
+  updateUser: {
+    user: {
       productLikes: Product[]
     }
   };
@@ -25,16 +26,17 @@ export const put: RequestHandler = async (
         }) {
             user{
                 productLikes{
-                  id,
-                  name
+                  ...productFields
                 
               }
             }
           }
       }
+      ${productFieldsFragment}
+      ${uploadFileFieldsFragment}
     `;
-    const res = await client.mutation<ProductLikeData>(query,{id:request.locals.user?.id,productLikes: request.body}).toPromise();
-    if(res.data){
+    const res = await client.mutation<ProductLikeData>(query, { id: request.locals.user?.id, productLikes: request.body }).toPromise();
+    if (res.data) {
       return {
         body: JSON.stringify(res.data),
       };
@@ -45,5 +47,5 @@ export const put: RequestHandler = async (
   } catch (error) {
     console.error('Error getting products', error);
   }
-  return makeErrorResponse(500,'INTERNAL_SERVER_ERROR', 'Error retrieving data for the products');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the products');
 };

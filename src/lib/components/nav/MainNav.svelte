@@ -200,7 +200,9 @@ import SignupModal from '../modals/SignupModal.svelte';
         <IconButton unbounded="false">
           <SearchIcon />
         </IconButton>
-        <IconButton>
+        <IconButton on:click={() => {
+          $authStore.user ? goto('/me/wishlist') : window.pushToast('Please login to use this feature');
+        }}>
           <HeartIcon size="sm" />
         </IconButton>
         <IconButton

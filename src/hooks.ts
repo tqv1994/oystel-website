@@ -44,12 +44,10 @@ const meQuery = `query {
       ...uploadFileFields
     }
     destinationLikes {
-      id
-      name
+      ...destinationFields
     }
     experienceLikes {
-      id
-      name
+      ...experienceFields
     }
     productLikes {
       ...productFields
@@ -80,6 +78,10 @@ ${countryFieldsFragment}
 ${subTravellerFieldsFragment}
 ${interestFieldsFragment}
 ${productFieldsFragment}
+${destinationFieldsFragment}
+${experienceFieldsFragment}
+${destinationTypeFieldsFragment}
+${experienceTypeFieldsFragment}
 ${addressFieldsFragment}
 ${travelPreferenceFieldsFragment}
 ${personalPreferenceFieldsFragment}

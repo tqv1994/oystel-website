@@ -2,13 +2,16 @@ import type { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { Rec } from '@sveltejs/kit/types/helper';
-import { Destination } from '$lib/store/destination';
+import { Destination, destinationFieldsFragment } from '$lib/store/destination';
+import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
+import { uploadFileFieldsFragment } from '$lib/store/upload-file';
+import { countryFieldsFragment } from '$lib/store/country';
 /**
  * @type {import('@sveltejs/kit').Post}
  */
- export type DestinationLikeData = {
-  updateUser:{
-    user:{
+export type DestinationLikeData = {
+  updateUser: {
+    user: {
       destinationLikes: Destination[]
     }
   };
@@ -25,16 +28,18 @@ export const put: RequestHandler = async (
         }) {
             user{
                 destinationLikes{
-                  id,
-                  name
-                
+                  ...destinationFields
               }
             }
           }
       }
+      ${destinationFieldsFragment}
+      ${destinationTypeFieldsFragment}
+      ${countryFieldsFragment}
+      ${uploadFileFieldsFragment}
     `;
-    const res = await client.mutation<DestinationLikeData>(query,{id:request.locals.user?.id,destinationLikes: request.body}).toPromise();
-    if(res.data){
+    const res = await client.mutation<DestinationLikeData>(query, { id: request.locals.user?.id, destinationLikes: request.body }).toPromise();
+    if (res.data) {
       return {
         body: JSON.stringify(res.data),
       };
@@ -45,5 +50,5 @@ export const put: RequestHandler = async (
   } catch (error) {
     console.error('Error getting destinations', error);
   }
-  return makeErrorResponse(500,'INTERNAL_SERVER_ERROR', 'Error retrieving data for the destinations');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the destinations');
 };

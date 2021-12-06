@@ -32,7 +32,7 @@
     <Cell spanDevices={{ phone: 1, desktop: 3, tablet: 2 }} class="text-center">
       <Button
         on:click={() => {
-          openLink('#');
+          openLink('/me/wishlist');
         }}
       >
         <div class="wrap-item">
