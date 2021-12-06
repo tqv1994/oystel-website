@@ -10,7 +10,7 @@
   import { Option } from '@smui/select';
   import Tab from '@smui/tab';
   import TabBar from '@smui/tab-bar';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
   import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
@@ -370,7 +370,7 @@
                 <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
                   <Item
                     {...item}
-                    pathPrefix="experience"
+                    pathPrefix="/experience"
                     bind:item
                     on:likeItem={likeExperience}
                   />

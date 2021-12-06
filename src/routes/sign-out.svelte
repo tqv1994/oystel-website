@@ -5,7 +5,7 @@
 
   async function signOut() {
     try {
-      const res = await fetch('/auth/sign-out.json');
+      const res = await fetch(`/auth/sign-out.json?_z=${Date.now()}`);
       authStore.set({ user: undefined });
       if (res.ok) {
         document.cookie = `session=; Path=/; Expires=${new Date()};`;

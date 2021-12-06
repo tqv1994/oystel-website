@@ -1,12 +1,10 @@
-import { stringHelper } from ".";
+import * as dayjs from 'dayjs';
 
 export const dateTimeHelper = {
-    monthNames: ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ],
-    formatDate: function(str?: string){
-        if(!str) return undefined;
-        let date = new Date(str);
-        return `${dateTimeHelper.monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-    },
+  formatDate: function (date?: string, format = 'MMMM DD, YYYY') {
+    if (!date) {
+      return '';
+    }
+    return dayjs(date).format(format);
+  },
 };

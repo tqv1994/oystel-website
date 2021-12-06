@@ -2,8 +2,15 @@ import type { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { Rec } from '@sveltejs/kit/types/helper';
-import { Experience } from '$lib/store/experience';
-import { Traveller, travellerFieldsFragment } from '$lib/store/traveller';
+import { subTravellerFieldsFragment, Traveller, travellerFieldsFragment } from '$lib/store/traveller';
+import { uploadFileFieldsFragment } from '$lib/store/upload-file';
+import { visaFieldsFragment } from '$lib/store/visa';
+import { salutationTypeFieldsFragment } from '$lib/store/salutation-type';
+import { identificationFieldsFragment } from '$lib/store/identification';
+import { countryFieldsFragment } from '$lib/store/country';
+import { addressFieldsFragment } from '$lib/store/address';
+import { personalPreferenceFieldsFragment, travelPreferenceFieldsFragment } from '$lib/store/preference';
+import { interestFieldsFragment } from '$lib/store/interest';
 /**
  * @type {import('@sveltejs/kit').Post}
  */
@@ -22,10 +29,21 @@ export const post: RequestHandler = async (
           data: $traveller
         }) {
             traveller{
-                id
+                ...travellerFields
             }
           }
-      }
+        }
+        ${uploadFileFieldsFragment}
+        ${travellerFieldsFragment}
+        ${visaFieldsFragment}
+        ${salutationTypeFieldsFragment}
+        ${identificationFieldsFragment}
+        ${countryFieldsFragment}
+        ${subTravellerFieldsFragment}
+        ${addressFieldsFragment}
+        ${interestFieldsFragment}
+        ${travelPreferenceFieldsFragment}
+        ${personalPreferenceFieldsFragment}
     `;
         const res = await client.mutation<createTravellerData>(query, { traveller: request.body }).toPromise();
         if (res.data) {

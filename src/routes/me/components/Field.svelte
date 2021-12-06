@@ -1,6 +1,6 @@
 <script lang="ts">
   import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Text from './components/Text.svelte';
+  import Text from './Text.svelte';
   export let label: string;
   export let column_1: number = 6;
   export let column_2: number = 6;
@@ -22,7 +22,7 @@
 </div>
 
 <style lang="scss">
-  @use '../../theme/mixins';
+  @use '../../../theme/mixins';
   div :global(.mdc-layout-grid__inner) {
     align-items: center;
   }

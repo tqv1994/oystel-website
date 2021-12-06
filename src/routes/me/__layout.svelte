@@ -45,10 +45,10 @@
       }
     });
     if (typeof me === 'undefined') {
-          return {
-            status: 302,
-            redirect: '/',
-          };
+      return {
+        status: 302,
+        redirect: '/',
+      };
     }
     return {
       props: { me },

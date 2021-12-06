@@ -1,0 +1,86 @@
+@base = https://search.oysteo.su93rheroes.com
+@auth = X-Meili-API-Key: 4d7ee552408d1fe71a26aae4b3a94f6b7aa9f4b4a06786932289531ef9674e33
+@index = advisor
+
+### List indexes
+GET {{base}}/indexes
+Accept: application/json
+{{auth}}
+
+### Create an index
+POST {{base}}/indexes
+Accept: application/json
+Content-Type: application/json
+{{auth}}
+
+{
+  "uid": "{{index}}",
+  "primaryKey": "id"
+}
+ 
+### Delete an index
+DELETE {{base}}/indexes/{{index}}
+Accept: application/json
+{{auth}}
+
+### Filterable attributes
+GET {{base}}/indexes/{{index}}/settings/filterable-attributes
+Accept: application/json
+{{auth}}
+
+### sortable attributes
+GET {{base}}/indexes/{{index}}/settings/sortable-attributes
+Accept: application/json
+{{auth}}
+
+### Update attributes
+POST {{base}}/indexes/{{index}}/settings
+Content-Type: application/json
+Accept: application/json
+{{auth}}
+
+{
+  "filterableAttributes": [
+    "type1", "type2", "type3",
+    "country"
+  ],
+  "sortableAttributes": ["name", "published_at"]
+}
+
+### Update advisor attributes
+POST {{base}}/indexes/advisor/settings
+Content-Type: application/json
+Accept: application/json
+{{auth}}
+
+{
+  "filterableAttributes": [
+    "experienceType1", "experienceType2", "experienceType3",
+    "destinationType1", "destinationType2", "destinationType3",
+    "type1", "type2", "type3",
+    "language1", "language2", "language3",
+    "country"
+  ],
+  "sortableAttributes": ["name"]
+}
+
+### Search: query
+POST {{base}}/indexes/{{index}}/search
+Accept: application/json
+Content-Type: application/json
+{{auth}}
+
+{
+  "q": "priv",
+  "offset": 0
+}
+
+### Search: filter by type
+POST {{base}}/indexes/{{index}}/search
+Accept: application/json
+Content-Type: application/json
+{{auth}}
+
+{
+  "offset": 0
+}

@@ -4,7 +4,7 @@
   import { destinationStore } from '$lib/store/destination';
   import { documentHelper, storeHelper } from '$lib/helpers';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import IconButton from '@smui/icon-button';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
@@ -29,7 +29,7 @@
   import { EditorialPageData } from './editorial.json';
 
   export const load: Load = async ({ fetch, session, page }) => {
-    const res = await fetch('/editorial/editorial.json');
+    const res = await fetch(`/editorial/editorial.json?_z=${Date.now()}`);
     if (res.ok) {
       const data: EditorialPageData = await res.json();
       // insertToStore(
@@ -154,7 +154,7 @@
                 {#each section.destinations as item}
                   <div class="story-item">
                     <div class="thumbnail">
-                      <a href={makeLink('destination', item)}>
+                      <a href={makeLink('/destination', item)}>
                         <div
                           class="image-cover"
                           style="padding-top: calc(410 / 529 * 100%)"
@@ -163,7 +163,7 @@
                         </div>
                       </a>
                     </div>
-                    <a href={makeLink('destination', item)}>
+                    <a href={makeLink('/destination', item)}>
                       <LayoutGrid class="p-0">
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
                           ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
@@ -194,13 +194,13 @@
                   <div class="slide-content slide-item text-left">
                     <div class="story-item">
                       <div class="thumbnail">
-                        <a href={makeLink('drop', item)}>
+                        <a href={makeLink('/drop', item)}>
                           <div class="image-cover">
                             <BlurImage {...item.gallery[0]} />
                           </div>
                         </a>
                       </div>
-                      <a href={makeLink('drop', item)}>
+                      <a href={makeLink('/drop', item)}>
                         <LayoutGrid class="p-0">
                           <Cell spanDevices={{ desktop: 6, phone: 2 }}
                             ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
@@ -228,12 +228,12 @@
                 <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
                   <div class="story-item">
                     <div class="thumbnail">
-                      <a href={makeLink('drop', item)}>
+                      <a href={makeLink('/drop', item)}>
                         <!-- <BlurImage {...item.gallery[0]} /> -->
                         <img src={item.gallery[0].url} />
                       </a>
                     </div>
-                    <a href={makeLink('drop', item)}>
+                    <a href={makeLink('/drop', item)}>
                       <LayoutGrid class="p-0">
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
                           ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
@@ -253,12 +253,12 @@
                 <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
                   <div class="story-item">
                     <div class="thumbnail">
-                      <a href={makeLink('drop', item)}>
+                      <a href={makeLink('/drop', item)}>
                         <!-- <BlurImage {...item.gallery[0]} /> -->
                         <img src={item.gallery[0].url} />
                       </a>
                     </div>
-                    <a href={makeLink('drop', item)}>
+                    <a href={makeLink('/drop', item)}>
                       <LayoutGrid class="p-0">
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
                           ><p class="text-eyebrow text-left m-0 mt-25 mb-25">

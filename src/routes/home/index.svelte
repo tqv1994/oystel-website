@@ -134,7 +134,7 @@
     top: 50%;
     left: 10%;
   }
-  * :global(.mdc-icon-button) {
+  :global(.arrow .mdc-icon-button) {
     @include icon-button.ink-color(colors.$white);
     transform: scale(3);
   }

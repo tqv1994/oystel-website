@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Icon } from '@smui/common';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   export let width: number | undefined;
   export let height: number | undefined;
   let classNames: string;

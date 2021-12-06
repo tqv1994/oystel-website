@@ -10,7 +10,7 @@
   import Tab from '@smui/tab';
   import TabBar from '@smui/tab-bar';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
   import Layout from '$lib/components/common/Layout.svelte';
   import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';

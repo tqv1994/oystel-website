@@ -61,12 +61,15 @@ export const get: RequestHandler = async (request: Request) => {
     const client = createGraphClientFromRequest(request);
     const res = await client.query<QueryResult>(query).toPromise();
     if (res.data) {
-      return {
-        body: JSON.stringify(res.data.homePage),
-      };
+      if (res.data.homePage) {
+        return {
+          body: JSON.stringify(res.data.homePage),
+        };
+      }
+      console.log('Home page could not be read - perhaps a permission issue?')
     }
     if (res.error) {
-      console.log(JSON.stringify(res.error, null, 2));
+      console.log('Res error:', JSON.stringify(res.error, null, 2));
     }
   } catch (error) {
     console.error('Error getting home page', error);

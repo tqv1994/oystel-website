@@ -1,13 +1,13 @@
 <script lang="ts">
   import Textfield from '@smui/textfield';
-  import Field from '../Field.svelte';
+  import Field from '../components/Field.svelte';
   import Select, { Option } from '@smui/select';
   import { User } from '$lib/store/auth';
-  import Button from '@smui/button/Button.svelte';
+  import Button from '@smui/button';
   import FormToggle from '../components/FormToggle.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import { get } from 'svelte/store';
-  import { updateTravellerData } from '../../traveller/update.json';
+  import { updateTravellerData } from '../../traveller/update-me.json';
   import { countryStore } from '$lib/store/country';
   import {
     convertTravellerToInput,
@@ -15,6 +15,8 @@
   } from '$lib/store/traveller';
   import { onMount } from 'svelte';
   import { createPatternPhoneCode } from '$lib/utils/string';
+  import { AddressInput, convertAddressToInput } from '$lib/store/address';
+  import { createAddressData } from '../../address/create.json';
   export let me: User;
   const countries = Object.values(get(countryStore).items);
   const travellerInput: TravellerInput = convertTravellerToInput(
@@ -25,16 +27,24 @@
   travellerInput.homePhone =
     travellerInput.homePhone?.replace(homePhoneCode, '') || '';
   let workPhoneCode: string =
-    travellerInput.workPhone.match(/^\+?(93|84|1)/gm) + '';
-  travellerInput.workPhone = travellerInput.workPhone.replace(
-    workPhoneCode,
-    '',
-  );
-  let addressLine1: string = '123 Main St';
-  let addressLine2: string = '';
-  let city: string = '';
-  let state: string = '';
-  let zipCode: string = '';
+    travellerInput.workPhone?.match(createPatternPhoneCode(countries)) + '';
+  travellerInput.workPhone =
+    travellerInput.workPhone?.replace(workPhoneCode, '') || '';
+
+  let addressInput: AddressInput;
+  if (me.travellerMe?.addresses[0]) {
+    addressInput = convertAddressToInput(me.travellerMe?.addresses[0]);
+  } else {
+    addressInput = {
+      line1: '',
+      line2: '',
+      locality: '',
+      zipcode: '',
+      city: '',
+      country: '',
+      province: '',
+    };
+  }
   let gender: string = 'Female';
   let passportNumber: string = 'XXXXXXXX';
   let expiryDate: string = 'XX/XX/XXXX';
@@ -45,7 +55,34 @@
   export let is_edit: boolean = true;
 
   async function handleSubmitForm() {
-    const res = await fetch(`/traveller/update.json`, {
+    let apiUrl = `create.json`;
+    let method = 'POST';
+    if (travellerInput.addresses[0]) {
+      apiUrl = `update-${travellerInput.addresses[0]}.json`;
+      method = 'PUT';
+    }
+    const res = await fetch(`/address/${apiUrl}`, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...addressInput,
+      }),
+    });
+    if (res.ok) {
+      if (!travellerInput.addresses[0]) {
+        const data: createAddressData = await res.json();
+        travellerInput.addresses.push(data.createAddress.address.id);
+      }
+      await handleUpdateTraveller();
+    } else {
+      window.pushToast('An error occurred');
+    }
+  }
+
+  async function handleUpdateTraveller() {
+    const res = await fetch(`/traveller/update-me.json`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -120,7 +157,7 @@
       column_1={4}
       column_2={8}
     >
-      <Textfield bind:value={addressLine1} label="" type="text" />
+      <Textfield bind:value={addressInput.line1} label="" type="text" />
     </svelte:component>
     <svelte:component
       this={Field}
@@ -128,10 +165,10 @@
       column_1={4}
       column_2={8}
     >
-      <Textfield bind:value={addressLine2} label="" type="text" />
+      <Textfield bind:value={addressInput.line2} label="" type="text" />
     </svelte:component>
     <svelte:component this={Field} label="City" column_1={4} column_2={8}>
-      <Textfield bind:value={city} label="" type="text" />
+      <Textfield bind:value={addressInput.city} label="" type="text" />
     </svelte:component>
     <svelte:component
       this={Field}
@@ -141,12 +178,33 @@
     >
       <div class="row">
         <div class="d-col-3 m-col-3">
-          <Textfield bind:value={state} label="State" type="text" />
+          <Textfield
+            bind:value={addressInput.locality}
+            label="State"
+            type="text"
+          />
         </div>
         <div class="d-col-9 m-col-9">
-          <Textfield bind:value={zipCode} label="Zip Code" type="text" />
+          <Textfield
+            bind:value={addressInput.zipcode}
+            label="Zip Code"
+            type="text"
+          />
         </div>
       </div>
+    </svelte:component>
+    <svelte:component this={Field} label="Province" column_1={4} column_2={8}>
+      <Textfield bind:value={addressInput.province} type="text" />
+    </svelte:component>
+    <svelte:component this={Field} label="Country" column_1={4} column_2={8}>
+      <Select bind:value={addressInput.country} label="">
+        {#each countries as item}
+          <Option value={item.id}>{item.name}</Option>
+        {/each}
+      </Select>
+    </svelte:component>
+    <svelte:component this={Field} label="Language" column_1={4} column_2={8}>
+      <Textfield bind:value={travellerInput.language} label="" type="text" />
     </svelte:component>
     <svelte:component this={Field} label="Gender" column_1={4} column_2={8}>
       <Select bind:value={gender} label="">
@@ -193,6 +251,9 @@
           <Option value={item.id}>{item.name}</Option>
         {/each}
       </Select>
+    </svelte:component>
+    <svelte:component this={Field} label="Instagram" column_1={4} column_2={8}>
+      <Textfield bind:value={travellerInput.instagram} label="" type="text" />
     </svelte:component>
     <svelte:component
       this={Field}

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { authStore, User } from '$lib/store/auth';
-  import LayoutAccount from './LayoutAccount.svelte';
+  import LayoutAccount from './components/LayoutAccount.svelte';
   import Tab, { Label } from '@smui/tab';
   import TabBar from '@smui/tab-bar';
   import BoxTabs from './components/BoxTabs.svelte';

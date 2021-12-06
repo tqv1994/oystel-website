@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import { onMount } from 'svelte';
 
   const WIDTH = 130;

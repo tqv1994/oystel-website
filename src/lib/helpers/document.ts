@@ -109,4 +109,8 @@ export const documentHelper = {
             document.querySelector(wrapItems).style.height = `${max}px`;
     },
 
+    scrollToTop: function(){
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
 };

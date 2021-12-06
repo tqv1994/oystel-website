@@ -7,7 +7,7 @@
   import { Label } from '@smui/common';
   import IconButton from '@smui/icon-button';
   import { Icon } from '@smui/common';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import { documentHelper, stringHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
@@ -492,7 +492,7 @@
 {/if}
 
 <style lang="scss" global>
-   @use '../../theme/mixins';
+  @use '../../theme/mixins';
   .advisor-detail {
     @import './src/style/partial/thumbnail.scss';
     .header-title {

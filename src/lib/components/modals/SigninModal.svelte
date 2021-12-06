@@ -10,7 +10,7 @@
   import { Cell } from '@smui/layout-grid';
   import Textfield from '@smui/textfield';
   import '$lib/firebase';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import {
     signInWithEmailAndPassword,
     getAuth,
@@ -305,6 +305,18 @@
 
 <style lang="scss" global>
   @import './src/style/partial/signin-modal.scss';
+  @import './src/theme/colors.scss';
+
+  .mdc-text-field{
+    input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+          -webkit-text-fill-color: #fff !important;
+          -webkit-box-shadow: 0 0 0 30px $blue inset;
+          box-shadow: 0 0 0 30px $blue inset;
+        }
+      }
   #signin-modal {
     @import './src/style/partial/form.scss';
     @media screen and (max-width: 999px) {

@@ -5,7 +5,7 @@
   import { Title } from '@smui/top-app-bar';
   import { createEventDispatcher } from 'svelte';
   import { Icon } from '@smui/common';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import IconButton from '@smui/icon-button';
   import OyMenu from './OyMenu.svelte';
   import OyExplode from './OyExplode.svelte';
@@ -15,7 +15,7 @@
   import { Category } from '$lib/store/category';
   import { Nameable } from '$lib/store/types';
   import OysteoLogo from '$lib/components/OysteoLogo.svelte';
-import CloseIcon from '$lib/icons/CloseIcon.svelte';
+  import CloseIcon from '$lib/icons/CloseIcon.svelte';
 
   let dispathcher = createEventDispatcher();
   export let open = false;

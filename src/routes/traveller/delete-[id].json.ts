@@ -6,41 +6,32 @@ import { Experience } from '$lib/store/experience';
 import { subTravellerFieldsFragment, Traveller, travellerFieldsFragment } from '$lib/store/traveller';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
 import { visaFieldsFragment } from '$lib/store/visa';
-import { salutationFieldsFragment } from '$lib/store/salutation';
+import { salutationTypeFieldsFragment } from '$lib/store/salutation-type';
 import { identificationFieldsFragment } from '$lib/store/identification';
 import { countryFieldsFragment } from '$lib/store/country';
 /**
  * @type {import('@sveltejs/kit').Post}
  */
-export type updateTravellerData = {
-    updateTraveller: {
+export type deleteTravellerData = {
+    deleteTraveller: {
         traveller: Traveller
     };
 };
 
-export const put: RequestHandler = async (
-    request: Request<Rec<any>, AuthForm>) => {
+export const del: RequestHandler = async (request: Request) => {
     try {
         const client = createGraphClientFromRequest(request);
-        const query = `mutation updateTraveller ($id: ID!,$traveller: editTravellerInput){
-        updateTraveller(input:{
+        const query = `mutation deleteTraveller ($id: ID!){
+        deleteTraveller(input:{
             where: {id: $id},
-            data: $traveller
             }) {
                 traveller{
-                    ...travellerFields
+                    id
                 }
             }
         }
-        ${uploadFileFieldsFragment}
-        ${travellerFieldsFragment}
-        ${visaFieldsFragment}
-        ${salutationFieldsFragment}
-        ${identificationFieldsFragment}
-        ${countryFieldsFragment}
-        ${subTravellerFieldsFragment}
     `;
-        const res = await client.mutation<updateTravellerData>(query, {id: request.locals.user?.travellerMe?.id, traveller: request.body }).toPromise();
+        const res = await client.mutation<deleteTravellerData>(query, {id:request.params.id || '' }).toPromise();
         if (res.data) {
             return {
                 body: JSON.stringify(res.data),
@@ -50,7 +41,7 @@ export const put: RequestHandler = async (
             console.log(JSON.stringify(res.error, null, 2));
         }
     } catch (error) {
-        console.error('Error create data for the traveller', error);
+        console.error('Error delete data for the traveller', error);
     }
-    return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error creating data for the traveller');
+    return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error deleting data for the traveller');
 };

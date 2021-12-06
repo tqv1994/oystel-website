@@ -1,6 +1,6 @@
 <script lang="ts">
   import { authStore, User } from '$lib/store/auth';
-  import LayoutAccount from '../LayoutAccount.svelte';
+  import LayoutAccount from '../components/LayoutAccount.svelte';
   import Tab, { Label } from '@smui/tab';
   import TabBar from '@smui/tab-bar';
   import BoxTabs from '../components/BoxTabs.svelte';
@@ -10,6 +10,9 @@
   import BackIcon from '$lib/icons/BackIcon.svelte';
   import TravelDocuments from '../_account_tabs/travel-documents.svelte';
   import ButtonBack from '../components/ButtonBack.svelte';
+  import { documentHelper } from '$lib/helpers/document';
+  import AlertBox from '../components/AlertBox.svelte';
+  import ButtonUnderline from '../components/ButtonUnderline.svelte';
 
   let me: User | undefined = $authStore.user;
   let active = 'Personal Information';
@@ -50,11 +53,22 @@
           {#if active == 'Personal Information'}
             <svelte:component this={PersonalInformation} {me} />
           {/if}
-          {#if active == 'Family & Friends'}
+          {#if active == 'Family & Friends' && me.travellerMe}
             <svelte:component this={FamilyFriends} {me} />
           {/if}
-          {#if active == 'Travel Documents'}
+          {#if active == 'Travel Documents' && me.travellerMe}
             <svelte:component this={TravelDocuments} {me} />
+          {/if}
+          {#if active != 'Personal Infomation' && !me.travellerMe}
+            <svelte:component this={AlertBox}>
+              Before doing this. Please tell us your first and last name. <svelte:component
+                this={ButtonUnderline}
+                on:click={() => {
+                  documentHelper.scrollToTop();
+                }}
+                label="Update them here"
+              />
+            </svelte:component>
           {/if}
         </div>
       </svelte:component>

@@ -9,7 +9,8 @@
   import { languageStore } from '$lib/store/language';
   import { Locals } from '$lib/store/locals';
   import { MainNavItem } from '$lib/components/nav/types';
-  import { salutationStore } from '$lib/store/salutation';
+  import { salutationTypeStore } from '$lib/store/salutation-type';
+  import { interestTypeStore } from '$lib/store/interest';
 
   const mainMenu: MainNavItem[] = [
     {
@@ -42,7 +43,14 @@
     insertToStore(advisorTypeStore, session.metadata?.advisorTypes, false);
     insertToStore(countryStore, session.metadata?.countries, false);
     insertToStore(languageStore, session.metadata?.languages, false);
-    insertToStore(salutationStore, session.metadata?.salutations, false);
+    insertToStore(interestTypeStore, session.metadata?.interestTypes, false);
+    insertToStore(travelPreferenceTypeStore, session.metadata?.travelPreferenceTypes, false);
+    insertToStore(personalPreferenceTypeStore, session.metadata?.personalPreferenceTypes, false);
+    insertToStore(
+      salutationTypeStore,
+      session.metadata?.salutationTypes,
+      false,
+    );
     authStore.set({ user: session.user });
 
     mainMenu[0].children = session.metadata?.feature?.advisors;
@@ -70,6 +78,8 @@
 <script lang="ts">
   import Footer from '$lib/components/Footer.svelte';
   import MainNav from '$lib/components/nav/MainNav.svelte';
+  import MobileBottomTool from '$lib/components/MobileBottomTool.svelte';
+import { personalPreferenceTypeStore, travelPreferenceTypeStore } from '$lib/store/preference';
   export let active: MainNavItem | undefined;
 </script>
 
@@ -80,3 +90,4 @@
   </section>
   <Footer />
 </div>
+<MobileBottomTool />

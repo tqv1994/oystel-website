@@ -3,7 +3,7 @@
   import type { Load } from '@sveltejs/kit';
 
   export const load: Load = async ({ fetch, session, page }) => {
-    const res = await fetch('/home.json');
+    const res = await fetch(`/home.json?_z=${Date.now()}`);
     if (res.ok) {
       const data: HomePageData = await res.json();
       return {
@@ -22,19 +22,14 @@
 </script>
 
 <script lang="ts">
-  import Layout from '$lib/components/common/Layout.svelte';
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  import OyCarousel from '$lib/components/common/OyCarousel.svelte';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import { Icon } from '@smui/common';
   import Select from '@smui/select';
   import { Option } from '@smui/select';
   import NeverMissDrop from '$lib/components/NeverMissDrop.svelte';
   import DropList from '$lib/components/DropList.svelte';
-  import { onMount } from 'svelte';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
   import Carousel from '$lib/components/Carousel.svelte';
   import FeatureDrops from '$lib/components/FeatureDrops.svelte';
   import { Drop, dropStore } from '$lib/store/drop';
@@ -144,6 +139,7 @@
 
 <style lang="scss" global>
   @use '../../theme/mixins';
+  @use '../../theme/colors';
   .shop-page-content {
     @import './src/style/partial/featured-drop.scss';
     @import './src/style/partial/thumbnail.scss';
@@ -214,7 +210,7 @@
       position: absolute;
       bottom: -20px;
       width: calc(100% - 25px);
-      background-color: #5078bc;
+      background-color: colors.$blue;
       left: 50%;
       transform: translateX(-50%);
       padding: 10px 0;
@@ -228,7 +224,7 @@
       text-align: center;
     }
     .trips-list-wrap .item-featured-drop.coming .thumbnail .caption {
-      background-color: #5078bc;
+      background-color: colors.$blue;
     }
     .trips-list-wrap .item-featured-drop:not(.new) {
       white-space: normal;
@@ -258,7 +254,7 @@
 
     #featured-drops .list-featured-drop {
       :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-        background-color: #5078bc;
+        background-color: colors.$blue;
       }
     }
 

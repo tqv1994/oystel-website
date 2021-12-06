@@ -1,5 +1,6 @@
 <script lang="ts">
-  import H1 from '@smui/common/elements/H1.svelte';
+  import { H1 } from '@smui/common/elements';
+
   let className: string = '';
   export { className as class };
   export let title: string;
@@ -9,7 +10,7 @@
 <div class="root {className}">
   <H1 class="mdc-typography--headline1 mb-20 title">{title}</H1>
   {#if subtitle}
-    <p >{subtitle}</p>
+    <p>{subtitle}</p>
   {/if}
   <div class="content d-pt-30 m-pt-15">
     <slot />
@@ -20,11 +21,11 @@
   .root {
     text-align: center;
     --mdc-typography-headline2-font-family: GTSupper;
-    :global(.title){
+    :global(.title) {
       max-width: 710px;
       margin: 0 auto;
     }
-    p{
+    p {
       max-width: 461px;
       margin: 0 auto;
     }

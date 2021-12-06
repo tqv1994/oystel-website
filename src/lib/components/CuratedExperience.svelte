@@ -3,11 +3,11 @@
   import { Experience } from '$lib/store/experience';
   import { makeLink } from '$lib/utils/link';
   import { Icon } from '@smui/common';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import IconButton from '@smui/icon-button';
+  import { Cell } from '@smui/layout-grid';
+  import LayoutGrid from '@smui/layout-grid';
   import BlurImage from './blur-image.svelte';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import Item from './Item.svelte';
   import { createEventDispatcher } from 'svelte';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
@@ -97,7 +97,7 @@
             <Item
               {...experience}
               item={experience}
-              pathPrefix="experience"
+              pathPrefix="/experience"
               on:likeItem={(e) => onLike(e, undefined)}
             />
           </Cell>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Icon } from '@smui/common';
-  import Svg from '@smui/common/elements/Svg.svelte';
-  export let size: string;
+  import { Svg } from '@smui/common/elements';
+  export let size: string = 'sm';
 </script>
 
 {#if size == 'sm'}

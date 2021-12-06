@@ -7,7 +7,7 @@
   import { makeLink } from '$lib/utils/link';
   import IconButton from '@smui/icon-button';
   import { Icon } from '@smui/common';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import { createEventDispatcher } from 'svelte';
   import { Searchable } from '$lib/store/types';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';

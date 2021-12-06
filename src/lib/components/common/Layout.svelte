@@ -11,8 +11,9 @@
   import { Label } from '@smui/common';
   import { Wrapper } from '@smui/tooltip';
   import Textfield from '@smui/textfield';
-  import A from '@smui/common/elements/A.svelte';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { A } from '@smui/common/elements';
+
+  import { Svg } from '@smui/common/elements';
   import { Cell } from '@smui/layout-grid';
   import LayoutGrid from '@smui/layout-grid';
   import { onMount, afterUpdate, createEventDispatcher } from 'svelte';

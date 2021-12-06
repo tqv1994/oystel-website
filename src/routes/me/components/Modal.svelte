@@ -1,19 +1,15 @@
 <script lang="ts">
   import Dialog, { Header, Content } from '@smui/dialog';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import IconButton from '@smui/icon-button';
   import Title from './Title.svelte';
 
   export let open: boolean = false;
   export let title: string | undefined;
-  export let style: string = "width: 850px; max-width: calc(100vw - 32px);";
+  export let style: string = 'width: 850px; max-width: calc(100vw - 32px);';
 </script>
 
 <div>
-  <Dialog
-    bind:open
-    fullscreen
-    surface$style={style}
-  >
+  <Dialog bind:open fullscreen surface$style={style}>
     {#if title || title == ''}
       <Header>
         <svelte:component this={Title}>{title || ''}</svelte:component>

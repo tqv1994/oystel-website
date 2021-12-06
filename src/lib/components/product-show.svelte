@@ -4,7 +4,7 @@
   import { Cell } from '@smui/layout-grid';
   import IconButton from '@smui/icon-button';
   import { Icon } from '@smui/common';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import { destinationStore } from '$lib/store/destination';
   import { Destination } from '$lib/store/destination';
   import { insertToStore } from '$lib/store/types';
@@ -96,6 +96,7 @@
 
 <style lang="scss">
   @use '../../theme/mixins';
+  @use '../../theme/colors';
   .products-list :global(.mdc-layout-grid__inner) {
     overflow-x: auto;
     grid-auto-flow: column;
@@ -112,7 +113,7 @@
     background-color: #d3d3d3;
   }
   .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-    background-color: #5078bc;
+    background-color: colors.$blue;
   }
 
   :global(.products-list .item-product) {

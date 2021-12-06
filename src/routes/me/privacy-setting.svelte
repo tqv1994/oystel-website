@@ -1,17 +1,32 @@
 <script lang="ts">
   import { authStore, User } from '$lib/store/auth';
-  import LayoutAccount from './LayoutAccount.svelte';
+  import LayoutAccount from './components/LayoutAccount.svelte';
   import ButtonBack from './components/ButtonBack.svelte';
   import PrivacySettingBox from './components/PrivacySettingBox.svelte';
   import Button, { Label } from '@smui/button';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import Checkbox from '@smui/checkbox/Checkbox.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import Checkbox from '@smui/checkbox';
   import Text from './components/Text.svelte';
+  import OyNotification from '$lib/components/common/OyNotification.svelte';
 
   let me: User | undefined = $authStore.user;
-  let neverMissADrop: boolean = true;
-  let curatedForYou: boolean = false;
+  const handleUpdateSetting = async () => {
+    const res = await fetch(`/auth/update.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        neverMissADrop: me?.neverMissADrop,
+        curatedForYou: me?.curatedForYou,
+      }),
+    });
+    if (res.ok) {
+    } else {
+      window.pushToast('An error occurred');
+    }
+  };
 </script>
 
 <div class="content privacy-setting-content">
@@ -57,44 +72,50 @@
         class="mb-60"
       >
         <div slot="actions">
-          <Button variant="unelevated" type="submit"
+          <Button
+            variant="unelevated"
+            type="button"
+            on:click={handleUpdateSetting}
             ><Label class="text-button2">Update Preferences</Label></Button
           >
         </div>
         <div slot="content">
-          <LayoutGrid class="p-0 mb-25">
-            <Cell spanDevices={{ desktop: 1, tablet: 1, phone: 1 }}>
-              <Checkbox bind:checked={neverMissADrop} />
-            </Cell>
-            <Cell spanDevices={{ desktop: 11, tablet: 7, phone: 3 }}>
-              <svelte:component this={Text}>
-                <b>Never Miss a Drop</b><br />
-                We use technologies to personalize and enhance your experience on
-                our site. Visit our Privacy Policy to learn more or manage your personal
-                preferences in our Tool. By using our site, you agree to our use
-                of these technologies.
-              </svelte:component>
-            </Cell>
-          </LayoutGrid>
-          <LayoutGrid class="p-0 mb-25">
-            <Cell spanDevices={{ desktop: 1, tablet: 1, phone: 1 }}>
-              <Checkbox bind:checked={curatedForYou} />
-            </Cell>
-            <Cell spanDevices={{ desktop: 11, tablet: 7, phone: 3 }}>
-              <svelte:component this={Text}>
-                <b>Curated for You</b><br />
-                We use technologies to personalize and enhance your experience on
-                our site. Visit our Privacy Policy to learn more or manage your personal
-                preferences in our Tool. By using our site, you agree to our use
-                of these technologies.
-              </svelte:component>
-            </Cell>
-          </LayoutGrid>
+          <form on:submit|preventDefault={handleUpdateSetting}>
+            <LayoutGrid class="p-0 mb-25">
+              <Cell spanDevices={{ desktop: 1, tablet: 1, phone: 1 }}>
+                <Checkbox bind:checked={me.neverMissADrop} />
+              </Cell>
+              <Cell spanDevices={{ desktop: 11, tablet: 7, phone: 3 }}>
+                <svelte:component this={Text}>
+                  <b>Never Miss a Drop</b><br />
+                  We use technologies to personalize and enhance your experience
+                  on our site. Visit our Privacy Policy to learn more or manage your
+                  personal preferences in our Tool. By using our site, you agree
+                  to our use of these technologies.
+                </svelte:component>
+              </Cell>
+            </LayoutGrid>
+            <LayoutGrid class="p-0 mb-25">
+              <Cell spanDevices={{ desktop: 1, tablet: 1, phone: 1 }}>
+                <Checkbox bind:checked={me.curatedForYou} />
+              </Cell>
+              <Cell spanDevices={{ desktop: 11, tablet: 7, phone: 3 }}>
+                <svelte:component this={Text}>
+                  <b>Curated for You</b><br />
+                  We use technologies to personalize and enhance your experience
+                  on our site. Visit our Privacy Policy to learn more or manage your
+                  personal preferences in our Tool. By using our site, you agree
+                  to our use of these technologies.
+                </svelte:component>
+              </Cell>
+            </LayoutGrid>
+          </form>
         </div>
       </svelte:component>
     {/if}
   </LayoutAccount>
 </div>
+<OyNotification />
 
 <style lang="scss" global>
   @use '../../theme/mixins';

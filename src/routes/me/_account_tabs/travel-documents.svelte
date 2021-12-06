@@ -2,15 +2,29 @@
   import { User } from '$lib/store/auth';
   import Button, { Label } from '@smui/button';
   import DataTable, { Cell, Head, Body, Row } from '@smui/data-table';
-  import Dialog, { Title, Content, Header } from '@smui/dialog';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
   import ButtonUnderline from '../components/ButtonUnderline.svelte';
   import TravelDocumentForm from '../_form/travel-document-form.svelte';
   import Modal from '../components/Modal.svelte';
-import Text from '../components/Text.svelte';
+  import Text from '../components/Text.svelte';
+  import {
+    ENUM_IDENTIFICATION_TYPE_LABEL,
+    Identification,
+  } from '$lib/store/identification';
+  import { getAllIdentifications } from '$lib/store/traveller';
 
   export let me: User;
   let openForm: boolean = false;
+  let identificationSelected: Identification | undefined;
+  let relationshipSelected: string = 'Me';
+
+  const handleFormEditOpen = (
+    identification: Identification,
+    relationship: string,
+  ) => {
+    identificationSelected = identification;
+    relationshipSelected = relationship;
+    openForm = true;
+  };
 </script>
 
 <div class="pt-30">
@@ -21,215 +35,97 @@ import Text from '../components/Text.svelte';
   >
     <Head>
       <Row>
-        <Cell style="width: 20%"><svelte:component this={Text}>Document Type</svelte:component></Cell>
-        <Cell style="width: 80%"><svelte:component this={Text}>Traveler Name</svelte:component></Cell>
+        <Cell style="width: 20%"
+          ><svelte:component this={Text}>Document Type</svelte:component></Cell
+        >
+        <Cell style="width: 80%"
+          ><svelte:component this={Text}>Traveler Name</svelte:component></Cell
+        >
         <Cell />
         <Cell />
       </Row>
     </Head>
     <Body>
-      <Row>
-        <Cell><svelte:component this={Text}>Passport</svelte:component></Cell>
-        <Cell><svelte:component this={Text}>Jane Doe</svelte:component></Cell>
-        <Cell
-          ><svelte:component
-            this={ButtonUnderline}
-            label="Edit"
-            on:click={() => {
-              openForm = true;
-            }}
-          /></Cell
-        >
-        <Cell
-          ><svelte:component
-            this={ButtonUnderline}
-            label="View Document"
-          /></Cell
-        >
-      </Row>
-      <Row>
-        <Cell><svelte:component this={Text}>Passport</svelte:component></Cell>
-        <Cell><svelte:component this={Text}>Jane Doe</svelte:component></Cell>
-        <Cell
-          ><svelte:component
-            this={ButtonUnderline}
-            label="Edit"
-            on:click={() => {
-              openForm = true;
-            }}
-          /></Cell
-        >
-        <Cell
-          ><svelte:component
-            this={ButtonUnderline}
-            label="View Document"
-          /></Cell
-        >
-      </Row>
-      <Row>
-        <Cell><svelte:component this={Text}>Driver’s License</svelte:component></Cell>
-        <Cell><svelte:component this={Text}>Jane Doe</svelte:component></Cell>
-        <Cell
-          ><svelte:component
-            this={ButtonUnderline}
-            label="Edit"
-            on:click={() => {
-              openForm = true;
-            }}
-          /></Cell
-        >
-        <Cell
-          ><svelte:component
-            this={ButtonUnderline}
-            label="View Document"
-          /></Cell
-        >
-      </Row>
-      <Row>
-        <Cell><svelte:component this={Text}>Driver’s License</svelte:component></Cell>
-        <Cell><svelte:component this={Text}>Jane Doe</svelte:component></Cell>
-        <Cell
-          ><svelte:component
-            this={ButtonUnderline}
-            label="Edit"
-            on:click={() => {
-              openForm = true;
-            }}
-          /></Cell
-        >
-        <Cell
-          ><svelte:component
-            this={ButtonUnderline}
-            label="View Document"
-          /></Cell
-        >
-      </Row>
-      <Row>
-        <Cell><svelte:component this={Text}>ID Card</svelte:component></Cell>
-        <Cell><svelte:component this={Text}>Jane Doe</svelte:component></Cell>
-        <Cell
-          ><svelte:component
-            this={ButtonUnderline}
-            label="Edit"
-            on:click={() => {
-              openForm = true;
-            }}
-          /></Cell
-        >
-        <Cell
-          ><svelte:component
-            this={ButtonUnderline}
-            label="View Document"
-          /></Cell
-        >
-      </Row>
+      {#each getAllIdentifications(me.travellerMe) || [] as item}
+        {#each item.items || [] as identication}
+          <Row>
+            <Cell
+              ><svelte:component this={Text}
+                >{ENUM_IDENTIFICATION_TYPE_LABEL[identication.type] ||
+                  ''}</svelte:component
+              ></Cell
+            >
+            <Cell
+              ><svelte:component this={Text}
+                >{`${identication.traveller?.forename || ''} ${
+                  identication.traveller?.surname
+                }`}</svelte:component
+              ></Cell
+            >
+            <Cell
+              ><svelte:component
+                this={ButtonUnderline}
+                label="Edit"
+                on:click={() => {
+                  handleFormEditOpen(identication, item.relationship);
+                }}
+              /></Cell
+            >
+            <Cell
+              ><svelte:component
+                this={ButtonUnderline}
+                label="View Document"
+              /></Cell
+            >
+          </Row>
+        {/each}
+      {/each}
     </Body>
   </DataTable>
 
   <div class="d-none m-block">
-    <div class="row header">
-      <div class="m-col-6"><svelte:component this={Text}>Document</svelte:component></div>
-      <div class="m-col-6"><svelte:component this={Text}>Traveler Name</svelte:component></div>
-    </div>
-    <div class="row">
-      <div class="m-col-6"><svelte:component this={Text}>Passport</svelte:component></div>
-      <div class="m-col-6"><svelte:component this={Text}>Jane Doe</svelte:component></div>
-      <div class="m-col-6">
-        <svelte:component
-          this={ButtonUnderline}
-          label="Edit"
-          on:click={() => {
-            openForm = true;
-          }}
-        />
+    {#each me.travellerMe.identifications || [] as item}
+      <div class="row header">
+        <div class="m-col-6">
+          <svelte:component this={Text}
+            >{ENUM_IDENTIFICATION_TYPE_LABEL[item.type] || ''}</svelte:component
+          >
+        </div>
+        <div class="m-col-6">
+          <svelte:component this={Text}
+            >{`${me.travellerMe.forename} ${me.travellerMe.surname}`}</svelte:component
+          >
+        </div>
       </div>
-      <div class="m-col-6">
-        <svelte:component this={ButtonUnderline} label="View Document" />
-      </div>
-    </div>
-    <div class="row">
-      <div class="m-col-6"><svelte:component this={Text}>Passport</svelte:component></div>
-      <div class="m-col-6"><svelte:component this={Text}>Jane Doe</svelte:component></div>
-      <div class="m-col-6">
-        <svelte:component
-          this={ButtonUnderline}
-          label="Edit"
-          on:click={() => {
-            openForm = true;
-          }}
-        />
-      </div>
-      <div class="m-col-6">
-        <svelte:component this={ButtonUnderline} label="View Document" />
-      </div>
-    </div>
-    <div class="row">
-      <div class="m-col-6"><svelte:component this={Text}>Passport</svelte:component></div>
-      <div class="m-col-6"><svelte:component this={Text}>Jane Doe</svelte:component></div>
-      <div class="m-col-6">
-        <svelte:component
-          this={ButtonUnderline}
-          label="Edit"
-          on:click={() => {
-            openForm = true;
-          }}
-        />
-      </div>
-      <div class="m-col-6">
-        <svelte:component this={ButtonUnderline} label="View Document" />
-      </div>
-    </div>
-    <div class="row">
-      <div class="m-col-6"><svelte:component this={Text}>Passport</svelte:component></div>
-      <div class="m-col-6"><svelte:component this={Text}>Jane Doe</svelte:component></div>
-      <div class="m-col-6">
-        <svelte:component
-          this={ButtonUnderline}
-          label="Edit"
-          on:click={() => {
-            openForm = true;
-          }}
-        />
-      </div>
-      <div class="m-col-6">
-        <svelte:component this={ButtonUnderline} label="View Document" />
-      </div>
-    </div>
-    <div class="row">
-      <div class="m-col-6"><svelte:component this={Text}>Passport</svelte:component></div>
-      <div class="m-col-6"><svelte:component this={Text}>Jane Doe</svelte:component></div>
-      <div class="m-col-6">
-        <svelte:component
-          this={ButtonUnderline}
-          label="Edit"
-          on:click={() => {
-            openForm = true;
-          }}
-        />
-      </div>
-      <div class="m-col-6">
-        <svelte:component this={ButtonUnderline} label="View Document" />
-      </div>
-    </div>
+    {/each}
   </div>
   <div class="action-button mt-25">
     <Button
       variant="unelevated"
       on:click={() => {
+        relationshipSelected = 'Me';
+        identificationSelected = undefined;
         openForm = true;
       }}><Label class="text-button2">Upload New Document</Label></Button
     >
   </div>
 </div>
-
-<svelte:component
-  this={Modal}
-  bind:open={openForm}
-  title="Edit Travel Document"
-  surface$style="width: 850px; max-width: calc(100vw - 32px);"
->
-  <svelte:component this={TravelDocumentForm} />
-</svelte:component>
+{#if openForm}
+  <svelte:component
+    this={Modal}
+    bind:open={openForm}
+    title={`${identificationSelected ? 'Edit' : 'Add'} Travel Document`}
+    surface$style="width: 850px; max-width: calc(100vw - 32px);"
+  >
+    <svelte:component
+      this={TravelDocumentForm}
+      bind:me
+      identification={identificationSelected}
+      relationship={relationshipSelected}
+      bind:open={openForm}
+    />
+  </svelte:component>
+{/if}
 
 <style lang="scss">
   @use '../../../theme/mixins';
@@ -239,7 +135,7 @@ import Text from '../components/Text.svelte';
     :global(th p) {
       font-weight: bold;
     }
-    :global(td p){
+    :global(td p) {
       font-style: oblique;
     }
     :global(tr:last-child) {
@@ -249,18 +145,18 @@ import Text from '../components/Text.svelte';
       background-color: #f7f7f7;
     }
   }
-  .row{
-    &:first-child{
+  .row {
+    &:first-child {
       font-weight: bold;
     }
     padding: 20px 15px;
-    &:nth-child(even){
+    &:nth-child(even) {
       background-color: #f7f7f7;
     }
   }
-  .action-button{
+  .action-button {
     text-align: right;
-    @include mixins.mobile{
+    @include mixins.mobile {
       text-align: center;
     }
   }

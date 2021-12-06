@@ -1,0 +1,15 @@
+@token = hz3dRn83EDbCk52mxDnShZzo
+@auth = Authorization: Bearer {{token}}
+@base = https://api.vercel.com
+
+### Get
+GET {{base}}/v8/projects/prj_2UPa7Wk8EFlwU2iITkYAecANQbOZ/env/MtEtvgSMnXqWuzwq
+Accept: application/json
+{{auth}}
+
+### Update meilisearch api key env var
+PATCH {{base}}/v8/projects/prj_2UPa7Wk8EFlwU2iITkYAecANQbOZ/env/MtEtvgSMnXqWuzwq
+Accept: application/json
+{{auth}}
+
+{"value":"0cc2a929d1482c389c0e21caa904223f21ccca85142d019606c2dd0cdfea201e"}

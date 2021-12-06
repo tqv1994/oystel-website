@@ -3,7 +3,7 @@
 
   import { Drop, DropGallery } from '$lib/store/drop';
 
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
+  import LayoutGrid from '@smui/layout-grid';
   import DropListItem from './DropListItem.svelte';
 
   export let data: DropGallery[];

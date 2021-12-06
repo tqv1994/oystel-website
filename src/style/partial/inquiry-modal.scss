@@ -24,7 +24,7 @@
     .mdc-dialog__surface {
         width: var(--wrap-width);
         max-width: var(--wrap-width);
-        background-color: #5078bc;
+        background-color: colors.$blue;
         @include mixins.mobile {
             height: auto;
         }

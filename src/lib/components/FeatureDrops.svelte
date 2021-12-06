@@ -5,12 +5,12 @@
 
   import { makeLink } from '$lib/utils/link';
 
-  import Button from '@smui/button/Button.svelte';
+  import Button from '@smui/button';
 
-  import Cell from '@smui/layout-grid/Cell.svelte';
+  import { Cell } from '@smui/layout-grid';
 
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Label from '@smui/list/Label.svelte';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Label } from '@smui/list';
   import BlurImage from './blur-image.svelte';
   import Carousel from './Carousel.svelte';
 

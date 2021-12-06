@@ -3,7 +3,7 @@
   import ChatIcon from '$lib/icons/ChatIcon.svelte';
   import { Advisor } from '../types';
   import ButtonUnderline from './ButtonUnderline.svelte';
-  import Field from '../Field.svelte';
+  import Field from './Field.svelte';
   import Modal from './Modal.svelte';
   import Button, { Label } from '@smui/button';
   import Text from './Text.svelte';

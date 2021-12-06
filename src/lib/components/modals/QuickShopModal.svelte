@@ -3,7 +3,7 @@
   import { Icon } from '@smui/common';
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import ProductSliderModal from './ProductSliderModal.svelte';
   import { productStore } from '$lib/store/product';
   import { Product } from '$lib/store/product';

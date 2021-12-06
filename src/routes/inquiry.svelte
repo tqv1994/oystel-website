@@ -6,7 +6,7 @@
   import { Label } from '@smui/common';
   import IconButton from '@smui/icon-button';
   import { Icon } from '@smui/common';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import OysteoLogo from '$lib/components/OysteoLogo.svelte';
   import CloseIcon from '$lib/icons/CloseIcon.svelte';
 

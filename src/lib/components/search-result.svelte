@@ -3,7 +3,7 @@
   import { Cell } from '@smui/layout-grid';
   import IconButton from '@smui/icon-button';
   import { Icon } from '@smui/common';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { makeLink } from '$lib/utils/link';
   import { Identifiable, Nameable, Searchable } from '$lib/store/types';

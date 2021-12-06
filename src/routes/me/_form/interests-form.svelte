@@ -1,188 +1,44 @@
 <script lang="ts">
-  import Field from '../Field.svelte';
+  import Field from '../components/Field.svelte';
   import { User } from '$lib/store/auth';
-  import Button from '@smui/button/Button.svelte';
+  import Button from '@smui/button';
   import FormToggle from '../components/FormToggle.svelte';
-  import FormField from '@smui/form-field/FormField.svelte';
-  import Checkbox from '@smui/checkbox/Checkbox.svelte';
-  let leisureSelected: string[] = [];
-  let placeSelected: string[] = [];
-  let activiteSelected: string[] = [];
-  let cultureSelected: string[] = [];
-  let pasionsSelected: string[] = [];
-  let leisure = {
-    title: 'Leisure',
-    options: [
-      'Alone Time',
-      'Crafts',
-      'Photography',
-      'Being With Friends',
-      'Family Time',
-      'Reading',
-      'Collecting',
-      'Meditation',
-      'Shopping',
-      'Concerts',
-      'Movies / TV',
-      'Working Out',
-      'Cooking',
-      'Painting / Drawing',
-      'I Don’t Do Leisure!',
-    ],
-  };
-  let places = {
-    title: 'Places',
-    options: [
-      'Away From It All',
-      'Gardens',
-      'Open Countryside',
-      'Boutique',
-      'Modern',
-      'Resort',
-      'Cities',
-      'Mountains',
-      'Sea',
-      'City Centre',
-    ],
-  };
-  let activites = {
-    title: 'Activites',
-    options: [
-      'Cycling',
-      'Running',
-      'Swimming',
-      'Dancing',
-      'Sailing',
-      'Tennis',
-      'Eating Out',
-      'Skiing',
-      'Walking',
-      'Golf',
-      'Snowboarding',
-      'Yoga',
-      'Riding',
-    ],
-  };
-  let culture = {
-    title: 'Culture',
-    options: [
-      'Archaeology Sites',
-      'Contemporary Art',
-      'Live Music',
-      'Architecture',
-      'Languages',
-      'Theatre',
-    ],
-  };
+  import FormField from '@smui/form-field';
+  import Checkbox from '@smui/checkbox';
+  import { createEventDispatcher } from 'svelte';
+  import { Interest, InterestType } from '$lib/store/interest';
 
-  let pasions = {
-    title: 'Pasions',
-    options: [
-      'Animals',
-      'Knowledge',
-      'Volunteering',
-      'Climate action',
-      'Work',
-      'Food',
-      'Social Justice',
-    ],
-  };
+  export let data: InterestType[];
   export let me: User;
+  export let dataSelected: string[];
+  const dispatcher = createEventDispatcher();
   export let is_edit: boolean = true;
-  function handleCancelClick() {
-    is_edit = false;
-  }
+
+  const handleSubmit = () => {
+    dispatcher('submit');
+  };
 </script>
 
 <form>
-  <svelte:component this={FormToggle} bind:is_edit title="Travel">
-    <svelte:component
-      this={Field}
-      label={leisure.title}
-      column_1={3}
-      column_2={9}
-      class="mb-10"
-    >
-      <div class="options options-1">
-        {#each leisure.options as option}
-          <FormField>
-            <Checkbox bind:group={leisureSelected} value={option} />
-            <span slot="label">{option}</span>
-          </FormField>
-        {/each}
-      </div>
-    </svelte:component>
-    <svelte:component
-      this={Field}
-      label={places.title}
-      column_1={3}
-      column_2={9}
-      class="mb-10"
-    >
-      <div class="options options-1">
-        {#each places.options as option}
-          <FormField>
-            <Checkbox bind:group={placeSelected} value={option} />
-            <span slot="label">{option}</span>
-          </FormField>
-        {/each}
-      </div>
-    </svelte:component>
-    <svelte:component
-      this={Field}
-      label={activites.title}
-      column_1={3}
-      column_2={9}
-      class="mb-10"
-    >
-      <div class="options options-1">
-        {#each activites.options as option}
-          <FormField>
-            <Checkbox bind:group={activiteSelected} value={option} />
-            <span slot="label">{option}</span>
-          </FormField>
-        {/each}
-      </div>
-    </svelte:component>
-
-    <svelte:component
-      this={Field}
-      label={culture.title}
-      column_1={3}
-      column_2={9}
-      class="mb-10"
-    >
-      <div class="options options-1">
-        {#each culture.options as option}
-          <FormField>
-            <Checkbox bind:group={cultureSelected} value={option} />
-            <span slot="label">{option}</span>
-          </FormField>
-        {/each}
-      </div>
-    </svelte:component>
-
-    <svelte:component
-      this={Field}
-      label={pasions.title}
-      column_1={3}
-      column_2={9}
-      class="mb-10"
-    >
-      <div class="options options-1">
-        {#each pasions.options as option}
-          <FormField>
-            <Checkbox bind:group={pasionsSelected} value={option} />
-            <span slot="label">{option}</span>
-          </FormField>
-        {/each}
-      </div>
-    </svelte:component>
-
+  <FormToggle bind:is_edit title="My Interest">
+    {#each data as type}
+      <Field label={type.name} column_1={3} column_2={9} class="mb-10">
+        <div class="options options-1">
+          {#each type.interests as interest}
+            <FormField>
+              <Checkbox bind:group={dataSelected} value={interest.id} />
+              <span slot="label">{interest.name}</span>
+            </FormField>
+          {/each}
+        </div>
+      </Field>
+    {/each}
     <div class="action">
-      <Button variant="unelevated" type="submit">Save Changes</Button>
+      <Button variant="unelevated" type="button" on:click={handleSubmit}
+        >Save Changes</Button
+      >
     </div>
-  </svelte:component>
+  </FormToggle>
 </form>
 
 <style lang="scss">

@@ -2,12 +2,53 @@
   import { authStore, User } from '$lib/store/auth';
   import { onMount, afterUpdate } from 'svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Drawer, { AppContent, Content } from '@smui/drawer';
+  import Drawer, { Content } from '@smui/drawer';
   import List, { Item, Text } from '@smui/list';
-  import Select, { Option } from '@smui/select';
   import { goto } from '$app/navigation';
 
   let me: User | undefined = $authStore.user;
+  const items = [
+    {
+      url: '/me/my-account',
+      title: 'My Account',
+      slug: 'my-account',
+    },
+    {
+      url: '/me/trips',
+      title: 'Trips',
+      slug: 'trips',
+    },
+    {
+      url: '/me/wishlist',
+      title: 'Wishlist',
+      slug: 'wishlist',
+    },
+    {
+      url: '/me/travel-advisors',
+      title: 'Travel Advisors',
+      slug: 'travel-advisors',
+    },
+    {
+      url: '/me/travel-preferences',
+      title: 'Travel Preferences',
+      slug: 'travel-preferences',
+    },
+    {
+      url: '/me/my-style',
+      title: 'My Style',
+      slug: 'my-style',
+    },
+    {
+      url: '/me/interests',
+      title: 'Interests',
+      slug: 'interests',
+    },
+    {
+      url: '/me/privacy-setting',
+      title: 'Privacy Settings',
+      slug: 'privacy-setting',
+    },
+  ];
   export let currentPage: string;
   afterUpdate(() => {
     // console.log($authStore.user);
@@ -20,12 +61,7 @@
 
   async function signOut() {
     try {
-      const res = await fetch('/api/auth/sign-out', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const res = await fetch(`/api/auth/sign-out?_z=${Date.now()}`);
       if (res.ok) {
         authStore.set({ user: undefined });
         goto('/');
@@ -49,46 +85,14 @@
             <Drawer class="m-none">
               <Content>
                 <List>
-                  <Item
-                    href="/me/my-account"
-                    class={currentPage == 'my-account' ? 'active' : ''}
-                    ><Text>My Account</Text></Item
-                  >
-                  <Item
-                    href="/me/trips"
-                    class={currentPage == 'trips' ? 'active' : ''}
-                    ><Text>Trips</Text></Item
-                  >
-                  <Item
-                    href="/me/wishlist"
-                    class={currentPage == 'wishlist' ? 'active' : ''}
-                    ><Text>Wishlist</Text></Item
-                  >
-                  <Item
-                    href="/me/travel-advisors"
-                    class={currentPage == 'travel-advisors' ? 'active' : ''}
-                    ><Text>Travel Advisors</Text></Item
-                  >
-                  <Item
-                    href="/me/travel-preferences"
-                    class={currentPage == 'travel-preferences' ? 'active' : ''}
-                    ><Text>Travel Preferences</Text></Item
-                  >
-                  <Item
-                    href="/me/my-style"
-                    class={currentPage == 'my-style' ? 'active' : ''}
-                    ><Text>My Style</Text></Item
-                  >
-                  <Item
-                    href="/me/interests"
-                    class={currentPage == 'interests' ? 'active' : ''}
-                    ><Text>Interests</Text></Item
-                  >
-                  <Item
-                    href="/me/privacy-setting"
-                    class={currentPage == 'privacy-setting' ? 'active' : ''}
-                    ><Text>Privacy Setting</Text></Item
-                  >
+                  {#each items as item}
+                    <Item
+                      href={item.url}
+                      class={currentPage == item.slug ? 'active' : ''}
+                    >
+                      <Text>{item.title}</Text>
+                    </Item>
+                  {/each}
                 </List></Content
               ></Drawer
             >

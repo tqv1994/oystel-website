@@ -17,8 +17,12 @@ import { experienceFieldsFragment } from '$lib/store/experience';
 import { Metadata } from '$lib/store/metadata';
 import { subTravellerFieldsFragment, travellerFieldsFragment } from '$lib/store/traveller';
 import { visaFieldsFragment } from '$lib/store/visa';
-import { salutationFieldsFragment } from '$lib/store/salutation';
+import { salutationTypeFieldsFragment } from '$lib/store/salutation-type';
 import { identificationFieldsFragment } from '$lib/store/identification';
+import { interestFieldsFragment, interestTypeFieldsFragment } from '$lib/store/interest';
+import { productFieldsFragment } from '$lib/store/product';
+import { addressFieldsFragment } from '$lib/store/address';
+import { personalPreferenceFieldsFragment, personalPreferenceTypeFieldsFragment, travelPreferenceFieldsFragment, travelPreferenceTypeFieldsFragment } from '$lib/store/preference';
 
 type QueryData = {
   me?: User;
@@ -48,8 +52,7 @@ const meQuery = `query {
       name
     }
     productLikes {
-      id
-      name
+      ...productFields
     }
     myAdvisors {
       id
@@ -63,16 +66,23 @@ const meQuery = `query {
     }
     advisorMe {
       id
-    }
+    },
+    neverMissADrop
+    curatedForYou
   }
 }
 ${uploadFileFieldsFragment}
 ${travellerFieldsFragment}
 ${visaFieldsFragment}
-${salutationFieldsFragment}
+${salutationTypeFieldsFragment}
 ${identificationFieldsFragment}
 ${countryFieldsFragment}
 ${subTravellerFieldsFragment}
+${interestFieldsFragment}
+${productFieldsFragment}
+${addressFieldsFragment}
+${travelPreferenceFieldsFragment}
+${personalPreferenceFieldsFragment}
 `;
 
 const metadataQuery = `query {
@@ -102,8 +112,17 @@ const metadataQuery = `query {
       ...destinationFields
     }
   }
-  salutations {
-    ...salutationFields
+  salutationTypes {
+    ...salutationTypeFields
+  }
+  interestTypes{
+    ...interestTypeFields
+  }
+  travelPreferenceTypes{
+    ...travelPreferenceTypeFields
+  }
+  personalPreferenceTypes{
+    ...personalPreferenceTypeFields
   }
 }
 ${destinationTypeFieldsFragment}
@@ -115,7 +134,13 @@ ${advisorFieldsFragment}
 ${experienceFieldsFragment}
 ${destinationFieldsFragment}
 ${uploadFileFieldsFragment}
-${salutationFieldsFragment}
+${salutationTypeFieldsFragment}
+${interestTypeFieldsFragment}
+${interestFieldsFragment}
+${travelPreferenceTypeFieldsFragment}
+${travelPreferenceFieldsFragment}
+${personalPreferenceFieldsFragment}
+${personalPreferenceTypeFieldsFragment}
 `;
 
 let counter = 0;

@@ -1,37 +1,65 @@
 <script lang="ts">
   import BlurImage from '$lib/components/blur-image.svelte';
+  import Carousel from '$lib/components/Carousel.svelte';
+  import { dateTimeHelper } from '$lib/helpers/datetime';
   import ChatIcon from '$lib/icons/ChatIcon.svelte';
+  import { Trip } from '$lib/store/trip';
   import { UploadFile } from '$lib/store/upload-file';
   import ButtonUnderline from './ButtonUnderline.svelte';
   import Title from './Title.svelte';
   import TripModal from './TripModal.svelte';
 
-  export let name: string;
-  export let guests: string[];
-  export let advisor: string;
-  export let date_join: string;
-  export let status: string;
-  export let image: UploadFile;
+  export let trip: Trip;
   let open: boolean = false;
+  const carouselConfig = {
+    autoplayDuration: 8000,
+    duration: 1500,
+    infinite: true,
+    particlesToShow: 1,
+    chevronPosition: 'inside',
+  };
+
+  const DATE_FORMAT = 'MMM DD, YYYY';
 </script>
 
 <div class="box">
   <div class="thumbnail">
-    <div class="image-cover" style="padding-top: calc(212 / 383 * 100%)">
-      <BlurImage {...image} />
-    </div>
+    {#if trip.destinations[0].gallery.length > 1}
+      <Carousel {...carouselConfig}>
+        {#each trip.destinations[0].gallery as item}
+          <div class="image-cover" style="padding-top: calc(212 / 383 * 100%)">
+            <BlurImage {...item} />
+          </div>
+        {/each}
+      </Carousel>
+    {:else if trip.destinations[0].gallery.length == 1}
+      <div class="image-cover" style="padding-top: calc(212 / 383 * 100%)">
+        <BlurImage {...trip.destinations[0].gallery[0]} />
+      </div>
+    {/if}
     <div class="content">
       <div class="row">
         <div class="d-col-6 m-col-8">
-          <p class="m-0">{date_join}</p>
+          <p class="m-0">
+            {dateTimeHelper.formatDate(trip.depart_at, DATE_FORMAT)
+              ? dateTimeHelper.formatDate(trip.depart_at, DATE_FORMAT)
+              : ''}
+            {dateTimeHelper.formatDate(trip.return_at, DATE_FORMAT)
+              ? ' - ' + dateTimeHelper.formatDate(trip.return_at, DATE_FORMAT)
+              : ''}
+          </p>
         </div>
         <div class="d-col-6 m-col-4 text-right">
-          <span class="status">{status}</span>
+          <span class="status">{trip.state}</span>
         </div>
       </div>
-      <svelte:component this={Title}>{name}</svelte:component>
-      <p class="m-0">Number of Guests: {guests.length}</p>
-      <p class="m-0">Travel Advisor: {advisor}</p>
+      <svelte:component this={Title}
+        >{trip.destinations && trip.destinations.length > 0
+          ? trip.destinations.map((item) => item.name).join(', ')
+          : ''}</svelte:component
+      >
+      <p class="m-0">Number of Guests: {trip.travellers.length}</p>
+      <p class="m-0">Travel Advisor: {trip.advisor.name}</p>
     </div>
     <div class="actions">
       <div class="row">
@@ -58,16 +86,7 @@
   </div>
 </div>
 
-<svelte:component
-  this={TripModal}
-  bind:open
-  {name}
-  {guests}
-  {advisor}
-  {date_join}
-  {status}
-  {image}
-/>
+<svelte:component this={TripModal} bind:open {trip} />
 
 <style lang="scss">
   @use '../../../style/include/grid';

@@ -23,7 +23,7 @@
   import Select from '@smui/select';
   import { Option } from '@smui/select';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import { stringHelper } from '$lib/helpers';
   import Layout from '$lib/components/common/Layout.svelte';
   import { authStore } from '$lib/store/auth';

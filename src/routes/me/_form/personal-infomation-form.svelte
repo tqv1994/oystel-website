@@ -1,17 +1,17 @@
 <script lang="ts">
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import Textfield from '@smui/textfield';
-  import Field from '../Field.svelte';
+  import Field from '../components/Field.svelte';
   import Select, { Option } from '@smui/select';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { authStore, User } from '$lib/store/auth';
-  import Button from '@smui/button/Button.svelte';
+  import Button from '@smui/button';
   import Note from '../components/Note.svelte';
   import FormToggle from '../components/FormToggle.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import { salutationStore } from '$lib/store/salutation';
+  import { salutationTypeStore } from '$lib/store/salutation-type';
   import { get } from 'svelte/store';
-  import { updateTravellerData } from '../../traveller/update.json';
+  import { updateTravellerData } from '../../traveller/update-me.json';
   import { countryStore } from '$lib/store/country';
   import {
     convertTravellerToInput,
@@ -21,9 +21,11 @@
   import { createPatternPhoneCode } from '$lib/utils/string';
   import * as yup from 'yup';
   import { onMount } from 'svelte';
+  import { UpdateUserData } from '../../auth/update.json';
+  import { createTravellerData } from '../../traveller/create.json';
   export let me: User;
   const travellerMe: Traveller = me.travellerMe;
-  const salutations = Object.values(get(salutationStore).items);
+  const salutationTypes = Object.values(get(salutationTypeStore).items);
   const countries = Object.values(get(countryStore).items);
   let travellerInput: TravellerInput;
   let name: string;
@@ -31,31 +33,45 @@
   let oysteo_id_number: string = me.id;
   let errors: any = {};
   const schemaValidator = yup.object().shape({
-    email: yup.string().required().email(),
     mobilePhone: yup.number().required(),
     birthday: yup.string().required(),
     nationality: yup.string().required(),
   });
 
   onMount(async () => {
-    travellerInput = convertTravellerToInput(travellerMe);
-    me.travellerMe = travellerMe;
-    phone_code =
-      travellerInput?.mobilePhone?.match(createPatternPhoneCode(countries)) +
-      '';
-    name = travellerInput.forename + ' ' + travellerInput.surname;
-    travellerInput.mobilePhone =
-      travellerInput.mobilePhone?.replace(phone_code, '') || '';
+    if (me.travellerMe) {
+      travellerInput = convertTravellerToInput(travellerMe);
+      me.travellerMe = travellerMe;
+      phone_code =
+        travellerInput?.mobilePhone?.match(createPatternPhoneCode(countries)) +
+        '';
+      name = travellerInput.forename + ' ' + travellerInput.surname;
+      travellerInput.mobilePhone =
+        travellerInput.mobilePhone?.replace(phone_code, '') || '';
+    } else {
+      travellerInput = new TravellerInput();
+      name = '';
+      travellerInput.mobilePhone = '';
+      travellerInput.birthday = '';
+      travellerInput.nationality = '';
+      travellerInput.salutationType = '';
+    }
   });
 
   export let is_edit: boolean = true;
 
   async function handleSubmitForm() {
+    let apiUrl: string = 'create.json';
+    let method: string = 'POST';
+    if (me.travellerMe) {
+      apiUrl = 'update-me.json';
+      method = 'PUT';
+    }
     errors = {};
     try {
       await schemaValidator.validate(travellerInput, { abortEarly: false });
-      const res = await fetch(`/traveller/update.json`, {
-        method: 'PUT',
+      const res = await fetch(`/traveller/${apiUrl}`, {
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -67,9 +83,15 @@
         }),
       });
       if (res.ok) {
-        const data: updateTravellerData = await res.json();
-        me.travellerMe = data.updateTraveller.traveller;
-        is_edit = false;
+        if (me.travellerMe) {
+          const data: updateTravellerData = await res.json();
+          me.travellerMe = data.updateTraveller.traveller;
+          is_edit = false;
+        } else {
+          const data: createTravellerData = await res.json();
+          me.travellerMe = data.createTraveller.traveller;
+          handleUpdateMe();
+        }
       } else {
         window.pushToast('An error occurred');
       }
@@ -81,10 +103,29 @@
       }
     }
   }
+  async function handleUpdateMe() {
+    const res = await fetch(`/auth/update.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        travellerMe: me.travellerMe.id,
+      }),
+    });
+    if (res.ok) {
+      const data: UpdateUserData = await res.json();
+      me = data.updateUser.user;
+      authStore.set({ user: me });
+      is_edit = false;
+    } else {
+      window.pushToast('An error occurred');
+    }
+  }
 </script>
 
 {#if travellerInput}
-  <form on:submit={handleSubmitForm} action="javascript:void(0);">
+  <form on:submit|preventDefault={handleSubmitForm}>
     <svelte:component this={FormToggle} title="" bind:is_edit>
       <LayoutGrid class="p-0">
         <Cell spanDevices={{ desktop: 8, phone: 4, tablet: 8 }}>
@@ -96,11 +137,16 @@
           >
             <div class="row">
               <div class="d-col-7 m-col-7">
-                <Textfield bind:value={name} label="Name" type="text" />
+                <Textfield
+                  bind:value={name}
+                  label="Name"
+                  type="text"
+                  disabled={me.travellerMe ? true : false}
+                />
               </div>
               <div class="d-col-5 m-col-5">
-                <Select bind:value={travellerInput.salutation} label="">
-                  {#each salutations || [] as item}
+                <Select bind:value={travellerInput.salutationType} label="">
+                  {#each salutationTypes || [] as item}
                     <Option value={item.id}>{item.name}</Option>
                   {/each}
                 </Select>
@@ -113,14 +159,7 @@
             column_1={4}
             column_2={8}
           >
-            <Textfield
-              bind:value={travellerInput.email}
-              label=""
-              type="email"
-            />
-            {#if errors.email}
-              <span class="text-danger text-eyebrow">{errors.email}</span>
-            {/if}
+            <Textfield bind:value={me.email} label="" type="email" disabled />
           </svelte:component>
           <svelte:component
             this={Field}

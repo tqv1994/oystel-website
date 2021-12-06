@@ -1,9 +1,9 @@
 <script lang="ts">
-import { Action } from '$lib/store/action';
-import { UploadFile } from '$lib/store/upload-file';
+  import { Action } from '$lib/store/action';
+  import { UploadFile } from '$lib/store/upload-file';
 
-  import Button from '@smui/button/Button.svelte';
-  import Label from '@smui/list/Label.svelte';
+  import Button from '@smui/button';
+  import { Label } from '@smui/list';
 
   import BlurImage from './blur-image.svelte';
   import Carousel from './Carousel.svelte';

@@ -1,28 +1,24 @@
 <script lang="ts">
-  import Field from '../Field.svelte';
+  import Field from '../components/Field.svelte';
   import Textfield from '@smui/textfield';
   import Select, { Option } from '@smui/select';
   import Button, { Label } from '@smui/button';
   import ButtonUnderline from '../components/ButtonUnderline.svelte';
-  import { User } from '$lib/store/auth';
-  let gender: string = 'Female';
-  let dressSize: string = 'US 8';
-  let jeanPantSize: string = 'US 7';
-  let topSize: string = 'US Medium';
-  let braSize: string = '34C';
-  let shoeSize: string = 'US 8';
-  let weightSize: number = 48;
-  let weightUnit: string = 'kgs';
-  let heightSize: number = 169;
-  let heightUnit: string = 'cms';
-  let bodyStyle: string = 'Slim';
+  import { createEventDispatcher } from 'svelte';
+  import { MySize, MySizeSelected } from '../my-style.svelte';
 
-  export let me: User;
+  export let data: MySize;
+  export let selected: MySizeSelected;
   export let is_edit: boolean = true;
 
   function handleCancelClick() {
     is_edit = false;
   }
+
+  const dispatcher = createEventDispatcher();
+  const onSubmit = () => {
+    dispatcher('submit');
+  };
 </script>
 
 <form>
@@ -37,16 +33,17 @@
   </div>
   <div class="fields">
     <svelte:component this={Field} label="Gender" column_1={3} column_2={9}>
-      <Select bind:value={gender} label="">
-        <Option value="Female" selected>Female</Option>
-        <Option value="Male">Male</Option>
+      <Select bind:value={selected.gender} label="">
+        {#each data.gender as item}
+          <Option value={item}>{item}</Option>
+        {/each}
       </Select>
     </svelte:component>
     <svelte:component this={Field} label="DRESS SIZE" column_1={3} column_2={9}>
-      <Select bind:value={dressSize} label="">
-        <Option value="US 8" selected>US 8</Option>
-        <Option value="US 7">US 7</Option>
-        <Option value="US 6">US 6</Option>
+      <Select bind:value={selected.dressSize} label="">
+        {#each data.dressSize as item}
+          <Option value={item}>{item}</Option>
+        {/each}
       </Select>
     </svelte:component>
     <svelte:component
@@ -55,38 +52,43 @@
       column_1={3}
       column_2={9}
     >
-      <Select bind:value={jeanPantSize} label="">
-        <Option value="US 8" selected>US 8</Option>
-        <Option value="US 7">US 7</Option>
-        <Option value="US 6">US 6</Option>
+      <Select bind:value={selected.jeanPantSize} label="">
+        {#each data.jeanPantSize as item}
+          <Option value={item}>{item}</Option>
+        {/each}
       </Select>
     </svelte:component>
     <svelte:component this={Field} label="TOP SIZE" column_1={3} column_2={9}>
-      <Select bind:value={topSize} label="">
-        <Option value="US Medium" selected>US Medium</Option>
+      <Select bind:value={selected.topSize} label="">
+        {#each data.topSize as item}
+          <Option value={item}>{item}</Option>
+        {/each}
       </Select>
     </svelte:component>
     <svelte:component this={Field} label="BRA SIZE" column_1={3} column_2={9}>
-      <Select bind:value={braSize} label="">
-        <Option value="34C" selected>34C</Option>
+      <Select bind:value={selected.braSize} label="">
+        {#each data.braSize as item}
+          <Option value={item}>{item}</Option>
+        {/each}
       </Select>
     </svelte:component>
     <svelte:component this={Field} label="SHOE SIZE" column_1={3} column_2={9}>
-      <Select bind:value={shoeSize} label="">
-        <Option value="US 8" selected>US 8</Option>
-        <Option value="US 7">US 7</Option>
-        <Option value="US 6">US 6</Option>
+      <Select bind:value={selected.shoeSize} label="">
+        {#each data.shoeSize as item}
+          <Option value={item}>{item}</Option>
+        {/each}
       </Select>
     </svelte:component>
     <svelte:component this={Field} label="WEIGHT" column_1={3} column_2={9}>
       <div class="row">
         <div class="d-col-8 m-col-8">
-          <Textfield bind:value={weightSize} label="" type="number" />
+          <Textfield bind:value={selected.weight} label="" type="number" />
         </div>
         <div class="d-col-4 m-col-4">
-          <Select bind:value={weightUnit} label="">
-            <Option value="kgs" selected>kgs</Option>
-            <Option value="gs">gs</Option>
+          <Select bind:value={selected.weightUnit} label="">
+            {#each data.weightUnit as item}
+              <Option value={item}>{item}</Option>
+            {/each}
           </Select>
         </div>
       </div>
@@ -94,19 +96,22 @@
     <svelte:component this={Field} label="HEIGHT" column_1={3} column_2={9}>
       <div class="row">
         <div class="d-col-8 m-col-8">
-          <Textfield bind:value={heightSize} label="" type="number" />
+          <Textfield bind:value={selected.height} label="" type="number" />
         </div>
         <div class="d-col-4 m-col-4">
-          <Select bind:value={heightUnit} label="">
-            <Option value="ms" selected>ms</Option>
-            <Option value="cms">cms</Option>
+          <Select bind:value={selected.heightUnit} label="">
+            {#each data.heightUnit as item}
+              <Option value={item}>{item}</Option>
+            {/each}
           </Select>
         </div>
       </div>
     </svelte:component>
     <svelte:component this={Field} label="Body Style" column_1={3} column_2={9}>
-      <Select bind:value={bodyStyle} label="">
-        <Option value="Slim" selected>Slim</Option>
+      <Select bind:value={selected.bodyStyle} label="">
+        {#each data.bodyStyle as item}
+          <Option value={item}>{item}</Option>
+        {/each}
       </Select>
     </svelte:component>
   </div>
@@ -115,7 +120,7 @@
       <svelte:component this={ButtonUnderline} label="Size Guide" />
     </div>
     <div class="d-col-6 m-col-12 m-mb-10">
-      <Button variant="unelevated" type="submit"
+      <Button variant="unelevated" type="button" on:click={onSubmit}
         ><Label class="text-button2">Save Changes</Label></Button
       >
     </div>
@@ -171,7 +176,7 @@
         grid-column-end: span 8;
       }
     }
-    @media (max-width: 599px){
+    @media (max-width: 599px) {
       :global(.mdc-layout-grid__cell--span-2-phone) {
         width: auto;
         grid-column-end: span 4;

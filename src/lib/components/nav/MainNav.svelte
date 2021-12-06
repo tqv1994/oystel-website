@@ -10,9 +10,9 @@
   import Button from '@smui/button';
   import IconButton from '@smui/icon-button';
   import { Label } from '@smui/common';
-  import A from '@smui/common/elements/A.svelte';
-  import H2 from '@smui/common/elements/H2.svelte';
-  import H4 from '@smui/common/elements/H4.svelte';
+  import { A } from '@smui/common/elements';
+  import { H2 } from '@smui/common/elements';
+  import { H4 } from '@smui/common/elements';
   import Drawer from '@smui/drawer';
   import { Content } from '@smui/drawer';
   import OysteoLogo from '$lib/components/OysteoLogo.svelte';
@@ -189,7 +189,11 @@
         <IconButton>
           <HeartIcon size="sm" />
         </IconButton>
-        <IconButton on:click={()=>{$authStore.user ? goto('/me') : signinModalOpen = true}}>
+        <IconButton
+          on:click={() => {
+            $authStore.user ? goto('/me') : (signinModalOpen = true);
+          }}
+        >
           <UserIcon />
         </IconButton>
       </Section>
@@ -292,6 +296,7 @@
   </AutoAdjust>
 </nav>
 <svelte:component this={SigninModal} bind:open={signinModalOpen} />
+
 <style lang="scss" global>
   @use './MainNav';
 </style>

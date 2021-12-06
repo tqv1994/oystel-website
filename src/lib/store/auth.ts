@@ -33,7 +33,9 @@ export type User = Publishable & {
   experienceLikes?: Experience[];
   productLikes?: Product[];
   avatar: UploadFile;
-  travellerMe: Traveller
+  travellerMe: Traveller;
+  neverMissADrop: boolean;
+  curatedForYou: boolean;
 };
 
 export const userFieldsFragment = `
@@ -57,5 +59,7 @@ fragment userFields on UsersPermissionsUser  {
     advisorMe {
       id
     }
+    neverMissADrop
+    curatedForYou
 }
 `;

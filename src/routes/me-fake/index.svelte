@@ -9,7 +9,7 @@
   import { Cell } from '@smui/layout-grid';
   import Textfield from '@smui/textfield';
   import IconButton from '@smui/icon-button';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
 
   let userModel = $authStore.user;
   let modelEmailPreferences = {

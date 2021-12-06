@@ -2,15 +2,16 @@ import type { RequestHandler, Request } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { Rec } from '@sveltejs/kit/types/helper';
-import { Destination } from '$lib/store/destination';
 import { User, userFieldsFragment } from '$lib/store/auth';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
 import { subTravellerFieldsFragment, travellerFieldsFragment } from '$lib/store/traveller';
 import { visaFieldsFragment } from '$lib/store/visa';
-import { salutationFieldsFragment } from '$lib/store/salutation';
+import { salutationTypeFieldsFragment } from '$lib/store/salutation-type';
 import { identificationFieldsFragment } from '$lib/store/identification';
 import { countryFieldsFragment } from '$lib/store/country';
-import { advisorFieldsFragment } from '$lib/store/advisor';
+import { interestFieldsFragment } from '$lib/store/interest';
+import { addressFieldsFragment } from '$lib/store/address';
+import { personalPreferenceFieldsFragment, travelPreferenceFieldsFragment } from '$lib/store/preference';
 /**
  * @type {import('@sveltejs/kit').Post}
  */
@@ -38,10 +39,14 @@ export const put: RequestHandler = async (
       ${uploadFileFieldsFragment}
       ${travellerFieldsFragment}
       ${visaFieldsFragment}
-      ${salutationFieldsFragment}
+      ${salutationTypeFieldsFragment}
       ${identificationFieldsFragment}
       ${countryFieldsFragment}
       ${subTravellerFieldsFragment}
+      ${interestFieldsFragment}
+      ${addressFieldsFragment}
+      ${travelPreferenceFieldsFragment}
+      ${personalPreferenceFieldsFragment}
     `;
     const res = await client.mutation<UpdateUserData>(query, { id: request.locals.user?.id, me: request.body }).toPromise();
     if (res.data) {
@@ -53,7 +58,7 @@ export const put: RequestHandler = async (
       console.log(JSON.stringify(res.error, null, 2));
     }
   } catch (error) {
-    console.error('Error getting destinations', error);
+    console.error('Error updating me', error);
   }
-  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the destinations');
+  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the me');
 };

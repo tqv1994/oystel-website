@@ -1,12 +1,12 @@
 <script lang="ts">
-  import Button from '@smui/button/Button.svelte';
+  import Button from '@smui/button';
   import { Icon } from '@smui/common';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import IconButton from '@smui/icon-button';
 
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import Svg from '@smui/common/elements/Svg.svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Label from '@smui/list/Label.svelte';
+  import { Cell } from '@smui/layout-grid';
+  import { Svg } from '@smui/common/elements';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Label } from '@smui/list';
   import Carousel from './Carousel.svelte';
   import { Experience } from '$lib/store/experience';
   import { Destination } from '$lib/store/destination';

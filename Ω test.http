@@ -1,6 +1,14 @@
 @token = eyJhbGciOiJSUzI1NiIsImtpZCI6Ijc3MTBiMDE3ZmQ5YjcxMWUwMDljNmMzNmIwNzNiOGE2N2NiNjgyMTEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiT3lzdGVvIEh1dyIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQVRYQUp4OHJ6OHI0aTNrRkFMaXNWb19FMVZYSjNKRGF0VlhzQ2dJeFFWTD1zOTYtYyIsInN0cmFwaV91aWQiOjYsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9veXN0ZW8tZGV2IiwiYXVkIjoib3lzdGVvLWRldiIsImF1dGhfdGltZSI6MTYyNDI1ODM4MSwidXNlcl9pZCI6IkI3N0U4ZURvMlVRckIzdFVDRWwxT0xiYXVmNTIiLCJzdWIiOiJCNzdFOGVEbzJVUXJCM3RVQ0VsMU9M
 @auth = Bearer {{token}}
 @base = http://localhost:3000
+@searchUrl = https://search.oysteo.su93rheroes.com/indexes
+@searchApiKey = 0cc2a929d1482c389c0e21caa904223f21ccca85142d019606c2dd0cdfea201e
+
+###
+curl \
+  -H "X-Meili-API-Key: 9oDwRbhqujixwfepoOReyxbg" \
+  -X GET 'https://search.oysteo.su93rheroes.com/keys'
+
 
 ### Get
 GET {{base}}/api/auth/firebase
@@ -22,4 +30,60 @@ POST https://cms.oysteo.su93rheroes.com/graphql
 Accept: application/json
 Content-Type: application/json
 
-{"query": "query { countries { id name code phone } destinationTypes { id name } experienceTypes { id name } specialties { id name } }"}
+{"query": "query { destinations { id name destination_type { id name }         gallery {
+          ...uploadFileFields
+        }
+ country { id } created_at } }"}
+
+### Get indexes
+GET {{searchUrl}}
+X-Meili-API-Key: {{searchApiKey}}
+Accept: application/json
+
+### Configure filter
+POST {{searchUrl}}/advisor/settings
+X-Meili-API-Key: {{searchApiKey}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "filterableAttributes": [
+    "experienceType1", "experienceType2", "experienceType3",
+    "destinationType1", "destinationType2", "destinationType3",
+    "type1", "type2", "type3",
+    "language1", "language2", "language3",
+    "country"
+  ],
+  "sortableAttributes": ["name"]
+}
+
+### Search advisor type
+@s = 1
+POST {{searchUrl}}/advisor/search
+X-Meili-API-Key: {{searchApiKey}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "filter": [["type1 = {{s}}", "type2 = {{s}}", "type3 = {{s}}"]]
+}
+
+### Configure filter
+POST {{searchUrl}}/destination/settings
+X-Meili-API-Key: {{searchApiKey}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "filterableAttributes": ["type", "country"],
+  "sortableAttributes": ["name", "published_at"]
+}
+
+
+### Search
+POST {{searchUrl}}/experience/search
+X-Meili-API-Key: {{searchApiKey}}
+Content-Type: application/json
+Accept: application/json
+
+{}

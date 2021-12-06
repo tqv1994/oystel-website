@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
   import { Icon } from '@smui/common';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
 </script>
 
 <Icon component={Svg} viewBox="0 0 18.858 18.858">

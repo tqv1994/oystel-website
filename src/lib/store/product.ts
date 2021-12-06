@@ -1,14 +1,15 @@
 import { writable } from 'svelte/store';
-import { CollectionStore, Exhibitable } from './types';
+import { CollectionStore, Exhibitable, Identifiable } from './types';
 
 export const productStore = writable<CollectionStore<Product>>({
   items: {},
 });
 
-export type Product = Exhibitable & {
+export type Product = Identifiable & Exhibitable & {
   brand: string;
   price: string;
   intro: string;
+  available: boolean;
 }
 
 export const productFieldsFragment = `
@@ -23,5 +24,6 @@ fragment productFields on Product {
     ...uploadFileFields
   }
   tags
+  available
 }
 `;

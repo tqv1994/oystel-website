@@ -8,7 +8,7 @@
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
   import Textfield from '@smui/textfield';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import {
     createUserWithEmailAndPassword,
     getAuth,

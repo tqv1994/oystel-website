@@ -7,18 +7,13 @@
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
   import { Icon } from '@smui/common';
   import IconButton from '@smui/icon-button';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import OySlideProducts from '$lib/components/common/OySlideProducts.svelte';
   import { Product } from '$lib/store/product';
   import { productStore } from '$lib/store/product';
 
   export const load: Load = async ({ fetch, session, page }) => {
-    const res = await fetch(`/page/product/product-list`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const res = await fetch(`/page/product/product-list?_z=${Date.now()}`);
 
     if (res.ok) {
       const data: ProductListsData = await res.json();

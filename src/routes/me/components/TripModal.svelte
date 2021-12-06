@@ -2,19 +2,27 @@
   import BlurImage from '$lib/components/blur-image.svelte';
   import ChatIcon from '$lib/icons/ChatIcon.svelte';
   import { UploadFile } from '$lib/store/upload-file';
-  import IconButton from '@smui/icon-button/IconButton.svelte';
+  import IconButton from '@smui/icon-button';
   import ButtonUnderline from './ButtonUnderline.svelte';
-  import Field from '../Field.svelte';
+  import Field from './Field.svelte';
 
   import Modal from './Modal.svelte';
-import NextIcon from '$lib/icons/NextIcon.svelte';
+  import NextIcon from '$lib/icons/NextIcon.svelte';
+  import { Trip } from '$lib/store/trip';
+  import Carousel from '$lib/components/Carousel.svelte';
+  import { dateTimeHelper } from '$lib/helpers/datetime';
   export let open: boolean = false;
-  export let name: string;
-  export let guests: string[];
-  export let advisor: string;
-  export let date_join: string;
-  export let status: string;
-  export let image: UploadFile;
+  export let trip: Trip;
+
+  const carouselConfig = {
+    autoplayDuration: 8000,
+    duration: 1500,
+    infinite: true,
+    particlesToShow: 1,
+    chevronPosition: 'inside',
+  };
+
+  const DATE_FORMAT = 'MMM DD, YYYY';
 </script>
 
 <div>
@@ -26,9 +34,19 @@ import NextIcon from '$lib/icons/NextIcon.svelte';
       }}>close</IconButton
     >
     <div class="thumbnail">
-      <div class="image-cover" style="padding-top: calc(288/935 * 100%)">
-        <BlurImage {...image} />
-      </div>
+      {#if trip.destinations[0].gallery.length > 1}
+        <Carousel {...carouselConfig}>
+          {#each trip.destinations[0].gallery as item}
+            <div class="image-cover" style="padding-top: calc(288/935 * 100%)">
+              <BlurImage {...item} />
+            </div>
+          {/each}
+        </Carousel>
+      {:else if trip.destinations[0].gallery.length == 1}
+        <div class="image-cover" style="padding-top: calc(288/935 * 100%)">
+          <BlurImage {...trip.destinations[0].gallery[0]} />
+        </div>
+      {/if}
     </div>
     <div class="content">
       <div class="row header mb-25">
@@ -44,29 +62,51 @@ import NextIcon from '$lib/icons/NextIcon.svelte';
         </div>
       </div>
       <div class="row mb-40">
-        <div class="d-col-6 m-col-6">{date_join}</div>
-        <div class="d-col-6 m-col-6 text-right">Reference: 2234-A</div>
+        <div class="d-col-6 m-col-6">
+          {dateTimeHelper.formatDate(trip.depart_at, DATE_FORMAT)
+            ? dateTimeHelper.formatDate(trip.depart_at, DATE_FORMAT)
+            : ''}
+          {dateTimeHelper.formatDate(trip.return_at, DATE_FORMAT)
+            ? ' - ' + dateTimeHelper.formatDate(trip.return_at, DATE_FORMAT)
+            : ''}
+        </div>
+        <div class="d-col-6 m-col-6 text-right">
+          Reference: {trip.reference ? trip.reference : 'No-reference'}
+        </div>
         <div class="d-col-6 m-col-12">
-          <p class="mdc-typography--headline1 m-0">{name}</p>
+          <p class="mdc-typography--headline1 m-0">
+            {trip.destinations && trip.destinations.length > 0
+              ? trip.destinations.map((item) => item.name).join(', ')
+              : ''}
+          </p>
         </div>
         <div class="d-col-6 m-col-12 text-right m-none">
-          <span class="status">{status}</span>
+          <span class="status">{trip.state}</span>
         </div>
         <div class="d-col-6 m-col-12 d-none m-block">
-          <span class="status">{status}</span>
+          <span class="status">{trip.state}</span>
         </div>
       </div>
-      <svelte:component this={Field} column_1={4} column_2={8} label="4 Guests">
-        {guests.join(', ')}
+      <svelte:component
+        this={Field}
+        column_1={4}
+        column_2={8}
+        label="{trip.travellers.length} Guests"
+      >
+        {trip.travellers
+          .map((item) => item.forename + ' ' + item.surname)
+          .join(', ')}
       </svelte:component>
       <a href="#" class="text-body1 btn-action">
         <svelte:component
-            this={Field}
-            column_1={4}
-            column_2={8}
-            label="View Itinerary"
+          this={Field}
+          column_1={4}
+          column_2={8}
+          label="View Itinerary"
         >
-            <div class="text-right"><svelte:component this={NextIcon} width={10} height={19} /></div>
+          <div class="text-right">
+            <svelte:component this={NextIcon} width={10} height={19} />
+          </div>
         </svelte:component>
       </a>
       <svelte:component
@@ -75,18 +115,30 @@ import NextIcon from '$lib/icons/NextIcon.svelte';
         column_2={8}
         label="View Travel Documents"
       >
-        <svelte:component this={ButtonUnderline} label="Amazing_Hotel.pdf" />,
-        <svelte:component this={ButtonUnderline} label="Airport-pickup.pdf" />,
-        <svelte:component this={ButtonUnderline} label="ski-lessions.pdf" />,
+        {#if trip.documents.length > 0}
+          {#each trip.documents as document}
+            {#each document.documents as item}
+              <svelte:component this={ButtonUnderline} label={item.name} />
+              {item ===
+              trip.documents[trip.documents.length - 1].documents[
+                trip.documents[trip.documents.length - 1].documents.length - 1
+              ]
+                ? ''
+                : ', '}
+            {/each}{/each}
+        {/if}
       </svelte:component>
+
       <a href="#" class="text-body1 btn-action">
         <svelte:component
-            this={Field}
-            column_1={4}
-            column_2={8}
-            label="Get Invoice"
+          this={Field}
+          column_1={4}
+          column_2={8}
+          label="Get Invoice"
         >
-            <div class="text-right"><svelte:component this={NextIcon} width={10} height={19} /></div>
+          <div class="text-right">
+            <svelte:component this={NextIcon} width={10} height={19} />
+          </div>
         </svelte:component>
       </a>
       <svelte:component
@@ -95,7 +147,14 @@ import NextIcon from '$lib/icons/NextIcon.svelte';
         column_2={8}
         label="Travel Insurance"
       >
-        AG-556772 
+        {#if trip.insurances.length > 0}
+          {#each trip.insurances as insurance}
+            <svelte:component
+              this={ButtonUnderline}
+              label={insurance.policyId}
+            />
+          {/each}
+        {/if}
       </svelte:component>
     </div>
   </svelte:component>
@@ -123,12 +182,12 @@ import NextIcon from '$lib/icons/NextIcon.svelte';
       padding: 15px 0;
       border-bottom: 1px solid #000;
     }
-    .btn-action{
-        margin-bottom: 15px;
-        display: block;
-        padding-top: 15px;
-        border-top: 1px solid #000;
-        border-bottom: 1px solid #000;
+    .btn-action {
+      margin-bottom: 15px;
+      display: block;
+      padding-top: 15px;
+      border-top: 1px solid #000;
+      border-bottom: 1px solid #000;
     }
   }
 </style>

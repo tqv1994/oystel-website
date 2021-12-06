@@ -7,7 +7,7 @@
   import { Label } from '@smui/common';
   import IconButton from '@smui/icon-button';
   import { Icon } from '@smui/common';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
@@ -276,7 +276,7 @@
                   <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 4 }}>
                     <Item
                       {...item}
-                      pathPrefix="destination"
+                      pathPrefix="/destination"
                       bind:item
                       on:likeItem={likeDestination}
                     />
@@ -308,7 +308,7 @@
                 <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
                   <Item
                     {...item}
-                    pathPrefix="destination"
+                    pathPrefix="/destination"
                     bind:item
                     on:likeItem={likeDestination}
                   />
@@ -330,6 +330,7 @@
 
 <style lang="scss" global>
   @use '../../theme/mixins';
+  @use '../../theme/colors';
   .experience-detail {
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/sticky.scss';
@@ -435,7 +436,7 @@
       background-color: #d3d3d3;
     }
     .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-      background-color: #5078bc;
+      background-color: colors.$blue;
     }
     @media (min-width: 1240px) {
       .products-list :global(.mdc-layout-grid__inner) {

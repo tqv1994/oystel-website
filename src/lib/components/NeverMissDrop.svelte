@@ -2,10 +2,10 @@
   import { Action } from '$lib/store/action';
   import { UploadFile } from '$lib/store/upload-file';
 
-  import Button from '@smui/button/Button.svelte';
-  import Cell from '@smui/layout-grid/Cell.svelte';
-  import LayoutGrid from '@smui/layout-grid/LayoutGrid.svelte';
-  import Label from '@smui/list/Label.svelte';
+  import Button from '@smui/button';
+  import { Cell } from '@smui/layout-grid';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Label } from '@smui/list';
   import { createEventDispatcher } from 'svelte';
   import BlurImage from './blur-image.svelte';
   import Carousel from './Carousel.svelte';

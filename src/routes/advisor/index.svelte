@@ -125,8 +125,6 @@
 </script>
 
 <script lang="ts">
-  import Item from '@smui/list/Item.svelte';
-
   export let advisors: SearchResultGroup<Advisor> = {
     hasMore: true,
     items: [],

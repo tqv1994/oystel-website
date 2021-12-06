@@ -32,8 +32,7 @@
       background-color: transparent;
     }
     .mdc-dialog__surface {
-      width: var(--wrap-width);
-      max-width: var(--wrap-width);
+      width: 100%;
       background-color: #{colors.$blue};
       .mdc-dialog__content {
         max-width: sizes.$contentMaxWidth;

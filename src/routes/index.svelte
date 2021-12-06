@@ -4,7 +4,7 @@
   import { destinationStore } from '$lib/store/destination';
   import { documentHelper, storeHelper } from '$lib/helpers';
   import OyCarousel from '$lib/components/common/OyCarousel.svelte';
-  import Svg from '@smui/common/elements/Svg.svelte';
+  import { Svg } from '@smui/common/elements';
   import IconButton from '@smui/icon-button';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
@@ -30,9 +30,9 @@
   import { DestinationLikeData } from './destination/like.json';
   import Item from '$lib/components/Item.svelte';
   export const load: Load = async ({ fetch, session, page }) => {
-    const res = await fetch('/home.json');
+    const res = await fetch(`/home.json?_z=${Date.now()}`);
     if (res.ok) {
-      const data: Page = await res.json();
+      const data: HomePageData = await res.json();
       return {
         props: {
           data,
@@ -41,10 +41,12 @@
     } else {
       const error = await res.json();
       console.error(error);
+      return {
+        props: {
+          error,
+        },
+      };
     }
-    return {
-      props: {},
-    };
   };
 </script>
 
@@ -65,7 +67,6 @@
   };
 
   export let data: HomePageData;
-  console.log(data);
   let openSignupModal = false;
 
   function callOpenSignupModal() {
@@ -233,7 +234,7 @@
                 <Item
                   {item}
                   {...item}
-                  pathPrefix="destination"
+                  pathPrefix="/destination"
                   on:likeItem={likeDestination}
                 />
               </Cell>
