@@ -59,7 +59,7 @@
           {#if active == 'Travel Documents' && me.travellerMe}
             <svelte:component this={TravelDocuments} {me} />
           {/if}
-          {#if active != 'Personal Infomation' && !me.travellerMe}
+          {#if active != 'Personal Information' && !me.travellerMe}
             <svelte:component this={AlertBox}>
               Before doing this. Please tell us your first and last name. <svelte:component
                 this={ButtonUnderline}
