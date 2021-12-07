@@ -187,7 +187,7 @@
   };
 
   const handleRemoveIdentification = async () => {
-    const res = await fetch(`/identification/delete-${identification.id}`, {
+    const res = await fetch(`/identification/delete-${identification.id}.json`, {
       method: 'DELETE',
     });
     if (res.ok) {
@@ -347,6 +347,7 @@
         type="button"
         class="btn-delete pl-20 pr-20"
         label="Delete Record"
+        on:click={handleRemoveIdentification}
       />
     </div>
   </div>
@@ -365,6 +366,7 @@
         class="btn-delete"
         type="button"
         label="Delete Record"
+        on:click={handleRemoveIdentification}
       />
     </div>
   </div>

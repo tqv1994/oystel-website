@@ -5,13 +5,30 @@
   import Button from '@smui/button';
   import FormToggle from '../components/FormToggle.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
+  import { updateTravellerData } from '../../traveller/update-me.json';
   export let me: User;
-  let medicalConditions: string =
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam';
+  let medicalCondition: string = me.travellerMe?.medicalCondition;
 
   export let is_edit: boolean = true;
 
-  async function handleSubmitForm() {}
+  async function handleSubmitForm() {
+    const res = await fetch(`/traveller/update-me.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        medicalCondition
+      }),
+    });
+    if (res.ok) {
+      const data: updateTravellerData = await res.json();
+      me.travellerMe = data.updateTraveller.traveller;
+      is_edit = false;
+    } else {
+      window.pushToast('An error occurred');
+    }
+  }
 </script>
 
 <form on:submit|preventDefault={handleSubmitForm}>
@@ -22,7 +39,7 @@
       column_1={4}
       column_2={8}
     >
-      <Textfield bind:value={medicalConditions} label="" type="text" textarea />
+      <Textfield bind:value={medicalCondition} label="" type="text" textarea />
     </svelte:component>
     <div class="text-right">
       <Button variant="unelevated" type="submit">Save Changes</Button>

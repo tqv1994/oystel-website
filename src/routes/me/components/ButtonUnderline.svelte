@@ -4,6 +4,7 @@
   export let label: string | undefined = '';
   export let href: string;
   export let target: string;
+  export let type: string;
   let classNames: string;
   export { classNames as class };
 </script>
@@ -12,6 +13,7 @@
   class={`button-underline ${classNames || ''}`}
   on:click
   bind:href
+  bind:type
   bind:target><Label class="text-button2">{label}</Label></Button
 >
 

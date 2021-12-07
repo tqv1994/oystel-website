@@ -53,6 +53,10 @@ export type Traveller = {
   gender: string;
   weightUnit: string;
   heightUnit: string;
+  passportNumber: string;
+  passportExpiryDate: string;
+  passportPlaceOfIssue: string;
+  medicalCondition: string;
 }
 
 export class TravellerInput {
@@ -85,6 +89,10 @@ export class TravellerInput {
   relatives: string[]
   friends: string[]
   otherRelations: string[]
+  passportNumber: string
+  passportExpiryDate: string
+  passportPlaceOfIssue: string
+  medicalCondition: string
 
   constructor(values: Object = {}) {
     Object.assign(this, values);
@@ -98,7 +106,7 @@ export function convertTravellerToInput(traveller: Traveller): TravellerInput {
   data.addresses = traveller.addresses?.map((item) => { return item.id });
   data.visas = traveller.visas?.map((item) => { return item.id });
   data.identifications = traveller.identifications?.map((item) => { return item.id });
-  data.partners = traveller.parents?.map((item) => item.id);
+  data.partners = traveller.partners?.map((item) => item.id);
   data.parents = traveller.parents?.map((item) => item.id);
   data.children = traveller.children?.id;
   data.relatives = traveller.relatives?.map((item) => item.id);
@@ -245,6 +253,10 @@ fragment travellerFields on Traveller {
   gender
   weightUnit
   heightUnit
+  passportNumber
+  passportExpiryDate
+  passportPlaceOfIssue
+  medicalCondition
 }
 `;
 

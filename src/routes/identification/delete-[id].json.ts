@@ -17,7 +17,7 @@ export const del: RequestHandler = async (
     try {
         const client = createGraphClientFromRequest(request);
         const query = `mutation deleteIdentification ($id: ID!){
-        updateIdentification(input:{
+        deleteIdentification(input:{
             where: {id: $id},
             }) {
                 identification{

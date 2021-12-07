@@ -17,6 +17,7 @@
   import { createPatternPhoneCode } from '$lib/utils/string';
   import { AddressInput, convertAddressToInput } from '$lib/store/address';
   import { createAddressData } from '../../address/create.json';
+import Item from '$lib/components/Item.svelte';
   export let me: User;
   const countries = Object.values(get(countryStore).items);
   const travellerInput: TravellerInput = convertTravellerToInput(
@@ -46,9 +47,6 @@
     };
   }
   let gender: string = 'Female';
-  let passportNumber: string = 'XXXXXXXX';
-  let expiryDate: string = 'XX/XX/XXXX';
-  let placeOfIssue: string = '';
 
   onMount(async () => {});
 
@@ -230,7 +228,7 @@
       column_1={4}
       column_2={8}
     >
-      <Textfield bind:value={passportNumber} label="" type="text" />
+      <Textfield bind:value={travellerInput.passportNumber} label="" type="text" />
     </svelte:component>
     <svelte:component
       this={Field}
@@ -238,7 +236,7 @@
       column_1={4}
       column_2={8}
     >
-      <Textfield bind:value={expiryDate} label="" type="date" />
+      <Textfield bind:value={travellerInput.passportExpiryDate} label="" type="date" />
     </svelte:component>
     <svelte:component
       this={Field}
@@ -246,11 +244,7 @@
       column_1={4}
       column_2={8}
     >
-      <Select bind:value={placeOfIssue} label="">
-        {#each countries as item}
-          <Option value={item.id}>{item.name}</Option>
-        {/each}
-      </Select>
+      <Textfield bind:value={travellerInput.passportPlaceOfIssue} label="" type="text" />
     </svelte:component>
     <svelte:component this={Field} label="Instagram" column_1={4} column_2={8}>
       <Textfield bind:value={travellerInput.instagram} label="" type="text" />
@@ -262,6 +256,14 @@
       column_2={8}
     >
       <Textfield bind:value={travellerInput.facebook} label="" type="text" />
+    </svelte:component>
+    <svelte:component
+      this={Field}
+      label="Facebook Messenger"
+      column_1={4}
+      column_2={8}
+    >
+      <Textfield bind:value={travellerInput.messenger} label="" type="text" />
     </svelte:component>
     <svelte:component
       this={Field}

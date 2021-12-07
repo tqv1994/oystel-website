@@ -128,11 +128,11 @@
       <svelte:component this={Text}>
         {#if (me.travellerMe?.addresses || [])[0]}
           <p>
-            {`${me.travellerMe?.addresses[0]?.line1}, ${me.travellerMe?.addresses[0]?.province}, ${me.travellerMe?.addresses[0]?.country.code} ${me.travellerMe?.addresses[0]?.zipcode}`}
+            {`${me.travellerMe?.addresses[0]?.line1 || ''}, ${me.travellerMe?.addresses[0]?.province || ''}, ${me.travellerMe?.addresses[0]?.country?.code || ''} ${me.travellerMe?.addresses[0]?.zipcode || ''}`}
           </p>
           {#if me.travellerMe?.addresses[0]?.line2}
             <p>
-              {`${me.travellerMe?.addresses[0]?.line2}, ${me.travellerMe?.addresses[0]?.province}, ${me.travellerMe?.addresses[0]?.country.code} ${me.travellerMe?.addresses[0]?.zipcode}`}
+              {`${me.travellerMe?.addresses[0]?.line2}, ${me.travellerMe?.addresses[0]?.province || ''}, ${me.travellerMe?.addresses[0]?.country.code || ''} ${me.travellerMe?.addresses[0]?.zipcode || ''}`}
             </p>
           {/if}
         {/if}
@@ -163,7 +163,7 @@
       column_1={4}
       column_2={8}
     >
-      <svelte:component this={Text}>XXXXXXXX</svelte:component>
+      <svelte:component this={Text}>{me.travellerMe?.passportNumber || ''}</svelte:component>
     </svelte:component>
     <svelte:component
       this={Field}
@@ -171,7 +171,7 @@
       column_1={4}
       column_2={8}
     >
-      <svelte:component this={Text}>XX/XX/XXXX</svelte:component>
+      <svelte:component this={Text}>{me.travellerMe?.passportExpiryDate || ''}</svelte:component>
     </svelte:component>
     <svelte:component
       this={Field}
@@ -179,7 +179,7 @@
       column_1={4}
       column_2={8}
     >
-      <svelte:component this={Text}>{''}</svelte:component>
+      <svelte:component this={Text}>{me.travellerMe?.passportPlaceOfIssue || ''}</svelte:component>
     </svelte:component>
     <svelte:component
       this={Field}
@@ -199,6 +199,16 @@
     >
       <svelte:component this={Text}
         >{me.travellerMe?.facebook || ''}</svelte:component
+      >
+    </svelte:component>
+    <svelte:component
+      this={Field}
+      label="Facebook Messenger"
+      column_1={4}
+      column_2={8}
+    >
+      <svelte:component this={Text}
+        >{me.travellerMe?.messenger || ''}</svelte:component
       >
     </svelte:component>
     <svelte:component
@@ -290,7 +300,7 @@
     title="Medical Conditions"
     bind:is_edit={medicalConditionsEdit}
   >
-    <svelte:component this={Text} />
+    <svelte:component this={Text} >{me.travellerMe?.medicalCondition || ''}</svelte:component>
   </svelte:component>
 {/if}
 {#if medicalConditionsEdit}
