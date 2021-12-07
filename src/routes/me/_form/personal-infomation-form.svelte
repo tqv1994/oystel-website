@@ -23,6 +23,8 @@
   import { onMount } from 'svelte';
   import { UpdateUserData } from '../../auth/update.json';
   import { createTravellerData } from '../../traveller/create.json';
+import { cmsUrlPrefix } from '$lib/env';
+import { UploadFile } from '$lib/store/upload-file';
   export let me: User;
   const travellerMe: Traveller = me.travellerMe;
   const salutationTypes = Object.values(get(salutationTypeStore).items);
@@ -32,6 +34,7 @@
   let phone_code: string;
   let oysteo_id_number: string = me.id;
   let errors: any = {};
+  let avatarInput: FileList;
   const schemaValidator = yup.object().shape({
     mobilePhone: yup.number().required(),
     birthday: yup.string().required(),
@@ -87,6 +90,9 @@
           const data: updateTravellerData = await res.json();
           me.travellerMe = data.updateTraveller.traveller;
           is_edit = false;
+          if(avatarInput){
+            handleUploadAvatar(avatarInput[0]);
+          }
         } else {
           const data: createTravellerData = await res.json();
           me.travellerMe = data.createTraveller.traveller;
@@ -103,6 +109,7 @@
       }
     }
   }
+
   async function handleUpdateMe() {
     const res = await fetch(`/auth/update.json`, {
       method: 'PUT',
@@ -116,7 +123,32 @@
     if (res.ok) {
       const data: UpdateUserData = await res.json();
       me = data.updateUser.user;
-      authStore.set({ user: me });
+      if(avatarInput){
+        handleUploadAvatar(avatarInput[0]);
+      }else{
+        authStore.set({ user: me });
+        is_edit = false;
+      }
+    } else {
+      window.pushToast('An error occurred');
+    }
+  }
+
+  async function handleUploadAvatar(file: File) {
+    const dataArray = new FormData();
+    dataArray.append('files', file);
+    dataArray.append('ref', 'user');
+    dataArray.append('source','users-permissions');
+    dataArray.append('refId', me.id + '');
+    dataArray.append('field', 'avatar');
+    const res = await fetch(`${cmsUrlPrefix}/upload`, {
+      method: 'POST',
+      body: dataArray,
+    });
+    if (res.ok) {
+      const data: UploadFile = await res.json();
+      me.avatar = data;
+      authStore.set({user: me});
       is_edit = false;
     } else {
       window.pushToast('An error occurred');
@@ -238,6 +270,14 @@
             <div class="image-cover" style="padding-top: 100%">
               <BlurImage {...me.avatar} />
             </div>
+          </div>
+          <div class="mb-20">
+            <Textfield
+              value=""
+              label=""
+              type="file"
+              bind:files={avatarInput}
+            />
           </div>
           <div class="text-right">
             <Button variant="unelevated" type="submit">Save Changes</Button>

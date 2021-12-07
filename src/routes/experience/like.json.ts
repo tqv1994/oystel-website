@@ -28,15 +28,11 @@ export const put: RequestHandler = async (
         }) {
             user{
                 experienceLikes{
-                  ...experienceFields
+                  id
               }
             }
           }
       }
-      ${experienceFieldsFragment}
-      ${experienceTypeFieldsFragment}
-      ${uploadFileFieldsFragment}
-      ${countryFieldsFragment}
     `;
     const res = await client.mutation<ExperienceLikeData>(query, { id: request.locals.user?.id, experienceLikes: request.body }).toPromise();
     if (res.data) {

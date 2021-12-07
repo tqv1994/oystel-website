@@ -28,7 +28,7 @@ export const put: RequestHandler = async (
         }) {
             user{
                 destinationLikes{
-                  ...destinationFields
+                  id
               }
             }
           }

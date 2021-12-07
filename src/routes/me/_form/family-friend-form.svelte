@@ -77,7 +77,10 @@
               travellerInputMe.relatives.push(traveller.id + '');
               break;
             case 'Partner':
-              travellerInputMe.parents.push(traveller.id + '');
+              travellerInputMe.partners.push(traveller.id + '');
+              break;
+            case 'Spouse':
+              travellerInputMe.spouse.push(traveller.id + '');
               break;
             case 'Other Relative':
               travellerInputMe.otherRelations.push(traveller.id + '');
@@ -144,6 +147,13 @@
         case 'Children':
           travellerInputMe.children = '';
           break;
+        case 'Spouse':
+          travellerInputMe.spouse.reduce((acc: string[], item) => {
+            if (item == traveller?.id + '') {
+              return acc;
+            }
+            return acc.push(item);
+          }, []);
         case 'Relative':
           travellerInputMe.relatives.reduce((acc: string[], item) => {
             if (item == traveller?.id + '') {
@@ -153,7 +163,7 @@
           }, []);
           break;
         case 'Partner':
-          travellerInputMe.parents.reduce((acc: string[], item) => {
+          travellerInputMe.partners.reduce((acc: string[], item) => {
             if (item == traveller?.id + '') {
               return acc;
             }
@@ -204,12 +214,17 @@
           );
           break;
         case 'Relative':
+          me.travellerMe.spouse = me.travellerMe.spouse.map((item) =>
+            item.id == traveller?.id ? traveller : item,
+          );
+          break;
+        case 'Relative':
           me.travellerMe.relatives = me.travellerMe.relatives.map((item) =>
             item.id == traveller?.id ? traveller : item,
           );
           break;
         case 'Partner':
-          me.travellerMe.parents = me.travellerMe.parents.map((item) =>
+          me.travellerMe.partners = me.travellerMe.partners.map((item) =>
             item.id == traveller?.id ? traveller : item,
           );
           break;
@@ -269,6 +284,7 @@
       disabled={traveller?.id ? true : false}
     >
       <Option value="Parent">Parent</Option>
+      <Option value="Spouse">Spouse</Option>
       <Option value="Children">Children</Option>
       <Option value="Relative">Relative</Option>
       <Option value="Partner">Partner</Option>

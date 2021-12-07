@@ -38,6 +38,17 @@
       />
     </div>
   {/each}
+  {#each me.travellerMe.spouse || [] as item}
+    <div class="d-col-4 m-col-12">
+      <FamilyFriendItem
+        traveller={item}
+        relationship="Spouse"
+        on:click={() => {
+          handleOpenForm(item, 'Spouse');
+        }}
+      />
+    </div>
+  {/each}
   {#if me.travellerMe.children}
     <div class="d-col-4 m-col-12">
       <FamilyFriendItem

@@ -26,14 +26,11 @@ export const put: RequestHandler = async (
         }) {
             user{
                 productLikes{
-                  ...productFields
-                
+                  id
               }
             }
           }
       }
-      ${productFieldsFragment}
-      ${uploadFileFieldsFragment}
     `;
     const res = await client.mutation<ProductLikeData>(query, { id: request.locals.user?.id, productLikes: request.body }).toPromise();
     if (res.data) {

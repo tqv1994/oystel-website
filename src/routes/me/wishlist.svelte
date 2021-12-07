@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" context="module">
   import { authStore, User } from '$lib/store/auth';
   import LayoutAccount from './components/LayoutAccount.svelte';
   import Tab, { Label } from '@smui/tab';
@@ -7,17 +7,56 @@
   import Select, { Option } from '@smui/select';
   import ButtonBack from './components/ButtonBack.svelte';
   import WishlistLayout from './components/WishlistLayout.svelte';
-  import { onMount } from 'svelte';
   import { Product } from '$lib/store/product';
   import { Destination } from '$lib/store/destination';
   import { Experience } from '$lib/store/experience';
+  import type { Load } from '@sveltejs/kit';
+  export const load: Load = async ({ fetch, session, page }) => {
+    if (session.user) {
+      let productLikes = session.user.productLikes.map((item) => item.id);
+      let destinationLikes = session.user.destinationLikes.map(
+        (item) => item.id,
+      );
+      let experienceLikes = session.user.experienceLikes.map((item) => item.id);
+      try {
+        const res = await fetch(`/me/wishlist.json`);
 
-  let me: User | undefined = $authStore.user;
+        if (res.ok) {
+          const data = await res.json();
+          let productWish = data.products.filter((item) =>
+            productLikes.includes(item.id),
+          );
+          let destinationWish = data.destinations.filter((item) =>
+            destinationLikes.includes(item.id),
+          );
+          let experienceWish = data.experiences.filter((item) =>
+            experienceLikes.includes(item.id),
+          );
+
+          let wishListData = []
+            .concat(...productWish)
+            .concat(...destinationWish)
+            .concat(...experienceWish);
+          console.log(wishListData);
+          return {
+            props: {
+              me: session.user,
+              data: wishListData,
+            },
+          };
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+</script>
+
+<script lang="ts">
   let active = 'All';
-  let data: Product[] | Experience[] | Destination[] = []
-    .concat(...me.productLikes)
-    .concat(...me.destinationLikes)
-    .concat(...me.experienceLikes);
+  export let data: Product[] | Experience[] | Destination[] = [];
+  export let me: User | undefined;
+
   const unlikeWishlist = async (e: CustomEvent) => {
     let wishListId = e.detail.id;
     let typeName = e.detail.typeName;

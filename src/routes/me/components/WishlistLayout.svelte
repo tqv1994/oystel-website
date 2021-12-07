@@ -11,9 +11,13 @@
   const dispatcher = createEventDispatcher();
 
   export let data: Product[] | Experience[] | Destination[] | [];
-  let sort: string = 'Recently Added';
+  let filter: string = '';
   const onUnlike = (e: CustomEvent) => {
     dispatcher('unlike', { id: e.detail.id, typeName: e.detail.typeName });
+  };
+
+  const handleFilter = (e: CustomEvent) => {
+    console.log(e.detail);
   };
 </script>
 
@@ -21,13 +25,16 @@
   <div class="row header mb-30">
     <div class="d-col-6 m-col-6">{data.length} Items</div>
     <div class="d-col-6 m-col-6 text-right">
-      <Select bind:value={sort} label="" class="text-left">
-        <Option value="Recently Added" selected>Recently Added</Option>
+      <Select bind:value={filter} label="" class="text-left" on:change={handleFilter}>
+        <Option value="">All</Option>
+        <Option value="Product">Product</Option>
+        <Option value="Destination">Destination</Option>
+        <Option value="Experience">Experience</Option>
       </Select>
     </div>
   </div>
   <div class="row items-list">
-    {#each data as item}
+    {#each filter != '' ? data.filter(item => item.__typename == filter) : data as item}
       <div class="d-col-4 m-col-6">
         <svelte:component
           this={WishListItem}
