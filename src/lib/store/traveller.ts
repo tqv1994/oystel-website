@@ -103,9 +103,11 @@ export function convertTravellerToInput(traveller: Traveller): TravellerInput {
   data.children = traveller.children?.id;
   data.relatives = traveller.relatives?.map((item) => item.id);
   data.friends = traveller.friends?.map((item) => item.id);
+  data.spouse = traveller.spouse?.map((item) => item.id);
   data.otherRelations = traveller.otherRelations?.map((item) => item.id);
   data.nationality = traveller.nationality?.id;
-  data.spouse = traveller.spouse?.map((item) => item.id);
+  data.interests = traveller.interests?.map((item)=> item.id);
+  data.personalPreferences = traveller.personalPreferences?.map((item)=>item.id);
   delete data.__typename;
   delete data.id;
   result = data;

@@ -23,8 +23,8 @@
   import { onMount } from 'svelte';
   import { UpdateUserData } from '../../auth/update.json';
   import { createTravellerData } from '../../traveller/create.json';
-import { cmsUrlPrefix } from '$lib/env';
-import { UploadFile } from '$lib/store/upload-file';
+  import { cmsUrlPrefix } from '$lib/env';
+  import { UploadFile } from '$lib/store/upload-file';
   export let me: User;
   const travellerMe: Traveller = me.travellerMe;
   const salutationTypes = Object.values(get(salutationTypeStore).items);
@@ -90,7 +90,7 @@ import { UploadFile } from '$lib/store/upload-file';
           const data: updateTravellerData = await res.json();
           me.travellerMe = data.updateTraveller.traveller;
           is_edit = false;
-          if(avatarInput){
+          if (avatarInput) {
             handleUploadAvatar(avatarInput[0]);
           }
         } else {
@@ -123,9 +123,9 @@ import { UploadFile } from '$lib/store/upload-file';
     if (res.ok) {
       const data: UpdateUserData = await res.json();
       me = data.updateUser.user;
-      if(avatarInput){
+      if (avatarInput) {
         handleUploadAvatar(avatarInput[0]);
-      }else{
+      } else {
         authStore.set({ user: me });
         is_edit = false;
       }
@@ -138,7 +138,7 @@ import { UploadFile } from '$lib/store/upload-file';
     const dataArray = new FormData();
     dataArray.append('files', file);
     dataArray.append('ref', 'user');
-    dataArray.append('source','users-permissions');
+    dataArray.append('source', 'users-permissions');
     dataArray.append('refId', me.id + '');
     dataArray.append('field', 'avatar');
     const res = await fetch(`${cmsUrlPrefix}/upload`, {
@@ -148,7 +148,7 @@ import { UploadFile } from '$lib/store/upload-file';
     if (res.ok) {
       const data: UploadFile = await res.json();
       me.avatar = data;
-      authStore.set({user: me});
+      authStore.set({ user: me });
       is_edit = false;
     } else {
       window.pushToast('An error occurred');
@@ -272,12 +272,7 @@ import { UploadFile } from '$lib/store/upload-file';
             </div>
           </div>
           <div class="mb-20">
-            <Textfield
-              value=""
-              label=""
-              type="file"
-              bind:files={avatarInput}
-            />
+            <Textfield value="" label="" type="file" bind:files={avatarInput} />
           </div>
           <div class="text-right">
             <Button variant="unelevated" type="submit">Save Changes</Button>
