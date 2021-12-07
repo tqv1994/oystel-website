@@ -49,7 +49,9 @@ async function search<T extends Identifiable>(
 ): Promise<SearchResultGroup<T>> {
   const filter: string[] = [];
   if (params[DESTINATION_TYPE]) {
-    filter.push(`type = ${params[DESTINATION_TYPE]}`);
+    filter.push(`type1 = ${params[DESTINATION_TYPE]}`);
+    filter.push(`type2 = ${params[DESTINATION_TYPE]}`);
+    filter.push(`type3 = ${params[DESTINATION_TYPE]}`);
   }
   if (params[COUNTRY]) {
     filter.push(`country = ${params[COUNTRY]}`);

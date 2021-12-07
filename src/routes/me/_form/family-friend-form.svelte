@@ -145,7 +145,8 @@
           }, []);
           break;
         case 'Children':
-          travellerInputMe.children = '';
+          const children: any = null;
+          travellerInputMe.children = children;
           break;
         case 'Spouse':
           travellerInputMe.spouse.reduce((acc: string[], item) => {

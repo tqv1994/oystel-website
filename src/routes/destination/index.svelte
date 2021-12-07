@@ -237,38 +237,9 @@
     }
   }
 
-  function onScrollFixedHeader() {
-    let eleHiddenOnScrolls = document.querySelectorAll(
-      '.header-title .hidden-on-sticky',
-    );
-    if (
-      document.body.scrollTop > 450 ||
-      document.documentElement.scrollTop > 450
-    ) {
-      document.getElementById('header').classList.add('fixed');
-      document.querySelector('header').style.zIndex = 8;
-      document.querySelector('header').style.position = 'relative';
-      document.querySelector('.header-title.is_sticky').classList.add('show');
-    } else {
-      document.getElementById('header').classList.remove('fixed');
-      document.querySelector('header').style.zIndex = 'auto';
-      document.querySelector('header').style.position = 'relative';
-      document
-        .querySelector('.header-title.is_sticky')
-        .classList.remove('show');
-    }
-  }
+  
 </script>
 
-<svelte:window
-  on:load={() => {
-    onScrollFixedHeader();
-  }}
-  on:resize={() => {}}
-  on:scroll={() => {
-    onScrollFixedHeader();
-  }}
-/>
 <div class="content destinations-listing-content">
   <section class="header-title d-pt-130 d-pb-95 m-pt-80 m-pb-25 full-width">
     <div class="content-wrap">

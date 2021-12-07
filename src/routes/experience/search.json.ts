@@ -48,7 +48,9 @@ async function search<T extends Identifiable>(
 ): Promise<SearchResultGroup<T>> {
   const filter: string[] = [];
   if (params[EXPERIENCE_TYPE]) {
-    filter.push(`type = ${params[EXPERIENCE_TYPE]}`);
+    filter.push(`type1 = ${params[EXPERIENCE_TYPE]}`);
+    filter.push(`type2 = ${params[EXPERIENCE_TYPE]}`);
+    filter.push(`type3 = ${params[EXPERIENCE_TYPE]}`);
   }
   if (params[COUNTRY]) {
     filter.push(`country = ${params[COUNTRY]}`);

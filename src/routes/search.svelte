@@ -465,6 +465,7 @@
           {#each searchResultDestination || [] as item, i}
             <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
               <Item
+                {...item}
                 pathPrefix="/destination"
                 bind:item
                 on:likeItem={likeDestination}
@@ -474,6 +475,7 @@
           {#each searchResultExperience || [] as item, i}
             <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
               <Item
+                {...item}
                 pathPrefix="/experience"
                 bind:item
                 on:likeItem={likeExperience}

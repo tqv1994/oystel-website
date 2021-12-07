@@ -67,24 +67,29 @@
         identificationInput.traveller = me.travellerMe.id + '';
         break;
       case 'Children':
-        travellerOptions = [me.travellerMe.children || null];
+        travellerOptions = me.travellerMe.children ? [ me.travellerMe.children ] : [];
         identificationInput.traveller =
           (me.travellerMe.children?.id || '') + '';
         break;
       case 'Relative':
         travellerOptions = me.travellerMe.relatives;
+        identificationInput.traveller = '';
         break;
       case 'Parent':
         travellerOptions = me.travellerMe.parents;
+        identificationInput.traveller = '';
         break;
       case 'Spouse':
         travellerOptions = me.travellerMe.spouse;
+        identificationInput.traveller = '';
         break;
       case 'Partner':
         travellerOptions = me.travellerMe.parents;
+        identificationInput.traveller = '';
         break;
       case 'Other Relative':
         travellerOptions = me.travellerMe.otherRelations;
+        identificationInput.traveller = '';
         break;
     }
 

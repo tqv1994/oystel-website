@@ -120,7 +120,7 @@
     if (mySize && (typeof mySize === 'string' || typeof mySize === 'number')) {
       return mySize;
     }
-    return '';
+    return '-';
   };
 
   const handleDisplayPreference = (

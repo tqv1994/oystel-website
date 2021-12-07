@@ -45,7 +45,7 @@
     {/each}
   </div>
 {:else}
-  <div>There is no product...</div>
+  <div>There is no wishlist...</div>
 {/if}
 
 <style lang="scss">

@@ -5,9 +5,13 @@ export const dateTimeHelper = {
     if (!date) {
       return '';
     }
-    const dateData = new Date(date);
-    const month = dateData.toLocaleString('en', { month: 'long'});
-    
-    return `${month} ${dateData.getDate()}, ${dateData.getFullYear()}`;
+    try{
+      return dayjs(date).format(format);
+    }catch(error){
+      // Fix error of dayjs
+      const dateData = new Date(date);
+      const month = dateData.toLocaleString('en', { month: 'long'});
+      return `${month} ${dateData.getDate()}, ${dateData.getFullYear()}`;
+    }
   },
 };

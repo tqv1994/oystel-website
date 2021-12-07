@@ -70,7 +70,7 @@
               >{me.travellerMe?.mobilePhone || ''}</svelte:component
             >
           </svelte:component>
-          <svelte:component this={Field} label="Birthdate">
+          <svelte:component this={Field} label="Birth Date">
             <svelte:component this={Text}
               >{me.travellerMe?.birthday
                 ? dateTimeHelper.formatDate(me.travellerMe?.birthday)

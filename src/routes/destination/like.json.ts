@@ -33,10 +33,6 @@ export const put: RequestHandler = async (
             }
           }
       }
-      ${destinationFieldsFragment}
-      ${destinationTypeFieldsFragment}
-      ${countryFieldsFragment}
-      ${uploadFileFieldsFragment}
     `;
     const res = await client.mutation<DestinationLikeData>(query, { id: request.locals.user?.id, destinationLikes: request.body }).toPromise();
     if (res.data) {
