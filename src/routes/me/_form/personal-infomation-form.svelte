@@ -89,9 +89,10 @@
         if (me.travellerMe) {
           const data: updateTravellerData = await res.json();
           me.travellerMe = data.updateTraveller.traveller;
-          is_edit = false;
           if (avatarInput) {
             handleUploadAvatar(avatarInput[0]);
+          }else{
+            is_edit = false;
           }
         } else {
           const data: createTravellerData = await res.json();
@@ -146,8 +147,9 @@
       body: dataArray,
     });
     if (res.ok) {
-      const data: UploadFile = await res.json();
-      me.avatar = data;
+      const data: UploadFile[] = await res.json();
+      console.log(data);
+      me.avatar = data[0];
       authStore.set({ user: me });
       is_edit = false;
     } else {
