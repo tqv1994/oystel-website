@@ -32,7 +32,8 @@
   import { clickOutside } from '$lib/components/events/clickOutside';
   import { authStore } from '$lib/store/auth';
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
-import SignupModal from '../modals/SignupModal.svelte';
+  import SignupModal from '../modals/SignupModal.svelte';
+  import OySearchModal from '../modals/OySearchModal.svelte';
 </script>
 
 <script lang="ts">
@@ -47,7 +48,7 @@ import SignupModal from '../modals/SignupModal.svelte';
   let scrollY: number = 0;
   export let signinModalOpen: boolean = false;
   export let signupModalOpen: boolean = false;
-
+  let openSearch: boolean = false;
   function adjustNav() {
     if (window.innerWidth < 960) {
       prominent = false;
@@ -147,15 +148,15 @@ import SignupModal from '../modals/SignupModal.svelte';
     activeSubItems = undefined;
   }
 
-  function onSignUpModalClose(event: CustomEvent){
+  function onSignUpModalClose(event: CustomEvent) {
     signupModalOpen = false;
-    if(event.detail.type === 'open-signin'){
+    if (event.detail.type === 'open-signin') {
       signinModalOpen = true;
     }
   }
-  function onSignInModalClose(event: CustomEvent){
+  function onSignInModalClose(event: CustomEvent) {
     signinModalOpen = false;
-    if(event.detail.type === 'open-signup'){
+    if (event.detail.type === 'open-signup') {
       signupModalOpen = true;
     }
   }
@@ -197,12 +198,22 @@ import SignupModal from '../modals/SignupModal.svelte';
         <Button type="button" variant="outlined" class="plan" href="/plan">
           <Label>Plan Your Trip</Label>
         </Button>
-        <IconButton unbounded="false">
+        <IconButton
+          unbounded="false"
+          on:click={() => {
+            openSearch = true;
+          }}
+        >
           <SearchIcon />
         </IconButton>
-        <IconButton on:click={() => {
-          $authStore.user ? goto('/me/wishlist') : window.pushToast('Please login to use this feature');
-        }}>
+        <OySearchModal bind:openSearch />
+        <IconButton
+          on:click={() => {
+            $authStore.user
+              ? goto('/me/wishlist')
+              : window.pushToast('Please login to use this feature');
+          }}
+        >
           <HeartIcon size="sm" />
         </IconButton>
         <IconButton
@@ -311,8 +322,17 @@ import SignupModal from '../modals/SignupModal.svelte';
     <slot />
   </AutoAdjust>
 </nav>
-<svelte:component this={SigninModal} bind:open={signinModalOpen} on:close={onSignInModalClose}/>
-<svelte:component this={SignupModal} bind:open={signupModalOpen} on:close={onSignUpModalClose}/>
+
+<svelte:component
+  this={SigninModal}
+  bind:open={signinModalOpen}
+  on:close={onSignInModalClose}
+/>
+<svelte:component
+  this={SignupModal}
+  bind:open={signupModalOpen}
+  on:close={onSignUpModalClose}
+/>
 
 <style lang="scss" global>
   @use './MainNav';

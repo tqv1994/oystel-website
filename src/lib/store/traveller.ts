@@ -116,6 +116,7 @@ export function convertTravellerToInput(traveller: Traveller): TravellerInput {
   data.nationality = traveller.nationality?.id;
   data.interests = traveller.interests?.map((item)=> item.id);
   data.personalPreferences = traveller.personalPreferences?.map((item)=>item.id);
+  data.travelPreferences = traveller.travelPreferences?.map((item)=>item.id);
   delete data.__typename;
   delete data.id;
   result = data;

@@ -9,7 +9,7 @@
   import Textfield from '@smui/textfield';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import Icon from '@smui/icon-button';
+  import {Icon} from '@smui/icon-button';
   import DataTable, {
     Head,
     Body,
