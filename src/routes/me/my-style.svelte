@@ -1,6 +1,14 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
   import { authStore, User } from '$lib/store/auth';
+  import LayoutAccount from './components/LayoutAccount.svelte';
+  import Box from './components/Box.svelte';
+  import ButtonBack from './components/ButtonBack.svelte';
+  import Field from './components/Field.svelte';
+  import MyStyleMySizesForm from './_form/my-style-my-sizes-form.svelte';
+  import Text from './components/Text.svelte';
+  import MyStylePreference from './_form/my-style-preference.svelte';
+  import { goto } from '$app/navigation';
 
   export type MySizeSelected = {
     topSize: string;
@@ -30,7 +38,6 @@
 
   export const load: Load = async ({ fetch }) => {
     let me: User | undefined;
-    let haveTravellerMe: boolean = true;
     authStore.subscribe(({ user }) => (me = user));
     if (me?.travellerMe) {
       let mySizeSelected = {
@@ -49,7 +56,6 @@
       return {
         props: {
           me,
-          haveTravellerMe,
           mySizeSelected,
           myStylePreferenceSelected: me.travellerMe.stylePreferences
             ? me.travellerMe.stylePreferences.split(',')
@@ -57,34 +63,24 @@
         },
       };
     } else {
-      haveTravellerMe = false;
       goto('/me/my-account');
     }
     return {
-      props: { haveTravellerMe },
+      props: {},
     };
   };
 </script>
 
 <script lang="ts">
-  import LayoutAccount from './components/LayoutAccount.svelte';
-  import Box from './components/Box.svelte';
-  import ButtonBack from './components/ButtonBack.svelte';
-  import Field from './components/Field.svelte';
-  import MyStyleMySizesForm from './_form/my-style-my-sizes-form.svelte';
-  import Text from './components/Text.svelte';
-  import MyStylePreference from './_form/my-style-preference.svelte';
-  import { goto } from '$app/navigation';
-  import AlertBox from './components/AlertBox.svelte';
-
   let mySizesEdit: boolean = false;
   let stylePreferencesEdit: boolean = false;
 
   export let me: User | undefined = $authStore.user;
   export let mySizeSelected: MySizeSelected;
   export let myStylePreferenceSelected: string[];
-  export let haveTravellerMe: boolean;
 
+  let tmpStylePreferenceSelected: string[] = [...myStylePreferenceSelected];
+  let tmpMySizeSelected: MySizeSelected = {...mySizeSelected};
   const mySizeData: MySize = {
     topSize: ['US 6', 'US 7', 'US 8', 'US 9'],
     dressSize: ['US 6', 'US 7', 'US 8', 'US 9'],
@@ -120,7 +116,7 @@
     if (mySize && (typeof mySize === 'string' || typeof mySize === 'number')) {
       return mySize;
     }
-    return '-';
+    return '';
   };
 
   const handleDisplayPreference = (
@@ -159,6 +155,7 @@
           data[key] = value;
         }
         me.travellerMe = data;
+        tmpMySizeSelected = {...mySizeSelected};
       }
     } catch (error) {
       console.log(error);
@@ -181,6 +178,7 @@
       if (res.ok) {
         me.travellerMe.stylePreferences = dataSubmit.join(',');
         stylePreferencesEdit = false;
+        tmpStylePreferenceSelected = [...myStylePreferenceSelected];
       }
     } catch (error) {
       console.log(error);
@@ -190,9 +188,6 @@
 
 <div class="content my-style-content">
   <LayoutAccount currentPage="my-style">
-    {#if !haveTravellerMe}
-      <AlertBox>Traveller is not exsist</AlertBox>
-    {/if}
     {#if me}
       <svelte:component this={ButtonBack} label="My Style" link="/me" />
       {#if !mySizesEdit}
@@ -207,7 +202,7 @@
             column_1={4}
             column_2={8}
             ><svelte:component this={Text}
-              >{handleDisplayMySize(mySizeSelected.dressSize)}</svelte:component
+              >{handleDisplayMySize(tmpMySizeSelected.dressSize)}</svelte:component
             ></svelte:component
           >
           <svelte:component
@@ -217,7 +212,7 @@
             column_2={8}
             ><svelte:component this={Text}
               >{handleDisplayMySize(
-                mySizeSelected.jeanPantSize,
+                tmpMySizeSelected.jeanPantSize,
               )}</svelte:component
             ></svelte:component
           >
@@ -227,7 +222,7 @@
             column_1={4}
             column_2={8}
             ><svelte:component this={Text}
-              >{handleDisplayMySize(mySizeSelected.topSize)}</svelte:component
+              >{handleDisplayMySize(tmpMySizeSelected.topSize)}</svelte:component
             ></svelte:component
           >
           <svelte:component
@@ -236,7 +231,7 @@
             column_1={4}
             column_2={8}
             ><svelte:component this={Text}
-              >{handleDisplayMySize(mySizeSelected.braSize)}</svelte:component
+              >{handleDisplayMySize(tmpMySizeSelected.braSize)}</svelte:component
             ></svelte:component
           >
           <svelte:component
@@ -245,7 +240,7 @@
             column_1={4}
             column_2={8}
             ><svelte:component this={Text}
-              >{handleDisplayMySize(mySizeSelected.shoeSize)}</svelte:component
+              >{handleDisplayMySize(tmpMySizeSelected.shoeSize)}</svelte:component
             ></svelte:component
           >
           <svelte:component
@@ -254,8 +249,8 @@
             column_1={4}
             column_2={8}
             ><svelte:component this={Text}
-              >{handleDisplayMySize(mySizeSelected.weight)}
-              {handleDisplayMySize(mySizeSelected.weightUnit)}</svelte:component
+              >{handleDisplayMySize(tmpMySizeSelected.weight)}
+              {handleDisplayMySize(tmpMySizeSelected.weightUnit)}</svelte:component
             ></svelte:component
           >
           <svelte:component
@@ -264,8 +259,8 @@
             column_1={4}
             column_2={8}
             ><svelte:component this={Text}
-              >{handleDisplayMySize(mySizeSelected.height)}
-              {handleDisplayMySize(mySizeSelected.heightUnit)}</svelte:component
+              >{handleDisplayMySize(tmpMySizeSelected.height)}
+              {handleDisplayMySize(tmpMySizeSelected.heightUnit)}</svelte:component
             ></svelte:component
           >
           <svelte:component
@@ -274,7 +269,7 @@
             column_1={4}
             column_2={8}
             ><svelte:component this={Text}
-              >{handleDisplayMySize(mySizeSelected.bodyStyle)}</svelte:component
+              >{handleDisplayMySize(tmpMySizeSelected.bodyStyle)}</svelte:component
             ></svelte:component
           >
         </svelte:component>
@@ -298,7 +293,7 @@
             <Field label={type.name} column_1={4} column_2={8} class="">
               <Text
                 >{handleDisplayPreference(
-                  myStylePreferenceSelected,
+                  tmpStylePreferenceSelected,
                   type.preferences,
                 )}</Text
               >

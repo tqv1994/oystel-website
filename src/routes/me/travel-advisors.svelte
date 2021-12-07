@@ -9,7 +9,7 @@
   import TravelAdvisorsTemplate from './components/TravelAdvisorsTemplate.svelte';
   import type { Load } from '@sveltejs/kit';
   import { Advisor, AdvisorBase } from '$lib/store/advisor';
-import { stringHelper } from '$lib/helpers';
+  import { stringHelper } from '$lib/helpers';
 
   export const load: Load = async ({ fetch, page }) => {
     let advisors: Advisor[] = [];
@@ -17,16 +17,20 @@ import { stringHelper } from '$lib/helpers';
     authStore.subscribe(async ({ user }) => {
       me = user;
     });
-    if(me?.myAdvisors){
-      const advisorIds = me.myAdvisors.map((item)=>item.id);
-      const res = await fetch(`/advisor/list.json?${stringHelper.objectToQueryString({id:advisorIds})}`);
+    if (me?.myAdvisors && me?.myAdvisors.length > 0) {
+      const advisorIds = me.myAdvisors.map((item) => item.id);
+      const res = await fetch(
+        `/advisor/list.json?${stringHelper.objectToQueryString({
+          id: advisorIds,
+        })}`,
+      );
       if (res.ok) {
         advisors = await res.json();
       }
     }
     return {
       props: {
-        advisors
+        advisors,
       },
     };
   };
@@ -35,18 +39,24 @@ import { stringHelper } from '$lib/helpers';
 <script lang="ts">
   let me: User | undefined = $authStore.user;
   export let advisors: Advisor[] = [];
-  let currentAdvisors: Advisor[] = advisors.reduce((acc: Advisor[], item: Advisor)=>{
-    if(item.accept == true){
-      acc.push(item);
-    }
-    return acc;
-  },[]);
-  let pastAdvisors: Advisor[] = advisors.reduce((acc: Advisor[], item: Advisor)=>{
-    if(item.accept == false){
-      acc.push(item);
-    }
-    return acc;
-  },[]);
+  let currentAdvisors: Advisor[] = advisors.reduce(
+    (acc: Advisor[], item: Advisor) => {
+      if (item.accept == true) {
+        acc.push(item);
+      }
+      return acc;
+    },
+    [],
+  );
+  let pastAdvisors: Advisor[] = advisors.reduce(
+    (acc: Advisor[], item: Advisor) => {
+      if (item.accept == false) {
+        acc.push(item);
+      }
+      return acc;
+    },
+    [],
+  );
 
   let active = 'Current';
 </script>

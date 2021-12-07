@@ -47,7 +47,6 @@ export const put: RequestHandler = async (
           }
         }
       `;
-        console.log('AV',query);
     const res = await client.mutation<{ traveller: Traveller }>(query).toPromise();
     if (res.data) {
       return {

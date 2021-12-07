@@ -6,7 +6,13 @@
   import Modal from './Modal.svelte';
   import Button, { Label } from '@smui/button';
   import Text from './Text.svelte';
-import { Advisor, getLastTripDate, numberOfOpenTrips, numberOfPastTrips } from '$lib/store/advisor';
+  import { makeLink } from '$lib/utils/link';
+  import {
+    Advisor,
+    getLastTripDate,
+    numberOfOpenTrips,
+    numberOfPastTrips,
+  } from '$lib/store/advisor';
 
   export let item: Advisor;
   export let isPast: boolean = true;
@@ -44,7 +50,11 @@ import { Advisor, getLastTripDate, numberOfOpenTrips, numberOfPastTrips } from '
   </div>
   <div class="box--actions">
     <div class="box--actions-item">
-      <svelte:component this={ButtonUnderline} label="View Advisor Page" />
+      <svelte:component
+        this={ButtonUnderline}
+        href={makeLink('/advisor', item)}
+        label="View Advisor Page"
+      />
     </div>
     {#if !isPast}
       <div class="box--actions-item">

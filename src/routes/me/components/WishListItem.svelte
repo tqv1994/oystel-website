@@ -29,7 +29,7 @@
       >
     </div>
     <p class="text-eyebrow mt-25">
-      {item.__typename == 'Product' ? item.brand : item.intro}
+      {item.__typename == 'Product' ? item.brand : item.country.name}
     </p>
     <svelte:component this={Text}>{item.name}</svelte:component>
   </div>

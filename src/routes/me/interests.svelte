@@ -45,6 +45,7 @@
 
   export let dataSelected: string[];
   export let haveTravellerMe: boolean;
+  let tempSelected : string[] = [...dataSelected];
 
   const handleClose = () => {
     is_edit = false;
@@ -68,6 +69,7 @@
         me.travellerMe.interests = []
           .concat(...interestList)
           .filter((item) => dataSelected.includes(item.id));
+        tempSelected = [...dataSelected];
       }
     } catch (error) {
       console.log(error);
@@ -99,7 +101,7 @@
         <Box bind:is_edit title="My Interests" class="">
           {#each data as type}
             <Field label={type.name} column_1={4} column_2={8} class="">
-              <Text>{handleDisplay(dataSelected, type)}</Text>
+              <Text>{handleDisplay(tempSelected, type)}</Text>
             </Field>
           {/each}
         </Box>

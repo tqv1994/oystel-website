@@ -65,6 +65,8 @@
   export let travelPreferenceSelected: string[];
   export let personalPreferenceSelected: string[];
 
+  let tmpTravelSelected: string[] = [...travelPreferenceSelected];
+  let tmpPersonalSelected: string[] = [...personalPreferenceSelected];
   const handleTravelSubmit = async () => {
     try {
       const res = await fetch('/me/preference/travel.json', {
@@ -85,6 +87,7 @@
         me.travellerMe.travelPreferences = []
           .concat(...preferenceList)
           .filter((item) => travelPreferenceSelected.includes(item.id));
+        tmpTravelSelected = [...travelPreferenceSelected];
         updateOther();
       }
     } catch (error) {
@@ -131,6 +134,7 @@
         me.travellerMe.personalPreferences = []
           .concat(...preferenceList)
           .filter((item) => personalPreferenceSelected.includes(item.id));
+        tmpPersonalSelected = [...personalPreferenceSelected];
       }
     } catch (error) {
       console.log(error);
@@ -175,7 +179,7 @@
         <Box title="Travel" bind:is_edit={travelEdit} class="">
           {#each travelPreferenceData as type}
             <Field label={type.name} column_1={4} column_2={8} class="">
-              <Text>{handleDisplay(travelPreferenceSelected, type)}</Text>
+              <Text>{handleDisplay(tmpTravelSelected, type)}</Text>
             </Field>
           {/each}
         </Box>
@@ -196,7 +200,7 @@
         <Box title="Personal" bind:is_edit={personalEdit} class="">
           {#each personalPreferenceData as type}
             <Field label={type.name} column_1={4} column_2={8} class="">
-              <Text>{handleDisplay(personalPreferenceSelected, type)}</Text>
+              <Text>{handleDisplay(tmpPersonalSelected, type)}</Text>
             </Field>
           {/each}
         </Box>

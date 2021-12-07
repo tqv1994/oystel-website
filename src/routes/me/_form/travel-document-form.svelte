@@ -61,41 +61,45 @@
   handleChangeRelationship();
 
   function handleChangeRelationship() {
-    switch (relationship) {
-      case 'Me':
-        travellerOptions = [me.travellerMe];
-        identificationInput.traveller = me.travellerMe.id + '';
-        break;
-      case 'Children':
-        travellerOptions = me.travellerMe.children ? [ me.travellerMe.children ] : [];
-        identificationInput.traveller =
-          (me.travellerMe.children?.id || '') + '';
-        break;
-      case 'Relative':
-        travellerOptions = me.travellerMe.relatives;
-        identificationInput.traveller = '';
-        break;
-      case 'Parent':
-        travellerOptions = me.travellerMe.parents;
-        identificationInput.traveller = '';
-        break;
-      case 'Spouse':
-        travellerOptions = me.travellerMe.spouse;
-        identificationInput.traveller = '';
-        break;
-      case 'Partner':
-        travellerOptions = me.travellerMe.parents;
-        identificationInput.traveller = '';
-        break;
-      case 'Other Relative':
-        travellerOptions = me.travellerMe.otherRelations;
-        identificationInput.traveller = '';
-        break;
-    }
+    setTimeout(() => {
+      switch (relationship) {
+        case 'Me':
+          travellerOptions = [me.travellerMe];
+          identificationInput.traveller = me.travellerMe.id + '';
+          break;
+        case 'Children':
+          travellerOptions = me.travellerMe.children
+            ? [me.travellerMe.children]
+            : [];
+          identificationInput.traveller =
+            (me.travellerMe.children?.id || '') + '';
+          break;
+        case 'Relative':
+          travellerOptions = me.travellerMe.relatives;
+          identificationInput.traveller = '';
+          break;
+        case 'Parent':
+          travellerOptions = me.travellerMe.parents;
+          identificationInput.traveller = '';
+          break;
+        case 'Spouse':
+          travellerOptions = me.travellerMe.spouse;
+          identificationInput.traveller = '';
+          break;
+        case 'Partner':
+          travellerOptions = me.travellerMe.parents;
+          identificationInput.traveller = '';
+          break;
+        case 'Other Relative':
+          travellerOptions = me.travellerMe.otherRelations;
+          identificationInput.traveller = '';
+          break;
+      }
 
-    if (!travellerOptions || travellerOptions.length <= 0) {
-      identificationInput.traveller = '';
-    }
+      if (!travellerOptions || travellerOptions.length <= 0) {
+        identificationInput.traveller = '';
+      }
+    },0);
   }
 
   async function handleSubmitForm() {
@@ -192,9 +196,12 @@
   };
 
   const handleRemoveIdentification = async () => {
-    const res = await fetch(`/identification/delete-${identification.id}.json`, {
-      method: 'DELETE',
-    });
+    const res = await fetch(
+      `/identification/delete-${identification.id}.json`,
+      {
+        method: 'DELETE',
+      },
+    );
     if (res.ok) {
       await getTraveller();
     } else {
