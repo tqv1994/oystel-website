@@ -10,7 +10,7 @@
   import BlurImage from './blur-image.svelte';
   import Carousel from './Carousel.svelte';
   import SignupModal from './modals/SignupModal.svelte';
-import SigninModal from './modals/SigninModal.svelte';
+  import SigninModal from './modals/SigninModal.svelte';
 
   export let name: string | undefined = undefined;
   export let headline: string | undefined = undefined;
@@ -26,20 +26,20 @@ import SigninModal from './modals/SigninModal.svelte';
   const carouselConfig = {
     autoplayDuration: 8000,
     duration: 1500,
-    infinite: false,
-    particlesToShow: 2.5,
-    chevronPosition: 'outside',
+    infinite: true,
+    particlesToShow: 1,
+    chevronPosition: 'inside',
   };
 
-  function onSignUpModalClose(event: CustomEvent){
+  function onSignUpModalClose(event: CustomEvent) {
     signupModalOpen = false;
-    if(event.detail.type === 'open-signin'){
+    if (event.detail.type === 'open-signin') {
       signinModalOpen = true;
     }
   }
-  function onSignInModalClose(event: CustomEvent){
+  function onSignInModalClose(event: CustomEvent) {
     signinModalOpen = false;
-    if(event.detail.type === 'open-signup'){
+    if (event.detail.type === 'open-signup') {
       signupModalOpen = true;
     }
   }
@@ -52,19 +52,22 @@ import SigninModal from './modals/SigninModal.svelte';
       class="content-left"
     >
       {#if gallery.length > 1}
-        <Carousel {...carouselConfig}>
-          {#each gallery as item}
-            <div
-              class="image-cover"
-              style="padding-top: calc(600 / 430 * 100%)"
-            >
-              <BlurImage {...item} />
-            </div>
-            <div class="caption">
-              <span class="">Channel Resort ‘21</span>
-            </div>
-          {/each}
-        </Carousel>
+        <div class="thumbnail dark multi-images-affect">
+          <Carousel {...carouselConfig}>
+            {#each gallery as item}
+              <div
+                class="image-cover"
+                style="padding-top: calc(610 / 420 * 100%)"
+              >
+                <BlurImage {...item} />
+              </div>
+            {/each}
+            
+          </Carousel>
+          <div class="caption" style="bottom:0">
+            <span class="">Channel Resort ‘21</span>
+          </div>
+        </div>
       {:else}
         <div class="thumbnail dark multi-images-affect">
           <div class="image-cover" style="padding-top: calc(610 / 420 * 100%)">
@@ -90,12 +93,21 @@ import SigninModal from './modals/SigninModal.svelte';
         <Button
           variant="outlined"
           class="hover-affect"
-          on:click={()=>{ signupModalOpen = true; }}
-          ><Label class="text-button2">{action.name}</Label></Button
+          on:click={() => {
+            signupModalOpen = true;
+          }}><Label class="text-button2">{action.name}</Label></Button
         >
       {/each}
     {/if}
   </Cell>
 </LayoutGrid>
-<svelte:component this={SignupModal} bind:open={signupModalOpen} on:close={onSignUpModalClose}/>
-<svelte:component this={SigninModal} bind:open={signinModalOpen} on:close={onSignInModalClose}/>
+<svelte:component
+  this={SignupModal}
+  bind:open={signupModalOpen}
+  on:close={onSignUpModalClose}
+/>
+<svelte:component
+  this={SigninModal}
+  bind:open={signinModalOpen}
+  on:close={onSignInModalClose}
+/>

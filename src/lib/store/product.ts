@@ -24,6 +24,5 @@ fragment productFields on Product {
     ...uploadFileFields
   }
   tags
-  available
 }
 `;

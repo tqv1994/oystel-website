@@ -121,16 +121,23 @@
     }
   }
 
-  const carouselConfig = {
+  const carouselConfigMobile = {
     autoplayDuration: 8000,
     duration: 1500,
-    infinite: false,
+    infinite: true,
     particlesToShow: 2,
+    chevronPosition: 'outside',
+  };
+  const carouselConfigDesktop = {
+    autoplayDuration: 8000,
+    duration: 1500,
+    infinite: true,
+    particlesToShow: 4,
     chevronPosition: 'outside',
   };
 </script>
 
-<div class="content editorial-content">
+<div class="content editorial-content d-pt-80 m-pt-60">
   {#each data.page.sections as section}
     {#if section.__typename === 'ComponentGalleriesExperienceGallery'}
       <section class="d-pt-60 d-pb-100 m-pt-48 m-pb-15 experiences">
@@ -147,60 +154,92 @@
     {:else if section.__typename === 'ComponentGalleriesDestinationGallery'}
       <section class="the-latest-section d-pt-105 m-pt-30">
         <div class="container">
-          <div class="the-latest-wrap d-pl-100 d-pr-100 d-mb-115 m-mb-60">
+          <div class="stories-list d-pl-100 d-pr-100 d-mb-115 m-mb-60">
             <h1 class="m-0 mb-40">{section.name}</h1>
             {#if section.destinations?.length > 0}
-              <Carousel {...carouselConfig}>
+              <Carousel {...carouselConfigMobile}>
                 {#each section.destinations as item}
-                  <div class="story-item">
-                    <div class="thumbnail">
+                  <div class="slide-content slide-item text-left">
+                    <div class="story-item">
+                      <div class="thumbnail">
+                        <a href={makeLink('/destination', item)}>
+                          <div
+                            class="image-cover"
+                            style="padding-top: calc(410 / 529 * 100%)"
+                          >
+                            <BlurImage {...item.gallery[0]} />
+                          </div>
+                        </a>
+                      </div>
                       <a href={makeLink('/destination', item)}>
-                        <div
-                          class="image-cover"
-                          style="padding-top: calc(410 / 529 * 100%)"
-                        >
-                          <BlurImage {...item.gallery[0]} />
-                        </div>
+                        <LayoutGrid class="p-0">
+                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                            ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
+                              {item.name || ''}
+                            </p></Cell
+                          >
+                        </LayoutGrid>
+                        <div class="divider" />
+                        <h4 class="text-h3 title m-mt-30">{item.intro}</h4>
+                        <p class="short-text m-none">
+                          {(item.description || '').substr(0, 80)}...
+                        </p>
                       </a>
                     </div>
-                    <a href={makeLink('/destination', item)}>
-                      <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                          ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
-                            {item.name || ''}
-                          </p></Cell
-                        >
-                      </LayoutGrid>
-                      <div class="divider" />
-                      <h4 class="text-h3 title m-mt-30">{item.intro}</h4>
-                      <p class="short-text m-none">
-                        {(item.description || '').substr(0, 80)}...
-                      </p>
-                    </a>
                   </div>
                 {/each}
               </Carousel>
-            {/if}
-          </div>
+              {/if}
+            </div>
         </div>
       </section>
     {:else if section.__typename === 'ComponentGalleriesDropGallery'}
       {#if section.drops.length > 0}
-        <section class="the-latest-section d-pt-105 d-pb-105 m-pt-30 pb-100">
+        <section class="the-latest-section d-pt-105 d-pb-105 m-pt-30 pb-100 ">
           <div class="container">
-            <div class="stories-list">
-              <Carousel {...carouselConfig}>
+            <div class="stories-list d-block m-none">
+              <Carousel {...carouselConfigDesktop}>
                 {#each section.drops as item}
                   <div class="slide-content slide-item text-left">
                     <div class="story-item">
                       <div class="thumbnail">
-                        <a href={makeLink('/drop', item)}>
+                        <a href="#">
                           <div class="image-cover">
                             <BlurImage {...item.gallery[0]} />
                           </div>
                         </a>
                       </div>
-                      <a href={makeLink('/drop', item)}>
+                      <a href="#">
+                        <LayoutGrid class="p-0">
+                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                            ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
+                              Fashion
+                            </p></Cell
+                          >
+                        </LayoutGrid>
+                        <div class="divider" />
+                        <h4 class="text-h3 title m-mt-30">
+                          {item.name}
+                        </h4>
+                      </a>
+                    </div>
+                  </div>
+                {/each}
+              </Carousel>
+            </div>
+            <div class="stories-list  d-none m-block">
+              <Carousel {...carouselConfigMobile}>
+                {#each section.drops as item}
+                  <div class="slide-content slide-item text-left">
+                    <div class="story-item">
+                      <div class="thumbnail">
+                        <a href="#">
+                          <div class="image-cover">
+                            <BlurImage {...item.gallery[0]} />
+                          </div>
+                        </a>
+                      </div>
+                      <a href="#">
                         <LayoutGrid class="p-0">
                           <Cell spanDevices={{ desktop: 6, phone: 2 }}
                             ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
@@ -220,6 +259,7 @@
             </div>
           </div>
         </section>
+
         <section class="all-stories-section d-pb-100 m-pb-90">
           <div class="container">
             <h1>{section.name}</h1>
@@ -228,12 +268,12 @@
                 <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
                   <div class="story-item">
                     <div class="thumbnail">
-                      <a href={makeLink('/drop', item)}>
+                      <a href="#">
                         <!-- <BlurImage {...item.gallery[0]} /> -->
                         <img src={item.gallery[0].url} />
                       </a>
                     </div>
-                    <a href={makeLink('/drop', item)}>
+                    <a href="#">
                       <LayoutGrid class="p-0">
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
                           ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
@@ -253,12 +293,12 @@
                 <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
                   <div class="story-item">
                     <div class="thumbnail">
-                      <a href={makeLink('/drop', item)}>
+                      <a href="#">
                         <!-- <BlurImage {...item.gallery[0]} /> -->
                         <img src={item.gallery[0].url} />
                       </a>
                     </div>
-                    <a href={makeLink('/drop', item)}>
+                    <a href="#">
                       <LayoutGrid class="p-0">
                         <Cell spanDevices={{ desktop: 6, phone: 2 }}
                           ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
@@ -275,7 +315,7 @@
                 </Cell>
               {/each}
             </LayoutGrid>
-            <div class="pagination-wrap d-mt-120 m-mt-100">
+            <!-- <div class="pagination-wrap d-mt-120 m-mt-100">
               <Pagination
                 page={0}
                 count={70}
@@ -284,7 +324,7 @@
                 serverSide={true}
                 buttons={[0, 1, 2, 3, 4]}
               />
-            </div>
+            </div> -->
           </div>
         </section>
       {/if}
@@ -377,13 +417,13 @@
     }
 
     .the-latest-section {
-      .stories-list {
-        .sc-carousel-dots__container {
-          @include mixins.desktop {
-            display: none;
-          }
-          margin-top: 30px;
+      .sc-carousel-dots__container {
+        @include mixins.desktop {
+          display: none;
         }
+        margin-top: 30px;
+      }
+      .stories-list {
         .slide-item {
           margin-right: var(--mdc-layout-grid-gutter-desktop);
           direction: ltr;
