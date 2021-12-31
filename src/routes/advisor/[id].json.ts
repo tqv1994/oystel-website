@@ -36,7 +36,6 @@ ${destinationFieldsFragment}
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-console.log(query);
 export const get: RequestHandler = async (request: Request) => {
   try {
     const client = createGraphClientFromRequest(request);

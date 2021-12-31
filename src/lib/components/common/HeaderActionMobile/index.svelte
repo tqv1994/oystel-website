@@ -29,6 +29,10 @@
   function callCloseHeaderActionMobile(event: CustomEvent) {
     dispathcher('close', event.detail);
   }
+
+  function closeSearchBox(){
+    content = '';
+  }
 </script>
 
 {#if content != ''}
@@ -44,9 +48,7 @@
           <Section class="pr-0" align="end">
             <div class="wrap-close-btn">
               <IconButton
-                on:click={() => {
-                  content = '';
-                }}
+                on:click={closeSearchBox}
               >
                 <CloseIcon />
               </IconButton>
@@ -58,7 +60,7 @@
         {#if !content || content == 'menu'}
           <OyMenu on:close={callCloseHeaderActionMobile}>no content</OyMenu>
         {:else if content == 'explode'}
-          <OyExplode on:close={callCloseHeaderActionMobile}
+          <OyExplode on:close={closeSearchBox}
             >no content</OyExplode
           >
         {:else if content == 'experience-search'}

@@ -22,7 +22,7 @@
     use:clickOutside
     on:click_outside={handleCloseSearch}
   >
-    <OySearch openSearchComplete={openSearch} label={searchLabel} />
+    <OySearch openSearchComplete={openSearch} label={searchLabel} on:close={handleCloseSearch}/>
   </div>
   <div class="backdrop" />
 {/if}

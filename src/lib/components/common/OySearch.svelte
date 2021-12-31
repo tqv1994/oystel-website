@@ -4,7 +4,7 @@
   import { Icon } from '@smui/common';
   import { searchKeys } from '$lib/const';
   import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { documentHelper } from '$lib/helpers';
   export let searchResult: string = '';
   // tagsStore.subscribe(({ tags }) => {
@@ -12,6 +12,7 @@
   // });
   let keyResult: string[] = [];
   let disabled: boolean;
+  const dispatcher = createEventDispatcher();
   export let label: string = 'Start with a search';
 
   export let openSearchComplete: boolean = false;
@@ -46,6 +47,7 @@
 
   async function handleSearch(key: string) {
     goto(`/search?q=${key}`);
+    dispatcher('close');
     return;
   }
 

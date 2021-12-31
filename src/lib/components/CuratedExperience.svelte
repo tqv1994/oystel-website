@@ -21,6 +21,7 @@
   export let vertical: boolean = false;
   export let columns: number = 4;
   let me: User | undefined = $authStore.user;
+  export let index: number;
   let hero: Experience | undefined;
   let nonHeros: Experience[] | undefined;
   $: if (prominent && experiences.length) {
@@ -41,8 +42,8 @@
   function runScript() {
     if (document.documentElement.clientWidth > 949) {
       documentHelper.handleEqualHeightItems([
-        '.experiences .experiences--item.featured',
-        '.experiences .experiences--list',
+        `.experiences.experiences-${index} .experiences--item.featured`,
+        `.experiences.experiences-${index} .experiences--list`
       ]);
     }
   }

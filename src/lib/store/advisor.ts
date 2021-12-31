@@ -41,7 +41,7 @@ export type AdvisorBase = Exhibitable & {
   emergency_code?: string;
   initials?: string;
   gallery?: UploadFile;
-  trips: Trip[];
+  trips?: Trip[];
 };
 
 export type Advisor = AdvisorBase & {

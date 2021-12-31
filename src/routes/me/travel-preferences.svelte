@@ -46,17 +46,18 @@
             .preferences.filter((item) => item.name == 'Other')[0],
         },
       };
-    } else {
-      goto('/me/my-account');
     }
     return {
-      props: {},
+      props: { me },
     };
   };
 </script>
 
 <script lang="ts">
-  export let me: User | undefined = $authStore.user;
+  import AlertBox from './components/AlertBox.svelte';
+  import ButtonUnderline from './components/ButtonUnderline.svelte';
+
+  export let me: User;
   export let otherPreference: TravelPreference;
   let travelEdit: boolean = false;
   let personalEdit: boolean = false;
@@ -65,19 +66,16 @@
   export let travelPreferenceSelected: string[];
   export let personalPreferenceSelected: string[];
 
-  let tmpTravelSelected: string[] = [...travelPreferenceSelected];
-  let tmpPersonalSelected: string[] = [...personalPreferenceSelected];
+  let tmpTravelSelected: string[] = [...(travelPreferenceSelected || [])];
+  let tmpPersonalSelected: string[] = [...(personalPreferenceSelected || [])];
   const handleTravelSubmit = async () => {
     try {
-      const res = await fetch('/me/preference/travel.json', {
+      const res = await fetch('/me/preference/update-travel.json', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          id: me?.travellerMe.id,
-          travelPreferences: travelPreferenceSelected,
-        }),
+        body: JSON.stringify(travelPreferenceSelected),
       });
       if (res.ok) {
         travelEdit = false;
@@ -102,10 +100,7 @@
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          id: otherPreference.id,
-          other: otherPreference.other,
-        }),
+        body: JSON.stringify(otherPreference.other),
       });
       if (res.ok) {
       }
@@ -116,15 +111,12 @@
 
   const handlePersonalSubmit = async () => {
     try {
-      const res = await fetch('/me/preference/personal.json', {
+      const res = await fetch('/me/preference/update-personal.json', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          id: me?.travellerMe.id,
-          personalPreferences: personalPreferenceSelected,
-        }),
+        body: JSON.stringify(personalPreferenceSelected),
       });
       if (res.ok) {
         personalEdit = false;
@@ -169,12 +161,19 @@
 
 <div class="content travel-preferences-content">
   <LayoutAccount currentPage="travel-preferences">
-    {#if me}
-      <svelte:component
-        this={ButtonBack}
-        label="Travel Preferences"
-        link="/me"
-      />
+    <svelte:component this={ButtonBack} label="Travel Preferences" link="/me" />
+    {#if !me.travellerMe}
+      <svelte:component this={AlertBox}>
+        Before doing this. Please tell us your first and last name. <svelte:component
+          this={ButtonUnderline}
+          on:click={() => {
+            goto('/me/my-account');
+          }}
+          label="Update them here"
+        />
+      </svelte:component>
+    {/if}
+    {#if me.travellerMe}
       {#if !travelEdit}
         <Box title="Travel" bind:is_edit={travelEdit} class="">
           {#each travelPreferenceData as type}

@@ -30,7 +30,6 @@ export const put: RequestHandler = async (
         ${addressFieldsFragment}
         ${countryFieldsFragment}
     `;
-    console.log(query);
         const res = await client.mutation<updateAddressData>(query, {id: request.params.id || '', address: request.body }).toPromise();
         if (res.data) {
             return {

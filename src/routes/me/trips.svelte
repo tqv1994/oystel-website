@@ -11,22 +11,17 @@
   import { Trip } from '$lib/store/trip';
   import { goto } from '$app/navigation';
   import AlertBox from './components/AlertBox.svelte';
+import ButtonUnderline from './components/ButtonUnderline.svelte';
   
   export const load: Load = async ({ fetch, page }) => {
     let me: User | undefined;
-    let haveTravellerMe: boolean = true;
 
     authStore.subscribe(({ user }) => (me = user));
-    let travellerId: number = 0;
-    if (me?.travellerMe) {
-      travellerId = me.travellerMe.id;
-    }
-    if (travellerId != 0) {
+    if (me.travellerMe) {
       try {
-        const res = await fetch(`/me/trip/${travellerId}.json`);
+        const res = await fetch(`/me/trip/list.json`);
         if (res.ok) {
           let data = await res.json();
-          console.log(data);
           return {
             props: {
               trips: data.trips,
@@ -40,19 +35,16 @@
                 (item) => item.state == 'progressing',
               ),
               pastTrips: data.trips.filter((item) => item.state == 'completed'),
-              haveTravellerMe,
+              me,
             },
           };
         }
       } catch (error) {
         console.log(error);
       }
-    } else {
-      goto('/me/my-account');
-      haveTravellerMe = false;
     }
     return {
-      props: { haveTravellerMe },
+      props: { me },
     };
   };
 </script>
@@ -63,17 +55,25 @@
   export let planningTrips: Trip[];
   export let activeTrips: Trip[];
   export let pastTrips: Trip[];
-  export let haveTravellerMe: boolean;
+  export let me: User;
   let active = 'Enquiry';
 </script>
 
 <div class="content trips-content">
   <LayoutAccount currentPage="trips">
-    {#if !haveTravellerMe}
-      <AlertBox>Traveller is not exsist</AlertBox>
+    <svelte:component this={ButtonBack} label="Trips" link="/me" />
+    {#if !me.travellerMe}
+    <svelte:component this={AlertBox}>
+      Before doing this. Please tell us your first and last name. <svelte:component
+        this={ButtonUnderline}
+        on:click={() => {
+          goto('/me/my-account');
+        }}
+        label="Update them here"
+      />
+    </svelte:component>
     {/if}
     {#if trips}
-      <svelte:component this={ButtonBack} label="Trips" link="/me" />
       <svelte:component this={BoxTabs}>
         <div slot="tabs">
           <div class="d-block m-none">

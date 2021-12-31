@@ -208,7 +208,7 @@
     </div>
   </section>
 
-  {#each data.page.sections as section}
+  {#each data.page.sections as section,index}
     {#if section.__typename === 'ComponentGalleriesDropGallery'}
       <section class="has-padding m-pt-40 m-pb-70" id="featured-drops">
         <FeatureDrops {...section} />
@@ -242,11 +242,11 @@
         {/if}
       </section>
     {:else if section.__typename === 'ComponentGalleriesExperienceGallery'}
-      <section class="has-padding m-pt-48 m-pb-15 experiences">
+      <section class="has-padding m-pt-48 m-pb-15 experiences experiences-{index}">
         <div class="container">
           <p class="text-h1 mt-0 d-mb-35 m-mb-15">{section.name}</p>
         </div>
-        <CuratedExperience {...section} on:likeItem={likeExperience} />
+        <CuratedExperience {...section} on:likeItem={likeExperience} {index}/>
       </section>
     {:else if section.__typename === 'ComponentBannersBanner'}
       <section

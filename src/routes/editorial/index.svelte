@@ -138,14 +138,14 @@
 </script>
 
 <div class="content editorial-content d-pt-80 m-pt-60">
-  {#each data.page.sections as section}
+  {#each data.page.sections as section,index}
     {#if section.__typename === 'ComponentGalleriesExperienceGallery'}
-      <section class="d-pt-60 d-pb-100 m-pt-48 m-pb-15 experiences">
+      <section class="d-pt-60 d-pb-100 m-pt-48 m-pb-15 experiences experiences-{index}">
         <div class="container">
           <p class="text-eyebrow m-0">{section.headline}</p>
           <p class="text-h1 mt-30 d-mb-40 m-mb-15">{section.name}</p>
         </div>
-        <CuratedExperience {...section} on:likeItem={likeExperience} />
+        <CuratedExperience {...section} on:likeItem={likeExperience} {index}/>
       </section>
     {:else if section.__typename === 'ComponentBannersBanner'}
       <section class="what-to-wear-section d-pb-105 d-pt-105 full-width">

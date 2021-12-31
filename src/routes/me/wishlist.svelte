@@ -11,33 +11,18 @@
   import { Destination } from '$lib/store/destination';
   import { Experience } from '$lib/store/experience';
   import type { Load } from '@sveltejs/kit';
+  import { QueryLikeResult } from './wishlist/index.json';
   export const load: Load = async ({ fetch, session, page }) => {
     if (session.user) {
-      let productLikes = session.user.productLikes.map((item) => item.id);
-      let destinationLikes = session.user.destinationLikes.map(
-        (item) => item.id,
-      );
-      let experienceLikes = session.user.experienceLikes.map((item) => item.id);
       try {
         const res = await fetch(`/me/wishlist.json`);
 
         if (res.ok) {
-          const data = await res.json();
-          let productWish = data.products.filter((item) =>
-            productLikes.includes(item.id),
-          );
-          let destinationWish = data.destinations.filter((item) =>
-            destinationLikes.includes(item.id),
-          );
-          let experienceWish = data.experiences.filter((item) =>
-            experienceLikes.includes(item.id),
-          );
-
+          const data: QueryLikeResult = await res.json();
           let wishListData = []
-            .concat(...productWish)
-            .concat(...destinationWish)
-            .concat(...experienceWish);
-          console.log(wishListData);
+            .concat(...(data.products || []))
+            .concat(...(data.experiences || []))
+            .concat(...(data.destinations || []));
           return {
             props: {
               me: session.user,

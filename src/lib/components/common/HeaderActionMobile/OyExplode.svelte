@@ -72,6 +72,7 @@
 
   async function handleSearch(key: string) {
     goto(`/search?name=${key}`);
+    dispatch('close');
     return;
   }
 </script>

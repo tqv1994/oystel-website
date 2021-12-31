@@ -20,6 +20,7 @@
   import { insertToStore } from '$lib/store/types';
   import { makeLink } from '$lib/utils/link';
   import { implodeString } from '$lib/utils/string';
+import { authStore, convertUserToInput } from '$lib/store/auth';
 
   export const load: Load = async ({ fetch, page }) => {
     const id = parseId(page.params.slug);
@@ -59,6 +60,11 @@
 </script>
 
 <script lang="ts">
+import OyNotification from "$lib/components/common/OyNotification.svelte";
+import { updateUserService } from '$lib/services/user.service';
+import { createTripService } from '$lib/services/trip.service';
+import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
+
   let configPage = {
     header: {
       page: 'advisor-detail',
@@ -96,6 +102,30 @@
     // } else {
     //   classList?.remove('fixed');
     // }
+  }
+
+  const onContactAdvisor = async() => {
+    const user = $authStore.user;
+    if(user){
+      if(!user.myAdvisors || (user.myAdvisors && !user.myAdvisors.find((item)=>item.id === advisor.id))){
+        if(user){
+          const userInput = convertUserToInput(user);
+          userInput.myAdvisors.push(advisor.id);
+          await updateUserService({...userInput}).then((output)=>{
+            authStore.set({user: {...user, myAdvisors: output.myAdvisors}});
+          });
+        }
+      }
+      if(user.travellerMe){
+        await createTripService(new TripInput({advisor: advisor.id, lead_traveller: user.travellerMe.id,state: ENUM_TRIP_STATE.enquired})).then((trip)=>{
+          window.pushToast('Thank you for contacting our advisor. We will contact you as soon as possible');    
+        });
+      }else{
+        window.pushToast('Please update your personal information before taking this action');
+      }
+    }else{
+      window.pushToast('You are not a member, so you cannot perform this action');
+    }
   }
 </script>
 
@@ -222,7 +252,7 @@
             <h4 class="mt-0 d-mb-55 m-mb-40">
               Advisor | {advisor.country?.name || ''}
             </h4>
-            <Button variant="outlined" class="hover-affect"
+            <Button variant="outlined" class="hover-affect" on:click={onContactAdvisor}
               ><Label>Contact Me</Label></Button
             >
           </div>
@@ -339,7 +369,7 @@
             <h4 class="mt-0 d-mb-55 m-mb-40">
               Advisor | {advisor.address ? advisor.address.line1 : ''}
             </h4>
-            <Button variant="outlined" class="hover-affect"
+            <Button variant="outlined" class="hover-affect" on:click={onContactAdvisor}
               ><Label>Contact Me</Label></Button
             >
           </div>
@@ -490,7 +520,7 @@
     </section>
   </div>
 {/if}
-
+<OyNotification/>
 <style lang="scss" global>
   @use '../../theme/mixins';
   .advisor-detail {

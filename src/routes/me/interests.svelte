@@ -15,7 +15,6 @@
 
   export const load: Load = async ({ fetch }) => {
     let me: User | undefined;
-    let haveTravellerMe: boolean = true;
     authStore.subscribe(({ user }) => (me = user));
     if (me?.travellerMe) {
       const interestTypes = Object.values(get(interestTypeStore).items);
@@ -24,28 +23,27 @@
           me,
           data: interestTypes,
           dataSelected: me?.travellerMe.interests.map((item) => item.id),
-          haveTravellerMe,
         },
       };
-    } else {
-      haveTravellerMe = false;
-      goto('/me/my-account');
     }
+
     return {
-      props: { haveTravellerMe },
+      props: { me },
     };
   };
 </script>
 
 <script lang="ts">
+  import ButtonUnderline from './components/ButtonUnderline.svelte';
+
   let is_edit: boolean = false;
 
-  export let me: User | undefined;
+  export let me: User;
   export let data: InterestType[];
 
   export let dataSelected: string[];
   export let haveTravellerMe: boolean;
-  let tempSelected : string[] = [...dataSelected];
+  let tempSelected: string[] = [...(dataSelected || [])];
 
   const handleClose = () => {
     is_edit = false;
@@ -53,15 +51,12 @@
 
   const handleSubmit = async () => {
     try {
-      const res = await fetch('/me/interests.json', {
+      const res = await fetch('/me/interests/update.json', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          id: me?.travellerMe.id,
-          interests: dataSelected,
-        }),
+        body: JSON.stringify(dataSelected),
       });
       if (res.ok) {
         handleClose();
@@ -92,11 +87,19 @@
 
 <div class="content interests-content">
   <LayoutAccount currentPage="interests">
-    {#if !haveTravellerMe}
-      <AlertBox>Traveller is not exsist</AlertBox>
+    <svelte:component this={ButtonBack} label="Interests" link="/me" />
+    {#if !me.travellerMe}
+      <svelte:component this={AlertBox}>
+        Before doing this. Please tell us your first and last name. <svelte:component
+          this={ButtonUnderline}
+          on:click={() => {
+            goto('/me/my-account');
+          }}
+          label="Update them here"
+        />
+      </svelte:component>
     {/if}
-    {#if me}
-      <svelte:component this={ButtonBack} label="Interests" link="/me" />
+    {#if me.travellerMe}
       {#if !is_edit}
         <Box bind:is_edit title="My Interests" class="">
           {#each data as type}

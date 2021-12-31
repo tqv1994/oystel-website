@@ -8,6 +8,7 @@ import { Experience, experienceFieldsFragment } from '$lib/store/experience';
 import { Destination, destinationFieldsFragment } from '$lib/store/destination';
 import { Product, productFieldsFragment } from '$lib/store/product';
 import { countryFieldsFragment } from '$lib/store/country';
+import { User } from '$lib/store/auth';
 
 export type QueryLikeResult = {
     products: Product[];
@@ -15,14 +16,14 @@ export type QueryLikeResult = {
     experiences: Experience[];
 }
 const query = `
-query {
-  products {
+query ($productLikeIds: [ID], $experienceLikeIds: [ID], $destinationLikeIds: [ID]){
+  products (where: {id: $productLikeIds}) {
     ...productFields
   }
-  destinations{
+  destinations (where: {id: $destinationLikeIds}){
       ...destinationFields
   }
-  experiences{
+  experiences (where: {id: $experienceLikeIds}){
       ...experienceFields
   }
 }
@@ -40,13 +41,18 @@ ${countryFieldsFragment}
 export const get: RequestHandler = async (request: Request) => {
     try {
         const client = createGraphClientFromRequest(request);
-        const res = await client.query<QueryLikeResult>(query, request).toPromise();
+        let me: User = request.locals.user;
+        const res = await client.query<QueryLikeResult>(query,
+            {
+                productLikeIds: me?.productLikes.length > 0 ? me?.productLikes.map((item) => item.id) : null,
+                experienceLikeIds: me?.experienceLikes.length > 0 ? me?.experienceLikes.map(item => item.id) : null,
+                destinationLikeIds: me?.destinationLikes.length > 0 ? me?.destinationLikes.map(item => item.id) : null
+            }).toPromise();
         if (res.data) {
             return {
                 body: JSON.stringify(res.data),
             };
         }
-        console.log(res);
         if (res.error) {
             console.log(JSON.stringify(res.error, null, 2));
         }
