@@ -144,7 +144,7 @@
       background-color: #000;
     }
     .shop-slides {
-      height: 100%;
+      height: calc(90vh - 115px);
       width: 100%;
       position: relative;
       --wrap-width: 100%;

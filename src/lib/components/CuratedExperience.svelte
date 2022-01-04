@@ -77,7 +77,7 @@
       <div class="experiences--item featured">
         <div class="thumbnail dark">
           <a href={makeLink('/experience', hero)}>
-            <div class="image-cover" style="padding-top: calc(768/529 * 100%)">
+            <div class="image-cover" style="padding-top: calc(568/529 * 100%)">
               <BlurImage {...hero.gallery[0]} />
             </div>
           </a>

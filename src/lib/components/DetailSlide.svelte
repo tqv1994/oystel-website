@@ -110,7 +110,7 @@
   @use '../../theme/mixins';
   .data-detail-image {
     width: 100%;
-    height: 100%;
+    height: calc(90vh - 115px);
   }
   :global(.sc-carousel-dots__container) {
     position: absolute;

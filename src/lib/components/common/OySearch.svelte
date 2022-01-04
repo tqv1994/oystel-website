@@ -178,6 +178,9 @@
             &:active {
               background-color: #d9d8da;
             }
+            &:hover{
+              background-color: #DEDEDE;
+            }
           }
         }
         max-height: 200px;

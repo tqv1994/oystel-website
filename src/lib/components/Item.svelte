@@ -59,7 +59,7 @@
   <a href={makeLink(pathPrefix, item)}>
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, phone: 2 }}
-        ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
+        ><p class="text-eyebrow text-left m-0 mt-20 mb-17">
           {country?.name || ''}
         </p></Cell
       >

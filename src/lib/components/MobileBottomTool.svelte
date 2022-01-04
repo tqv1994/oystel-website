@@ -43,16 +43,5 @@
     }
   }
 </script>
-
-<SignupModal
-  bind:open={openSignupModal}
-  bind:authModel={userModel}
-  on:close={callOpenSigninModal}
-/>
-<SigninModal
-  bind:open={openSigninModal}
-  bind:authModel={userModel}
-  on:close={callOpenSignupModal}
-/>
 <BottomAppBar on:itemClick={itemClick} />
 <HeaderActionMobile bind:content />

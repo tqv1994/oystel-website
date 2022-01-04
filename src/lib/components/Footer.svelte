@@ -127,9 +127,6 @@
   </div>
 </footer>
 <style lang="scss" global>
-    footer{
-        @import './../../style/partial/form.scss';
-        @import './../../style/partial/footer.scss';
-    }
-    
+  @import './../../style/partial/footer.scss';
+  @import './../../style/partial/form.scss';
 </style>

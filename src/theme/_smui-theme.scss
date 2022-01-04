@@ -396,16 +396,9 @@ button.mdc-button, a.mdc-button {
 }
 
 @include mixins.dark {
-  *,
-  .mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input {
-    color: colors.$white !important;
-  }
-  .smui-text-field--standard:not(.mdc-text-field--disabled)
-    .mdc-line-ripple::before,
-  .smui-text-field--standard:not(.mdc-text-field--disabled):hover
-    .mdc-line-ripple::before {
-    border-bottom-color: #{colors.$white};
-  }
+  * {
+      color: colors.$white !important;
+    }
   .mdc-button {
     @include button.outline-color(colors.$white);
   }

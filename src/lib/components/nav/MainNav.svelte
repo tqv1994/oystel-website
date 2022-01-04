@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts">
   import { Section } from '@smui/top-app-bar';
   import { AutoAdjust } from '@smui/top-app-bar';
   import { Exhibitable } from '$lib/store/types';
@@ -34,9 +34,6 @@
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
   import SignupModal from '../modals/SignupModal.svelte';
   import OySearchModal from '../modals/OySearchModal.svelte';
-</script>
-
-<script lang="ts">
   export let items: MainNavItem[];
   export let active: MainNavItem | undefined = undefined;
 
@@ -175,7 +172,7 @@
   on:click|stopPropagation={() => {}}
   on:scroll|stopPropagation={() => {}}
 >
-  <TopAppBar bind:this={topAppBar} variant="fixed" {prominent}>
+  <TopAppBar bind:this={topAppBar} variant="fixed" class={`${active ? 'showing-top-app-bar' : ''}`} {prominent}>
     <Row class="top-app-bar__main-row">
       <Section class="logo d-pl-45 m-pl-24">
         <Title component={A} href="/">
@@ -189,7 +186,7 @@
           bind:active
           on:MDCTabBar:activated={onTabActivated}
         >
-          <Tab {tab} minWidth ripple={false} indicatorSpanOnlyContent>
+          <Tab {tab} minWidth active={false}>
             <Label>{tab.name}</Label>
           </Tab>
         </TabBar>
@@ -239,8 +236,9 @@
       transition:fly={{ y: -50 }}
       class="feature-bar--holder"
       use:clickOutside
-      on:hover_outside={() => {
+      on:click_outside={() => {
         onCloseSubTabActived();
+        console.log('click_outside');
       }}
     >
       <AutoAdjust {topAppBar} class="desktop feature-bar">

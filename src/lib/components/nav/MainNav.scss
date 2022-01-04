@@ -11,6 +11,13 @@
   position: fixed;
   z-index: 6;
   top: 0;
+  .plan{
+    &:hover{
+      background: #{colors.$white};
+      --mdc-theme-on-primary: #{colors.$black};
+      color: var(--mdc-theme-on-primary) !important;
+    }
+  }
 }
 .mdc-top-app-bar {
   --mdc-theme-primary: #{colors.$black};
@@ -232,4 +239,8 @@
   .mobile.actions {
     display: inline-flex;
   }
+}
+
+:global(header.mdc-top-app-bar.showing-top-app-bar){
+  background-color: #{colors.$black};
 }
