@@ -37,7 +37,7 @@
       {#if data.gallery.length > 0}
         <Carousel {...carouselConfig}>
           {#each data.gallery as item}
-            <div class="image-cover" style="padding-top: 0; height: 100%">
+            <div class="image-cover" style="padding-top: 0; height: calc(90vh - 155px)">
               <BlurImage {...item} />
             </div>
           {/each}
@@ -110,7 +110,7 @@
   @use '../../theme/mixins';
   .data-detail-image {
     width: 100%;
-    height: calc(90vh - 115px);
+    height: 100%;
   }
   :global(.sc-carousel-dots__container) {
     position: absolute;
