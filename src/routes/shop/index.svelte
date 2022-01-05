@@ -144,7 +144,7 @@
       background-color: #000;
     }
     .shop-slides {
-      height: calc(90vh - 115px);
+      height: 100%;
       width: 100%;
       position: relative;
       --wrap-width: 100%;
@@ -172,7 +172,7 @@
     .shop-slides .carousel,
     .shop-slides .slides,
     .shop-slides .slides div {
-      height: 90vh;
+      height: calc(90vh - 155px);
     }
     .shop-slides .slide-item {
       width: 100%;
