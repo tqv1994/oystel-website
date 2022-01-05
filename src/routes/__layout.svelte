@@ -58,11 +58,15 @@
     mainMenu[2].children = session.metadata?.feature?.experiences;
 
     var active: MainNavItem;
+    let isHomePage = false;
     for (const item of mainMenu) {
       if (page.path.startsWith(item.url)) {
         active = item;
         break;
       }
+    }
+    if(page.path === '/'){
+      isHomePage = true;
     }
 
     return {
@@ -70,6 +74,7 @@
         key: page.path,
         mainMenu,
         active,
+        isHomePage
       },
     };
   };
@@ -79,12 +84,18 @@
   import Footer from '$lib/components/Footer.svelte';
   import MainNav from '$lib/components/nav/MainNav.svelte';
   import MobileBottomTool from '$lib/components/MobileBottomTool.svelte';
-import { personalPreferenceTypeStore, travelPreferenceTypeStore } from '$lib/store/preference';
+  import { personalPreferenceTypeStore, travelPreferenceTypeStore } from '$lib/store/preference';
   export let active: MainNavItem | undefined;
+  export let isHomePage = false;
+  export let key: string;
+  let mainNavClass: string = '';
+  if(key == '/destination' || key == '/experience'){
+    mainNavClass = "bg-header-scroll-slightly_blue";
+  }
 </script>
 
 <div class="content-wrap">
-  <MainNav items={mainMenu} {active} />
+  <MainNav items={mainMenu} bind:active class={`${isHomePage ? 'header-transparent' : 'light'} ${mainNavClass}`} />
   <section>
     <slot />
   </section>

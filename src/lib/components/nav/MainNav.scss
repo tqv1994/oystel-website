@@ -29,6 +29,37 @@
 }
 .mdc-top-app-bar--fixed-scrolled {
   box-shadow: none;
+  .top-app-bar__main-row {
+    --mdc-theme-primary: #{colors.$black};
+  }
+}
+.bg-header-scroll-slightly_blue .mdc-top-app-bar--fixed-scrolled:not(.showing-top-app-bar){
+  .top-app-bar__main-row {
+    
+    svg{
+      filter: brightness(0.1);
+    }
+    *, a {
+      color: #{colors.$black};
+    }
+    @include button.outline-color(colors.$white);
+    --mdc-theme-primary: #{colors.$slightlyBlue};
+    .mdc-tab {
+      @include tab.ink-color(colors.$black);
+      @include tab.active-states-color(colors.$white);
+    }
+    .mdc-tab-indicator {
+      @include tab-indicator.underline-color(colors.$black);
+      @include tab-indicator.underline-height(0.2em);
+    }
+    .mdc-button {
+      @include button.ink-color(colors.$black);
+      color: #{colors.$black} !important;
+      &.plan{
+        @include button.outline-color(colors.$black);
+      }
+    }
+  }
 }
 .mdc-top-app-bar--prominent {
   .top-app-bar__main-row {
@@ -38,15 +69,9 @@
   }
 }
 .top-app-bar__main-row {
+  --mdc-theme-primary: #{colors.$slightlyBlue};
   transition: all linear 0.3s;
   background-color: var(--mdc-theme-primary);
-  background: linear-gradient(
-    180deg,
-    rgb(0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.9) 10%,
-    rgba(0, 0, 0, 0.2) 60%,
-    rgba(0, 0, 0, 0) 100%
-  );
   &::before {
     content: '';
     display: block;
@@ -95,6 +120,32 @@
     display: none;
   }
 }
+.header-transparent .top-app-bar__main-row{
+  background: linear-gradient(
+    180deg,
+    rgb(0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.9) 10%,
+    rgba(0, 0, 0, 0.2) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+@include mixins.light {
+  .top-app-bar__main-row{
+    .mdc-tab {
+      @include tab.ink-color(colors.$black);
+      @include tab.active-states-color(colors.$white);
+    }
+    .mdc-tab-indicator {
+      @include tab-indicator.underline-color(colors.$black);
+    }
+    .mdc-button.plan {
+      @include button.ink-color(colors.$black);
+      @include button.outline-color(colors.$black);
+    }
+  }
+}
+
+
 .feature-bar--holder {
   width: 100%;
   position: fixed;
@@ -241,6 +292,6 @@
   }
 }
 
-:global(header.mdc-top-app-bar.showing-top-app-bar){
-  background-color: #{colors.$black};
+header.mdc-top-app-bar.showing-top-app-bar .top-app-bar__main-row{
+  background-color: #{colors.$black} !important;
 }

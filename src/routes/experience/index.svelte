@@ -121,7 +121,7 @@
   export let country: Country | undefined;
   export let ordering: Ordering;
   let contentHeaderActionMobile: string = '';
-
+  let stickyShow: boolean = false;
   let configPage = {
     header: {
       page: 'experiences',
@@ -236,40 +236,38 @@
     }
   }
 
-  // function onScrollFixedHeader() {
-  //   let eleHiddenOnScrolls = document.querySelectorAll(
-  //     '.header-title .hidden-on-sticky',
-  //   );
-  //   if (
-  //     document.body.scrollTop > 450 ||
-  //     document.documentElement.scrollTop > 450
-  //   ) {
-  //     document.getElementById('header').classList.add('fixed');
-  //     document.querySelector('header').style.zIndex = 8;
-  //     document.querySelector('header').style.position = 'relative';
-  //     document.querySelector('.header-title.is_sticky').classList.add('show');
-  //   } else {
-  //     document.getElementById('header').classList.remove('fixed');
-  //     document.querySelector('header').style.zIndex = 'auto';
-  //     document.querySelector('header').style.position = 'relative';
-  //     document
-  //       .querySelector('.header-title.is_sticky')
-  //       .classList.remove('show');
-  //   }
-  // }
+  const onResize = (event: Event) => {
+    if (window.scrollY < 64) {
+      stickyShow = false;
+    } else {
+      stickyShow = false;
+    }
+  }
+
+  const adjustNav = () => {
+    if (window.scrollY < 64) {
+      stickyShow = false;
+    } else {
+      stickyShow = true;
+    }
+  }
+
+  const onScroll = (event: Event) => {
+    adjustNav();
+  }
+
+  function onStart(event: CustomEvent) {
+    adjustNav();
+  }
 </script>
 
-<!-- <svelte:window
-  on:load={() => {
-    onScrollFixedHeader();
-  }}
-  on:resize={() => {}}
-  on:scroll={() => {
-    onScrollFixedHeader();
-  }}
-/> -->
+<svelte:window
+  on:resize={onResize}
+  on:scroll={onScroll}
+  on:sveltekit:start={onStart}
+/>
 <div class="content experiences-listing-content">
-  <section class="header-title d-pt-130 d-pb-95 m-pt-80 m-pb-25 full-width">
+  <section class="header-title d-pt-150 d-pb-95 m-pt-80 m-pb-25 full-width">
     <div class="content-wrap">
       <div class="container m-none">
         <form
@@ -354,7 +352,7 @@
     </div>
   </section>
   <section
-    class="header-title d-pt-130 d-pb-60 m-pt-80 m-pb-25 full-width is_sticky fixed hidden"
+    class={`header-title d-pt-94 d-pb-60 m-pt-80 m-pb-25 full-width is_sticky fixed ${stickyShow ? 'show' : ''}`}
   >
     <div class="content-wrap">
       <div class="container m-none">
@@ -463,7 +461,8 @@
     .header-title {
       background-color: #f0f7f8;
     }
-    .header-title:global(.is_sticky) {
+    .header-title.is_sticky {
+      z-index: 4 !important;
       @include mixins.desktop {
         padding-bottom: 55px !important;
       }

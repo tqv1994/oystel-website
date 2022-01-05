@@ -20,7 +20,7 @@
   import { insertToStore } from '$lib/store/types';
   import { makeLink } from '$lib/utils/link';
   import { implodeString } from '$lib/utils/string';
-import { authStore, convertUserToInput } from '$lib/store/auth';
+  import { authStore, convertUserToInput } from '$lib/store/auth';
 
   export const load: Load = async ({ fetch, page }) => {
     const id = parseId(page.params.slug);
@@ -78,6 +78,7 @@ import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
   export let destinationOfType2: Destination[];
   export let destinationOfType3: Destination[];
   let advisor: Advisor | undefined;
+  let stickyShow = false;
   advisorStore.subscribe((store) => {
     advisor = store.items[id];
     if (!advisor) {
@@ -127,15 +128,36 @@ import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
       window.pushToast('You are not a member, so you cannot perform this action');
     }
   }
+
+  const onResize = (event: Event) => {
+    if (window.scrollY < 64) {
+      stickyShow = false;
+    } else {
+      stickyShow = false;
+    }
+  }
+
+  const adjustNav = () => {
+    if (window.scrollY < 64) {
+      stickyShow = false;
+    } else {
+      stickyShow = true;
+    }
+  }
+
+  const onScroll = (event: Event) => {
+    adjustNav();
+  }
+
+  function onStart(event: CustomEvent) {
+    adjustNav();
+  }
 </script>
 
 <svelte:window
-  on:load={() => {
-    onScrollFixedContactInfo();
-  }}
-  on:scroll={() => {
-    onScrollFixedContactInfo();
-  }}
+on:resize={onResize}
+on:scroll={onScroll}
+on:sveltekit:start={onStart}
 />
 {#if advisor}
   <div class="content d-mt-25 advisor-detail">
@@ -146,7 +168,7 @@ import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
       <div class="content-wrap m-none">
         <div class="container">
           <div
-            class="contact-info d-p-45 d-pt-80 d-pb-85 t-pt-80 t-pb-85 m-pt-30 m-pb-45"
+            class={`contact-info d-p-45 d-pt-80 d-pb-85 t-pt-80 t-pb-85 m-pt-30 m-pb-45 ${stickyShow ? 'fixed' : ''}`}
           >
             <IconButton class="btn-share d-none t-none m-block">
               <Icon component={Svg} viewBox="0 0 16.833 24.384">
@@ -547,8 +569,8 @@ import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
       transition: top 1s ease;
     }
     .contact-info.fixed {
-      top: 50% !important;
-      transform: translateY(-50%);
+      top: 40% !important;
+      transform: translateY(-40%);
     }
     .contact-info.fixed {
       margin-left: 0;

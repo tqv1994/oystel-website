@@ -45,10 +45,14 @@
   let scrollY: number = 0;
   export let signinModalOpen: boolean = false;
   export let signupModalOpen: boolean = false;
+  let classNames: string|undefined = undefined;
+  export {classNames as class};
   let openSearch: boolean = false;
+  let onMobile: boolean = false;
   function adjustNav() {
     if (window.innerWidth < 960) {
       prominent = false;
+      onMobile = true;
     } else {
       drawerOpen = false;
       if (window.scrollY < 64) {
@@ -66,6 +70,7 @@
       prominent = false;
     }
     if (window.innerWidth < 960) {
+      onMobile = true;
       prominent = false;
       activeSubItems = undefined;
     } else {
@@ -108,8 +113,9 @@
   }
 
   function onCloseSubTabActived() {
-    activeSubItems = [];
     active = undefined;
+    activeSubItems = [];
+    activeSubItem = undefined;
   }
 
   function showSubItemAt(index: number) {
@@ -167,12 +173,12 @@
 />
 
 <nav
-  class="top-app-bar--root"
+  class={`top-app-bar--root ${classNames ? ((!prominent && !onMobile) || activeSubItem ? classNames.replace('light','') : classNames) : classNames}`}
   class:drawer-open={drawerOpen}
   on:click|stopPropagation={() => {}}
   on:scroll|stopPropagation={() => {}}
 >
-  <TopAppBar bind:this={topAppBar} variant="fixed" class={`${active ? 'showing-top-app-bar' : ''}`} {prominent}>
+  <TopAppBar bind:this={topAppBar} variant="fixed" class={`${activeSubItem ? 'showing-top-app-bar' : ''}`} {prominent}>
     <Row class="top-app-bar__main-row">
       <Section class="logo d-pl-45 m-pl-24">
         <Title component={A} href="/">

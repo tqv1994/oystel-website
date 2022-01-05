@@ -120,6 +120,7 @@
   export let category: Category | undefined;
   export let country: Country | undefined;
   export let ordering: Ordering;
+  let stickyShow: boolean = false;
   let contentHeaderActionMobile: string = '';
 
   let configPage = {
@@ -236,12 +237,39 @@
       }
     }
   }
+  const onResize = (event: Event) => {
+    if (window.scrollY < 64) {
+      stickyShow = false;
+    } else {
+      stickyShow = false;
+    }
+  }
 
+  const adjustNav = () => {
+    if (window.scrollY < 64) {
+      stickyShow = false;
+    } else {
+      stickyShow = true;
+    }
+  }
+
+  const onScroll = (event: Event) => {
+    adjustNav();
+  }
+
+  function onStart(event: CustomEvent) {
+    adjustNav();
+  }
   
 </script>
+<svelte:window
+  on:resize={onResize}
+  on:scroll={onScroll}
+  on:sveltekit:start={onStart}
+/>
 
 <div class="content destinations-listing-content">
-  <section class="header-title d-pt-130 d-pb-95 m-pt-80 m-pb-25 full-width">
+  <section class="header-title d-pt-150 d-pb-95 m-pt-80 m-pb-25 full-width">
     <div class="content-wrap">
       <div class="container m-none">
         <form
@@ -328,7 +356,7 @@
     </div>
   </section>
   <section
-    class="header-title d-pt-130 d-pb-95 m-pt-80 m-pb-25 full-width fixed is_sticky"
+    class={`header-title d-pt-94 d-pb-95 m-pt-80 m-pb-25 full-width fixed is_sticky ${stickyShow ? 'show' : ''}`}
   >
     <div class="content-wrap">
       <div class="container m-none">
@@ -441,6 +469,7 @@
       @include mixins.desktop {
         padding-bottom: 55px !important;
       }
+      z-index: 4 !important;
     }
   }
 </style>
