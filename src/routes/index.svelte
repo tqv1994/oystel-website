@@ -13,10 +13,8 @@
   import { Cell } from '@smui/layout-grid';
   import Layout from '$lib/components/common/Layout.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import OyNotification from '$lib/components/common/OyNotification.svelte';
   import { Drop } from '$lib/store/drop';
   import { Experience } from '$lib/store/experience';
-  import OySearch from '$lib/components/common/OySearch.svelte';
   import { Destination } from '$lib/store/destination';
   import { routerHelper } from '$lib/helpers/router';
   import { dropStore } from '$lib/store/drop';
@@ -51,6 +49,8 @@
 </script>
 
 <script lang="ts">
+  import OySearch from '$lib/components/common/OySearch.svelte';
+  import OyNotification from '$lib/components/common/OyNotification.svelte';
   import NeverMissDrop from '$lib/components/NeverMissDrop.svelte';
   import Carousel from '$lib/components/Carousel.svelte';
   import FeatureDrops from '$lib/components/FeatureDrops.svelte';

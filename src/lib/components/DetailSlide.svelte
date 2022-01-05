@@ -37,7 +37,7 @@
       {#if data.gallery.length > 0}
         <Carousel {...carouselConfig}>
           {#each data.gallery as item}
-            <div class="image-cover" style="padding-top: 0; height: 90vh">
+            <div class="image-cover" style="padding-top: 0; height: 100%">
               <BlurImage {...item} />
             </div>
           {/each}
