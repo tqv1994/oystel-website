@@ -120,14 +120,19 @@
     display: none;
   }
 }
-.header-transparent .top-app-bar__main-row{
-  background: linear-gradient(
-    180deg,
-    rgb(0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.9) 10%,
-    rgba(0, 0, 0, 0.2) 60%,
-    rgba(0, 0, 0, 0) 100%
-  );
+.header-transparent{
+  .mdc-top-app-bar{
+    background-color: transparent;
+  }
+  .top-app-bar__main-row{
+    background: linear-gradient(
+      180deg,
+      rgb(0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.9) 10%,
+      rgba(0, 0, 0, 0.2) 60%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
 }
 @include mixins.light {
   .top-app-bar__main-row{

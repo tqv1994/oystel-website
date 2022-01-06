@@ -7,11 +7,11 @@
   import PlanTemplate from './PlanTemplate.svelte';
   import { UploadFile } from '$lib/store/upload-file';
 
-  export const load: Load<{ session: Locals }> = async ({ session, page }) => {
+  export const load: Load<{ session: Locals }> = async ({ session, url }) => {
     authStore.set({ user: session.user });
     return {
       props: {
-        key: page.path,
+        key: url.pathname,
       },
     };
   };
@@ -38,11 +38,7 @@
   };
 </script>
 
-<PlanTemplate
-  {image1}
-  {image2}
-  {image3}
->
+<PlanTemplate {image1} {image2} {image3}>
   <h1>The adventure begins..</h1>
   <p class="m-0 mb-55">
     Thank you for submitting your trip assessment. Your Oysteo Advisor will be

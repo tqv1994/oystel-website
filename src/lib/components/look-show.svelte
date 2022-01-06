@@ -13,8 +13,8 @@
   import { parseId } from '$lib/utils/fetch';
   import { Look } from '$lib/store/look';
 
-  export const load: Load = async ({ fetch, page }) => {
-    const id = parseId(page.params.slug);
+  export const load: Load = async ({ fetch, params }) => {
+    const id = parseId(params.slug);
     if (get(destinationStore).items[id]) {
       return {
         props: { id },

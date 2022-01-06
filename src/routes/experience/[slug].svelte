@@ -28,8 +28,8 @@
   import Item from '$lib/components/Item.svelte';
   import Carousel from '$lib/components/Carousel.svelte';
 
-  export const load: Load = async ({ fetch, session, page }) => {
-    const id = parseId(page.params.slug);
+  export const load: Load = async ({ fetch, session, params }) => {
+    const id = parseId(params.slug);
 
     const res = await fetch(`/experience/${id}.json`);
     if (res.ok) {

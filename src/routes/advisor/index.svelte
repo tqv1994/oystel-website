@@ -9,7 +9,7 @@
   import Textfield from '@smui/textfield';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import {Icon} from '@smui/icon-button';
+  import { Icon } from '@smui/icon-button';
   import DataTable, {
     Head,
     Body,
@@ -60,9 +60,9 @@
     language3: string;
   };
 
-  export const load: Load = async ({ fetch, page }) => {
-    page.query.set(LIMIT, '20');
-    const res = await fetch(`/advisor.json?${page.query.toString()}`);
+  export const load: Load = async ({ fetch, url }) => {
+    url.searchParams.set(LIMIT, '20');
+    const res = await fetch(`/advisor.json?${url.searchParams.toString()}`);
     if (res.ok) {
       const searchData: SearchResultGroup<SearchResultItem> = await res.json();
       const destinationTypes = get(destinationTypeStore);
@@ -108,16 +108,19 @@
       return {
         props: {
           advisors: { hasMore: searchData.hasMore, items },
-          query: page.query.get(QUERY) || '',
+          query: url.searchParams.get(QUERY) || '',
           experienceType:
-            experienceTypes.items[page.query.get(EXPERIENCE_TYPE) || ''],
+            experienceTypes.items[url.searchParams.get(EXPERIENCE_TYPE) || ''],
           destinationType:
-            destinationTypes.items[page.query.get(DESTINATION_TYPE) || ''],
-          type: advisorTypes.items[page.query.get(TYPE) || ''],
-          language: languages.items[page.query.get(LANGUAGE) || ''],
-          country: countries.items[page.query.get(COUNTRY) || ''],
+            destinationTypes.items[
+              url.searchParams.get(DESTINATION_TYPE) || ''
+            ],
+          type: advisorTypes.items[url.searchParams.get(TYPE) || ''],
+          language: languages.items[url.searchParams.get(LANGUAGE) || ''],
+          country: countries.items[url.searchParams.get(COUNTRY) || ''],
           ordering:
-            orderings[page.query.get(ORDERING) || ''] || ORDER_BY_NAME_ASC,
+            orderings[url.searchParams.get(ORDERING) || ''] ||
+            ORDER_BY_NAME_ASC,
         },
       };
     }

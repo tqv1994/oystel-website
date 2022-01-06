@@ -29,7 +29,7 @@
     { name: 'Shop', url: '/shop' },
   ];
 
-  export const load: Load<{ session: Locals }> = async ({ session, page }) => {
+  export const load: Load<{ session: Locals }> = async ({ session, url }) => {
     insertToStore(
       destinationTypeStore,
       session.metadata?.destinationTypes,
@@ -44,8 +44,16 @@
     insertToStore(countryStore, session.metadata?.countries, false);
     insertToStore(languageStore, session.metadata?.languages, false);
     insertToStore(interestTypeStore, session.metadata?.interestTypes, false);
-    insertToStore(travelPreferenceTypeStore, session.metadata?.travelPreferenceTypes, false);
-    insertToStore(personalPreferenceTypeStore, session.metadata?.personalPreferenceTypes, false);
+    insertToStore(
+      travelPreferenceTypeStore,
+      session.metadata?.travelPreferenceTypes,
+      false,
+    );
+    insertToStore(
+      personalPreferenceTypeStore,
+      session.metadata?.personalPreferenceTypes,
+      false,
+    );
     insertToStore(
       salutationTypeStore,
       session.metadata?.salutationTypes,
@@ -56,25 +64,29 @@
     mainMenu[0].children = session.metadata?.feature?.advisors;
     mainMenu[1].children = session.metadata?.feature?.destinations;
     mainMenu[2].children = session.metadata?.feature?.experiences;
+    mainMenu[4].children = [
+      // {name: 'Limited Drops', url: '/shop/fashion-drops', description: 'Fashion Collection',gallery: [{url: '/img/slides/shop-slide-2.jpg'}]},
+      {name: 'Curated Looks', url: '/shop/curated-looks-listing', description: 'Fashion Collection',gallery: [{url: '/img/shop/shop-thumbnail.jpg'}]},
+    ]
 
     var active: MainNavItem;
     let isHomePage = false;
     for (const item of mainMenu) {
-      if (page.path.startsWith(item.url)) {
+      if (url.pathname.startsWith(item.url)) {
         active = item;
         break;
       }
     }
-    if(page.path === '/'){
+    if (url.pathname === '/') {
       isHomePage = true;
     }
 
     return {
       props: {
-        key: page.path,
+        key: url.pathname,
         mainMenu,
         active,
-        isHomePage
+        isHomePage,
       },
     };
   };
@@ -84,18 +96,25 @@
   import Footer from '$lib/components/Footer.svelte';
   import MainNav from '$lib/components/nav/MainNav.svelte';
   import MobileBottomTool from '$lib/components/MobileBottomTool.svelte';
-  import { personalPreferenceTypeStore, travelPreferenceTypeStore } from '$lib/store/preference';
+  import {
+    personalPreferenceTypeStore,
+    travelPreferenceTypeStore,
+  } from '$lib/store/preference';
   export let active: MainNavItem | undefined;
   export let isHomePage = false;
   export let key: string;
   let mainNavClass: string = '';
-  if(key == '/destination' || key == '/experience'){
-    mainNavClass = "bg-header-scroll-slightly_blue";
+  if (key == '/destination' || key == '/experience') {
+    mainNavClass = 'bg-header-scroll-slightly_blue';
   }
 </script>
 
 <div class="content-wrap">
-  <MainNav items={mainMenu} bind:active class={`${isHomePage ? 'header-transparent' : 'light'} ${mainNavClass}`} />
+  <MainNav
+    items={mainMenu}
+    bind:active
+    class={`${isHomePage ? 'header-transparent' : 'light'} ${mainNavClass}`}
+  />
   <section>
     <slot />
   </section>

@@ -6,7 +6,7 @@
   import Textfield from '@smui/textfield';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import {Icon} from '@smui/icon-button';
+  import { Icon } from '@smui/icon-button';
   import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import { Nameable } from '$lib/store/types';
@@ -56,9 +56,9 @@
 
   type DestinationGroups = Rec<SearchResultGroup<Destination>>;
 
-  export const load: Load = async ({ fetch, session, page }) => {
-    page.query.set(LIMIT, page.query.get(TYPE) ? '20' : '3');
-    const res = await fetch(`/destination.json?${page.query.toString()}`);
+  export const load: Load = async ({ fetch, session, url }) => {
+    url.searchParams.set(LIMIT, url.searchParams.get(TYPE) ? '20' : '3');
+    const res = await fetch(`/destination.json?${url.searchParams.toString()}`);
     if (res.ok) {
       const searchData: Record<
         string,
@@ -103,11 +103,14 @@
       return {
         props: {
           destinations,
-          query: page.query.get(QUERY) || '',
-          type: get(destinationTypeStore).items[page.query.get(TYPE) || ''],
-          country: get(countryStore).items[page.query.get(COUNTRY) || ''],
+          query: url.searchParams.get(QUERY) || '',
+          type: get(destinationTypeStore).items[
+            url.searchParams.get(TYPE) || ''
+          ],
+          country: get(countryStore).items[url.searchParams.get(COUNTRY) || ''],
           ordering:
-            orderings[page.query.get(ORDERING) || ''] || ORDER_BY_NAME_ASC,
+            orderings[url.searchParams.get(ORDERING) || ''] ||
+            ORDER_BY_NAME_ASC,
         },
       };
     }
@@ -243,7 +246,7 @@
     } else {
       stickyShow = false;
     }
-  }
+  };
 
   const adjustNav = () => {
     if (window.scrollY < 64) {
@@ -251,17 +254,17 @@
     } else {
       stickyShow = true;
     }
-  }
+  };
 
   const onScroll = (event: Event) => {
     adjustNav();
-  }
+  };
 
   function onStart(event: CustomEvent) {
     adjustNav();
   }
-  
 </script>
+
 <svelte:window
   on:resize={onResize}
   on:scroll={onScroll}
@@ -356,7 +359,9 @@
     </div>
   </section>
   <section
-    class={`header-title d-pt-94 d-pb-95 m-pt-80 m-pb-25 full-width fixed is_sticky ${stickyShow ? 'show' : ''}`}
+    class={`header-title d-pt-94 d-pb-95 m-pt-80 m-pb-25 full-width fixed is_sticky ${
+      stickyShow ? 'show' : ''
+    }`}
   >
     <div class="content-wrap">
       <div class="container m-none">

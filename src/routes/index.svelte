@@ -1,33 +1,20 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import { onMount } from 'svelte';
   import { destinationStore } from '$lib/store/destination';
-  import { documentHelper, storeHelper } from '$lib/helpers';
-  import OyCarousel from '$lib/components/common/OyCarousel.svelte';
-  import { Svg } from '@smui/common/elements';
-  import IconButton from '@smui/icon-button';
-  import Button from '@smui/button';
-  import { Label } from '@smui/common';
-  import { Icon } from '@smui/common';
+  import { storeHelper } from '$lib/helpers';
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  import Layout from '$lib/components/common/Layout.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import { Drop } from '$lib/store/drop';
   import { Experience } from '$lib/store/experience';
   import { Destination } from '$lib/store/destination';
-  import { routerHelper } from '$lib/helpers/router';
-  import { dropStore } from '$lib/store/drop';
   import { experienceStore } from '$lib/store/experience';
-  import { getItems, insertToStore } from '$lib/store/types';
-  import { makeLink } from '$lib/utils/link';
+  import { getItems } from '$lib/store/types';
   import { HomePageData } from './home/index.json';
   import { authStore, User } from '$lib/store/auth';
-  import { responsePathAsArray } from 'graphql';
   import { ExperienceLikeData } from './experience/like.json';
   import { DestinationLikeData } from './destination/like.json';
   import Item from '$lib/components/Item.svelte';
-  export const load: Load = async ({ fetch, session, page }) => {
+  export const load: Load = async ({ fetch }) => {
     const res = await fetch(`/home.json?_z=${Date.now()}`);
     if (res.ok) {
       const data: HomePageData = await res.json();
@@ -208,7 +195,7 @@
     </div>
   </section>
 
-  {#each data.page.sections as section,index}
+  {#each data.page.sections as section, index}
     {#if section.__typename === 'ComponentGalleriesDropGallery'}
       <section class="has-padding m-pt-40 m-pb-70" id="featured-drops">
         <FeatureDrops {...section} />
@@ -228,11 +215,9 @@
                 <Item
                   {item}
                   {...item}
-                  liked={me ? contains(
-                    me.destinationLikes || [],
-                    'id',
-                    item.id,
-                  ): false}
+                  liked={me
+                    ? contains(me.destinationLikes || [], 'id', item.id)
+                    : false}
                   pathPrefix="/destination"
                   on:likeItem={likeDestination}
                 />
@@ -242,11 +227,13 @@
         {/if}
       </section>
     {:else if section.__typename === 'ComponentGalleriesExperienceGallery'}
-      <section class="has-padding m-pt-48 m-pb-15 experiences experiences-{index}">
+      <section
+        class="has-padding m-pt-48 m-pb-15 experiences experiences-{index}"
+      >
         <div class="container">
           <p class="text-h1 mt-0 d-mb-35 m-mb-15">{section.name}</p>
         </div>
-        <CuratedExperience {...section} on:likeItem={likeExperience} {index}/>
+        <CuratedExperience {...section} on:likeItem={likeExperience} {index} />
       </section>
     {:else if section.__typename === 'ComponentBannersBanner'}
       <section

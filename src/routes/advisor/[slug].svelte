@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
   import type { Load } from '@sveltejs/kit';
-  import { onMount, afterUpdate, beforeUpdate } from 'svelte';
+  import { onMount } from 'svelte';
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
   import Button from '@smui/button';
@@ -8,22 +8,18 @@
   import IconButton from '@smui/icon-button';
   import { Icon } from '@smui/common';
   import { Svg } from '@smui/common/elements';
-  import { documentHelper, stringHelper } from '$lib/helpers';
-  import Layout from '$lib/components/common/Layout.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { Advisor } from '$lib/store/advisor';
   import { advisorStore } from '$lib/store/advisor';
   import { Destination } from '$lib/store/destination';
-  import { Experience } from '$lib/store/experience';
   import { parseId } from '$lib/utils/fetch';
-  import { get } from 'svelte/store';
   import { insertToStore } from '$lib/store/types';
   import { makeLink } from '$lib/utils/link';
   import { implodeString } from '$lib/utils/string';
   import { authStore, convertUserToInput } from '$lib/store/auth';
 
-  export const load: Load = async ({ fetch, page }) => {
-    const id = parseId(page.params.slug);
+  export const load: Load = async ({ fetch, params }) => {
+    const id = parseId(params.slug);
     const res = await fetch(`/advisor/${id}.json`);
     if (res.ok) {
       const data: Advisor = await res.json();
@@ -60,10 +56,10 @@
 </script>
 
 <script lang="ts">
-import OyNotification from "$lib/components/common/OyNotification.svelte";
-import { updateUserService } from '$lib/services/user.service';
-import { createTripService } from '$lib/services/trip.service';
-import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
+  import OyNotification from '$lib/components/common/OyNotification.svelte';
+  import { updateUserService } from '$lib/services/user.service';
+  import { createTripService } from '$lib/services/trip.service';
+  import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
 
   let configPage = {
     header: {
@@ -105,29 +101,45 @@ import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
     // }
   }
 
-  const onContactAdvisor = async() => {
+  const onContactAdvisor = async () => {
     const user = $authStore.user;
-    if(user){
-      if(!user.myAdvisors || (user.myAdvisors && !user.myAdvisors.find((item)=>item.id === advisor.id))){
-        if(user){
+    if (user) {
+      if (
+        !user.myAdvisors ||
+        (user.myAdvisors &&
+          !user.myAdvisors.find((item) => item.id === advisor.id))
+      ) {
+        if (user) {
           const userInput = convertUserToInput(user);
           userInput.myAdvisors.push(advisor.id);
-          await updateUserService({...userInput}).then((output)=>{
-            authStore.set({user: {...user, myAdvisors: output.myAdvisors}});
+          await updateUserService({ ...userInput }).then((output) => {
+            authStore.set({ user: { ...user, myAdvisors: output.myAdvisors } });
           });
         }
       }
-      if(user.travellerMe){
-        await createTripService(new TripInput({advisor: advisor.id, lead_traveller: user.travellerMe.id,state: ENUM_TRIP_STATE.enquired})).then((trip)=>{
-          window.pushToast('Thank you for contacting our advisor. We will contact you as soon as possible');    
+      if (user.travellerMe) {
+        await createTripService(
+          new TripInput({
+            advisor: advisor.id,
+            lead_traveller: user.travellerMe.id,
+            state: ENUM_TRIP_STATE.enquired,
+          }),
+        ).then((trip) => {
+          window.pushToast(
+            'Thank you for contacting our advisor. We will contact you as soon as possible',
+          );
         });
-      }else{
-        window.pushToast('Please update your personal information before taking this action');
+      } else {
+        window.pushToast(
+          'Please update your personal information before taking this action',
+        );
       }
-    }else{
-      window.pushToast('You are not a member, so you cannot perform this action');
+    } else {
+      window.pushToast(
+        'You are not a member, so you cannot perform this action',
+      );
     }
-  }
+  };
 
   const onResize = (event: Event) => {
     if (window.scrollY < 64) {
@@ -135,7 +147,7 @@ import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
     } else {
       stickyShow = false;
     }
-  }
+  };
 
   const adjustNav = () => {
     if (window.scrollY < 64) {
@@ -143,11 +155,11 @@ import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
     } else {
       stickyShow = true;
     }
-  }
+  };
 
   const onScroll = (event: Event) => {
     adjustNav();
-  }
+  };
 
   function onStart(event: CustomEvent) {
     adjustNav();
@@ -155,9 +167,9 @@ import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
 </script>
 
 <svelte:window
-on:resize={onResize}
-on:scroll={onScroll}
-on:sveltekit:start={onStart}
+  on:resize={onResize}
+  on:scroll={onScroll}
+  on:sveltekit:start={onStart}
 />
 {#if advisor}
   <div class="content d-mt-25 advisor-detail">
@@ -168,7 +180,9 @@ on:sveltekit:start={onStart}
       <div class="content-wrap m-none">
         <div class="container">
           <div
-            class={`contact-info d-p-45 d-pt-80 d-pb-85 t-pt-80 t-pb-85 m-pt-30 m-pb-45 ${stickyShow ? 'fixed' : ''}`}
+            class={`contact-info d-p-45 d-pt-80 d-pb-85 t-pt-80 t-pb-85 m-pt-30 m-pb-45 ${
+              stickyShow ? 'fixed' : ''
+            }`}
           >
             <IconButton class="btn-share d-none t-none m-block">
               <Icon component={Svg} viewBox="0 0 16.833 24.384">
@@ -274,8 +288,10 @@ on:sveltekit:start={onStart}
             <h4 class="mt-0 d-mb-55 m-mb-40">
               Advisor | {advisor.country?.name || ''}
             </h4>
-            <Button variant="outlined" class="hover-affect" on:click={onContactAdvisor}
-              ><Label>Contact Me</Label></Button
+            <Button
+              variant="outlined"
+              class="hover-affect"
+              on:click={onContactAdvisor}><Label>Contact Me</Label></Button
             >
           </div>
         </div>
@@ -391,8 +407,10 @@ on:sveltekit:start={onStart}
             <h4 class="mt-0 d-mb-55 m-mb-40">
               Advisor | {advisor.address ? advisor.address.line1 : ''}
             </h4>
-            <Button variant="outlined" class="hover-affect" on:click={onContactAdvisor}
-              ><Label>Contact Me</Label></Button
+            <Button
+              variant="outlined"
+              class="hover-affect"
+              on:click={onContactAdvisor}><Label>Contact Me</Label></Button
             >
           </div>
         </div>
@@ -542,7 +560,8 @@ on:sveltekit:start={onStart}
     </section>
   </div>
 {/if}
-<OyNotification/>
+<OyNotification />
+
 <style lang="scss" global>
   @use '../../theme/mixins';
   .advisor-detail {

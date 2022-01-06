@@ -30,7 +30,7 @@
     { name: 'Shop', url: '/shop' },
   ];
 
-  export const load: Load<{ session: Locals }> = async ({ session, page }) => {
+  export const load: Load<{ session: Locals }> = async ({ session, url }) => {
     insertToStore(
       destinationTypeStore,
       session.metadata?.destinationTypes,
@@ -52,7 +52,7 @@
 
     var active: MainNavItem;
     for (const item of mainMenu) {
-      if (page.path.startsWith(item.url)) {
+      if (url.pathname.startsWith(item.url)) {
         active = item;
         break;
       }
@@ -60,7 +60,7 @@
 
     return {
       props: {
-        key: page.path,
+        key: url.pathname,
         mainMenu,
         active,
       },

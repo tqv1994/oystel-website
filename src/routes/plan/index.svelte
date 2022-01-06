@@ -30,7 +30,7 @@
   import { goto } from '$app/navigation';
   import { UploadFile } from '$lib/store/upload-file';
 
-  export const load: Load<{ session: Locals }> = async ({ session, page }) => {
+  export const load: Load<{ session: Locals }> = async ({ session, url }) => {
     insertToStore(
       destinationTypeStore,
       session.metadata?.destinationTypes,
@@ -44,7 +44,7 @@
     authStore.set({ user: session.user });
     return {
       props: {
-        key: page.path,
+        key: url.pathname,
       },
     };
   };

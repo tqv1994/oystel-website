@@ -3,13 +3,13 @@
   import { Locals } from '$lib/store/locals';
 
   export const load: ErrorLoad<{ session: Locals }> = async ({
-    page,
+    url,
     error,
     status,
   }) => {
     return {
       props: {
-        path: page.path,
+        path: url.pathname,
         error,
         status,
       },

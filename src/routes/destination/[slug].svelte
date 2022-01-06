@@ -24,8 +24,8 @@
   import LookShow from '$lib/components/look-show.svelte';
   import Item from '$lib/components/Item.svelte';
 
-  export const load: Load = async ({ fetch, session, page }) => {
-    const id = parseId(page.params.slug);
+  export const load: Load = async ({ fetch, session, params }) => {
+    const id = parseId(params.slug);
     // if (get(destinationStore).items[id]) {
     //   return {
     //     props: { id },

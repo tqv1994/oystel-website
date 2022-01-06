@@ -145,7 +145,7 @@ let metadata: Metadata;
 
 /** @type {import('@sveltejs/kit').Handle} */
 export const handle: Handle<Locals> = async ({ request, resolve }) => {
-  console.log('Handling', request.path, request.query.toString(), ++counter);
+  console.log('Handling', request.url.pathname, request.url.searchParams.toString(), ++counter);
 
   if (metadata) {
     request.locals.metadata = metadata;
@@ -190,7 +190,7 @@ export const handle: Handle<Locals> = async ({ request, resolve }) => {
   }
 
   try {
-    console.log('Resuming request...', request.path, counter);
+    console.log('Resuming request...', request.url.pathname, counter);
     const response = await resolve(request);
 
     return {
@@ -204,7 +204,7 @@ export const handle: Handle<Locals> = async ({ request, resolve }) => {
     return makeErrorResponse(
       500,
       'INTERNAL_SERVER_ERROR',
-      `There was an error loading ${request.path}: ${err.message}`,
+      `There was an error loading ${request.url.pathname}: ${err.message}`,
     );
   }
 };

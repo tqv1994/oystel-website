@@ -6,7 +6,7 @@
   import Textfield from '@smui/textfield';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import {Icon} from '@smui/icon-button';
+  import { Icon } from '@smui/icon-button';
   import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import { Nameable } from '$lib/store/types';
@@ -57,9 +57,9 @@
 
   type ExperienceGroups = Rec<SearchResultGroup<Experience>>;
 
-  export const load: Load = async ({ fetch, session, page }) => {
-    page.query.set(LIMIT, page.query.get(TYPE) ? '20' : '3');
-    const res = await fetch(`/experience.json?${page.query.toString()}`);
+  export const load: Load = async ({ fetch, session, url }) => {
+    url.searchParams.set(LIMIT, url.searchParams.get(TYPE) ? '20' : '3');
+    const res = await fetch(`/experience.json?${url.searchParams.toString()}`);
     if (res.ok) {
       const searchData: Record<
         string,
@@ -103,11 +103,12 @@
       return {
         props: {
           experiences,
-          query: page.query.get(QUERY) || '',
-          type: get(experienceStore).items[page.query.get(TYPE) || ''],
-          country: get(countryStore).items[page.query.get(COUNTRY) || ''],
+          query: url.searchParams.get(QUERY) || '',
+          type: get(experienceStore).items[url.searchParams.get(TYPE) || ''],
+          country: get(countryStore).items[url.searchParams.get(COUNTRY) || ''],
           ordering:
-            orderings[page.query.get(ORDERING) || ''] || ORDER_BY_NAME_ASC,
+            orderings[url.searchParams.get(ORDERING) || ''] ||
+            ORDER_BY_NAME_ASC,
         },
       };
     }
@@ -242,7 +243,7 @@
     } else {
       stickyShow = false;
     }
-  }
+  };
 
   const adjustNav = () => {
     if (window.scrollY < 64) {
@@ -250,11 +251,11 @@
     } else {
       stickyShow = true;
     }
-  }
+  };
 
   const onScroll = (event: Event) => {
     adjustNav();
-  }
+  };
 
   function onStart(event: CustomEvent) {
     adjustNav();
@@ -352,7 +353,9 @@
     </div>
   </section>
   <section
-    class={`header-title d-pt-94 d-pb-60 m-pt-80 m-pb-25 full-width is_sticky fixed ${stickyShow ? 'show' : ''}`}
+    class={`header-title d-pt-94 d-pb-60 m-pt-80 m-pb-25 full-width is_sticky fixed ${
+      stickyShow ? 'show' : ''
+    }`}
   >
     <div class="content-wrap">
       <div class="container m-none">

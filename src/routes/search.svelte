@@ -69,15 +69,15 @@
     ORDER_BY_PUBLISH_DATE_ASC,
     ORDER_BY_PUBLISH_DATE_DESC,
   ];
-  export const load: Load = async ({ fetch, session, page }) => {
-    page.query.set(LIMIT, '10');
+  export const load: Load = async ({ fetch, session, url }) => {
+    url.searchParams.set(LIMIT, '10');
     const searchResultExperience: Experience[] = [];
     const searchResultDestination: Destination[] = [];
     const countries = get(countryStore);
     const experienceTypes = get(experienceTypeStore);
     const destinationTypes = get(destinationTypeStore);
     const resExperience = await fetch(
-      `/experience/search.json?${page.query.toString()}`,
+      `/experience/search.json?${url.searchParams.toString()}`,
     );
     if (resExperience.ok) {
       const searchDataExperience: SearchResultGroup<ExperienceSearchResultItem> =
@@ -106,7 +106,7 @@
     }
 
     const resDestination = await fetch(
-      `/destination/search.json?${page.query.toString()}`,
+      `/destination/search.json?${url.searchParams.toString()}`,
     );
     if (resDestination.ok) {
       const searchDataDestination: SearchResultGroup<DestinationSearchResultItem> =
@@ -140,16 +140,18 @@
       props: {
         searchResultExperience,
         searchResultDestination,
-        query: page.query.get(QUERY) || '',
+        query: url.searchParams.get(QUERY) || '',
         experience_type:
-          get(experienceTypeStore).items[page.query.get(EXPERIENCE_TYPE) || ''],
+          get(experienceTypeStore).items[
+            url.searchParams.get(EXPERIENCE_TYPE) || ''
+          ],
         destination_type:
           get(destinationTypeStore).items[
-            page.query.get(DESTINATION_TYPE) || ''
+            url.searchParams.get(DESTINATION_TYPE) || ''
           ],
-        country: get(countryStore).items[page.query.get(COUNTRY) || ''],
+        country: get(countryStore).items[url.searchParams.get(COUNTRY) || ''],
         ordering:
-          orderings[page.query.get(ORDERING) || ''] || ORDER_BY_NAME_ASC,
+          orderings[url.searchParams.get(ORDERING) || ''] || ORDER_BY_NAME_ASC,
       },
     };
   };

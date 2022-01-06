@@ -23,7 +23,7 @@
   import { fly } from 'svelte/transition';
   import { makeLink } from '$lib/utils/link';
   import BlurImage from '../blur-image.svelte';
-  import { MainNavItem } from './types';
+  import { MainNavItem, SubNavItem } from './types';
   import List from '@smui/list';
   import { Item } from '@smui/list';
   import { Graphic } from '@smui/list';
@@ -39,9 +39,9 @@
 
   let topAppBar: typeof TopAppBar;
   let drawerOpen: boolean = false;
-  let activeSubItem: Exhibitable | undefined = undefined;
+  let activeSubItem: Exhibitable | SubNavItem | undefined = undefined;
   let prominent: boolean = false;
-  let activeSubItems: Exhibitable[] | undefined;
+  let activeSubItems: Exhibitable[] | SubNavItem[] | undefined;
   let scrollY: number = 0;
   export let signinModalOpen: boolean = false;
   export let signupModalOpen: boolean = false;
@@ -244,7 +244,6 @@
       use:clickOutside
       on:click_outside={() => {
         onCloseSubTabActived();
-        console.log('click_outside');
       }}
     >
       <AutoAdjust {topAppBar} class="desktop feature-bar">
@@ -277,7 +276,7 @@
               <H2>{activeSubItem.name}</H2>
               <Button
                 variant="outlined"
-                href={makeLink(active?.url || '/', activeSubItem)}
+                href={activeSubItem.id ? makeLink(active?.url || '/', activeSubItem) : activeSubItem.url}
                 >Explore now</Button
               >
             </Section>

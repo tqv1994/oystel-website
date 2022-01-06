@@ -14,8 +14,8 @@
   import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
   import { createEventDispatcher } from 'svelte';
 
-  export const load: Load = async ({ fetch, page }) => {
-    const id = parseId(page.params.slug);
+  export const load: Load = async ({ fetch, params }) => {
+    const id = parseId(params.slug);
     if (get(destinationStore).items[id]) {
       return {
         props: { id },
