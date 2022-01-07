@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  export const load: Load = async ({ fetch, session, page }) => {
+  export const load: Load = async ({ fetch, session, url }) => {
     let me: User | undefined;
     authStore.subscribe(async ({ user }) => {
       me = user;

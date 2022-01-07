@@ -100,7 +100,7 @@ export function createSearchHandler<T extends Identifiable>(
 
   return async (request: Request) => {
     try {
-      const params = parseSearchParams(request.query);
+      const params = parseSearchParams(request.url.searchParams);
       const result: Rec<SearchResultGroup<T>> = {};
       if (params[TYPE]) {
         result[params[TYPE] as string] = await searchContent<T>(params);

@@ -10,12 +10,12 @@
 
 <div class={`${classNames}`}>
   <LayoutGrid class="p-0 pb-15">
-    <Cell spanDevices={{ desktop: column_1, phone: 2, tablet: 4 }}
+    <Cell class="label" spanDevices={{ desktop: column_1, phone: 1, tablet: 2 }}
       ><svelte:component this={Text} class="mt-0 mb-0 font-weight-bold"
         >{label}</svelte:component
       ></Cell
     >
-    <Cell spanDevices={{ desktop: column_2, phone: 2, tablet: 4 }}
+    <Cell class="value" spanDevices={{ desktop: column_2, phone: 3, tablet: 6 }}
       ><slot /></Cell
     >
   </LayoutGrid>
@@ -30,6 +30,17 @@
     --mdc-typography-body1-font-size: 14px;
     @include mixins.mobile {
       --mdc-typography-body1-font-size: 12px;
+    }
+  }
+  @include mixins.mobile{
+    :global(.form){
+      :global(.label.mdc-layout-grid__cell--span-2), :global(.label.mdc-layout-grid__cell--span-2-tablet),
+      :global(.value.mdc-layout-grid__cell--span-6-tablet){
+        grid-column-end: span 8;
+      }
+      :global(.mdc-layout-grid__inner){
+        margin-bottom: 10px;
+      }
     }
   }
 </style>

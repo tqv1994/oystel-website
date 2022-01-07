@@ -3,6 +3,7 @@
   import Textfield from '@smui/textfield';
   import Field from '../components/Field.svelte';
   import Select, { Option } from '@smui/select';
+  import Autocomplete from '@smui-extra/autocomplete';
   import BlurImage from '$lib/components/blur-image.svelte';
   import { authStore, User } from '$lib/store/auth';
   import Button from '@smui/button';
@@ -12,7 +13,7 @@
   import { salutationTypeStore } from '$lib/store/salutation-type';
   import { get } from 'svelte/store';
   import { updateTravellerData } from '../../traveller/update-me.json';
-  import { countryStore } from '$lib/store/country';
+  import { Country, countryStore } from '$lib/store/country';
   import {
     convertTravellerToInput,
     Traveller,
@@ -25,10 +26,13 @@
   import { createTravellerData } from '../../traveller/create.json';
   import { cmsUrlPrefix } from '$lib/env';
   import { UploadFile } from '$lib/store/upload-file';
+  import { sortByName } from '$lib/utils/sort';
+import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
   export let me: User;
   const travellerMe: Traveller = me.travellerMe;
   const salutationTypes = Object.values(get(salutationTypeStore).items);
-  const countries = Object.values(get(countryStore).items);
+  const countries = sortByName(Object.values(get(countryStore).items));
   let travellerInput: TravellerInput;
   let name: string;
   let phone_code: string;
@@ -44,16 +48,19 @@
   onMount(async () => {
     if (me.travellerMe) {
       travellerInput = convertTravellerToInput(travellerMe);
+      travellerInput.email = travellerInput.email || (me?.email || '');
       me.travellerMe = travellerMe;
       phone_code =
         travellerInput?.mobilePhone?.match(createPatternPhoneCode(countries)) +
         '';
+      phone_code = phone_code.replace("+","");
       name = travellerInput.forename + ' ' + travellerInput.surname;
       travellerInput.mobilePhone =
-        travellerInput.mobilePhone?.replace(phone_code, '') || '';
+        travellerInput.mobilePhone?.replace("+"+phone_code, '') || '';
     } else {
       travellerInput = new TravellerInput();
       name = '';
+      travellerInput.email = me?.email || '';
       travellerInput.mobilePhone = '';
       travellerInput.birthday = '';
       travellerInput.nationality = '';
@@ -82,7 +89,7 @@
           ...travellerInput,
           forename: name.split(' ')[0],
           surname: name.split(' ')[1] || '',
-          mobilePhone: (phone_code || '') + travellerInput.mobilePhone,
+          mobilePhone: (phone_code ? "+"+phone_code : '') + travellerInput.mobilePhone,
         }),
       });
       if (res.ok) {
@@ -175,11 +182,10 @@
                   bind:value={name}
                   label="Name"
                   type="text"
-                  disabled={me.travellerMe ? true : false}
                 />
               </div>
               <div class="d-col-5 m-col-5">
-                <Select bind:value={travellerInput.salutationType} label="">
+                <Select bind:value={travellerInput.salutationType} label="Salutation">
                   {#each salutationTypes || [] as item}
                     <Option value={item.id}>{item.name}</Option>
                   {/each}
@@ -193,7 +199,7 @@
             column_1={4}
             column_2={8}
           >
-            <Textfield bind:value={me.email} label="" type="email" disabled />
+            <Textfield bind:value={me.email} label="" type="email" />
           </svelte:component>
           <svelte:component
             this={Field}
@@ -202,14 +208,16 @@
             column_2={8}
           >
             <div class="row">
-              <div class="d-col-3 m-col-3">
-                <Select bind:value={phone_code} label="">
-                  {#each countries as item}
-                    <Option value={`+${item.phone}`}>{`+${item.phone}`}</Option>
-                  {/each}
-                </Select>
+              <div class="d-col-4 m-col-3">
+                <OyAutocomplete
+                  key="phone"
+                  options={countries}
+                  getOptionLabel={(option) =>
+                    option ? `${option.name} +${option.phone}` : ''}
+                  bind:value={phone_code}
+                />
               </div>
-              <div class="d-col-9 m-col-9">
+              <div class="d-col-8 m-col-9">
                 <Textfield
                   bind:value={travellerInput.mobilePhone}
                   label=""
@@ -229,11 +237,7 @@
             column_1={4}
             column_2={8}
           >
-            <Textfield
-              bind:value={travellerInput.birthday}
-              label=""
-              type="date"
-            />
+            <OyDatepicker bind:value={travellerInput.birthday} />
             {#if errors.birthday}
               <span class="text-danger text-eyebrow">{errors.birthday}</span>
             {/if}
@@ -244,11 +248,8 @@
             column_1={4}
             column_2={8}
           >
-            <Select bind:value={travellerInput.nationality} label="">
-              {#each countries as item}
-                <Option value={item.id}>{item.name}</Option>
-              {/each}
-            </Select>
+            <OyAutocomplete options={countries} getOptionLabel={(option) =>
+              option ? `${option.name}` : ''} key="id" bind:value={travellerInput.nationality}  />
             {#if errors.nationality}
               <span class="text-danger text-eyebrow">{errors.nationality}</span>
             {/if}
@@ -268,20 +269,38 @@
           </svelte:component>
         </Cell>
         <Cell spanDevices={{ desktop: 4, phone: 4, tablet: 8 }}>
-          <div class="thumbnail user-profile-image dark mb-45">
-            <div class="image-cover" style="padding-top: 100%">
-              <BlurImage {...me.avatar} />
+          <div class="row mb-20">
+            <div class="d-col-12 m-col-3">
+              <div class="thumbnail user-profile-image dark mb-45">
+                <div class="image-cover" style="padding-top: 100%">
+                  {#if me.avatar}
+                    <BlurImage {...me.avatar} />
+                  {:else}
+                    <BlurImage url={'/img/me/avatar-default.png'} blurHash="" />
+                  {/if}
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="mb-20">
-            <Textfield value="" label="" type="file" bind:files={avatarInput} />
-          </div>
-          <div class="text-right">
-            <Button variant="unelevated" type="submit">Save Changes</Button>
+            <div class="d-col-12 m-col-9">
+                <Textfield value="" label="" type="file" bind:files={avatarInput} />
+            </div>
           </div>
         </Cell>
       </LayoutGrid>
-      <svelte:component this={Note} />
+      <div class="row">
+        <div class="d-col-6 m-col-12 m-mb-15">
+            <svelte:component this={Note} />
+        </div>
+        <div class="d-col-6 m-col-12">
+          <div class="d-block m-none text-right">
+            <Button variant="unelevated" type="submit">Save Changes</Button>
+          </div>
+          <div class="text-center d-none m-block">
+            <Button variant="unelevated" type="submit">Save Changes</Button>
+          </div>
+        </div>
+      </div>
+     
     </svelte:component>
   </form>
 {/if}

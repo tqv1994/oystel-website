@@ -3,6 +3,7 @@ import ButtonUnderline from "./ButtonUnderline.svelte";
 import Title from "./Title.svelte";
 import Text from "./Text.svelte";
 import { Traveller } from "$lib/store/traveller";
+import { dateTimeHelper } from "$lib/helpers/datetime";
 export let traveller: Traveller;
 export let relationship: string;
 </script>
@@ -13,7 +14,7 @@ export let relationship: string;
         <svelte:component this={ButtonUnderline} label="Edit"/>
     </div>
     <div class="content">
-        <svelte:component this={Text}>Date of Birth: {traveller.birthday || ""}</svelte:component>
+        <svelte:component this={Text}>Date of Birth: {dateTimeHelper.formatDate(traveller.birthday) || ""}</svelte:component>
     </div>
 </div>
 

@@ -39,13 +39,17 @@
         >
           <LayoutGrid class="p-0 d-none m-block mb-20">
             <Cell spanDevices={{ phone: 2, tablet: 4 }}>
-              {#if me.avatar}
+              
                 <div class="thumbnail user-profile-image dark">
                   <div class="image-cover" style="padding-top: 100%">
-                    <BlurImage {...me.avatar} />
+                    {#if me.avatar}
+                      <BlurImage {...me.avatar} />
+                    {:else}
+                      <BlurImage url={'/img/me/avatar-default.png'} blurHash={''} />
+                    {/if}
                   </div>
                 </div>
-              {/if}
+             
             </Cell>
             <Cell spanDevices={{ phone: 2, tablet: 4 }}>
               <h3 class="mdc-typography--headline1 mb-15">
@@ -88,13 +92,16 @@
         </svelte:component>
       </Cell>
       <Cell class="m-none" spanDevices={{ desktop: 4, phone: 4, tablet: 8 }}>
-        {#if me.avatar}
-          <div class="thumbnail user-profile-image dark">
-            <div class="image-cover" style="padding-top: 100%">
-              <BlurImage {...me.avatar} />
-            </div>
+        <div class="thumbnail user-profile-image dark">
+          <div class="image-cover" style="padding-top: 100%">
+            {#if me.avatar}
+              <BlurImage {...me.avatar} url={me.avatar?.url || '/img/me/avatar-default.png'} />
+            {:else}
+              <BlurImage url={'/img/me/avatar-default.png'} blurHash={''} />
+            {/if}
+            
           </div>
-        {/if}
+        </div>
       </Cell>
     </LayoutGrid>
   {/if}
@@ -144,7 +151,7 @@
       >
     </svelte:component>
     <svelte:component this={Field} label="Gender" column_1={4} column_2={8}>
-      <svelte:component this={Text}>Female</svelte:component>
+      <svelte:component this={Text}>{me.travellerMe?.gender || ''}</svelte:component>
     </svelte:component>
     <svelte:component
       this={Field}
@@ -171,7 +178,7 @@
       column_1={4}
       column_2={8}
     >
-      <svelte:component this={Text}>{me.travellerMe?.passportExpiryDate || ''}</svelte:component>
+      <svelte:component this={Text}>{dateTimeHelper.formatDate(me.travellerMe?.passportExpiryDate) || ''}</svelte:component>
     </svelte:component>
     <svelte:component
       this={Field}

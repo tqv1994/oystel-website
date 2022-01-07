@@ -23,7 +23,7 @@ export const put: RequestHandler = async (
           }
       }    
     `;
-    const res = await client.mutation<UpdateProduct>(query,{id:request.query.get('id'),users: request.body}).toPromise();
+    const res = await client.mutation<UpdateProduct>(query,{id:request.url.searchParams.get('id'),users: request.body}).toPromise();
     if(res.data){
       return {
         body: JSON.stringify(res.data),

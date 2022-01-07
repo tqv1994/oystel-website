@@ -21,7 +21,7 @@ const index = searchClient.index('advisor');
  */
 export const get: RequestHandler = async (request: Request) => {
   try {
-    const params = parseSearchParams(request.query);
+    const params = parseSearchParams(request.url.searchParams);
     const res = await search<Advisor>(params);
     return {
       body: JSON.stringify(res),

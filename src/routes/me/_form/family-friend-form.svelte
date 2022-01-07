@@ -4,6 +4,7 @@
   import Select, { Option } from '@smui/select';
   import Note from '../components/Note.svelte';
   import Button, { Label } from '@smui/button';
+  import Icon from '@smui/textfield/icon';
   import {
     convertTravellerToInput,
     Traveller,
@@ -18,6 +19,7 @@
   import { createEventDispatcher } from 'svelte';
   import { deleteTravellerData } from '../../traveller/delete-[id].json';
   import Text from '../components/Text.svelte';
+import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
 
   export var traveller: Traveller | null;
   export let relationship: string = '';
@@ -265,7 +267,7 @@
         {/if}
       </div>
       <div class="d-col-5 m-col-12">
-        <Select bind:value={travellerInput.salutationType} label="">
+        <Select bind:value={travellerInput.salutationType} label="Salutation">
           {#each salutationTypes as item}
             <Option value={item.id}>{item.name}</Option>
           {/each}
@@ -286,7 +288,7 @@
     >
       <Option value="Parent">Parent</Option>
       <Option value="Spouse">Spouse</Option>
-      <Option value="Children">Children</Option>
+      <Option value="Children">Child</Option>
       <Option value="Relative">Relative</Option>
       <Option value="Partner">Partner</Option>
       <Option value="Other Relative">Other Relative</Option>
@@ -298,7 +300,7 @@
     column_1={4}
     column_2={8}
   >
-    <Textfield bind:value={travellerInput.birthday} label="" type="date" />
+    <OyDatepicker bind:value={travellerInput.birthday} />
     {#if errors.birthday}
       <svelte:component this={Text} class="text-danger text-eyebrow"
         >{errors.birthday}</svelte:component

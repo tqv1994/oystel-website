@@ -37,9 +37,9 @@
       this={Field}
       label="Medical Conditions"
       column_1={4}
-      column_2={8}
+      column_2={6}
     >
-      <Textfield bind:value={medicalCondition} label="" type="text" textarea />
+      <Textfield bind:value={medicalCondition}  type="text" textarea />
     </svelte:component>
     <div class="text-right">
       <Button variant="unelevated" type="submit">Save Changes</Button>

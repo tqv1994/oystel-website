@@ -81,6 +81,7 @@
   .my-account-content {
     @import '../../../style/partial/form.scss';
     @import '../../../style/partial/thumbnail.scss';
+    @import '../../../style/partial/tab-bar.scss';
     .mdc-select {
       width: 100%;
     }

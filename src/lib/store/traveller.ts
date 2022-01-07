@@ -93,6 +93,7 @@ export class TravellerInput {
   passportExpiryDate: string
   passportPlaceOfIssue: string
   medicalCondition: string
+  gender: string
 
   constructor(values: Object = {}) {
     Object.assign(this, values);
@@ -121,6 +122,30 @@ export function convertTravellerToInput(traveller: Traveller): TravellerInput {
   delete data.id;
   result = data;
   return result;
+}
+
+export enum ENUM_TRAVELLER_GENDER  {
+  Female = "Female",
+  Male = "Male",
+  Others = "Others"
+}
+
+export const RELATIVE_LABELS = {
+  spouse: "Spouse",
+  parents: "Parent",
+  partners: "Partner",
+  relatives: "Relative",
+  otherRelatives: "Other Relative",
+  children: "Child"
+};
+
+export const RELATIVES = {
+  spouse: "spouse",
+  parents: "parents",
+  partners: "partners",
+  relatives: "relatives",
+  otherRelatives: "otherRelatives",
+  children: "children"
 }
 
 export type IdentificationWithRelationship = {

@@ -25,7 +25,7 @@ const dIndex = searchClient.index('destination');
  */
 export const get: RequestHandler = async (request: Request) => {
   try {
-    const params = parseSearchParams(request.query);
+    const params = parseSearchParams(request.url.searchParams);
     const result: SearchResultGroup<
       ExperienceSearchResultItem | DestinationSearchResultItem
     > = await search<ExperienceSearchResultItem | DestinationSearchResultItem>(

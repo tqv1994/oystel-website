@@ -125,7 +125,9 @@ $desktop-width: sizes.$desktop-width;
     transform: translate3d(0, 100%, 0);
   }
 }
-
+*, ::after, ::before {
+  box-sizing: border-box;
+}
 html,
 body {
   background-color: theme.$surface;

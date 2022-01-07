@@ -109,10 +109,10 @@ fragment agencyFields on Agency {
  * @type {import('@sveltejs/kit').Get}
  */
 export const get: RequestHandler = async (request: Request) => {
-  console.log('test',stringHelper.queryURLParamToJSON(request.query.toString()));
+  console.log('test',stringHelper.queryURLParamToJSON(request.url.searchParams.toString()));
     try {
         const client = createGraphClientFromRequest(request);
-        const res = await client.query<{ advisors: Advisor[] }>(query, {params: stringHelper.queryURLParamToJSON(request.query.toString())}).toPromise();
+        const res = await client.query<{ advisors: Advisor[] }>(query, {params: stringHelper.queryURLParamToJSON(request.url.searchParams.toString())}).toPromise();
         if (res.data?.advisors) {
             return {
                 body: JSON.stringify(res.data.advisors),

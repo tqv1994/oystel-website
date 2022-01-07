@@ -1,26 +1,82 @@
 @use "../../theme/mixins";
 @use "../../theme/variables" as v;
 $columns: 12;
+// .row {
+//     display: grid;
+//     grid-template-columns: repeat(auto-fill, minmax(0, 1fr));
+//     // grid-column-gap: 2em;
+//     grid-column-gap: var(--mdc-layout-grid-gutter-desktop,2em);
+//     grid-row-gap: var(--mdc-layout-grid-gutter-desktop,20px);
+//     @include mixins.mobile{
+//         grid-column-gap: var(--mdc-layout-grid-gutter-mobile,2em);
+//         grid-row-gap: var(--mdc-layout-grid-gutter-mobile,20px);
+//     }
+    
+//     @for $i from 1 through $columns {
+//         @include mixins.desktop {
+//             .d-col-#{$i} {
+//                 grid-column-end: auto / span #{$i};
+//             }
+//         }
+//         @include mixins.mobile {
+//             .m-col-#{$i} {
+//                 grid-column-end: auto / span #{$i};
+//             }
+//         }
+//     }
+// }
+
 .row {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    // grid-column-gap: 2em;
-    grid-column-gap: var(--mdc-layout-grid-gutter-desktop,2em);
-    grid-row-gap: var(--mdc-layout-grid-gutter-desktop,20px);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    margin-right: calc(var(--mdc-layout-grid-gutter-desktop,2em) * -1);
+    margin-left: calc(var(--mdc-layout-grid-gutter-desktop,2em) * -1);
     @include mixins.mobile{
-        grid-column-gap: var(--mdc-layout-grid-gutter-mobile,2em);
-        grid-row-gap: var(--mdc-layout-grid-gutter-mobile,20px);
+        margin-right: -var(--mdc-layout-grid-gutter-mobile,2em);
+        margin-left: -var(--mdc-layout-grid-gutter-mobile,2em);
+    }
+    .col{
+        -ms-flex-preferred-size: 0;
+        flex-basis: 0;
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        max-width: 100%;
+        position: relative;
+        width: 100%;
+        min-height: 1px;
+        padding-right: var(--mdc-layout-grid-gutter-desktop,2em);
+        padding-left: var(--mdc-layout-grid-gutter-desktop,2em);
     }
     
     @for $i from 1 through $columns {
         @include mixins.desktop {
             .d-col-#{$i} {
-                grid-column-end: span #{$i};
+                -webkit-box-flex: 0;
+                -ms-flex: 0 0 #{$i * 100% / 12};
+                flex: 0 0 #{$i * 100% / 12};
+                max-width: #{$i * 100% / 12};
+                position: relative;
+                width: 100%;
+                min-height: 1px;
+                padding-right: var(--mdc-layout-grid-gutter-desktop,2em);
+                padding-left: var(--mdc-layout-grid-gutter-desktop,2em);
             }
         }
         @include mixins.mobile {
             .m-col-#{$i} {
-                grid-column-end: span #{$i};
+                -webkit-box-flex: 0;
+                -ms-flex: 0 0 #{$i * 100% / 12};
+                flex: 0 0 #{$i * 100% / 12};
+                max-width: #{$i * 100% / 12};
+                position: relative;
+                width: 100%;
+                min-height: 1px;
+                padding-right: var(--mdc-layout-grid-gutter-desktop,2em);
+                padding-left: var(--mdc-layout-grid-gutter-desktop,2em);
             }
         }
     }

@@ -15,14 +15,11 @@
   export let me: User;
   let openForm: boolean = false;
   let identificationSelected: Identification | undefined;
-  let relationshipSelected: string = 'Me';
 
   const handleFormEditOpen = (
     identification: Identification,
-    relationship: string,
   ) => {
     identificationSelected = identification;
-    relationshipSelected = relationship;
     openForm = true;
   };
 </script>
@@ -67,7 +64,7 @@
                 this={ButtonUnderline}
                 label="Edit"
                 on:click={() => {
-                  handleFormEditOpen(identication, item.relationship);
+                  handleFormEditOpen(identication);
                 }}
               /></Cell
             >
@@ -103,7 +100,6 @@
     <Button
       variant="unelevated"
       on:click={() => {
-        relationshipSelected = 'Me';
         identificationSelected = undefined;
         openForm = true;
       }}><Label class="text-button2">Upload New Document</Label></Button
@@ -121,7 +117,6 @@
       this={TravelDocumentForm}
       bind:me
       identification={identificationSelected}
-      relationship={relationshipSelected}
       bind:open={openForm}
     />
   </svelte:component>

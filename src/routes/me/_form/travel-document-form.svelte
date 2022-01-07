@@ -14,7 +14,7 @@
   import { get } from 'svelte/store';
   import { countryStore } from '$lib/store/country';
   import { authStore, User } from '$lib/store/auth';
-  import { Traveller } from '$lib/store/traveller';
+  import { RELATIVES, RELATIVE_LABELS, Traveller } from '$lib/store/traveller';
   import { cmsUrlPrefix } from '$lib/env';
   import { updateIdentificationData } from '../../identification/update-[id].json';
   import { createIdentificationData } from '../../identification/create.json';
@@ -22,9 +22,13 @@
   import Text from '../components/Text.svelte';
   import IconButton from '@smui/icon-button';
   import * as yup from 'yup';
+  import { sortByName } from '$lib/utils/sort';
+  import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+  type TravellerRelative = Traveller & {
+    relativeType: string;
+  };
   export let identification: Identification;
   export let me: User;
-  export let relationship: string = 'Me';
   export let open: boolean = false;
   let identificationInput: IdentificationInput;
   if (identification?.id) {
@@ -33,19 +37,11 @@
     }
   } else {
     identificationInput = new IdentificationInput();
+    identificationInput.traveller = me.travellerMe.id+"" || '';
     identificationInput.documentId = '';
   }
-  const countries = Object.values(get(countryStore).items);
-  let relationshipOptions: string[] = [
-    'Me',
-    'Parent',
-    'Spouse',
-    'Relative',
-    'Children',
-    'Partner',
-    'Other Relative',
-  ];
-  let travellerOptions: Traveller[];
+  const countries = sortByName(Object.values(get(countryStore).items));
+  let travellerOptions: TravellerRelative[];
   let imageFront: FileList;
   let imageBack: FileList;
   let imageFrontInput: string = '';
@@ -58,48 +54,25 @@
     country: yup.string().required(),
   });
 
-  handleChangeRelationship();
+  getTravellerOptions();
 
-  function handleChangeRelationship() {
-    setTimeout(() => {
-      switch (relationship) {
-        case 'Me':
-          travellerOptions = [me.travellerMe];
-          identificationInput.traveller = me.travellerMe.id + '';
-          break;
-        case 'Children':
-          travellerOptions = me.travellerMe.children
-            ? [me.travellerMe.children]
-            : [];
-          identificationInput.traveller =
-            (me.travellerMe.children?.id || '') + '';
-          break;
-        case 'Relative':
-          travellerOptions = me.travellerMe.relatives;
-          identificationInput.traveller = '';
-          break;
-        case 'Parent':
-          travellerOptions = me.travellerMe.parents;
-          identificationInput.traveller = '';
-          break;
-        case 'Spouse':
-          travellerOptions = me.travellerMe.spouse;
-          identificationInput.traveller = '';
-          break;
-        case 'Partner':
-          travellerOptions = me.travellerMe.parents;
-          identificationInput.traveller = '';
-          break;
-        case 'Other Relative':
-          travellerOptions = me.travellerMe.otherRelations;
-          identificationInput.traveller = '';
-          break;
+  function getTravellerOptions() {
+    travellerOptions = [];
+    if (me.travellerMe) {
+      travellerOptions.push({ ...me.travellerMe, relativeType: 'Me' });
+      const data: any = me.travellerMe;
+      for (let relativeType in RELATIVES) {
+        if (data[relativeType] && relativeType === 'children') {
+          travellerOptions.push({ ...data[relativeType], relativeType });
+        } else {
+          if (data[relativeType]) {
+            data[relativeType].map((traveller: Traveller) => {
+              travellerOptions.push({ ...traveller, relativeType });
+            });
+          }
+        }
       }
-
-      if (!travellerOptions || travellerOptions.length <= 0) {
-        identificationInput.traveller = '';
-      }
-    },0);
+    }
   }
 
   async function handleSubmitForm() {
@@ -211,30 +184,23 @@
 </script>
 
 <form on:submit|preventDefault={handleSubmitForm}>
-  <svelte:component this={Field} label="Relationship" column_1={4} column_2={8}>
-    <Select
-      bind:value={relationship}
-      label=""
-      on:MDCSelect:change={handleChangeRelationship}
-    >
-      {#each relationshipOptions as item}
-        <Option value={item}>{item}</Option>
-      {/each}
-    </Select>
-  </svelte:component>
   <svelte:component
     this={Field}
     label="Traveler Name*"
     column_1={4}
     column_2={8}
   >
-    <Select bind:value={identificationInput.traveller} label="">
-      {#if travellerOptions}
-        {#each travellerOptions as item}
-          <Option value={item.id}>{`${item.forename} ${item.surname}`}</Option>
-        {/each}
-      {/if}
-    </Select>
+    <OyAutocomplete
+      options={travellerOptions}
+      key="id"
+      bind:value={identificationInput.traveller}
+      getOptionLabel={(option) =>
+        option
+          ? `${option.forename || ''} ${option.surname || ''} - ${
+              RELATIVE_LABELS[option.relativeType] || option.relativeType
+            }`
+          : ''}
+    />
     {#if errors.traveller}
       <svelte:component this={Text} class="text-danger text-eyebrow"
         >{errors.traveller}</svelte:component
@@ -271,11 +237,12 @@
     {/if}
   </svelte:component>
   <svelte:component this={Field} label="Country*" column_1={4} column_2={8}>
-    <Select bind:value={identificationInput.country} label="">
-      {#each countries as item}
-        <Option value={item.id}>{item.name}</Option>
-      {/each}
-    </Select>
+    <OyAutocomplete
+      key="id"
+      options={countries}
+      getOptionLabel={(option) => (option ? `${option.name}` : '')}
+      bind:value={identificationInput.country}
+    />
     {#if errors.country}
       <svelte:component this={Text} class="text-danger text-eyebrow"
         >{errors.country}</svelte:component
@@ -387,6 +354,7 @@
 <style lang="scss">
   @use '../../../style/include/_grid.scss';
   @use '../../../theme/mixins';
+  @use '../../../theme/colors';
   form {
     :global(.mdc-text-field),
     :global(.mdc-select) {
@@ -398,6 +366,12 @@
     :global(input[type='file']::file-selector-button) {
       padding: 7px;
       background-color: #9d9d9d;
+      color: #fff;
+      border: none;
+    }
+    :global(input[type='file']::file-selector-button:active) {
+      padding: 7px;
+      background-color: #{colors.$black};
       color: #fff;
       border: none;
     }

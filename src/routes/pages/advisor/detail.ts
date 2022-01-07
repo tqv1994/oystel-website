@@ -95,7 +95,7 @@ export const get: RequestHandler = async (request: Request) => {
       previewUrl
     }    
     `;
-    const res = await client.query<AdvisorPageData>(query,{id:request.query.get('id')}).toPromise();
+    const res = await client.query<AdvisorPageData>(query,{id:request.url.searchParams.get('id')}).toPromise();
     if (res.data) {
       return {
         body: JSON.stringify(res.data),
