@@ -2,7 +2,7 @@
   import { HomePageData } from '../home/index.json';
   import type { Load } from '@sveltejs/kit';
 
-  export const load: Load = async ({ fetch, session, page }) => {
+  export const load: Load = async ({ fetch, session, url }) => {
     const res = await fetch(`/home.json?_z=${Date.now()}`);
     if (res.ok) {
       const data: HomePageData = await res.json();

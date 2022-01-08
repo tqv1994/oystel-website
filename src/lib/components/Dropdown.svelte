@@ -10,6 +10,8 @@
 </script>
 
 <script lang="ts">
+import OyAutocomplete from "./common/OyAutocomplete.svelte";
+
   export let label: string;
   export let items: Nameable[];
   export let value: Nameable | undefined;

@@ -222,6 +222,9 @@ textarea {
   font-weight: var(--mdc-typography-form-font-weight);
   line-height: var(--mdc-typography-form-line-height);
   letter-spacing: var(--mdc-typography-form-letter-spacing);
+  font-style: normal;
+}
+.mdc-floating-label{
   font-style: oblique;
 }
 select,

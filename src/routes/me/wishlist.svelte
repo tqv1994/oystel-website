@@ -12,7 +12,7 @@
   import { Experience } from '$lib/store/experience';
   import type { Load } from '@sveltejs/kit';
   import { QueryLikeResult } from './wishlist/index.json';
-  export const load: Load = async ({ fetch, session, page }) => {
+  export const load: Load = async ({ fetch, session, url }) => {
     if (session.user) {
       try {
         const res = await fetch(`/me/wishlist.json`);

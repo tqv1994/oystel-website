@@ -100,6 +100,7 @@
     personalPreferenceTypeStore,
     travelPreferenceTypeStore,
   } from '$lib/store/preference';
+import Loading from '$lib/components/Loading.svelte';
   export let active: MainNavItem | undefined;
   export let isHomePage = false;
   export let key: string;
@@ -113,11 +114,12 @@
   <MainNav
     items={mainMenu}
     bind:active
-    class={`${isHomePage ? 'header-transparent' : 'light'} ${mainNavClass}`}
+    class={`${isHomePage ? 'header-transparent' : ''} ${mainNavClass}`} navLightColor={!isHomePage}
   />
   <section>
     <slot />
   </section>
   <Footer />
 </div>
+<Loading/>
 <MobileBottomTool />

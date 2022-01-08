@@ -76,6 +76,7 @@
   }
 
   async function handleSubmitForm() {
+    window.openLoading();
     errors = {};
     let apiUrl: string = 'create.json';
     let method: string = 'POST';
@@ -121,6 +122,7 @@
         }, {});
       }
     }
+    window.closeLoading();
   }
 
   async function handleUploadImage(file: File, field: string) {
@@ -169,6 +171,7 @@
   };
 
   const handleRemoveIdentification = async () => {
+    window.openLoading();
     const res = await fetch(
       `/identification/delete-${identification.id}.json`,
       {
@@ -180,6 +183,7 @@
     } else {
       window.pushToast('An error occurred');
     }
+    window.closeLoading();
   };
 </script>
 

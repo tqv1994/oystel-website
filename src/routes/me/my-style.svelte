@@ -136,6 +136,7 @@
   };
 
   const myStyleSubmit = async () => {
+    window.openLoading();
     try {
       for (const [key, value] of Object.entries(mySizeSelected)) {
         mySizeSelected[key] = handleDisplayMySize(value);
@@ -164,9 +165,11 @@
     } catch (error) {
       console.log(error);
     }
+    window.closeLoading();
   };
 
   const myStylePreferenceSubmit = async () => {
+    window.openLoading();
     try {
       const dataSubmit = [...myStylePreferenceSelected];
       const res = await fetch('/me/my-style/update-preference.json', {
@@ -184,6 +187,7 @@
     } catch (error) {
       console.log(error);
     }
+    window.closeLoading();
   };
 </script>
 

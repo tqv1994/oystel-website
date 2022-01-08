@@ -11,7 +11,7 @@
   import { Advisor, AdvisorBase } from '$lib/store/advisor';
   import { stringHelper } from '$lib/helpers';
 
-  export const load: Load = async ({ fetch, page }) => {
+  export const load: Load = async ({ fetch, url }) => {
     let advisors: Advisor[] = [];
     let me: User | undefined;
     authStore.subscribe(async ({ user }) => {

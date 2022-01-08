@@ -50,33 +50,39 @@ $columns: 12;
         min-height: 1px;
         padding-right: var(--mdc-layout-grid-gutter-desktop,2em);
         padding-left: var(--mdc-layout-grid-gutter-desktop,2em);
+        margin-bottom: calc(var(--mdc-layout-grid-gutter-desktop,2em) * -1);
+        @include mixins.mobile{
+            margin-bottom: calc(var(--mdc-layout-grid-gutter-mobile,2em) * -1);
+        }
     }
     
     @for $i from 1 through $columns {
         @include mixins.desktop {
             .d-col-#{$i} {
                 -webkit-box-flex: 0;
-                -ms-flex: 0 0 #{$i * 100% / 12};
-                flex: 0 0 #{$i * 100% / 12};
-                max-width: #{$i * 100% / 12};
+                -ms-flex: 0 0 calc(#{$i} * 100% / 12);
+                flex: 0 0 calc(#{$i} * 100% / 12);
+                max-width: calc(#{$i} * 100% / 12);
                 position: relative;
                 width: 100%;
                 min-height: 1px;
                 padding-right: var(--mdc-layout-grid-gutter-desktop,2em);
                 padding-left: var(--mdc-layout-grid-gutter-desktop,2em);
+                margin-bottom: calc(var(--mdc-layout-grid-gutter-desktop,2em) * -1);
             }
         }
         @include mixins.mobile {
             .m-col-#{$i} {
                 -webkit-box-flex: 0;
-                -ms-flex: 0 0 #{$i * 100% / 12};
-                flex: 0 0 #{$i * 100% / 12};
-                max-width: #{$i * 100% / 12};
+                -ms-flex: 0 0 calc(#{$i} * 100% / 12);
+                flex: 0 0 calc(#{$i} * 100% / 12);
+                max-width: calc(#{$i} * 100% / 12);
                 position: relative;
                 width: 100%;
                 min-height: 1px;
                 padding-right: var(--mdc-layout-grid-gutter-desktop,2em);
                 padding-left: var(--mdc-layout-grid-gutter-desktop,2em);
+                margin-bottom: calc(var(--mdc-layout-grid-gutter-mobile,2em) * -1);
             }
         }
     }

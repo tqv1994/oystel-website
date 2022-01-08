@@ -12,6 +12,7 @@
 
   let me: User | undefined = $authStore.user;
   const handleUpdateSetting = async () => {
+    window.openLoading();
     const res = await fetch(`/auth/update.json`, {
       method: 'PUT',
       headers: {
@@ -26,6 +27,7 @@
     } else {
       window.pushToast('An error occurred');
     }
+    window.closeLoading();
   };
 </script>
 

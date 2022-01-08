@@ -31,7 +31,9 @@
 </div>
 <div class="d-none m-block container m-mr-0 m-ml-0">
   <div class="image-cover" style="padding-top: calc(375 / 319 * 100%)">
-    <BlurImage {...gallery[0]} />
+    {#if gallery && gallery.length > 0}
+      <BlurImage {...gallery[0]} />
+    {/if}
   </div>
   <div class="what-to-wear-content pb-50 pt-55 m-ml-25 m-mr-25">
     <h5>{description}</h5>

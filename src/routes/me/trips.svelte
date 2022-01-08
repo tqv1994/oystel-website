@@ -13,7 +13,7 @@
   import AlertBox from './components/AlertBox.svelte';
 import ButtonUnderline from './components/ButtonUnderline.svelte';
   
-  export const load: Load = async ({ fetch, page }) => {
+  export const load: Load = async ({ fetch, url }) => {
     let me: User | undefined;
 
     authStore.subscribe(({ user }) => (me = user));

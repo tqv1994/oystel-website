@@ -12,6 +12,7 @@
   export let is_edit: boolean = true;
 
   async function handleSubmitForm() {
+    window.openLoading();
     const res = await fetch(`/traveller/update-me.json`, {
       method: 'PUT',
       headers: {
@@ -28,6 +29,7 @@
     } else {
       window.pushToast('An error occurred');
     }
+    window.closeLoading();
   }
 </script>
 

@@ -28,7 +28,7 @@
   import { DestinationLikeData } from '../destination/like.json';
   import { EditorialPageData } from './editorial.json';
 
-  export const load: Load = async ({ fetch, session, page }) => {
+  export const load: Load = async ({ fetch, session, url }) => {
     const res = await fetch(`/editorial/editorial.json?_z=${Date.now()}`);
     if (res.ok) {
       const data: EditorialPageData = await res.json();
@@ -72,14 +72,6 @@
 
   export let data: EditorialPageData;
   console.log(data);
-  let configPage = {
-    header: {
-      page: 'editorial',
-      transparent: false,
-      theme: 'light',
-      currentMenu: 'editorial',
-    },
-  };
 
   async function likeExperience(event: CustomEvent) {
     let liked: boolean;

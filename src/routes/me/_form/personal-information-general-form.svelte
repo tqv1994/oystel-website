@@ -20,8 +20,8 @@
   import { createAddressData } from '../../address/create.json';
   import { sortByName } from '$lib/utils/sort';
   import { languageStore } from '$lib/store/language';
-import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
-import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
+  import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+  import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
   export let me: User;
   const countries = sortByName(Object.values(get(countryStore).items));
   const languages = sortByName(Object.values(get(languageStore).items));
@@ -32,12 +32,12 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
     travellerInput.homePhone?.match(createPatternPhoneCode(countries)) + '';
   travellerInput.homePhone =
     travellerInput.homePhone?.replace(homePhoneCode, '') || '';
-    homePhoneCode = homePhoneCode.replace("+","");
+  homePhoneCode = homePhoneCode.replace('+', '');
   let workPhoneCode: string =
     travellerInput.workPhone?.match(createPatternPhoneCode(countries)) + '';
   travellerInput.workPhone =
     travellerInput.workPhone?.replace(workPhoneCode, '') || '';
-    workPhoneCode = workPhoneCode.replace("+","");
+  workPhoneCode = workPhoneCode.replace('+', '');
   let addressInput: AddressInput;
   if (me.travellerMe?.addresses[0]) {
     addressInput = convertAddressToInput(me.travellerMe?.addresses[0]);
@@ -58,6 +58,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
   export let is_edit: boolean = true;
 
   async function handleSubmitForm() {
+    window.openLoading();
     let apiUrl = `create.json`;
     let method = 'POST';
     if (travellerInput.addresses[0]) {
@@ -82,6 +83,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
     } else {
       window.pushToast('An error occurred');
     }
+    window.closeLoading();
   }
 
   async function handleUpdateTraveller() {
@@ -92,8 +94,10 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
       },
       body: JSON.stringify({
         ...travellerInput,
-        homePhone: (homePhoneCode ? "+"+homePhoneCode : '') + travellerInput.homePhone,
-        workPhone: (workPhoneCode ? "+"+workPhoneCode : '') + travellerInput.workPhone,
+        homePhone:
+          (homePhoneCode ? '+' + homePhoneCode : '') + travellerInput.homePhone,
+        workPhone:
+          (workPhoneCode ? '+' + workPhoneCode : '') + travellerInput.workPhone,
       }),
     });
     if (res.ok) {
@@ -108,21 +112,16 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
 
 <form on:submit={handleSubmitForm} action="javascript:void(0);">
   <svelte:component this={FormToggle} title="" bind:is_edit>
-    <svelte:component
-      this={Field}
-      label="Home Phone"
-      column_1={4}
-      column_2={6}
-    >
+    <svelte:component this={Field} label="Home Phone" column_1={4} column_2={6}>
       <div class="row">
         <div class="d-col-4 m-col-3">
-            <OyAutocomplete
-              key="phone"
-              options={countries}
-              getOptionLabel={(option) =>
-                option ? `${option.name} +${option.phone}` : ''}
-              bind:value={homePhoneCode}
-            />
+          <OyAutocomplete
+            key="phone"
+            options={countries}
+            getOptionLabel={(option) =>
+              option ? `${option.name} +${option.phone}` : ''}
+            bind:value={homePhoneCode}
+          />
         </div>
         <div class="d-col-8 m-col-9">
           <Textfield
@@ -142,12 +141,12 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
       <div class="row">
         <div class="d-col-4 m-col-3">
           <OyAutocomplete
-              key="phone"
-              options={countries}
-              getOptionLabel={(option) =>
-                option ? `${option.name} +${option.phone}` : ''}
-              bind:value={workPhoneCode}
-            />
+            key="phone"
+            options={countries}
+            getOptionLabel={(option) =>
+              option ? `${option.name} +${option.phone}` : ''}
+            bind:value={workPhoneCode}
+          />
         </div>
         <div class="d-col-8 m-col-9">
           <Textfield
@@ -211,16 +210,22 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
       </Select>
     </svelte:component>
     <svelte:component this={Field} label="Language" column_1={4} column_2={6}>
-        <OyAutocomplete
-          options={languages.map((item)=>item.name)}
-          bind:value={travellerInput.language}
+      <OyAutocomplete
+        options={languages.map((item) => item.name)}
+        bind:value={travellerInput.language}
       />
     </svelte:component>
     <svelte:component this={Field} label="Gender" column_1={4} column_2={6}>
       <Select bind:value={travellerInput.gender} label="">
-          <Option value={ENUM_TRAVELLER_GENDER.Female}>{ENUM_TRAVELLER_GENDER.Female}</Option>
-          <Option value={ENUM_TRAVELLER_GENDER.Male}>{ENUM_TRAVELLER_GENDER.Male}</Option>
-          <Option value={ENUM_TRAVELLER_GENDER.Others}>{ENUM_TRAVELLER_GENDER.Others}</Option>
+        <Option value={ENUM_TRAVELLER_GENDER.Female}
+          >{ENUM_TRAVELLER_GENDER.Female}</Option
+        >
+        <Option value={ENUM_TRAVELLER_GENDER.Male}
+          >{ENUM_TRAVELLER_GENDER.Male}</Option
+        >
+        <Option value={ENUM_TRAVELLER_GENDER.Others}
+          >{ENUM_TRAVELLER_GENDER.Others}</Option
+        >
       </Select>
     </svelte:component>
     <svelte:component
@@ -229,11 +234,10 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
       column_1={4}
       column_2={6}
     >
-        <OyAutocomplete
+      <OyAutocomplete
         key="id"
         options={countries}
-        getOptionLabel={(option) =>
-          option ? `${option.name}` : ''}
+        getOptionLabel={(option) => (option ? `${option.name}` : '')}
         bind:value={travellerInput.nationality}
       />
     </svelte:component>

@@ -20,25 +20,34 @@ form {
             }
     }
     .mdc-select {
-        .mdc-select__menu{
-            max-height: 300px;
-            &::-webkit-scrollbar-track {
-                background-color: #d3d3d3;
-            }
-            &::-webkit-scrollbar {
-                width: 7px;
-
-                background-color: #d3d3d3;
-            }
-            &::-webkit-scrollbar-thumb {
-                background-color: #{colors.$black};
-            }
-        }
         &:not(.mdc-select-outlined){
             .mdc-select__selected-text,
             .mdc-floating-label {
                 padding-left: max(16px, calc(var(--mdc-shape-small, 4px) + 4px));
             }
+        }
+        .mdc-deprecated-list-item:hover,.mdc-deprecated-list-item--selected,.mdc-ripple-upgraded--background-focused{
+            background: #DEDEDE;
+        }
+    }
+    .smui-autocomplete{
+        display: block;
+        .mdc-deprecated-list-item--activated{
+            background: #DEDEDE;
+        }
+    }
+    .mdc-select .mdc-select__menu,.smui-autocomplete .smui-autocomplete__menu{
+        max-height: 300px;
+        &::-webkit-scrollbar-track {
+            background-color: #d3d3d3;
+        }
+        &::-webkit-scrollbar {
+            width: 7px;
+
+            background-color: #d3d3d3;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #{colors.$black};
         }
     }
     .mdc-checkbox {

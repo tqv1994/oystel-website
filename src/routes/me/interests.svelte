@@ -50,6 +50,7 @@
   };
 
   const handleSubmit = async () => {
+    window.openLoading();
     try {
       const res = await fetch('/me/interests/update.json', {
         method: 'PUT',
@@ -69,6 +70,7 @@
     } catch (error) {
       console.log(error);
     }
+    window.closeLoading();
   };
 
   const handleDisplay = (selected: string[], type: InterestType) => {

@@ -43,6 +43,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
   travellerInput.birthday = travellerInput.birthday || '';
 
   async function handleSubmitForm() {
+    window.openLoading();
     errors = {};
     let apiUrl = '/traveller/';
     let method = 'POST';
@@ -121,9 +122,11 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
         }, {});
       }
     }
+    window.closeLoading();
   }
 
   async function handleDeleteTraveller() {
+    window.openLoading();
     const res = await fetch(`/traveller/delete-${traveller?.id}.json`, {
       method: 'DELETE',
       headers: {
@@ -200,6 +203,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
     } else {
       window.pushToast('An error occurred');
     }
+    window.closeLoading();
   }
 
   function handleAfterUpdate() {

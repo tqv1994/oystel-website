@@ -69,6 +69,7 @@
   let tmpTravelSelected: string[] = [...(travelPreferenceSelected || [])];
   let tmpPersonalSelected: string[] = [...(personalPreferenceSelected || [])];
   const handleTravelSubmit = async () => {
+    window.openLoading();
     try {
       const res = await fetch('/me/preference/update-travel.json', {
         method: 'PUT',
@@ -91,6 +92,7 @@
     } catch (error) {
       console.log(error);
     }
+    window.closeLoading();
   };
 
   const updateOther = async () => {
@@ -110,6 +112,7 @@
   };
 
   const handlePersonalSubmit = async () => {
+    window.openLoading();
     try {
       const res = await fetch('/me/preference/update-personal.json', {
         method: 'PUT',
@@ -131,6 +134,7 @@
     } catch (error) {
       console.log(error);
     }
+    window.closeLoading();
   };
 
   const handleDisplay = (

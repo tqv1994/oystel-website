@@ -34,6 +34,7 @@
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
   import SignupModal from '../modals/SignupModal.svelte';
   import OySearchModal from '../modals/OySearchModal.svelte';
+import { afterUpdate, beforeUpdate, onMount } from 'svelte';
   export let items: MainNavItem[];
   export let active: MainNavItem | undefined = undefined;
 
@@ -49,7 +50,9 @@
   export {classNames as class};
   let openSearch: boolean = false;
   let onMobile: boolean = false;
+  export let navLightColor = true;
   function adjustNav() {
+    handleChangeNavLightColor();
     if (window.innerWidth < 960) {
       prominent = false;
       onMobile = true;
@@ -63,6 +66,25 @@
     }
   }
 
+  const handleChangeNavLightColor = () => {
+    if(activeSubItems && activeSubItems.length > 0){
+      navLightColor = false;
+    }else if (window.scrollY < 64) {
+      if(classNames && (classNames?.indexOf('header-transparent')) >= 0){
+        navLightColor = false;
+        console.log(classNames?.indexOf('header-transparent'));
+      }else{
+        navLightColor = true;
+      }
+    }else{
+      navLightColor = false
+    }
+  }
+
+  afterUpdate(()=>{
+    handleChangeNavLightColor();
+  })
+
   function onResize(event: Event) {
     if (window.scrollY < 64) {
       prominent = true;
@@ -72,7 +94,7 @@
     if (window.innerWidth < 960) {
       onMobile = true;
       prominent = false;
-      activeSubItems = undefined;
+      activeSubItems = [];
     } else {
       drawerOpen = false;
     }
@@ -80,7 +102,8 @@
 
   function onScroll(event: Event) {
     if (activeSubItems && Math.abs(window.scrollY - scrollY) > 250) {
-      activeSubItems = undefined;
+      activeSubItems = [];
+      activeSubItem = undefined;
     }
     adjustNav();
   }
@@ -173,7 +196,7 @@
 />
 
 <nav
-  class={`top-app-bar--root ${classNames ? ((!prominent && !onMobile) || activeSubItem ? classNames.replace('light','') : classNames) : classNames}`}
+  class={`top-app-bar--root ${classNames} ${navLightColor === true ? 'light' : ''}`}
   class:drawer-open={drawerOpen}
   on:click|stopPropagation={() => {}}
   on:scroll|stopPropagation={() => {}}

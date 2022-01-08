@@ -18,6 +18,15 @@
       color: var(--mdc-theme-on-primary) !important;
     }
   }
+  &.bg-header-scroll-slightly_blue, &.light{
+    .plan:hover{
+      background: #{colors.$black};
+      --mdc-theme-on-primary: #{colors.$white};
+      *{
+        color: var(--mdc-theme-on-primary) !important;
+      }
+    }
+  }
 }
 .mdc-top-app-bar {
   --mdc-theme-primary: #{colors.$black};

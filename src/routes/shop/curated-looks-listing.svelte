@@ -21,18 +21,12 @@
 </script>
 
 <script lang="ts">
-  import Layout from '$lib/components/common/Layout.svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import Button, { Icon, Label } from '@smui/button';
-  import IconButton, { Icon as Icon2 } from '@smui/button';
   import Select, { Option } from '@smui/select';
   import { authStore } from '$lib/store/auth';
   import { Page } from '$lib/store/page';
-  import Section from '@smui/top-app-bar/src/Section.svelte';
   import Carousel from '$lib/components/Carousel.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
-import Item from '$lib/components/Item.svelte';
-import DropList from '$lib/components/DropList.svelte';
 import CuratedItem from '$lib/components/CuratedItem.svelte';
   export let data: Page;
   console.log(data);

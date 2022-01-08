@@ -71,6 +71,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
   export let is_edit: boolean = true;
 
   async function handleSubmitForm() {
+    window.openLoading();
     let apiUrl: string = 'create.json';
     let method: string = 'POST';
     if (me.travellerMe) {
@@ -116,6 +117,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
         }, {});
       }
     }
+    window.closeLoading()
   }
 
   async function handleUpdateMe() {
