@@ -4,6 +4,7 @@ import { Category } from './category';
 import { Country } from './country';
 import { Identification } from './identification';
 import { Interest } from './interest';
+import { Language } from './language';
 import { PersonalPreference, TravelPreference } from './preference';
 import { Visa } from './visa';
 
@@ -57,6 +58,12 @@ export type Traveller = {
   passportExpiryDate: string;
   passportPlaceOfIssue: string;
   medicalCondition: string;
+  myAssistantName: string
+  myAssistantSalutationType: Category;
+  myAssistantEmail: string;
+  myAssistantPhone: string;
+  myAssistantContactNotes: string;
+  myAssistantLanguage: Language;
 }
 
 export class TravellerInput {
@@ -94,6 +101,12 @@ export class TravellerInput {
   passportPlaceOfIssue: string
   medicalCondition: string
   gender: string
+  myAssistantName: string
+  myAssistantSalutationType: string; // ID
+  myAssistantEmail: string;
+  myAssistantPhone: string;
+  myAssistantContactNotes: string;
+  myAssistantLanguage: string; // ID
 
   constructor(values: Object = {}) {
     Object.assign(this, values);
@@ -118,6 +131,8 @@ export function convertTravellerToInput(traveller: Traveller): TravellerInput {
   data.interests = traveller.interests?.map((item)=> item.id);
   data.personalPreferences = traveller.personalPreferences?.map((item)=>item.id);
   data.travelPreferences = traveller.travelPreferences?.map((item)=>item.id);
+  data.myAssistantSalutationType = traveller.myAssistantSalutationType?.id;
+  data.myAssistantLanguage = traveller.myAssistantLanguage?.id;
   delete data.__typename;
   delete data.id;
   result = data;
@@ -283,6 +298,16 @@ fragment travellerFields on Traveller {
   passportExpiryDate
   passportPlaceOfIssue
   medicalCondition
+  myAssistantName
+  myAssistantSalutationType{
+    ...salutationTypeFields
+  }
+  myAssistantEmail
+  myAssistantPhone
+  myAssistantContactNotes
+  myAssistantLanguage{
+    ...languageFields
+  }
 }
 `;
 

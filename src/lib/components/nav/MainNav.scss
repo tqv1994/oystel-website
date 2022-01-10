@@ -36,13 +36,13 @@
   max-width: #{sizes.$contentMaxWidth};
   margin: 0 auto;
 }
-.mdc-top-app-bar--fixed-scrolled {
-  box-shadow: none;
+.mdc-top-app-bar:not(.mdc-top-app-bar--prominent){
   .top-app-bar__main-row {
     --mdc-theme-primary: #{colors.$black};
   }
 }
-.mdc-top-app-bar:not(.mdc-top-app-bar--prominent){
+.mdc-top-app-bar--fixed-scrolled {
+  box-shadow: none;
   .top-app-bar__main-row {
     --mdc-theme-primary: #{colors.$black};
   }

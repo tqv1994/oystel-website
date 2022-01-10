@@ -260,13 +260,13 @@
     bind:is_edit={myAssistantEdit}
   >
     <svelte:component this={Field} label="Name" column_1={4} column_2={8}>
-      <svelte:component this={Text} />
+      <svelte:component this={Text}>{me.travellerMe?.myAssistantSalutationType?.name || ''} {me.travellerMe?.myAssistantName || ''}</svelte:component>
     </svelte:component>
     <svelte:component this={Field} label="Language" column_1={4} column_2={8}>
-      <svelte:component this={Text} />
+      <svelte:component this={Text} >{me.travellerMe?.myAssistantLanguage?.name || ''}</svelte:component>
     </svelte:component>
     <svelte:component this={Field} label="Phone" column_1={4} column_2={8}>
-      <svelte:component this={Text} />
+      <svelte:component this={Text}>{me.travellerMe?.myAssistantPhone || ''}</svelte:component>
     </svelte:component>
     <svelte:component
       this={Field}
@@ -274,7 +274,7 @@
       column_1={4}
       column_2={8}
     >
-      <svelte:component this={Text} />
+      <svelte:component this={Text}>{me.travellerMe?.myAssistantContactNotes || ''}</svelte:component>
     </svelte:component>
   </svelte:component>
 {/if}

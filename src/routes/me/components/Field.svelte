@@ -8,8 +8,8 @@
   export { classNames as class };
 </script>
 
-<div class={`${classNames}`}>
-  <LayoutGrid class="p-0 pb-15">
+<div class={`${classNames} pb-30`}>
+  <LayoutGrid class="p-0">
     <Cell class="label" spanDevices={{ desktop: column_1, phone: 1, tablet: 2 }}
       ><svelte:component this={Text} class="mt-0 mb-0 font-weight-bold"
         >{label}</svelte:component

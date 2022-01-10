@@ -11,6 +11,7 @@ import { countryFieldsFragment } from '$lib/store/country';
 import { addressFieldsFragment } from '$lib/store/address';
 import { personalPreferenceFieldsFragment, travelPreferenceFieldsFragment } from '$lib/store/preference';
 import { interestFieldsFragment } from '$lib/store/interest';
+import { languageFieldsFragment } from '$lib/store/language';
 /**
  * @type {import('@sveltejs/kit').Post}
  */
@@ -44,6 +45,7 @@ export const post: RequestHandler = async (
         ${interestFieldsFragment}
         ${travelPreferenceFieldsFragment}
         ${personalPreferenceFieldsFragment}
+        ${languageFieldsFragment}
     `;
         const res = await client.mutation<createTravellerData>(query, { traveller: request.body }).toPromise();
         if (res.data) {

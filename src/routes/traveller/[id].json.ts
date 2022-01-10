@@ -10,6 +10,7 @@ import { identificationFieldsFragment } from '$lib/store/identification';
 import { addressFieldsFragment } from '$lib/store/address';
 import { interestFieldsFragment } from '$lib/store/interest';
 import { personalPreferenceFieldsFragment, travelPreferenceFieldsFragment } from '$lib/store/preference';
+import { languageFieldsFragment } from '$lib/store/language';
 
 const query = `
     query($id: ID!) {
@@ -28,6 +29,7 @@ const query = `
     ${interestFieldsFragment}
     ${travelPreferenceFieldsFragment}
     ${personalPreferenceFieldsFragment}
+    ${languageFieldsFragment}
 `;
 /**
  * @type {import('@sveltejs/kit').Get}

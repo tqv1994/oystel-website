@@ -80,6 +80,7 @@ ${interestFieldsFragment}
 ${addressFieldsFragment}
 ${travelPreferenceFieldsFragment}
 ${personalPreferenceFieldsFragment}
+${languageFieldsFragment}
 `;
 
 const metadataQuery = `query {
