@@ -54,16 +54,15 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
   function adjustNav() {
     handleChangeNavLightColor();
     if (window.innerWidth < 960) {
-      prominent = false;
       onMobile = true;
     } else {
       drawerOpen = false;
-      if (window.scrollY < 64) {
+    }
+    if (window.scrollY < 64) {
         prominent = true;
       } else {
         prominent = false;
       }
-    }
   }
 
   const handleChangeNavLightColor = () => {
@@ -92,8 +91,6 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
       prominent = false;
     }
     if (window.innerWidth < 960) {
-      onMobile = true;
-      prominent = false;
       activeSubItems = [];
     } else {
       drawerOpen = false;
@@ -101,7 +98,8 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
   }
 
   function onScroll(event: Event) {
-    if (activeSubItems && Math.abs(window.scrollY - scrollY) > 250) {
+    if (window.innerWidth < 960 && active) {
+    }else if (activeSubItems && Math.abs(window.scrollY - scrollY) > 250) {
       activeSubItems = [];
       activeSubItem = undefined;
     }
@@ -327,6 +325,9 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
                 </Item>
               {/each}
             {/if}
+            <Item href={active?.url} class="all">
+              <Label>View all</Label>
+            </Item>
           </List>
         {:else}
           <List on:MDCList:action={onMobileMainNavAction}>

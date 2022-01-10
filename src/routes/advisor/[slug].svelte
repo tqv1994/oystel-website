@@ -180,7 +180,7 @@
       <div class="content-wrap m-none">
         <div class="container">
           <div
-            class={`contact-info d-p-45 d-pt-80 d-pb-85 t-pt-80 t-pb-85 m-pt-30 m-pb-45 ${
+            class={`contact-info d-p-45 d-pr-65 d-pt-80 d-pb-85 m-pt-30 m-pb-45 ${
               stickyShow ? 'fixed' : ''
             }`}
           >
@@ -653,6 +653,9 @@
       .header-title {
         height: auto;
         padding-bottom: 82.67%;
+      }
+      #contact-info-mobile{
+        height: 200px;
       }
       .contact-info {
         text-align: center !important;

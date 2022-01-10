@@ -272,7 +272,7 @@
 />
 
 <div class="content destinations-listing-content">
-  <section class="header-title d-pt-150 d-pb-95 m-pt-80 m-pb-25 full-width">
+  <section class="header-title d-pt-150 d-pb-95 m-pt-130 m-pb-25 full-width">
     <div class="content-wrap">
       <div class="container m-none">
         <form
