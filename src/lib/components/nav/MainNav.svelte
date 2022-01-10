@@ -83,7 +83,7 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
 
   afterUpdate(()=>{
     handleChangeNavLightColor();
-  })
+  });
 
   function onResize(event: Event) {
     if (window.scrollY < 64) {
