@@ -16,6 +16,7 @@ import { interestFieldsFragment } from '$lib/store/interest';
 import { addressFieldsFragment } from '$lib/store/address';
 import { personalPreferenceFieldsFragment, travelPreferenceFieldsFragment } from '$lib/store/preference';
 import type { Rec } from '@sveltejs/kit/types/helper';
+import { languageFieldsFragment } from '$lib/store/language';
 
 export type createTripData = {
     createTrip: {
@@ -52,6 +53,7 @@ export const post: RequestHandler = async (
         ${travelPreferenceFieldsFragment}
         ${personalPreferenceFieldsFragment}
         ${addressFieldsFragment}
+        ${languageFieldsFragment}
     `;
         const res = await client.mutation<createTripData>(query, {trip: request.body }).toPromise();
         if (res.data) {

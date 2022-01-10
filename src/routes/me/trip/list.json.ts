@@ -15,6 +15,7 @@ import { insuranceFieldsFragment } from '$lib/store/insurance';
 import { interestFieldsFragment } from '$lib/store/interest';
 import { addressFieldsFragment } from '$lib/store/address';
 import { personalPreferenceFieldsFragment, travelPreferenceFieldsFragment } from '$lib/store/preference';
+import { languageFieldsFragment } from '$lib/store/language';
 
 type TripQueryResult = {
   trips: Trip[];
@@ -51,6 +52,7 @@ export const get: RequestHandler = async (request: Request) => {
     ${travelPreferenceFieldsFragment}
     ${personalPreferenceFieldsFragment}
     ${addressFieldsFragment}
+    ${languageFieldsFragment}
     `;
     const res = await client.query<TripQueryResult>(query, {id: request.locals.user?.travellerMe?.id}).toPromise();
     if (res.data) {
