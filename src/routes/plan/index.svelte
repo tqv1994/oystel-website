@@ -131,7 +131,7 @@
       if (isSaveAndClose) {
         open = false;
         tripInput = new TripInput();
-        carousel.goto(0,{animated: false});
+        carousel.goTo(0,{animated: false});
       } else {
         goto('/plan/success');
       }
