@@ -1,16 +1,17 @@
 <script lang="ts">
 import BlurImage from '$lib/components/blur-image.svelte';
+import { UploadFile } from '$lib/store/upload-file';
 
   import Checkbox from '@smui/checkbox';
   export let selected: string[];
   export let value: string;
-  export let image: string;
+  export let image: UploadFile;
 </script>
 
 <div class="item">
   <div class="thumbnail">
     <div class="image-cover"/>
-    <BlurImage url={image} />
+    <BlurImage {...image} />
     <Checkbox bind:group={selected} {value} />
   </div>
 </div>
@@ -20,7 +21,6 @@ import BlurImage from '$lib/components/blur-image.svelte';
     .thumbnail {
       position: relative;
       --mdc-checkbox-unchecked-color: white;
-      --mdc-checkbox-ink-color: #000;
       :global(.mdc-checkbox) {
         position: absolute;
         top: 5px;

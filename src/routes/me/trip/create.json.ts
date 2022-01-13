@@ -17,6 +17,13 @@ import { addressFieldsFragment } from '$lib/store/address';
 import { personalPreferenceFieldsFragment, travelPreferenceFieldsFragment } from '$lib/store/preference';
 import type { Rec } from '@sveltejs/kit/types/helper';
 import { languageFieldsFragment } from '$lib/store/language';
+import { experienceFieldsFragment } from '$lib/store/experience';
+import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
+import { lodgingTypeFieldsFragment } from '$lib/store/lodgingType';
+import { roomStyleFieldsFragment, roomStyleTypeFieldsFragment } from '$lib/store/roomStyle';
+import { roomPreferenceFieldsFragment } from '$lib/store/roomPreference';
+import { currencyFieldsFragment } from '$lib/store/currency';
+import { travelingWithYouFieldsFragment } from '$lib/store/travelingWithYous';
 
 export type createTripData = {
     createTrip: {
@@ -54,7 +61,16 @@ export const post: RequestHandler = async (
         ${personalPreferenceFieldsFragment}
         ${addressFieldsFragment}
         ${languageFieldsFragment}
+        ${experienceFieldsFragment}
+        ${experienceTypeFieldsFragment}
+        ${lodgingTypeFieldsFragment}
+        ${roomStyleFieldsFragment}
+        ${roomStyleTypeFieldsFragment}
+        ${roomPreferenceFieldsFragment}
+        ${currencyFieldsFragment}
+        ${travelingWithYouFieldsFragment}
     `;
+    console.log(query);
         const res = await client.mutation<createTripData>(query, {trip: request.body }).toPromise();
         if (res.data) {
             return {

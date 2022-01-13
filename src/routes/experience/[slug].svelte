@@ -348,6 +348,11 @@
     /* Header title */
     .header-title {
       background-color: #f0f7f8;
+      .mdc-layout-grid{
+        @include mixins.desktop{
+          --mdc-layout-grid-gutter-desktop: 30px;
+        }
+      }
     }
 
     .header-title .btn-favorite {

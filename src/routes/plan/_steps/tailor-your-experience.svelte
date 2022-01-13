@@ -4,7 +4,10 @@
   import Checkbox from '@smui/checkbox';
   import { Category } from '$lib/store/category';
   import Textfield from '@smui/textfield';
+  import { TripInput } from '$lib/store/trip';
   let note: string = '';
+  export let tripInput: TripInput = new TripInput();
+  tripInput.description = tripInput.description || '';
 </script>
 
 <Step
@@ -14,14 +17,14 @@
   <div class="form-control m-none">
     <Textfield
       textarea
-      bind:value={note}
+      bind:value={tripInput.description}
       label="Free text entry.. For example, I like a beach holiday, but I sunburn easily, so please get me a covered sunbed"
     />
   </div>
   <div class="form-control m-block d-none">
     <Textfield
       textarea
-      bind:value={note}
+      bind:value={tripInput.description}
       label="Free text entry..."
     />
   </div>

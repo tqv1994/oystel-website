@@ -1,7 +1,13 @@
 import { Advisor } from "./advisor";
+import { Currency } from "./currency";
 import { Destination } from "./destination";
 import { Document } from "./document";
+import { Experience } from "./experience";
 import { Insurance } from "./insurance";
+import { LodgingType } from "./lodgingType";
+import { RoomPreference } from "./roomPreference";
+import { RoomStyle } from "./roomStyle";
+import { TravelingWithYou } from "./travelingWithYous";
 import { Traveller } from "./traveller";
 import { Base } from "./types";
 
@@ -24,6 +30,23 @@ export type Trip = Base & {
     emergencyPhone: string;
     emergencyRole: string;
     emergencyReference: string;
+    numberOfNights?: number;
+    numberOfAdults?: number;
+    numberOfChildren?: number;
+    numberOfRoom?: number;
+    desiredDestinations?: string;
+    lodgingTypeOther?: string;
+    needFlights?: boolean;
+    travelByFlight?: string;
+    travelAnotherWay?: string;
+    numberOfTripsInSixMonths?: string;
+    experiences?: Experience[];
+    travelingWithYous?: TravelingWithYou[];
+    lodgingTypes?: LodgingType[];
+    roomStyles?: RoomStyle[];
+    currency?: Currency;
+    destinationType?: Destination[];
+    roomPreferences?: RoomPreference[];
 }
 
 export class TripInput {
@@ -47,9 +70,31 @@ export class TripInput {
     emergencyPhone: string;
     emergencyRole: string;
     emergencyReference: string;
+    numberOfNights: number;
+    numberOfAdults: number;
+    numberOfChildren: number;
+    numberOfRoom: number;
+    desiredDestinations: string;
+    lodgingTypeOther: string;
+    needFlights: boolean;
+    travelByFlight: string;
+    travelAnotherWay: string;
+    numberOfTripsInSixMonths: number;
+    experiences: string[]; // ID[]
+    travelingWithYous: string[]; // ID[]
+    lodgingTypes: string[]; // ID[]
+    roomStyles: string[]; // ID []
+    destinationTypes: string[]; // ID[]
+    roomPreferences: string[]; //ID[]
 
     constructor(values: Object = {}) {
         Object.assign(this, values);
+        this.experiences = this.experiences || [];
+        this.travelingWithYous = this.travelingWithYous || [];
+        this.lodgingTypes = this.lodgingTypes || [];
+        this.roomStyles = this.roomStyles || [];
+        this.destinationTypes = this.destinationTypes || [];
+        this.roomPreferences = this.roomPreferences || [];
     }
 }
 
@@ -62,6 +107,13 @@ export const convertTripToInput = (trip: Trip): TripInput => {
     data.documents = trip.documents.map((item) => item.id);
     data.insurances = trip.insurances.map((item) => item.id);
     data.travellers = trip.travellers.map((item) => item.id);
+    data.experiences = (trip.experiences || []).map((item)=>item.id+"");
+    data.travelingWithYous = (trip.travelingWithYous || []).map((item)=>item.id+"");
+    data.lodgingTypes = (trip.lodgingTypes || []).map((item)=>item.id + "");
+    data.roomStyles = (trip.roomStyles || []).map((item) => item.id + "");
+    data.currency = trip.currency?.id || '';
+    data.destinationTypes = (trip.destinationType || []).map((item)=> item.id + "");
+    data.roomPreferences = (trip.roomPreferences || []).map((item)=> item.id+"");
     delete data.id;
     delete data.updated_at
     delete data.__typename;
@@ -117,5 +169,36 @@ fragment tripFields on Trip{
     emergencyPhone
     emergencyRole
     emergencyReference
+    numberOfNights
+    numberOfAdults
+    numberOfChildren
+    numberOfRoom
+    desiredDestinations
+    lodgingTypeOther
+    needFlights
+    travelByFlight
+    travelAnotherWay
+    numberOfTripsInSixMonths
+    experiences{
+        ...experienceFields
+    }
+    travelingWithYous{
+        ...travelingWithYouFields
+    }
+    lodgingTypes {
+        ...lodgingTypeFields
+    }
+    roomStyles {
+        ...roomStyleFields
+    }
+    currency{
+        ...currencyFields
+    }
+    roomPreferences{
+        ...roomPreferenceFields
+    }
+    destinationTypes{
+        ...destinationTypeFields
+    }
 }
 `;

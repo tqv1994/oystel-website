@@ -4,8 +4,27 @@
   import Checkbox from '@smui/checkbox';
   import { Category } from '$lib/store/category';
   import Textfield from '@smui/textfield';
-
+  import { Experience } from '$lib/store/experience';
+  import { TripInput } from '$lib/store/trip';
+  export let experiences: Experience[] = [];
+  export let tripInput: TripInput = new TripInput();
   let selected: string[] = [];
+  tripInput.experiences = tripInput.experiences || []; 
+  type ExperiencesByType = {
+    type: string;
+    experiences: Experience[];
+  }
+  const experiencesByTypes: ExperiencesByType[] = experiences.reduce((acc: ExperiencesByType[],item)=>{
+    const index = acc.findIndex((itemType)=>itemType.type === item.type1.name);
+    if(index >= 0){
+      acc[index].experiences.push(item);
+    }else{
+      if(item.type1){
+        acc.push({type: item.type1.name, experiences: [item]});
+      }
+    }
+    return acc;
+  },[]);
 </script>
 
 <Step
@@ -14,97 +33,19 @@
   class="experiences-step-content"
 >
   <div class="row mt-30">
+    {#each experiencesByTypes as experiencesByType}
     <div class="d-col-3 m-col-12">
-      <h3 class="mdc-typography--headline1 text-left mt-0 m-mb-15">Relax</h3>
+      <h3 class="mdc-typography--headline1 text-left mt-0 m-mb-15">{experiencesByType.type}</h3>
       <div class="options">
+        {#each experiencesByType.experiences as item}
         <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Fitness'} />
-          <span slot="label">Fitness</span>
+          <Checkbox bind:group={tripInput.experiences} value={item.id} />
+          <span slot="label">{item.name}</span>
         </FormField>
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Spa'} />
-          <span slot="label">Spa</span>
-        </FormField>
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Wellness/Medical Retreat'} />
-          <span slot="label">Wellness/Medical Retreat</span>
-        </FormField>
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Yoga'} />
-          <span slot="label">Yoga</span>
-        </FormField>
+        {/each}
       </div>
     </div>
-    <div class="d-col-3 m-col-12">
-      <h3 class="mdc-typography--headline1 text-left mt-0 m-mb-15">Celebrate</h3>
-      <div class="options">
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Anniversary'} />
-          <span slot="label">Anniversary</span>
-        </FormField>
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Birthday'} />
-          <span slot="label">Birthday</span>
-        </FormField>
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Engagement'} />
-          <span slot="label">Engagement</span>
-        </FormField>
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Honeymoon'} />
-          <span slot="label">Honeymoon</span>
-        </FormField>
-      </div>
-    </div>
-    <div class="d-col-3 m-col-12">
-      <h3 class="mdc-typography--headline1 text-left mt-0 m-mb-15">Discover</h3>
-      <div class="options">
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Art & Culture'} />
-          <span slot="label">Art & Culture</span>
-        </FormField>
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Fashion'} />
-          <span slot="label">Fashion</span>
-        </FormField>
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Food/Wine'} />
-          <span slot="label">Food/Wine</span>
-        </FormField>
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Local Experiences'} />
-          <span slot="label">Local Experiences</span>
-        </FormField>
-        <FormField class="d-mb-15">
-          <Checkbox bind:group={selected} value={'Safari'} />
-          <span slot="label">Safari</span>
-        </FormField>
-      </div>
-  </div>
-  <div class="d-col-3 m-col-12">
-    <h3 class="mdc-typography--headline1 text-left mt-0 m-mb-15">Activity</h3>
-    <div class="options">
-      <FormField class="d-mb-15">
-        <Checkbox bind:group={selected} value={'Golf'} />
-        <span slot="label">Golf</span>
-      </FormField>
-      <FormField class="d-mb-15">
-        <Checkbox bind:group={selected} value={'Hiking'} />
-        <span slot="label">Hiking</span>
-      </FormField>
-      <FormField class="d-mb-15">
-        <Checkbox bind:group={selected} value={'Tennis'} />
-        <span slot="label">Tennis</span>
-      </FormField>
-      <FormField class="d-mb-15">
-        <Checkbox bind:group={selected} value={'Water Sports'} />
-        <span slot="label">Water Sports</span>
-      </FormField>
-      <FormField class="d-mb-15">
-        <Checkbox bind:group={selected} value={'Winter Sports'} />
-        <span slot="label">Winter Sports</span>
-      </FormField>
-    </div>
+    {/each}
 </div>
 </Step>
 

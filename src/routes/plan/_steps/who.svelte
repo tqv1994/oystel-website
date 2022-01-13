@@ -3,27 +3,23 @@
   import Step from '../Step.svelte';
   import FormField from '@smui/form-field';
   import Checkbox from '@smui/checkbox';
-
-  const options = [
-    'Solo',
-    'A friend',
-    'Adult couple(s)',
-    'Family with young children (under 12 yrs)',
-    'Family with teenage children',
-    'Multi generational adults',
-    'Large group of adults',
-  ];
-  let selected: string[] = [];
-  let numOfAdults: number = 1;
-  let numOfChildren: number = 0;
+  import { TravelingWithYou } from '$lib/store/travelingWithYous';
+  import { TripInput } from '$lib/store/trip';
+import { afterUpdate } from 'svelte';
+  export let travelingWithYous: TravelingWithYou[] = [];
+  export let tripInput: TripInput = new TripInput();
+  tripInput.numberOfAdults = tripInput.numberOfAdults || 1;
+  tripInput.numberOfChildren = tripInput.numberOfChildren || 0;
+  tripInput.travelingWithYous = tripInput.travelingWithYous || [];
+  
 </script>
 
 <Step title="Who will be be traveling with you?" subtitle="Check as many as you wish">
   <div class="options">
-    {#each options as option}
+    {#each travelingWithYous || [] as option}
       <FormField>
-        <Checkbox bind:group={selected} value={option} />
-        <span slot="label">{option}</span>
+        <Checkbox bind:group={tripInput.travelingWithYous} value={option.id} />
+        <span slot="label">{option.name}</span>
       </FormField>
     {/each}
   </div>
@@ -31,14 +27,14 @@
     <h3>Guests</h3>
     <Textfield
       class="num-adults"
-      bind:value={numOfAdults}
+      bind:value={tripInput.numberOfAdults}
       min={1}
       label="Number of adults"
       type="number"
     />
     <Textfield
       class="num-children"
-      bind:value={numOfChildren}
+      bind:value={tripInput.numberOfChildren}
       label="Number of children"
       type="number"
     />

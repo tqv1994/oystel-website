@@ -45,6 +45,7 @@
     grid-row-gap: 1em;
     min-height: 100vh;
     max-height: 100vh;
+    overflow: hidden;
     position: relative;
   }
 

@@ -29,7 +29,8 @@ export const createTripService = async (input: TripInput): Promise<Trip> =>{
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-            ...input
+            ...input,
+            depart_at: new Date(input.depart_at)
             }),
         });
         if(res.ok){

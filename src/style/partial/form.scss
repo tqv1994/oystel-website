@@ -54,6 +54,14 @@ form {
         --mdc-theme-secondary: #000;
     }
 
+    // stype for text-area
+    .mdc-text-field--textarea.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above{
+        width: 130%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     // Color
 }
 @include mixins.dark {

@@ -6,11 +6,13 @@
   import Textfield from '@smui/textfield';
   import Select from '@smui/select';
   import { Option } from '@smui/select';
+import { TripInput } from '$lib/store/trip';
   export let destinationTypes: Category[];
 
   let selected: string[] = [];
-  let vaccinated: string = '';
-  let many_trips: string = '';
+  export let tripInput: TripInput = new TripInput();
+  let vaccinated = tripInput.vaccinated ? 'yes' : 'no';
+  tripInput.numberOfTripsInSixMonths ||= 0;
 </script>
 
 <Step title="One final question.." subtitle="">
@@ -21,8 +23,9 @@
       >
     </div>
     <div class="d-col-6 m-col-12">
-      <Select label="Select" bind:value={vaccinated}>
-        <Option value={''} />
+      <Select label="Select" bind:value={vaccinated} on:change={()=>{ tripInput.vaccinated = vaccinated == 'yes' ? true : false }} >
+        <Option value="yes" >Yes</Option>
+        <Option value="no" >No</Option>
       </Select>
     </div>
   </div>
@@ -33,7 +36,7 @@
       >
     </div>
     <div class="d-col-6 m-col-12">
-      <Textfield bind:value={many_trips} label="Enter Number" type="number" />
+      <Textfield bind:value={tripInput.numberOfTripsInSixMonths} label="Enter Number" type="number" />
     </div>
   </div>
 </Step>

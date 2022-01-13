@@ -4,18 +4,19 @@
   import Checkbox from '@smui/checkbox';
   import { Category } from '$lib/store/category';
   import Textfield from '@smui/textfield';
+  import { TripInput } from '$lib/store/trip';
 
   export let destinationTypes: Category[];
-
-  let selected: string[] = [];
-  let preferred: string = '';
+  export let tripInput: TripInput = new TripInput();
+  tripInput.destinationTypes = tripInput.destinationTypes || [];
+  tripInput.desiredDestinations = tripInput.desiredDestinations || '';
 </script>
 
 <Step title="Where would you like to go?" subtitle="Check all that apply">
   <div class="options">
     {#each destinationTypes as option}
       <FormField>
-        <Checkbox bind:group={selected} value={option} />
+        <Checkbox bind:group={tripInput.destinationTypes} value={option.id} />
         <span slot="label">{option.name}</span>
       </FormField>
     {/each}
@@ -23,7 +24,7 @@
   <Textfield
     textarea
     class="preferred"
-    bind:value={preferred}
+    bind:value={tripInput.desiredDestinations}
     label="List your preferred destination if you have one"
   />
 </Step>

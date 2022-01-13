@@ -3,6 +3,8 @@
   import Step from '../Step.svelte';
   import Select from '@smui/select';
   import { Option } from '@smui/select';
+import { Currency } from '$lib/store/currency';
+import { TripInput } from '$lib/store/trip';
 
   const options = [
     'Solo',
@@ -13,9 +15,10 @@
     'Multi generational adults',
     'Large group of adults',
   ];
-  let currency: string = '';
-  let budget: string = '';
-  let accomodation: number = 1;
+  export let currencies: Currency[] = [];
+  export let tripInput: TripInput = new TripInput();
+  tripInput.budget = tripInput.budget || 0;
+  tripInput.numberOfRoom = tripInput.numberOfRoom || 1;
 </script>
 
 <Step
@@ -29,11 +32,10 @@
       >
     </div>
     <div class="d-col-6 m-col-12">
-      <Select id="budget-currency" noLabel bind:value={currency}>
-        <Option>USD</Option>
-        <Option>GBP</Option>
-        <Option>AUD</Option>
-        <Option>CNY</Option>
+      <Select id="budget-currency" noLabel bind:value={tripInput.currency}>
+        {#each currencies as currency }
+          <Option value={currency.id}>{currency.name}</Option>
+        {/each}
       </Select>
     </div>
   </div>
@@ -46,7 +48,7 @@
     <div class="d-col-6 m-col-12">
       <Textfield
         id="budget-budget"
-        bind:value={budget}
+        bind:value={tripInput.budget}
         min={1}
         label="E.g. 123.45"
         type="number"
@@ -60,10 +62,11 @@
       >
     </div>
     <div class="d-col-6 m-col-12">
-      <Select id="budget-accommodation" noLabel bind:value={accomodation}>
+      <Select id="budget-accommodation" noLabel bind:value={tripInput.numberOfRoom}>
         <Option value={1}>1</Option>
         <Option value={2}>2</Option>
         <Option value={3}>3</Option>
+        <Option value={4}>4</Option>
       </Select>
     </div>
   </div>

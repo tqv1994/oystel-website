@@ -4,8 +4,13 @@
   import Textfield from '@smui/textfield';
   import Select from '@smui/select';
   import { Option } from '@smui/select';
+import { TripInput } from '$lib/store/trip';
 
   let flights: string = '';
+  export let tripInput: TripInput = new TripInput();
+  let needFlights = tripInput.needFlights ? 'yes' : 'no';
+  tripInput.travelByFlight ||= '';
+  tripInput.travelAnotherWay ||= '';
 </script>
 
 <Step title="Your travel" subtitle="">
@@ -14,8 +19,9 @@
       <label class="mdc-typography--headline1 m-0">Do you need Flights?</label>
     </div>
     <div class="d-col-5 m-col-12">
-      <Select label="Select" bind:value={flights}>
-        <Option value={''} />
+      <Select label="Select" bind:value={needFlights} on:change={()=>{ tripInput.needFlights = needFlights == 'yes' ? true : false }}>
+        <Option value={'yes'}  selected={!tripInput.needFlights ? true : false}>No</Option>
+        <Option value={'no'} selected={!tripInput.needFlights ? false : true}>Yes</Option>
       </Select>
     </div>
   </div>
@@ -26,9 +32,7 @@
       >
     </div>
     <div class="d-col-5 m-col-12">
-      <Select label="Select" bind:value={flights}>
-        <Option value={''} />
-      </Select>
+      <Textfield bind:value={tripInput.travelByFlight}/>
     </div>
   </div>
   <div class="row">
@@ -38,9 +42,7 @@
       >
     </div>
     <div class="d-col-5 m-col-12">
-      <Select label="Select" bind:value={flights}>
-        <Option value={''} />
-      </Select>
+      <Textfield bind:value={tripInput.travelAnotherWay}/>
     </div>
   </div>
 </Step>

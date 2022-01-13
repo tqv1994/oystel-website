@@ -13,12 +13,15 @@
     <p>{subtitle}</p>
   {/if}
   <div class="content d-pt-30 m-pt-15">
-    <slot />
+    <form>
+      <slot />
+    </form>
   </div>
 </div>
 
 <style lang="scss">
   .root {
+    min-height: 100vh;
     text-align: center;
     --mdc-typography-headline2-font-family: GTSupper;
     :global(.title) {

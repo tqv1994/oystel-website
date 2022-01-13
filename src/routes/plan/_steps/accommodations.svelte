@@ -4,10 +4,21 @@
   import Checkbox from '@smui/checkbox';
   import { Category } from '$lib/store/category';
   import Textfield from '@smui/textfield';
+import { RoomPreference } from '$lib/store/roomPreference';
+import { LodgingType } from '$lib/store/lodgingType';
+import { TripInput } from '$lib/store/trip';
 
   let selected: string[] = [];
   let preferred: string = '';
   let otherVal: string = '';
+  export let roomPreferences: RoomPreference[];
+  export let lodgingTypes: LodgingType[];
+  export let tripInput: TripInput = new TripInput();
+  
+  console.log('data',lodgingTypes);
+  tripInput.lodgingTypeOther = tripInput.lodgingTypeOther || '';
+  tripInput.lodgingTypes = tripInput.lodgingTypes || [];
+  tripInput.roomPreferences = tripInput.roomPreferences || [];
 </script>
 
 <Step title="Your accommodations" subtitle="Check as many as you wish.">
@@ -15,25 +26,19 @@
     <div class="d-col-4 m-col-12">
       <h3 class="mdc-typography--headline1 text-left mt-0 m-mb-15">Lodging</h3>
       <div class="options options-1">
+        {#each lodgingTypes || [] as lodgingType}
         <FormField>
-          <Checkbox bind:group={selected} value={'Hotel'} />
-          <span slot="label">Hotel</span>
+          <Checkbox bind:group={tripInput.lodgingTypes} value={lodgingType.id} />
+          <span slot="label">{lodgingType.name}</span>
         </FormField>
+        {/each}
         <FormField>
-          <Checkbox bind:group={selected} value={'Lodge'} />
-          <span slot="label">Lodge</span>
-        </FormField>
-        <FormField>
-          <Checkbox bind:group={selected} value={'Chalet / Villa'} />
-          <span slot="label">Chalet / Villa</span>
-        </FormField>
-        <FormField>
-          <Checkbox bind:group={selected} value={'Other'} />
+          <Checkbox checked={tripInput.lodgingTypeOther ? true : false} value={'Other'} />
           <span slot="label"
             ><Textfield
-              bind:value={otherVal}
+              bind:value={tripInput.lodgingTypeOther}
               label="Other Lodging Type.."
-              type="string"
+              type="text"
             /></span
           >
         </FormField>
@@ -42,38 +47,12 @@
     <div class="d-col-8 m-col-12">
       <h3 class="mdc-typography--headline1 text-left mt-0 m-mb-15">Room Preferences</h3>
       <div class="options-2 options">
+        {#each roomPreferences || [] as roomPreference}
         <FormField>
-          <Checkbox bind:group={selected} value={'Room with a view'} />
-          <span slot="label">Room with a view</span>
+          <Checkbox bind:group={selected} value={roomPreference.id} />
+          <span slot="label">{roomPreference.name}</span>
         </FormField>
-        <FormField>
-          <Checkbox bind:group={selected} value={'Suite – open plan'} />
-          <span slot="label">Suite – open plan</span>
-        </FormField>
-        <FormField>
-          <Checkbox bind:group={selected} value={'Room with balcony'} />
-          <span slot="label">Room with balcony</span>
-        </FormField>
-        <FormField>
-          <Checkbox bind:group={selected} value={'Suite – living area'} />
-          <span slot="label">Suite – living area</span>
-        </FormField>
-        <FormField>
-          <Checkbox bind:group={selected} value={'Connecting rooms'} />
-          <span slot="label">Connecting rooms</span>
-        </FormField>
-        <FormField>
-          <Checkbox bind:group={selected} value={'Two+ bedroom suite'} />
-          <span slot="label">Two+ bedroom suite</span>
-        </FormField>
-        <FormField>
-          <Checkbox bind:group={selected} value={'Kitchenette'} />
-          <span slot="label">Kitchenette</span>
-        </FormField>
-        <FormField>
-          <Checkbox bind:group={selected} value={'Outdoor space'} />
-          <span slot="label">Outdoor space</span>
-        </FormField>
+        {/each}
       </div>
     </div>
   </div>

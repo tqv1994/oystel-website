@@ -5,7 +5,26 @@
   import { Category } from '$lib/store/category';
   import Textfield from '@smui/textfield';
   import ImageWithCheckBox from '../ImageWithCheckBox.svelte';
-  let selected: string[] = [];
+  import { RoomStyle } from '$lib/store/roomStyle';
+  import { TripInput } from '$lib/store/trip';
+  export let tripInput: TripInput = new TripInput();
+  export let roomStyles: RoomStyle[] = [];
+  tripInput.roomStyles = tripInput.roomStyles || [];
+  let roomStylesByType: {
+    type: string,
+    rooms: RoomStyle[];
+  }[] = roomStyles.reduce((acc: {
+    type: string,
+    rooms: RoomStyle[];
+  }[], item)=>{
+    let index = acc.findIndex((accItem)=> accItem.type == item.roomStyleType.name);
+    if(index >= 0){
+      acc[index].rooms.push(item);
+    }else{
+      acc.push({type: item.roomStyleType.name,rooms: [item]});
+    }
+    return acc;
+  },[]);
 </script>
 
 <Step
@@ -14,34 +33,16 @@
   class="room-style-content"
 >
   <div class="row">
-    <div class="d-col-3 m-col-6">
-      <h3 class="mdc-typography--headline1 m-0 mb-15">Traditional</h3>
-      <div class="options">
-        <ImageWithCheckBox bind:selected value={'room-1'} image="./img/rooms/room-1.jpg" />
-        <ImageWithCheckBox bind:selected value={'room-2'} image="./img/rooms/room-2.jpg" />
+    {#each roomStylesByType  as item }
+      <div class="d-col-3 m-col-6">
+        <h3 class="mdc-typography--headline1 m-0 mb-15">{item.type}</h3>
+        <div class="options">
+          {#each item.rooms as room}
+            <ImageWithCheckBox bind:selected={tripInput.roomStyles} value={room.id} image={room.thumbnail} />
+          {/each}
+        </div>
       </div>
-    </div>
-    <div class="d-col-3 m-col-6">
-      <h3 class="mdc-typography--headline1 m-0 mb-15">Modern</h3>
-      <div class="options">
-        <ImageWithCheckBox bind:selected value={'room-3'} image="./img/rooms/room-3.jpg" />
-        <ImageWithCheckBox bind:selected value={'room-4'} image="./img/rooms/room-4.jpg" />
-      </div>
-    </div>
-    <div class="d-col-3 m-col-6">
-      <h3 class="mdc-typography--headline1 m-0 mb-15">Country Chic</h3>
-      <div class="options">
-        <ImageWithCheckBox bind:selected value={'room-5'} image="./img/rooms/room-5.jpg" />
-        <ImageWithCheckBox bind:selected value={'room-6'} image="./img/rooms/room-6.jpg" />
-      </div>
-    </div>
-    <div class="d-col-3 m-col-6">
-      <h3 class="mdc-typography--headline1 m-0 mb-15">Boutique</h3>
-      <div class="options">
-        <ImageWithCheckBox bind:selected value={'room-7'} image="./img/rooms/room-7.jpg" />
-        <ImageWithCheckBox bind:selected value={'room-8'} image="./img/rooms/room-8.jpg" />
-      </div>
-    </div>
+    {/each}
   </div>
 </Step>
 
