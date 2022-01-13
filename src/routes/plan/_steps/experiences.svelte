@@ -59,7 +59,7 @@
     }
   }
   :global(.root.experiences-step-content){
-    :global(.content) {
+    :global(.content.content) {
       max-width: 75em;
     }
   }
