@@ -56,7 +56,7 @@
     }
   }
   :global(.root.room-style-content) {
-    :global(.content) {
+    :global(.content.content) {
       max-width: 75em;
     }
   }
