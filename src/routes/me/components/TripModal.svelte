@@ -11,6 +11,7 @@
   import { Trip } from '$lib/store/trip';
   import Carousel from '$lib/components/Carousel.svelte';
   import { dateTimeHelper } from '$lib/helpers/datetime';
+import { destinationStore } from '$lib/store/destination';
   export let open: boolean = false;
   export let trip: Trip;
 
@@ -34,18 +35,20 @@
       }}>close</IconButton
     >
     <div class="thumbnail">
-      {#if trip.destinations[0].gallery.length > 1}
-        <Carousel {...carouselConfig}>
-          {#each trip.destinations[0].gallery as item}
-            <div class="image-cover" style="padding-top: calc(288/935 * 100%)">
-              <BlurImage {...item} />
-            </div>
-          {/each}
-        </Carousel>
-      {:else if trip.destinations[0].gallery.length == 1}
-        <div class="image-cover" style="padding-top: calc(288/935 * 100%)">
-          <BlurImage {...trip.destinations[0].gallery[0]} />
-        </div>
+      {#if trip.destinations.length}
+        {#if trip.destinations[0].gallery.length > 1}
+          <Carousel {...carouselConfig}>
+            {#each trip.destinations[0].gallery as item}
+              <div class="image-cover" style="padding-top: calc(288/935 * 100%)">
+                <BlurImage {...item} />
+              </div>
+            {/each}
+          </Carousel>
+        {:else if trip.destinations[0].gallery.length == 1}
+          <div class="image-cover" style="padding-top: calc(288/935 * 100%)">
+            <BlurImage {...trip.destinations[0].gallery[0]} />
+          </div>
+        {/if}
       {/if}
     </div>
     <div class="content">
@@ -75,8 +78,8 @@
         </div>
         <div class="d-col-6 m-col-12">
           <p class="mdc-typography--headline1 m-0">
-            {trip.destinations && trip.destinations.length > 0
-              ? trip.destinations.map((item) => item.name).join(', ')
+            {trip.destinationTypes && trip.destinationTypes.length > 0
+              ? trip.destinationTypes.map((item) => item.name).join(', ')
               : ''}
           </p>
         </div>

@@ -49,7 +49,7 @@ import { TripInput } from '$lib/store/trip';
       <div class="options-2 options">
         {#each roomPreferences || [] as roomPreference}
         <FormField>
-          <Checkbox bind:group={selected} value={roomPreference.id} />
+          <Checkbox bind:group={tripInput.roomPreferences} value={roomPreference.id} />
           <span slot="label">{roomPreference.name}</span>
         </FormField>
         {/each}

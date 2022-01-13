@@ -24,18 +24,20 @@
 
 <div class="box">
   <div class="thumbnail">
-    {#if trip.destinations[0].gallery.length > 1}
-      <Carousel {...carouselConfig}>
-        {#each trip.destinations[0].gallery as item}
-          <div class="image-cover" style="padding-top: calc(212 / 383 * 100%)">
-            <BlurImage {...item} />
-          </div>
-        {/each}
-      </Carousel>
-    {:else if trip.destinations[0].gallery.length == 1}
-      <div class="image-cover" style="padding-top: calc(212 / 383 * 100%)">
-        <BlurImage {...trip.destinations[0].gallery[0]} />
-      </div>
+    {#if trip.destinations.length > 0}
+      {#if trip.destinations[0].gallery.length > 1}
+        <Carousel {...carouselConfig}>
+          {#each trip.destinations[0].gallery as item}
+            <div class="image-cover" style="padding-top: calc(212 / 383 * 100%)">
+              <BlurImage {...item} />
+            </div>
+          {/each}
+        </Carousel>
+      {:else if trip.destinations[0].gallery.length == 1}
+        <div class="image-cover" style="padding-top: calc(212 / 383 * 100%)">
+          <BlurImage {...trip.destinations[0].gallery[0]} />
+        </div>
+      {/if}
     {/if}
     <div class="content">
       <div class="row">
@@ -54,12 +56,12 @@
         </div>
       </div>
       <svelte:component this={Title}
-        >{trip.destinations && trip.destinations.length > 0
-          ? trip.destinations.map((item) => item.name).join(', ')
+        >{trip.destinationTypes && trip.destinationTypes.length > 0
+          ? trip.destinationTypes.map((item) => item.name).join(', ')
           : ''}</svelte:component
       >
       <p class="m-0">Number of Guests: {trip.travellers.length}</p>
-      <p class="m-0">Travel Advisor: {trip.advisor.name}</p>
+      <p class="m-0">Travel Advisor: {trip.advisor?.name || ''}</p>
     </div>
     <div class="actions">
       <div class="row">

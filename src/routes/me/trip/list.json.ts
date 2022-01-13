@@ -39,7 +39,7 @@ export const get: RequestHandler = async (request: Request) => {
   try {
     const client = createGraphClientFromRequest(request);
     const query = `query ($id: ID!){
-      trips(where:{travellers : $id}){
+      trips(where:{lead_traveller : $id}){
         ...tripFields
       }
     }

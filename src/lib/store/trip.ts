@@ -45,7 +45,7 @@ export type Trip = Base & {
     lodgingTypes?: LodgingType[];
     roomStyles?: RoomStyle[];
     currency?: Currency;
-    destinationType?: Destination[];
+    destinationTypes?: Destination[];
     roomPreferences?: RoomPreference[];
 }
 
