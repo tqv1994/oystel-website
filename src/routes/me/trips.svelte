@@ -26,7 +26,7 @@ import ButtonUnderline from './components/ButtonUnderline.svelte';
             props: {
               trips: data.trips,
               enquiryTrips: data.trips.filter(
-                (item) => item.state == 'enquired' || item.state == 'new_enquire',
+                (item) => item.state == 'enquired' || item.state == 'new_enquiry',
               ),
               planningTrips: data.trips.filter(
                 (item) => item.state == 'planning',
