@@ -15,11 +15,11 @@
     experiences: Experience[];
   }
   const experiencesByTypes: ExperiencesByType[] = experiences.reduce((acc: ExperiencesByType[],item)=>{
-    const index = acc.findIndex((itemType)=>itemType.type === item.type1.name);
+    const index = acc.findIndex((itemType)=>itemType.type === item.type1?.name);
     if(index >= 0){
       acc[index].experiences.push(item);
     }else{
-      if(item.type1){
+      if(item.type1 && item.type1.name){
         acc.push({type: item.type1.name, experiences: [item]});
       }
     }
