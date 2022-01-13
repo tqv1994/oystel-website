@@ -11,6 +11,7 @@
   import SearchIcon from '$lib/icons/SearchIcon.svelte';
   import TripIcon from '$lib/icons/TripIcon.svelte';
   import UserIcon from '$lib/icons/UserIcon.svelte';
+import SigninModal from '$lib/components/modals/SigninModal.svelte';
 
   export let openSigninModal = false;
   let dispatcher = createEventDispatcher();
@@ -68,8 +69,12 @@
     <Cell spanDevices={{ phone: 1, desktop: 3, tablet: 2 }} class="text-center">
       <Button
         on:click={() => {
-          let link = $authStore.user ? '/me' : '';
-          openLink(link);
+          if($authStore.user){
+            let link = $authStore.user ? '/me' : '';
+            openLink(link);
+          }else{
+            openSigninModal = true;
+          }
         }}
       >
         <div class="wrap-item">
@@ -80,7 +85,7 @@
     </Cell>
   </LayoutGrid>
 </div>
-
+<SigninModal bind:open={openSigninModal} />
 <style lang="scss">
   #bottom-app-bar {
     z-index: 20;

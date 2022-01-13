@@ -23,7 +23,6 @@
   import * as yup from 'yup';
   import { routerHelper } from '$lib/helpers';
   export let open: boolean;
-  export let authModel;
   const dispatch = createEventDispatcher();
   let model = {
     email: '',
