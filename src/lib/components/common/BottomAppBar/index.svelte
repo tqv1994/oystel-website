@@ -12,6 +12,7 @@
   import TripIcon from '$lib/icons/TripIcon.svelte';
   import UserIcon from '$lib/icons/UserIcon.svelte';
 import SigninModal from '$lib/components/modals/SigninModal.svelte';
+import SignupModal from '$lib/components/modals/SignupModal.svelte';
 
   export let openSigninModal = false;
   let dispatcher = createEventDispatcher();
@@ -73,7 +74,7 @@ import SigninModal from '$lib/components/modals/SigninModal.svelte';
             let link = $authStore.user ? '/me' : '';
             openLink(link);
           }else{
-            openSigninModal = true;
+            window.openSignInModal();
           }
         }}
       >
@@ -85,7 +86,6 @@ import SigninModal from '$lib/components/modals/SigninModal.svelte';
     </Cell>
   </LayoutGrid>
 </div>
-<SigninModal bind:open={openSigninModal} />
 <style lang="scss">
   #bottom-app-bar {
     z-index: 20;

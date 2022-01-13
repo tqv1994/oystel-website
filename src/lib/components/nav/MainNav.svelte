@@ -171,19 +171,6 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
   function onWindowClick() {
     activeSubItems = undefined;
   }
-
-  function onSignUpModalClose(event: CustomEvent) {
-    signupModalOpen = false;
-    if (event.detail.type === 'open-signin') {
-      signinModalOpen = true;
-    }
-  }
-  function onSignInModalClose(event: CustomEvent) {
-    signinModalOpen = false;
-    if (event.detail.type === 'open-signup') {
-      signupModalOpen = true;
-    }
-  }
 </script>
 
 <svelte:window
@@ -242,7 +229,7 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
         </IconButton>
         <IconButton
           on:click={() => {
-            $authStore.user ? goto('/me') : (signinModalOpen = true);
+            $authStore.user ? goto('/me') : (window.openSignInModal());
           }}
         >
           <UserIcon />
@@ -349,17 +336,6 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
     <slot />
   </AutoAdjust>
 </nav>
-
-<svelte:component
-  this={SigninModal}
-  bind:open={signinModalOpen}
-  on:close={onSignInModalClose}
-/>
-<svelte:component
-  this={SignupModal}
-  bind:open={signupModalOpen}
-  on:close={onSignUpModalClose}
-/>
 
 <style lang="scss" global>
   @use './MainNav';

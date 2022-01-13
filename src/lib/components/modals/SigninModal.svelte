@@ -19,10 +19,10 @@
     GoogleAuthProvider,
     FacebookAuthProvider,
   } from 'firebase/auth';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import * as yup from 'yup';
   import { routerHelper } from '$lib/helpers';
-  export let open: boolean;
+  let open: boolean;
   const dispatch = createEventDispatcher();
   let model = {
     email: '',
@@ -30,7 +30,7 @@
   };
   let classModal = '';
   let errors = {};
-  export function openModal() {
+  function openModal() {
     open = true;
   }
   const schemaValidator = yup.object().shape({
@@ -46,14 +46,14 @@
     classModal = 'closing';
   }
   function doSignUp() {
-    dispatch('close', {
-      type: 'open-signup',
-    });
+    window.closeSignInModal();
+    window.openSignUpModal();
   }
 
   function closeHandler(e) {
-    closeModal();
+    window.closeSignInModal();
   }
+  
 
   async function signInWithGoogle() {
     const auth = getAuth();
@@ -175,6 +175,11 @@
       }
     }
   }
+
+  onMount(()=>{
+    window.openSignInModal = openModal;
+    window.closeSignInModal = closeModal;
+  });
 </script>
 
 <Dialog
@@ -321,8 +326,8 @@
       padding-left: var(--mdc-layout-grid-margin-desktop);
       padding-right: var(--mdc-layout-grid-margin-desktop);
       @include mixins.mobile {
-        padding-left: var(--mdc-layout-grid-margin-phone);
-        padding-right: var(--mdc-layout-grid-margin-phone);
+        padding-left: 0;
+        padding-right: 0;
       }
     }
 

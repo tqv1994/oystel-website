@@ -19,7 +19,7 @@
     AuthErrorCodes,
   } from 'firebase/auth';
   import { authStore } from '$lib/store/auth';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import * as yup from 'yup';
 import { routerHelper } from '$lib/helpers/router';
   export let open: boolean;
@@ -49,9 +49,12 @@ import { routerHelper } from '$lib/helpers/router';
     classModal = 'closing';
   }
   function doSignIn() {
-    dispatch('close', {
-      type: 'open-signin',
-    });
+    window.closeSignUpModal();
+    window.openSignInModal();
+  }
+
+  function closeHandler(e) {
+    window.closeSignUpModal();
   }
 
   async function signInWithGoogle() {
@@ -140,22 +143,6 @@ import { routerHelper } from '$lib/helpers/router';
     }
   }
 
-  function closeHandler(e) {
-    closeModal();
-    errors = {};
-    switch (e.detail.action) {
-      case 'close':
-        response = 'Closed without response.';
-        break;
-      case 'reject':
-        response = 'Rejected.';
-        break;
-      case 'accept':
-        response = 'Accepted.';
-        break;
-    }
-  }
-
   async function onSubmit() {
     errors = {};
     const auth = getAuth();
@@ -208,6 +195,11 @@ import { routerHelper } from '$lib/helpers/router';
       }
     }
   }
+
+  onMount(()=>{
+    window.openSignUpModal = openModal;
+    window.closeSignUpModal = closeModal;
+  });
 </script>
 
 <Dialog
@@ -338,8 +330,17 @@ import { routerHelper } from '$lib/helpers/router';
 </Dialog>
 
 <style lang="scss" global>
+  @use './src/theme/mixins.scss';
   @import './src/style/partial/signup-modal.scss';
   #signup-modal {
+    .mdc-dialog__content {
+      padding-left: var(--mdc-layout-grid-margin-desktop);
+      padding-right: var(--mdc-layout-grid-margin-desktop);
+      @include mixins.mobile {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
     @media screen and (max-width: 999px) {
       button.mdc-button {
         min-width: auto;
