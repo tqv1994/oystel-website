@@ -111,6 +111,8 @@
     if (step > 0) {
       step -= 1;
       carousel.goToPrev();
+    }else{
+      open = false;
     }
   };
 
@@ -131,6 +133,7 @@
       if (isSaveAndClose) {
         open = false;
         tripInput = new TripInput();
+        step = 0;
         carousel.goTo(0,{animated: false});
       } else {
         goto('/plan/success');
@@ -291,6 +294,10 @@
       @media (max-width: 399px) {
         grid-template-columns: 1fr;
       }
+    }
+    .mdc-button.mdc-button--outlined:hover{
+      background-color: #{colors.$black};
+      --mdc-theme-primary: #{colors.$white};
     }
   }
 </style>
