@@ -29,21 +29,18 @@
   import { goto } from '$app/navigation';
   import { UploadFile } from '$lib/store/upload-file';
 
-  export const load: Load<{ session: Locals }> = async ({ session, url }) => {
-      let me: User | undefined;
-      me = session.user;
-      console.log(me?.travellerMe);
-      if (typeof me === 'undefined' || !me.travellerMe) {
-        return {
-          status: 302,
-          redirect: '/',
-        };
-      }
-      let metadataTrip: MetaDataTripQuery|undefined = undefined;
-      const res = await fetch("/me/trip/metadata.json");
-      if (res.ok) {
-        metadataTrip = await res.json();
-      }
+  export const load: Load<{ session: Locals }> = async ({ session, url, fetch }) => {
+    let me: User | undefined;
+    authStore.set({ user: session.user });
+    me = session.user;
+    console.log(me?.travellerMe);
+    if (typeof me === 'undefined' || !me.travellerMe) {
+      return {
+        status: 302,
+        redirect: '/',
+      };
+    }
+
     insertToStore(
       destinationTypeStore,
       session.metadata?.destinationTypes,
@@ -54,27 +51,25 @@
       session.metadata?.experienceTypes,
       false,
     );
-    authStore.set({ user: session.user });
     return {
       props: {
         key: url.pathname,
-        metadataTrip
+        metadataTrip: await fetch('/me/trip/metadata.json').then((r) => r.json()),
       },
     };
   };
-
-  let destinationTypes: Category[];
-  destinationTypeStore.subscribe((store) => {
-    destinationTypes = sortByName(Object.values(store.items));
-  });
 </script>
 
 <script lang="ts">
   import { MetaDataTripQuery } from '../me/trip/metadata.json';
-import { TripInput } from '$lib/store/trip';
-import { createTripService } from '$lib/services/trip.service';
-import Loading from '$lib/components/Loading.svelte';
+  import { TripInput } from '$lib/store/trip';
+  import { createTripService } from '$lib/services/trip.service';
+  import Loading from '$lib/components/Loading.svelte';
   export let metadataTrip: MetaDataTripQuery;
+  let destinationTypes: Category[];
+  destinationTypeStore.subscribe((store) => {
+    destinationTypes = sortByName(Object.values(store.items));
+  });
   console.log(metadataTrip);
   let open: boolean = false;
   let progress: number = 0.1;
@@ -106,7 +101,6 @@ import Loading from '$lib/components/Loading.svelte';
     Carousel = module?.default;
   });
 
-
   const handleNextClick = () => {
     if (totalSteps > step + 1) {
       step += 1;
@@ -129,102 +123,131 @@ import Loading from '$lib/components/Loading.svelte';
     onSubmitForm(false);
   };
 
-
   const onSubmitForm = async (isSaveAndClose: boolean) => {
     window.openLoading();
-    await createTripService({...tripInput, lead_traveller: $authStore.user?.travellerMe.id+""}).then(()=>{
-      if(isSaveAndClose){
+    await createTripService({
+      ...tripInput,
+      lead_traveller: $authStore.user?.travellerMe.id + '',
+    }).then(() => {
+      if (isSaveAndClose) {
         open = false;
         tripInput = new TripInput();
-      }else{
+      } else {
         goto('/plan/success');
       }
     });
     window.closeLoading();
-  }
+  };
 </script>
+
 <div>
-<PlanTemplate {image1} {image2} {image3}>
-  <h1>Let’s start planning your holiday.</h1>
-  <h6>
-    To help our expert travel advisors tailor a holiday just for you, we need
-    some information to get started.
-  </h6>
-  <Button
-    class="btn-plan-your-trip mr-10"
-    type="button"
-    variant="outlined"
-    style="width: 100%"
-    on:click={() => {
+  <PlanTemplate {image1} {image2} {image3}>
+    <h1>Let’s start planning your holiday.</h1>
+    <h6>
+      To help our expert travel advisors tailor a holiday just for you, we need
+      some information to get started.
+    </h6>
+    <Button
+      class="btn-plan-your-trip mr-10"
+      type="button"
+      variant="outlined"
+      style="width: 100%"
+      on:click={() => {
         open = true;
-    }}
-  >
-    <Label>Let’s Get Started</Label>
-  </Button>
-</PlanTemplate>
-<Dialog
-  class="always"
-  bind:open
-  fullscreen
-  scrimClickAction=""
-  escapeKeyAction=""
-  aria-labelledby="Holiday planning wizard"
-  aria-describedby="Tell us what you would like for your holiday"
->
-  <Header>
-    <Title><OysteoLogo width={130} height={17.217} /></Title>
-    <IconButton action="close" class="material-icons">close</IconButton>
-  </Header>
-  <Content>
-    <svelte:component
-      this={Carousel}
-      bind:this={carousel}
-      infinite={false}
-      dots={false}
-      swiping={false}
-      arrows={false}
-      bind:initialPageIndex={step}
-      on:pageChange={(event) => (progress = (event.detail + 1) / 10)}
+      }}
     >
-      <svelte:component this={When} bind:tripInput />
-      <svelte:component this={Who} travelingWithYous={metadataTrip?.travelingWithYous || []} bind:tripInput />
-      <svelte:component this={Budget} currencies={metadataTrip.currencies || []} bind:tripInput />
-      <svelte:component this={Where}  bind:tripInput {destinationTypes} />
-      <svelte:component this={Accommodations} bind:tripInput lodgingTypes={metadataTrip.lodgingTypes || []} roomPreferences={metadataTrip.roomPreferences || []} />
-      <svelte:component this={RoomStyle} roomStyles={metadataTrip.roomStyles || []} bind:tripInput />
-      <svelte:component this={TailorYourExperience} bind:tripInput  />
-      <svelte:component this={Experiences} bind:tripInput  experiences={metadataTrip.experiences || []}/>
-      <svelte:component this={YourTravel} bind:tripInput />
-      <svelte:component this={Final} bind:tripInput />
-    </svelte:component>
-  </Content>
-  <div class="content-wrap mb-30 mt-30">
-    <div class="container">
-      <div class="action-buttons">
-        <Button variant="outlined" on:click={handlePrevClick}>
-          <Label>Previous Question</Label>
-        </Button>
-        {#if step + 1 < totalSteps}
-          <Button variant="outlined" on:click={handleNextClick}>
-            <Label>Next Question</Label>
+      <Label>Let’s Get Started</Label>
+    </Button>
+  </PlanTemplate>
+  <Dialog
+    class="always"
+    bind:open
+    fullscreen
+    scrimClickAction=""
+    escapeKeyAction=""
+    aria-labelledby="Holiday planning wizard"
+    aria-describedby="Tell us what you would like for your holiday"
+  >
+    <Header>
+      <Title><OysteoLogo width={130} height={17.217} /></Title>
+      <IconButton action="close" class="material-icons">close</IconButton>
+    </Header>
+    <Content>
+      <svelte:component
+        this={Carousel}
+        bind:this={carousel}
+        infinite={false}
+        dots={false}
+        swiping={false}
+        arrows={false}
+        bind:initialPageIndex={step}
+        on:pageChange={(event) => (progress = (event.detail + 1) / 10)}
+      >
+        <svelte:component this={When} bind:tripInput />
+        <svelte:component
+          this={Who}
+          travelingWithYous={metadataTrip?.travelingWithYous || []}
+          bind:tripInput
+        />
+        <svelte:component
+          this={Budget}
+          currencies={metadataTrip.currencies || []}
+          bind:tripInput
+        />
+        <svelte:component this={Where} bind:tripInput {destinationTypes} />
+        <svelte:component
+          this={Accommodations}
+          bind:tripInput
+          lodgingTypes={metadataTrip.lodgingTypes || []}
+          roomPreferences={metadataTrip.roomPreferences || []}
+        />
+        <svelte:component
+          this={RoomStyle}
+          roomStyles={metadataTrip.roomStyles || []}
+          bind:tripInput
+        />
+        <svelte:component this={TailorYourExperience} bind:tripInput />
+        <svelte:component
+          this={Experiences}
+          bind:tripInput
+          experiences={metadataTrip.experiences || []}
+        />
+        <svelte:component this={YourTravel} bind:tripInput />
+        <svelte:component this={Final} bind:tripInput />
+      </svelte:component>
+    </Content>
+    <div class="content-wrap mb-30 mt-30">
+      <div class="container">
+        <div class="action-buttons">
+          <Button variant="outlined" on:click={handlePrevClick}>
+            <Label>Previous Question</Label>
           </Button>
-        {/if}
-        {#if step + 1 == totalSteps}
-          <Button variant="outlined" on:click={handleSaveAndClose}>
-            <Label>Save And Close</Label>
-          </Button>
-          <Button class="btn-submit" variant="outlined" on:click={handleSubmit}>
-            <Label>Submit</Label>
-          </Button>
-        {/if}
+          {#if step + 1 < totalSteps}
+            <Button variant="outlined" on:click={handleNextClick}>
+              <Label>Next Question</Label>
+            </Button>
+          {/if}
+          {#if step + 1 == totalSteps}
+            <Button variant="outlined" on:click={handleSaveAndClose}>
+              <Label>Save And Close</Label>
+            </Button>
+            <Button
+              class="btn-submit"
+              variant="outlined"
+              on:click={handleSubmit}
+            >
+              <Label>Submit</Label>
+            </Button>
+          {/if}
+        </div>
       </div>
     </div>
-  </div>
 
-  <LinearProgress {progress} />
-</Dialog>
-<Loading/>
+    <LinearProgress {progress} />
+  </Dialog>
+  <Loading />
 </div>
+
 <style type="text/scss" global>
   @use '../../theme/colors';
   @use '../../theme/mixins';
@@ -232,7 +255,7 @@ import Loading from '$lib/components/Loading.svelte';
     @import '../../style/partial/form.scss';
     .mdc-dialog {
       --mdc-checkbox-checked-color: #{colors.$black};
-      .mdc-dialog__content{
+      .mdc-dialog__content {
         color: #{colors.$black};
       }
     }

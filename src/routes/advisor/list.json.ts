@@ -15,7 +15,6 @@ import { subTravellerFieldsFragment, travellerFieldsFragment } from '$lib/store/
 import { docmentFieldsFragment } from '$lib/store/document';
 import { insuranceFieldsFragment } from '$lib/store/insurance';
 import { visaFieldsFragment } from '$lib/store/visa';
-import { salutationFieldsFragment } from '$lib/store/salutation';
 import { identificationFieldsFragment } from '$lib/store/identification';
 import { addressFieldsFragment } from '$lib/store/address';
 import { affiliateAgencyFieldsFragment, affiliateBenefitProgramFieldsFragment, affiliateNetworkFieldsFragment } from '$lib/store/affiliate';
@@ -109,7 +108,6 @@ fragment agencyFields on Agency {
  * @type {import('@sveltejs/kit').Get}
  */
 export const get: RequestHandler = async (request: Request) => {
-  console.log('test',stringHelper.queryURLParamToJSON(request.url.searchParams.toString()));
     try {
         const client = createGraphClientFromRequest(request);
         const res = await client.query<{ advisors: Advisor[] }>(query, {params: stringHelper.queryURLParamToJSON(request.url.searchParams.toString())}).toPromise();

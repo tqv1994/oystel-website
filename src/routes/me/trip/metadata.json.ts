@@ -7,9 +7,7 @@ import { LodgingType, lodgingTypeFieldsFragment } from '$lib/store/lodgingType';
 import { RoomPreference, roomPreferenceFieldsFragment } from '$lib/store/roomPreference';
 import { Currency, currencyFieldsFragment } from '$lib/store/currency';
 import { TravelingWithYou, travelingWithYouFieldsFragment } from '$lib/store/travelingWithYous';
-import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
 import { Experience } from '$lib/store/experience';
-import { Category } from '$lib/store/category';
 
 export type MetaDataTripQuery = {
     roomStyles: RoomStyle[]
@@ -60,7 +58,7 @@ const query = `
 export const get: RequestHandler = async (request: Request) => {
   try {
     const client = createGraphClientFromRequest(request);
-    const res = await client.query<MetaDataTripQuery>(query).toPromise();
+    const res = await client.query<MetaDataTripQuery>(query, {}).toPromise();
     if (res.data) {
       return {
         body: JSON.stringify(res.data),
