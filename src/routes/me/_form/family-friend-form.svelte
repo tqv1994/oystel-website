@@ -28,7 +28,6 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
   let name: string = '';
   let errors: any = {};
   let me: User | undefined = $authStore.user;
-  window.openLoading();
   const dispatch = createEventDispatcher();
   const schemaValidator = yup.object().shape({
     surname: yup.string().required(),
