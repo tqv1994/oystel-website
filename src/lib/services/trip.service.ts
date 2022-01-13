@@ -30,7 +30,8 @@ export const createTripService = async (input: TripInput): Promise<Trip> =>{
             },
             body: JSON.stringify({
             ...input,
-            depart_at: new Date(input.depart_at)
+            depart_at: new Date(input.depart_at),
+            state: 'new_enquiry'
             }),
         });
         if(res.ok){
