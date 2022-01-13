@@ -70,7 +70,6 @@
   destinationTypeStore.subscribe((store) => {
     destinationTypes = sortByName(Object.values(store.items));
   });
-  console.log(metadataTrip);
   let open: boolean = false;
   let progress: number = 0.1;
   let Carousel: any; // for saving Carousel component class
@@ -132,6 +131,7 @@
       if (isSaveAndClose) {
         open = false;
         tripInput = new TripInput();
+        carousel.goto(0,{animated: false});
       } else {
         goto('/plan/success');
       }
@@ -180,7 +180,7 @@
         dots={false}
         swiping={false}
         arrows={false}
-        bind:initialPageIndex={step}
+        initialPageIndex={step}
         on:pageChange={(event) => (progress = (event.detail + 1) / 10)}
       >
         <svelte:component this={When} bind:tripInput />
