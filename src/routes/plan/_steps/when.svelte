@@ -25,16 +25,21 @@
 
 <style lang="scss">
   @use '../../../theme/mixins';
-  .calendar{
-    &,:global(.grid){
-      width: calc(100vw - var(--mdc-layout-grid-margin-phone) * 2); 
+  @include mixins.mobile{
+    .calendar{
+      & > :global(div) {
+        --sc-theme-calendar-maxWidth: calc(100vw - var(--mdc-layout-grid-margin-phone) * 2) !important;
+      }
+      // :global(.grid){
+      //   width: calc(100vw - var(--mdc-layout-grid-margin-phone) * 2); 
+      //   max-width: calc(100vw - var(--mdc-layout-grid-margin-phone) * 2); 
+      // }
     }
   }
   .plan-wrap-form{
     width: 30rem;
-
-    max-width: calc(100vw - var(--mdc-layout-grid-margin-desktop) * 2);
     @include mixins.mobile{
+      width: 100%;
       max-width: calc(100vw - var(--mdc-layout-grid-margin-phone) * 2);
     }
     margin: auto;
