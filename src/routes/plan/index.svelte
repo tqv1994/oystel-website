@@ -286,6 +286,7 @@
   div {
     @import '../../style/partial/form.scss';
     .mdc-dialog {
+      --mdc-dialog-z-index: 10;
       --mdc-checkbox-checked-color: #{colors.$black};
       .mdc-dialog__content {
         color: #{colors.$black};
