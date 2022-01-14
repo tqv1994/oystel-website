@@ -35,7 +35,7 @@ import { destinationStore } from '$lib/store/destination';
       }}>close</IconButton
     >
     <div class="thumbnail">
-      {#if trip.destinations.length}
+      <!-- {#if trip.destinations.length}
         {#if trip.destinations[0].gallery.length > 1}
           <Carousel {...carouselConfig}>
             {#each trip.destinations[0].gallery as item}
@@ -49,7 +49,10 @@ import { destinationStore } from '$lib/store/destination';
             <BlurImage {...trip.destinations[0].gallery[0]} />
           </div>
         {/if}
-      {/if}
+      {/if} -->
+      <div class="image-cover" style="padding-top: calc(288/935 * 100%)">
+        <BlurImage url="/img/me/trips/trip-1.jpg" />
+      </div>
     </div>
     <div class="content">
       <div class="row header mb-25">
@@ -94,7 +97,7 @@ import { destinationStore } from '$lib/store/destination';
         this={Field}
         column_1={4}
         column_2={8}
-        label="{trip.travellers.length} Guests"
+        label="{(trip.numberOfAdults || 0) + (trip.numberOfChildren || 0)} Guests"
       >
         {trip.travellers
           .map((item) => item.forename + ' ' + item.surname)

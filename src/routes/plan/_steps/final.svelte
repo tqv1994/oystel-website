@@ -44,15 +44,11 @@ import { TripInput } from '$lib/store/trip';
 <style lang="scss">
   @use '../../../style/include/grid';
   @use '../../../theme/mixins';
-  * {
+  div {
     --mdc-typography-headline1-font-size: 30px;
     @include mixins.mobile{
       --mdc-typography-headline1-font-size: 20px;
     }
-  }
-  
-  label {
-    --mdc-typography-headline1-font-size: 30px;
   }
   .options {
     display: grid;

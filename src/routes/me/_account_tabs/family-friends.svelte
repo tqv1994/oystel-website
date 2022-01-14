@@ -88,7 +88,7 @@
         traveller={item}
         relationship="Other"
         on:click={() => {
-          handleOpenForm(item, 'Other');
+          handleOpenForm(item, 'Other Relative');
         }}
       />
     </div>

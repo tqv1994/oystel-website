@@ -12,7 +12,7 @@
 <Step title="When would you like to go?">
   <div class="plan-wrap-form">
     <div class="calendar d-mb-25 m-mb-20">
-      <OyDatepicker bind:value={tripInput.depart_at} type="inline" options={{width: '30rem', maxWith: '30rem'}} />
+      <OyDatepicker bind:value={tripInput.depart_at} type="inline" options={{width: '30rem'}} />
     </div>
     <Textfield
       bind:value={tripInput.numberOfNights}
@@ -24,8 +24,19 @@
 </Step>
 
 <style lang="scss">
+  @use '../../../theme/mixins';
+  .calendar{
+    &,:global(.grid){
+      width: calc(100vw - var(--mdc-layout-grid-margin-phone) * 2); 
+    }
+  }
   .plan-wrap-form{
     width: 30rem;
+
+    max-width: calc(100vw - var(--mdc-layout-grid-margin-desktop) * 2);
+    @include mixins.mobile{
+      max-width: calc(100vw - var(--mdc-layout-grid-margin-phone) * 2);
+    }
     margin: auto;
   }
 </style>

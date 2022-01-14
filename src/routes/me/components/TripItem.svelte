@@ -3,7 +3,7 @@
   import Carousel from '$lib/components/Carousel.svelte';
   import { dateTimeHelper } from '$lib/helpers/datetime';
   import ChatIcon from '$lib/icons/ChatIcon.svelte';
-  import { Trip } from '$lib/store/trip';
+  import { ENUM_TRIP_STATE_LABEL, Trip } from '$lib/store/trip';
   import { UploadFile } from '$lib/store/upload-file';
   import ButtonUnderline from './ButtonUnderline.svelte';
   import Title from './Title.svelte';
@@ -24,7 +24,7 @@
 
 <div class="box">
   <div class="thumbnail">
-    {#if trip.destinations.length > 0}
+    <!-- {#if trip.destinations.length > 0}
       {#if trip.destinations[0].gallery.length > 1}
         <Carousel {...carouselConfig}>
           {#each trip.destinations[0].gallery as item}
@@ -38,7 +38,10 @@
           <BlurImage {...trip.destinations[0].gallery[0]} />
         </div>
       {/if}
-    {/if}
+    {/if} -->
+    <div class="image-cover" style="padding-top: calc(212 / 383 * 100%)">
+      <BlurImage url="/img/me/trips/trip-1.jpg" />
+    </div>
     <div class="content">
       <div class="row">
         <div class="d-col-6 m-col-8">
@@ -52,7 +55,7 @@
           </p>
         </div>
         <div class="d-col-6 m-col-4 text-right">
-          <span class="status">{trip.state}</span>
+          <span class="status">{ENUM_TRIP_STATE_LABEL[trip.state]}</span>
         </div>
       </div>
       <svelte:component this={Title}
@@ -60,7 +63,7 @@
           ? trip.destinationTypes.map((item) => item.name).join(', ')
           : ''}</svelte:component
       >
-      <p class="m-0">Number of Guests: {trip.travellers.length}</p>
+      <p class="m-0">Number of Guests: {(trip.numberOfAdults || 0) + (trip.numberOfChildren || 0)}</p>
       <p class="m-0">Travel Advisor: {trip.advisor?.name || ''}</p>
     </div>
     <div class="actions">

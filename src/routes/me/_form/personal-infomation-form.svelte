@@ -179,14 +179,14 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
             column_2={8}
           >
             <div class="row">
-              <div class="d-col-7 m-col-7">
+              <div class="d-col-7 m-col-7 mb-0">
                 <Textfield
                   bind:value={name}
                   label="Name"
                   type="text"
                 />
               </div>
-              <div class="d-col-5 m-col-5">
+              <div class="d-col-5 m-col-5 mb-0">
                 <Select bind:value={travellerInput.salutationType} label="Salutation">
                   {#each salutationTypes || [] as item}
                     <Option value={item.id}>{item.name}</Option>
@@ -210,7 +210,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
             column_2={8}
           >
             <div class="row">
-              <div class="d-col-4 m-col-3">
+              <div class="d-col-4 m-col-3 mb-0">
                 <OyAutocomplete
                   key="phone"
                   options={countries}
@@ -219,7 +219,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
                   bind:value={phone_code}
                 />
               </div>
-              <div class="d-col-8 m-col-9">
+              <div class="d-col-8 m-col-9 mb-0">
                 <Textfield
                   bind:value={travellerInput.mobilePhone}
                   label=""

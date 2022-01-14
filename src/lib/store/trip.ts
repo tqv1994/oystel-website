@@ -122,6 +122,7 @@ export const convertTripToInput = (trip: Trip): TripInput => {
 }
 
 export enum ENUM_TRIP_STATE{
+    new_enquiry = "new_enquiry",
     enquired = "enquired",
     planning = "planning",
     progressing = "progressing",
@@ -129,6 +130,7 @@ export enum ENUM_TRIP_STATE{
 }
 
 export const ENUM_TRIP_STATE_LABEL = {
+    new_enquiry: 'New Enquiry',
     enquired: "Enquired",
     planning: "Planning",
     progressing: "Progressing",

@@ -70,10 +70,10 @@ import { updateTravellerMeService } from '$lib/services/traveller.service';
   <svelte:component this={FormToggle} title="" bind:is_edit>
     <svelte:component this={Field} label="Name" column_1={4} column_2={6}>
       <div class="row">
-        <div class="d-col-7 m-col-7">
+        <div class="d-col-7 m-col-7 mb-0">
           <Textfield bind:value={travellerInput.myAssistantName} label="Name" type="text" />
         </div>
-        <div class="d-col-5 m-col-5">
+        <div class="d-col-5 m-col-5 mb-0">
           <Select bind:value={travellerInput.myAssistantSalutationType} label="Salutation">
             {#each salutationTypes || [] as item}
               <Option value={item.id}>{item.name}</Option>

@@ -114,7 +114,7 @@
   <svelte:component this={FormToggle} title="" bind:is_edit>
     <svelte:component this={Field} label="Home Phone" column_1={4} column_2={6}>
       <div class="row">
-        <div class="d-col-4 m-col-3">
+        <div class="d-col-4 m-col-3 mb-0">
           <OyAutocomplete
             key="phone"
             options={countries}
@@ -123,7 +123,7 @@
             bind:value={homePhoneCode}
           />
         </div>
-        <div class="d-col-8 m-col-9">
+        <div class="d-col-8 m-col-9 mb-0">
           <Textfield
             bind:value={travellerInput.homePhone}
             label=""
@@ -139,7 +139,7 @@
       column_2={6}
     >
       <div class="row">
-        <div class="d-col-4 m-col-3">
+        <div class="d-col-4 m-col-3 mb-0">
           <OyAutocomplete
             key="phone"
             options={countries}
@@ -148,7 +148,7 @@
             bind:value={workPhoneCode}
           />
         </div>
-        <div class="d-col-8 m-col-9">
+        <div class="d-col-8 m-col-9 mb-0">
           <Textfield
             bind:value={travellerInput.workPhone}
             label=""
@@ -183,14 +183,14 @@
       column_2={6}
     >
       <div class="row">
-        <div class="d-col-3 m-col-3">
+        <div class="d-col-3 m-col-3 mb-0">
           <Textfield
             bind:value={addressInput.locality}
             label="State"
             type="text"
           />
         </div>
-        <div class="d-col-9 m-col-9">
+        <div class="d-col-9 m-col-9 mb-0">
           <Textfield
             bind:value={addressInput.zipcode}
             label="Zip Code"

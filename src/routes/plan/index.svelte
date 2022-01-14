@@ -29,7 +29,11 @@
   import { goto } from '$app/navigation';
   import { UploadFile } from '$lib/store/upload-file';
 
-  export const load: Load<{ session: Locals }> = async ({ session, url, fetch }) => {
+  export const load: Load<{ session: Locals }> = async ({
+    session,
+    url,
+    fetch,
+  }) => {
     let me: User | undefined;
     authStore.set({ user: session.user });
     me = session.user;
@@ -54,7 +58,9 @@
     return {
       props: {
         key: url.pathname,
-        metadataTrip: await fetch('/me/trip/metadata.json').then((r) => r.json()),
+        metadataTrip: await fetch('/me/trip/metadata.json').then((r) =>
+          r.json(),
+        ),
       },
     };
   };
@@ -111,7 +117,7 @@
     if (step > 0) {
       step -= 1;
       carousel.goToPrev();
-    }else{
+    } else {
       open = false;
     }
   };
@@ -134,7 +140,7 @@
         open = false;
         tripInput = new TripInput();
         step = 0;
-        carousel.goTo(0,{animated: false});
+        carousel.goTo(0, { animated: false });
       } else {
         goto('/plan/success');
       }
@@ -186,38 +192,61 @@
         initialPageIndex={step}
         on:pageChange={(event) => (progress = (event.detail + 1) / 10)}
       >
-        <svelte:component this={When} bind:tripInput />
-        <svelte:component
-          this={Who}
-          travelingWithYous={metadataTrip?.travelingWithYous || []}
-          bind:tripInput
-        />
-        <svelte:component
-          this={Budget}
-          currencies={metadataTrip.currencies || []}
-          bind:tripInput
-        />
-        <svelte:component this={Where} bind:tripInput {destinationTypes} />
-        <svelte:component
-          this={Accommodations}
-          bind:tripInput
-          lodgingTypes={metadataTrip.lodgingTypes || []}
-          roomPreferences={metadataTrip.roomPreferences || []}
-        />
-        <svelte:component
-          this={RoomStyle}
-          roomStyles={metadataTrip.roomStyles || []}
-          bind:tripInput
-        />
-        <svelte:component this={TailorYourExperience} bind:tripInput />
-        <svelte:component
-          this={Experiences}
-          bind:tripInput
-          experiences={metadataTrip.experiences || []}
-        />
-        <svelte:component this={YourTravel} bind:tripInput />
-        <svelte:component this={Final} bind:tripInput />
+        <div class="content-item" />
+        <div class="content-item" />
+        <div class="content-item" />
+        <div class="content-item" />
+        <div class="content-item" />
+        <div class="content-item" />
+        <div class="content-item" />
+        <div class="content-item" />
+        <div class="content-item" />
+        <div class="content-item" />
       </svelte:component>
+      <div class="content-form">
+        {#if step === 0}
+          <svelte:component this={When} bind:tripInput />
+        {:else if step === 1}
+          <svelte:component
+            this={Who}
+            travelingWithYous={metadataTrip?.travelingWithYous || []}
+            bind:tripInput
+          />
+        {:else if step === 2}
+          <svelte:component
+            this={Budget}
+            currencies={metadataTrip.currencies || []}
+            bind:tripInput
+          />
+        {:else if step === 3}
+          <svelte:component this={Where} bind:tripInput {destinationTypes} />
+        {:else if step === 4}
+          <svelte:component
+            this={Accommodations}
+            bind:tripInput
+            lodgingTypes={metadataTrip.lodgingTypes || []}
+            roomPreferences={metadataTrip.roomPreferences || []}
+          />
+        {:else if step === 5}
+          <svelte:component
+            this={RoomStyle}
+            roomStyles={metadataTrip.roomStyles || []}
+            bind:tripInput
+          />
+        {:else if step === 6}
+          <svelte:component this={TailorYourExperience} bind:tripInput />
+        {:else if step === 7}
+          <svelte:component
+            this={Experiences}
+            bind:tripInput
+            experiences={metadataTrip.experiences || []}
+          />
+        {:else if step === 8}
+          <svelte:component this={YourTravel} bind:tripInput />
+        {:else if step === 9}
+          <svelte:component this={Final} bind:tripInput />
+        {/if}
+      </div>
     </Content>
     <div class="content-wrap mb-30 mt-30">
       <div class="container">
@@ -295,7 +324,7 @@
         grid-template-columns: 1fr;
       }
     }
-    .mdc-button.mdc-button--outlined:hover{
+    .mdc-button.mdc-button--outlined:hover {
       background-color: #{colors.$black};
       --mdc-theme-primary: #{colors.$white};
     }

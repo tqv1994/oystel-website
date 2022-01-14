@@ -249,7 +249,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
 <form on:submit|preventDefault={handleSubmitForm}>
   <svelte:component this={Field} label="Name*" column_1={4} column_2={8}
     ><div class="row">
-      <div class="d-col-7 m-col-12">
+      <div class="d-col-7 m-col-12 d-mb-0 m-mb-15">
         <Textfield
           bind:value={name}
           label="Name"
@@ -270,7 +270,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
           >
         {/if}
       </div>
-      <div class="d-col-5 m-col-12">
+      <div class="d-col-5 m-col-12 d-mb-0 m-mb-0">
         <Select bind:value={travellerInput.salutationType} label="Salutation">
           {#each salutationTypes as item}
             <Option value={item.id}>{item.name}</Option>
