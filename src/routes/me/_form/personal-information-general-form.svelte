@@ -29,12 +29,12 @@
     me.travellerMe,
   );
   let homePhoneCode: string =
-    travellerInput.homePhone?.match(createPatternPhoneCode(countries)) + '';
+    (travellerInput.homePhone || '').match(createPatternPhoneCode(countries)) + '';
   travellerInput.homePhone =
     travellerInput.homePhone?.replace(homePhoneCode, '') || '';
   homePhoneCode = homePhoneCode.replace('+', '');
   let workPhoneCode: string =
-    travellerInput.workPhone?.match(createPatternPhoneCode(countries)) + '';
+    (travellerInput.workPhone || '').match(createPatternPhoneCode(countries)) + '';
   travellerInput.workPhone =
     travellerInput.workPhone?.replace(workPhoneCode, '') || '';
   workPhoneCode = workPhoneCode.replace('+', '');
@@ -48,7 +48,7 @@
       locality: '',
       zipcode: '',
       city: '',
-      country: '',
+      country: undefined,
       province: '',
     };
   }

@@ -6,6 +6,7 @@
   import { afterUpdate } from 'svelte';
   import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
   export let tripInput: TripInput = new TripInput();
+  tripInput.depart_at = tripInput.depart_at ? tripInput.depart_at : new Date();
   tripInput.numberOfNights = tripInput.numberOfNights || 1;
 </script>
 

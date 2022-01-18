@@ -18,7 +18,7 @@ export type AddressInput = {
   locality: string
   zipcode: string
   city: string
-  country: string // ID
+  country?: string // ID
   province: string
 }
 

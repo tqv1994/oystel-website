@@ -116,7 +116,6 @@
       }
     } catch (err) {
       if (err.inner) {
-        console.log(err);
         errors = err.inner.reduce((acc, err) => {
           return { ...acc, [err.path]: err.message };
         }, {});
