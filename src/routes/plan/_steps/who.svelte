@@ -28,7 +28,7 @@ import { afterUpdate } from 'svelte';
     <Textfield
       class="num-adults"
       bind:value={tripInput.numberOfAdults}
-      min={1}
+      input$min={1}
       label="Number of adults"
       type="number"
     />
@@ -37,6 +37,7 @@ import { afterUpdate } from 'svelte';
       bind:value={tripInput.numberOfChildren}
       label="Number of children"
       type="number"
+      input$min={0}
     />
   </div>
 </Step>

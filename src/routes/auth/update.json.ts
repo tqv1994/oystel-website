@@ -12,6 +12,7 @@ import { countryFieldsFragment } from '$lib/store/country';
 import { interestFieldsFragment } from '$lib/store/interest';
 import { addressFieldsFragment } from '$lib/store/address';
 import { personalPreferenceFieldsFragment, travelPreferenceFieldsFragment } from '$lib/store/preference';
+import { languageFieldsFragment } from '$lib/store/language';
 /**
  * @type {import('@sveltejs/kit').Post}
  */
@@ -36,7 +37,6 @@ export const put: RequestHandler = async (
           }
       }
       ${userFieldsFragment}
-      ${uploadFileFieldsFragment}
       ${travellerFieldsFragment}
       ${visaFieldsFragment}
       ${salutationTypeFieldsFragment}
@@ -47,6 +47,9 @@ export const put: RequestHandler = async (
       ${addressFieldsFragment}
       ${travelPreferenceFieldsFragment}
       ${personalPreferenceFieldsFragment}
+      ${languageFieldsFragment}
+      ${uploadFileFieldsFragment}
+
     `;
     const res = await client.mutation<UpdateUserData>(query, { id: request.locals.user?.id, me: request.body }).toPromise();
     if (res.data) {

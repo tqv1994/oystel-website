@@ -49,7 +49,7 @@ import { TripInput } from '$lib/store/trip';
       <Textfield
         id="budget-budget"
         bind:value={tripInput.budget}
-        min={1}
+        input$min={1}
         label="E.g. 123.45"
         type="number"
       />

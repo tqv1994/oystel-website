@@ -23,7 +23,7 @@ import { TripInput } from '$lib/store/trip';
       >
     </div>
     <div class="d-col-6 m-col-12">
-      <Select label="Select" bind:value={vaccinated} on:change={()=>{ tripInput.vaccinated = vaccinated == 'yes' ? true : false }} >
+      <Select label="Select" bind:value={vaccinated} on:SMUI:select:value={(e)=>{ tripInput.vaccinated = e.detail == 'yes' ? true : false}} >
         <Option value="yes" >Yes</Option>
         <Option value="no" >No</Option>
       </Select>
@@ -36,7 +36,7 @@ import { TripInput } from '$lib/store/trip';
       >
     </div>
     <div class="d-col-6 m-col-12">
-      <Textfield bind:value={tripInput.numberOfTripsInSixMonths} label="Enter Number" type="number" />
+      <Textfield bind:value={tripInput.numberOfTripsInSixMonths} input$min={0} label="Enter Number" type="number" />
     </div>
   </div>
 </Step>

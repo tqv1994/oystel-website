@@ -41,7 +41,7 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
   let topAppBar: typeof TopAppBar;
   let drawerOpen: boolean = false;
   let activeSubItem: Exhibitable | SubNavItem | undefined = undefined;
-  let prominent: boolean = false;
+  let prominent: boolean = true;
   let activeSubItems: Exhibitable[] | SubNavItem[] | undefined;
   let scrollY: number = 0;
   export let signinModalOpen: boolean = false;

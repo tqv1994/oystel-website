@@ -16,7 +16,7 @@
     </div>
     <Textfield
       bind:value={tripInput.numberOfNights}
-      min={1}
+      input$min={1}
       label="Number of nights away"
       type="number"
     />

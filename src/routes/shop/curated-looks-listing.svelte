@@ -29,7 +29,6 @@
   import BlurImage from '$lib/components/blur-image.svelte';
 import CuratedItem from '$lib/components/CuratedItem.svelte';
   export let data: Page;
-  console.log(data);
   let openSignupModal, openSigninModal;
   let userModel = $authStore.user;
   let filterActive = 'All';
@@ -68,7 +67,7 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
   {#each data.sections as section}
     {#if section.__typename === 'ComponentBannersBanner'}
       <section
-        class="header-title full-width light d-pt-115 d-pb-20 t-pt-80 t-pb-20 m-pt-90 m-pb-15"
+        class="header-title full-width light d-pt-128 d-pb-20 t-pt-80 t-pb-20 m-pt-90 m-pb-15"
       >
         <div class="content-wrap">
           <div class="container">

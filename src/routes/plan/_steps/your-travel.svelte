@@ -19,9 +19,9 @@ import { TripInput } from '$lib/store/trip';
       <label class="mdc-typography--headline1 m-0">Do you need Flights?</label>
     </div>
     <div class="d-col-5 m-col-12">
-      <Select label="Select" bind:value={needFlights} on:change={()=>{ tripInput.needFlights = needFlights == 'yes' ? true : false }}>
-        <Option value={'yes'}  selected={!tripInput.needFlights ? true : false}>No</Option>
-        <Option value={'no'} selected={!tripInput.needFlights ? false : true}>Yes</Option>
+      <Select label="Select" bind:value={needFlights} on:SMUI:select:value={(e)=>{ tripInput.needFlights = e.detail == 'yes' ? true : false}}>
+        <Option value={'yes'} >No</Option>
+        <Option value={'no'}>Yes</Option>
       </Select>
     </div>
   </div>

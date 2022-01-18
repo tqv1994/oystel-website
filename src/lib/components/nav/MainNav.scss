@@ -55,12 +55,14 @@
 .mdc-top-app-bar:not(.mdc-top-app-bar--prominent){
   .top-app-bar__main-row {
     --mdc-theme-primary: #{colors.$black};
+    --mdc-theme-on-primary: #{colors.$white};
   }
 }
 .mdc-top-app-bar--fixed-scrolled {
   box-shadow: none;
   .top-app-bar__main-row {
     --mdc-theme-primary: #{colors.$black};
+    --mdc-theme-on-primary: #{colors.$white};
   }
 }
 .bg-header-scroll-slightly_blue .mdc-top-app-bar--fixed-scrolled:not(.showing-top-app-bar){
@@ -162,6 +164,7 @@
       rgba(0, 0, 0, 0.2) 60%,
       rgba(0, 0, 0, 0) 100%
     );
+    --mdc-theme-on-primary: #{colors.$white};
   }
 }
 @include mixins.light {
@@ -330,5 +333,6 @@
 header.mdc-top-app-bar.showing-top-app-bar .top-app-bar__main-row{
   @include mixins.desktop{
     background-color: #{colors.$black} !important;
+    --mdc-theme-on-primary: #{colors.$white};
   }
 }

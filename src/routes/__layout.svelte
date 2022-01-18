@@ -80,7 +80,7 @@
     if (url.pathname === '/') {
       isHomePage = true;
     }
-
+    console.log(url.pathname);
     return {
       props: {
         key: url.pathname,
@@ -109,6 +109,8 @@ import SignupModal from '$lib/components/modals/SignupModal.svelte';
   let mainNavClass: string = '';
   if (key == '/destination' || key == '/experience') {
     mainNavClass = 'bg-header-scroll-slightly_blue';
+  }else{
+    mainNavClass = '';
   }
 </script>
 
