@@ -83,7 +83,7 @@
           </svelte:component>
           <svelte:component this={Field} label="Country of Residence">
             <svelte:component this={Text}
-              >{me.travellerMe?.nationality?.name || ''}</svelte:component
+              >{me.travellerMe?.residence?.name || ''}</svelte:component
             >
           </svelte:component>
           <svelte:component this={Field} label="OYSTEO ID Number">

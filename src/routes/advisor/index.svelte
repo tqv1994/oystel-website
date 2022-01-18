@@ -107,7 +107,10 @@
       }
       return {
         props: {
-          advisors: { hasMore: searchData.hasMore, items },
+          advisors: {
+            hasMore: searchData.hasMore,
+            items,
+          },
           query: url.searchParams.get(QUERY) || '',
           experienceType:
             experienceTypes.items[url.searchParams.get(EXPERIENCE_TYPE) || ''],
@@ -123,6 +126,10 @@
             ORDER_BY_NAME_ASC,
         },
       };
+    }else{
+      return {
+        props:{}
+      }
     }
   };
 </script>
@@ -388,7 +395,11 @@
                         class="image-cover"
                         style="width: 100px;padding-top: 0; height: 100px"
                       >
-                        <BlurImage {...item.avatar} />
+                        {#if item.avatar}
+                          <BlurImage {...item.avatar} />
+                        {:else}
+                          <!-- TODO: Display placeholder avatar -->
+                        {/if}
                       </div></a
                     ></CellTable
                   >

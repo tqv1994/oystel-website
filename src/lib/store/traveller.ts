@@ -133,6 +133,7 @@ export function convertTravellerToInput(traveller: Traveller): TravellerInput {
   data.travelPreferences = traveller.travelPreferences?.map((item)=>item.id);
   data.myAssistantSalutationType = traveller.myAssistantSalutationType?.id;
   data.myAssistantLanguage = traveller.myAssistantLanguage?.id;
+  data.residence = traveller.residence?.id || null;
   delete data.__typename;
   delete data.id;
   result = data;

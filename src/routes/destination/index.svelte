@@ -7,7 +7,6 @@
   import Button from '@smui/button';
   import { Label } from '@smui/common';
   import { Icon } from '@smui/icon-button';
-  import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
   import { Nameable } from '$lib/store/types';
   import { sortByName } from '$lib/utils/sort';
@@ -114,6 +113,9 @@
         },
       };
     }
+    return {
+        props: {},
+      };
   };
 </script>
 

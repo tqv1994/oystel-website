@@ -206,7 +206,18 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
         </TabBar>
       </Section>
       <Section toolbar align="end" class="desktop actions d-pr-45 m-pr-24">
-        <Button type="button" variant="outlined" class="plan" href="/plan">
+        <Button type="button" variant="outlined" class="plan" on:click={()=>{
+          if($authStore.user?.travellerMe){
+            goto('/plan');
+          }else if($authStore.user){
+            window.pushToast('Please update the information before doing this');
+            setTimeout(()=>{
+              goto('/me/my-account');
+            },2000);
+          }else{
+            window.openSignInModal();
+          }
+        }}>
           <Label>Plan Your Trip</Label>
         </Button>
         <IconButton

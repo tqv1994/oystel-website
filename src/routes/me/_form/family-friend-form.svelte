@@ -61,7 +61,10 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...travellerInput,
+          surname: travellerInput.surname,
+          forename: travellerInput.forename,
+          salutationType: travellerInput.salutationType,
+          birthday: travellerInput.birthday
         }),
       });
       if (res.ok) {
@@ -97,7 +100,12 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                ...travellerInputMe,
+                parents:travellerInputMe.parents,
+                children: travellerInputMe.children,
+                relatives: travellerInputMe.relatives,
+                partners: travellerInputMe.partners,
+                spouse: travellerInputMe.spouse,
+                otherRelations: travellerInputMe.otherRelations
               }),
             },
           );

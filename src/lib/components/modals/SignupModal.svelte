@@ -22,6 +22,7 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import * as yup from 'yup';
 import { routerHelper } from '$lib/helpers/router';
+import { goto } from '$app/navigation';
   export let open: boolean;
   export let authModel;
   const dispatch = createEventDispatcher();
@@ -32,7 +33,11 @@ import { routerHelper } from '$lib/helpers/router';
   };
   let classModal = '';
   export function openModal() {
-    open = true;
+    if(!$authStore.user){
+      open = true;
+    }else{
+      goto('/me');
+    }
   }
   let errors = {};
 
@@ -49,12 +54,12 @@ import { routerHelper } from '$lib/helpers/router';
     classModal = 'closing';
   }
   function doSignIn() {
-    window.closeSignUpModal();
+    closeModal();
     window.openSignInModal();
   }
 
-  function closeHandler(e) {
-    window.closeSignUpModal();
+  function closeHandler() {
+    closeModal();
   }
 
   async function signInWithGoogle() {

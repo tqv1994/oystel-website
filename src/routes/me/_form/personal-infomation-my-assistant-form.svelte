@@ -50,10 +50,13 @@ import { updateTravellerMeService } from '$lib/services/traveller.service';
 
   async function handleSubmitForm() {
     window.openLoading();
-    await updateTravellerMeService({
-      ...travellerInput,
+    await updateTravellerMeService(new TravellerInput({
+      myAssistantName: travellerInput.myAssistantName,
+      myAssistantSalutationType: travellerInput.myAssistantSalutationType,
+      myAssistantLanguage: travellerInput.myAssistantLanguage,
+      myAssistantContactNotes: travellerInput.myAssistantContactNotes,
       myAssistantPhone: (phone_code ? `+${phone_code}` : '') + travellerInput.myAssistantPhone 
-    }).then((output: Traveller)=>{
+    })).then((output: Traveller)=>{
       console.log(output);
       me.travellerMe = output;
       authStore.set({user: me});

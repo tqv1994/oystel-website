@@ -93,7 +93,15 @@
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ...travellerInput,
+        gender: travellerInput.gender,
+        nationality: travellerInput.nationality,
+        passportNumber: travellerInput.passportNumber,
+        passportExpiryDate: travellerInput.passportExpiryDate,
+        passportPlaceOfIssue: travellerInput.passportPlaceOfIssue,
+        instagram: travellerInput.instagram,
+        facebook: travellerInput.facebook,
+        messenger: travellerInput.messenger,
+        whatsapp: travellerInput.whatsapp,
         homePhone:
           (homePhoneCode ? '+' + homePhoneCode : '') + travellerInput.homePhone,
         workPhone:
@@ -203,11 +211,12 @@
       <Textfield bind:value={addressInput.province} type="text" />
     </svelte:component>
     <svelte:component this={Field} label="Country" column_1={4} column_2={6}>
-      <Select bind:value={addressInput.country} label="">
-        {#each countries as item}
-          <Option value={item.id}>{item.name}</Option>
-        {/each}
-      </Select>
+      <OyAutocomplete
+        key="id"
+        options={countries || []}
+        bind:value={addressInput.country}
+        getOptionLabel={(option) => (option ? `${option.name}` : '')}
+      />
     </svelte:component>
     <svelte:component this={Field} label="Language" column_1={4} column_2={6}>
       <OyAutocomplete
@@ -259,7 +268,7 @@
       column_1={4}
       column_2={6}
     >
-      <OyDatepicker bind:value={travellerInput.passportExpiryDate} />
+      <OyDatepicker bind:value={travellerInput.passportExpiryDate} max={new Date(new Date().setFullYear(new Date().getFullYear() + 10))} />
     </svelte:component>
     <svelte:component
       this={Field}

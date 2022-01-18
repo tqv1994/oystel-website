@@ -1,31 +1,15 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import { onMount } from 'svelte';
-  import { destinationStore } from '$lib/store/destination';
-  import { documentHelper, storeHelper } from '$lib/helpers';
-  import OyCarousel from '$lib/components/common/OyCarousel.svelte';
-  import { Svg } from '@smui/common/elements';
-  import IconButton from '@smui/icon-button';
-  import Button from '@smui/button';
-  import { Label } from '@smui/common';
-  import { Icon } from '@smui/common';
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  import Layout from '$lib/components/common/Layout.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import { Drop } from '$lib/store/drop';
   import { Experience } from '$lib/store/experience';
-  import OySearch from '$lib/components/common/OySearch.svelte';
-  import { Destination } from '$lib/store/destination';
-  import { routerHelper } from '$lib/helpers/router';
-  import { dropStore } from '$lib/store/drop';
   import { experienceStore } from '$lib/store/experience';
-  import { getItems, insertToStore } from '$lib/store/types';
+  import { getItems } from '$lib/store/types';
   import { makeLink } from '$lib/utils/link';
   import { authStore } from '$lib/store/auth';
   import { ExperienceLikeData } from '../experience/like.json';
-  import { DestinationLikeData } from '../destination/like.json';
   import { EditorialPageData } from './editorial.json';
 
   export const load: Load = async ({ fetch, session, url }) => {
@@ -130,14 +114,16 @@
 </script>
 
 <div class="content editorial-content d-pt-80 m-pt-60">
-  {#each data.page.sections as section,index}
+  {#each data.page.sections as section, index}
     {#if section.__typename === 'ComponentGalleriesExperienceGallery'}
-      <section class="d-pt-60 d-pb-100 m-pt-48 m-pb-15 experiences experiences-{index}">
+      <section
+        class="d-pt-60 d-pb-100 m-pt-48 m-pb-15 experiences experiences-{index}"
+      >
         <div class="container">
           <p class="text-eyebrow m-0">{section.headline}</p>
           <p class="text-h1 mt-30 d-mb-40 m-mb-15">{section.name}</p>
         </div>
-        <CuratedExperience {...section} on:likeItem={likeExperience} {index}/>
+        <CuratedExperience {...section} on:likeItem={likeExperience} {index} />
       </section>
     {:else if section.__typename === 'ComponentBannersBanner'}
       <section class="what-to-wear-section d-pb-105 d-pt-105 full-width">
@@ -181,8 +167,8 @@
                   </div>
                 {/each}
               </Carousel>
-              {/if}
-            </div>
+            {/if}
+          </div>
         </div>
       </section>
     {:else if section.__typename === 'ComponentGalleriesDropGallery'}

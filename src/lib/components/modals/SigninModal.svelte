@@ -22,6 +22,8 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import * as yup from 'yup';
   import { routerHelper } from '$lib/helpers';
+import { authStore } from '$lib/store/auth';
+import { goto } from '$app/navigation';
   let open: boolean;
   const dispatch = createEventDispatcher();
   let model = {
@@ -31,7 +33,11 @@
   let classModal = '';
   let errors = {};
   function openModal() {
-    open = true;
+    if(!$authStore.user){
+      open = true;
+    }else{
+      goto('/me');
+    }
   }
   const schemaValidator = yup.object().shape({
     email: yup.string().required().email().max(255),

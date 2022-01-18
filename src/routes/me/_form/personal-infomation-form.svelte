@@ -27,8 +27,8 @@
   import { cmsUrlPrefix } from '$lib/env';
   import { UploadFile } from '$lib/store/upload-file';
   import { sortByName } from '$lib/utils/sort';
-import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
-import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
+  import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+  import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
   export let me: User;
   const travellerMe: Traveller = me.travellerMe;
   const salutationTypes = Object.values(get(salutationTypeStore).items);
@@ -48,15 +48,15 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
   onMount(async () => {
     if (me.travellerMe) {
       travellerInput = convertTravellerToInput(travellerMe);
-      travellerInput.email = travellerInput.email || (me?.email || '');
+      travellerInput.email = travellerInput.email || me?.email || '';
       me.travellerMe = travellerMe;
       phone_code =
         travellerInput?.mobilePhone?.match(createPatternPhoneCode(countries)) +
         '';
-      phone_code = phone_code.replace("+","");
+      phone_code = phone_code.replace('+', '');
       name = travellerInput.forename + ' ' + travellerInput.surname;
       travellerInput.mobilePhone =
-        travellerInput.mobilePhone?.replace("+"+phone_code, '') || '';
+        travellerInput.mobilePhone?.replace('+' + phone_code, '') || '';
     } else {
       travellerInput = new TravellerInput();
       name = '';
@@ -87,10 +87,14 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...travellerInput,
+          salutationType: travellerInput.salutationType,
+          email: travellerInput.email,
+          birthday: travellerInput.birthday,
           forename: name.split(' ')[0],
           surname: name.split(' ')[1] || '',
-          mobilePhone: (phone_code ? "+"+phone_code : '') + travellerInput.mobilePhone,
+          mobilePhone:
+            (phone_code ? '+' + phone_code : '') + travellerInput.mobilePhone,
+          residence: travellerInput.residence,
         }),
       });
       if (res.ok) {
@@ -99,7 +103,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
           me.travellerMe = data.updateTraveller.traveller;
           if (avatarInput) {
             handleUploadAvatar(avatarInput[0]);
-          }else{
+          } else {
             is_edit = false;
           }
         } else {
@@ -117,7 +121,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
         }, {});
       }
     }
-    window.closeLoading()
+    window.closeLoading();
   }
 
   async function handleUpdateMe() {
@@ -180,14 +184,13 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
           >
             <div class="row">
               <div class="d-col-7 m-col-7 mb-0">
-                <Textfield
-                  bind:value={name}
-                  label="Name"
-                  type="text"
-                />
+                <Textfield bind:value={name} label="Name" type="text" />
               </div>
               <div class="d-col-5 m-col-5 mb-0">
-                <Select bind:value={travellerInput.salutationType} label="Salutation">
+                <Select
+                  bind:value={travellerInput.salutationType}
+                  label="Salutation"
+                >
                   {#each salutationTypes || [] as item}
                     <Option value={item.id}>{item.name}</Option>
                   {/each}
@@ -250,10 +253,14 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
             column_1={4}
             column_2={8}
           >
-            <OyAutocomplete options={countries} getOptionLabel={(option) =>
-              option ? `${option.name}` : ''} key="id" bind:value={travellerInput.nationality}  />
-            {#if errors.nationality}
-              <span class="text-danger text-eyebrow">{errors.nationality}</span>
+            <OyAutocomplete
+              options={countries}
+              getOptionLabel={(option) => (option ? `${option.name}` : '')}
+              key="id"
+              bind:value={travellerInput.residence}
+            />
+            {#if errors.residence}
+              <span class="text-danger text-eyebrow">{errors.residence}</span>
             {/if}
           </svelte:component>
           <svelte:component
@@ -284,14 +291,19 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
               </div>
             </div>
             <div class="d-col-12 m-col-9">
-                <Textfield value="" label="" type="file" bind:files={avatarInput} />
+              <Textfield
+                value=""
+                label=""
+                type="file"
+                bind:files={avatarInput}
+              />
             </div>
           </div>
         </Cell>
       </LayoutGrid>
       <div class="row">
         <div class="d-col-6 m-col-12 m-mb-15">
-            <svelte:component this={Note} />
+          <svelte:component this={Note} />
         </div>
         <div class="d-col-6 m-col-12">
           <div class="d-block m-none text-right">
@@ -302,7 +314,6 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
           </div>
         </div>
       </div>
-     
     </svelte:component>
   </form>
 {/if}

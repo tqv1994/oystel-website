@@ -31,18 +31,7 @@
     chevronPosition: 'inside',
   };
 
-  function onSignUpModalClose(event: CustomEvent) {
-    signupModalOpen = false;
-    if (event.detail.type === 'open-signin') {
-      signinModalOpen = true;
-    }
-  }
-  function onSignInModalClose(event: CustomEvent) {
-    signinModalOpen = false;
-    if (event.detail.type === 'open-signup') {
-      signupModalOpen = true;
-    }
-  }
+  
 </script>
 
 <LayoutGrid>
@@ -94,20 +83,10 @@
           variant="outlined"
           class="hover-affect"
           on:click={() => {
-            signupModalOpen = true;
+            window.openSignUpModal();
           }}><Label class="text-button2">{action.name}</Label></Button
         >
       {/each}
     {/if}
   </Cell>
 </LayoutGrid>
-<svelte:component
-  this={SignupModal}
-  bind:open={signupModalOpen}
-  on:close={onSignUpModalClose}
-/>
-<svelte:component
-  this={SigninModal}
-  bind:open={signinModalOpen}
-  on:close={onSignInModalClose}
-/>
