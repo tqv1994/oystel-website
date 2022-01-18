@@ -57,6 +57,8 @@ import { dateTimeHelper } from '$lib/helpers/datetime';
         if(typeof($store) !== 'undefined'){
             const result = new Date($store.selected);
             value = `${result.getFullYear()}-${("0"+(result.getMonth()+1)).slice(-2)}-${("0"+result.getDate()).slice(-2)}`;
+        }else{
+            value = convertDate(selected);
         }
     });
 

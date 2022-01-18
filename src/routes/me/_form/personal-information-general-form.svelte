@@ -77,7 +77,9 @@
     if (res.ok) {
       if (!travellerInput.addresses[0]) {
         const data: createAddressData = await res.json();
-        travellerInput.addresses.push(data.createAddress.address.id);
+        if(data.createAddress){
+          travellerInput.addresses.push(data.createAddress?.address?.id)
+        }
       }
       await handleUpdateTraveller();
     } else {
@@ -103,9 +105,9 @@
         messenger: travellerInput.messenger,
         whatsapp: travellerInput.whatsapp,
         homePhone:
-          (homePhoneCode ? '+' + homePhoneCode : '') + travellerInput.homePhone,
+          homePhoneCode && travellerInput.homePhone ? (homePhoneCode ? '+' + homePhoneCode : '') + travellerInput.homePhone : null,
         workPhone:
-          (workPhoneCode ? '+' + workPhoneCode : '') + travellerInput.workPhone,
+        workPhoneCode && travellerInput.workPhone ? (workPhoneCode ? '+' + workPhoneCode : '') + travellerInput.workPhone : null,
       }),
     });
     if (res.ok) {

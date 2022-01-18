@@ -42,7 +42,7 @@
   const schemaValidator = yup.object().shape({
     mobilePhone: yup.number().required(),
     birthday: yup.string().required(),
-    nationality: yup.string().required(),
+    residence: yup.string().required(),
   });
 
   onMount(async () => {
@@ -63,7 +63,7 @@
       travellerInput.email = me?.email || '';
       travellerInput.mobilePhone = '';
       travellerInput.birthday = '';
-      travellerInput.nationality = '';
+      travellerInput.residence = '';
       travellerInput.salutationType = '';
     }
   });
@@ -116,6 +116,7 @@
       }
     } catch (err) {
       if (err.inner) {
+        console.log(err);
         errors = err.inner.reduce((acc, err) => {
           return { ...acc, [err.path]: err.message };
         }, {});
