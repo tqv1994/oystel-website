@@ -55,7 +55,6 @@
   import WhatToWear from '$lib/components/WhatToWear.svelte';
 
   export let data: EditorialPageData;
-  console.log(data);
 
   async function likeExperience(event: CustomEvent) {
     let liked: boolean;
@@ -113,7 +112,7 @@
   };
 </script>
 
-<div class="content editorial-content d-pt-80 m-pt-60">
+<div class="content editorial-content d-pt-128 m-pt-60">
   {#each data.page.sections as section, index}
     {#if section.__typename === 'ComponentGalleriesExperienceGallery'}
       <section
