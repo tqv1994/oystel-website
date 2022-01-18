@@ -45,8 +45,8 @@
   }
 }
 .mdc-top-app-bar {
-  --mdc-theme-primary: #{colors.$black};
-  --mdc-theme-on-primary: #{colors.$white};
+  --mdc-theme-primary: #{colors.$slightlyBlue};
+  --mdc-theme-on-primary: #{colors.$black};
 }
 .mdc-top-app-bar__row {
   max-width: #{sizes.$contentMaxWidth};

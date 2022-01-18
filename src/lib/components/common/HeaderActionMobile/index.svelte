@@ -86,7 +86,9 @@
   </div>
 {/if}
 
-<style>
+<style lang="scss">
+  @use '../../../../theme/mixins';
+  @use '../../../../theme/colors';
   #header-action-mobile {
     position: fixed;
     top: 0;
@@ -95,6 +97,9 @@
     height: calc(100vh - 83px);
     background-color: #f0f7f8;
     z-index: 10;
+    :global(.mdc-top-app-bar){
+      --mdc-theme-primary: #{colors.$slightlyBlue};
+    }
   }
   .wrap-close-btn {
     display: flex;
