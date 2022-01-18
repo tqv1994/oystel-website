@@ -73,7 +73,7 @@
   <div class="container">
     <section class="pb-40">
       <div class="section-body">
-        <LayoutGrid class="pl-0 pr-0 d-pt-150 m-pt-100">
+        <LayoutGrid class="pl-0 pr-0 pt-150">
           <Cell
             spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
             class="m-none"
