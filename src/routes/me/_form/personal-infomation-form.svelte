@@ -51,7 +51,7 @@
       travellerInput.email = travellerInput.email || me?.email || '';
       me.travellerMe = travellerMe;
       phone_code =
-        travellerInput?.mobilePhone?.match(createPatternPhoneCode(countries)) +
+        (travellerInput?.mobilePhone || '').match(createPatternPhoneCode(countries)) +
         '';
       phone_code = phone_code.replace('+', '');
       name = travellerInput.forename + ' ' + travellerInput.surname;
