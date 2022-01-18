@@ -139,7 +139,7 @@
           </p>
           {#if me.travellerMe?.addresses[0]?.line2}
             <p>
-              {`${me.travellerMe?.addresses[0]?.line2}, ${me.travellerMe?.addresses[0]?.province || ''}, ${me.travellerMe?.addresses[0]?.country.code || ''} ${me.travellerMe?.addresses[0]?.zipcode || ''}`}
+              {`${me.travellerMe?.addresses[0]?.line2}, ${me.travellerMe?.addresses[0]?.province || ''}, ${me.travellerMe?.addresses[0]?.country?.code || ''} ${me.travellerMe?.addresses[0]?.zipcode || ''}`}
             </p>
           {/if}
         {/if}

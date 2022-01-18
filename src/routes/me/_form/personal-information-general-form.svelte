@@ -104,6 +104,8 @@
         facebook: travellerInput.facebook,
         messenger: travellerInput.messenger,
         whatsapp: travellerInput.whatsapp,
+        language: travellerInput.language,
+        addresses: travellerInput.addresses[0] ? [travellerInput.addresses[0]] : [],
         homePhone:
           homePhoneCode && travellerInput.homePhone ? (homePhoneCode ? '+' + homePhoneCode : '') + travellerInput.homePhone : null,
         workPhone:
