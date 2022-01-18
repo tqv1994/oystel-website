@@ -110,6 +110,12 @@
             ORDER_BY_NAME_ASC,
         },
       };
+    }else{
+      return {
+        props: {
+          
+        }
+      }
     }
   };
 </script>
