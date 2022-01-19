@@ -4,17 +4,11 @@
   import { Cell } from '@smui/layout-grid';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import IconButton from '@smui/icon-button';
-  import { Icon } from '@smui/common';
   import Select from '@smui/select';
   import { Option } from '@smui/select';
   import Tab from '@smui/tab';
   import TabBar from '@smui/tab-bar';
-  import { Svg } from '@smui/common/elements';
-  import OyCarousel from '$lib/components/common/OyCarousel.svelte';
-  import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import BlurImage from '$lib/components/blur-image.svelte';
   import { destinationStore } from '$lib/store/destination';
   import { Destination } from '$lib/store/destination';
   import { Exhibitable, insertToStore } from '$lib/store/types';
@@ -436,8 +430,8 @@
     /* Header title */
     .header-title {
       background-color: #f0f7f8;
-      .mdc-layout-grid{
-        @include mixins.desktop{
+      .mdc-layout-grid {
+        @include mixins.desktop {
           --mdc-layout-grid-gutter-desktop: 30px;
         }
       }

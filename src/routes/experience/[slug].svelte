@@ -2,20 +2,11 @@
   import type { Load } from '@sveltejs/kit';
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  import InnerGrid from '@smui/layout-grid';
-  import Button from '@smui/button';
-  import { Label } from '@smui/common';
-  import IconButton from '@smui/icon-button';
-  import { Icon } from '@smui/common';
-  import { Svg } from '@smui/common/elements';
-  import Layout from '$lib/components/common/Layout.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import BlurImage from '$lib/components/blur-image.svelte';
   import { insertToStore } from '$lib/store/types';
   import { parseId } from '$lib/utils/fetch';
   import { Experience, experienceStore } from '$lib/store/experience';
   import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
-  import { makeLink } from '$lib/utils/link';
   import ProductShow from '$lib/components/product-show.svelte';
   import LookShow from '$lib/components/look-show.svelte';
   import { authStore } from '$lib/store/auth';
@@ -348,8 +339,8 @@
     /* Header title */
     .header-title {
       background-color: #f0f7f8;
-      .mdc-layout-grid{
-        @include mixins.desktop{
+      .mdc-layout-grid {
+        @include mixins.desktop {
           --mdc-layout-grid-gutter-desktop: 30px;
         }
       }

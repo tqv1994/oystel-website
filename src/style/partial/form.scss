@@ -61,7 +61,17 @@ form {
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
+    // Text helper
+    .mdc-text-field-helper-text{
+        --mdc-typography-caption-font-size: 14px;
+        @include mixins.mobile{
+            --mdc-typography-caption-font-size: 13px;
+        }
+        height: 0;
+        &[role="alert"]{
+            height: auto;
+        }
+    }
     // Color
 }
 @include mixins.dark {

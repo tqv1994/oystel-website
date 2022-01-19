@@ -4,7 +4,6 @@
   import Layout from '$lib/components/common/Layout.svelte';
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  import OyCarousel from '$lib/components/common/OyCarousel.svelte';
   import { Icon } from '@smui/common';
   import IconButton from '@smui/icon-button';
   import { Svg } from '@smui/common/elements';

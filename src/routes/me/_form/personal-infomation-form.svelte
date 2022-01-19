@@ -29,12 +29,12 @@
   import { sortByName } from '$lib/utils/sort';
   import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
   import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
+  import HelperText from '@smui/textfield/helper-text';
   export let me: User;
   const travellerMe: Traveller = me.travellerMe;
   const salutationTypes = Object.values(get(salutationTypeStore).items);
   const countries = sortByName(Object.values(get(countryStore).items));
   let travellerInput: TravellerInput;
-  let name: string;
   let phone_code: string;
   let oysteo_id_number: string = me.id;
   let errors: any = {};
@@ -43,6 +43,8 @@
     mobilePhone: yup.number().required(),
     birthday: yup.string().required(),
     residence: yup.string().required(),
+    forename: yup.string().required(),
+    surname: yup.string().required()
   });
 
   onMount(async () => {
@@ -54,12 +56,10 @@
         (travellerInput?.mobilePhone || '').match(createPatternPhoneCode(countries)) +
         '';
       phone_code = phone_code.replace('+', '');
-      name = travellerInput.forename + ' ' + travellerInput.surname;
       travellerInput.mobilePhone =
         travellerInput.mobilePhone?.replace('+' + phone_code, '') || '';
     } else {
       travellerInput = new TravellerInput();
-      name = '';
       travellerInput.email = me?.email || '';
       travellerInput.mobilePhone = '';
       travellerInput.birthday = '';
@@ -90,8 +90,8 @@
           salutationType: travellerInput.salutationType,
           email: travellerInput.email,
           birthday: travellerInput.birthday,
-          forename: name.split(' ')[0],
-          surname: name.split(' ')[1] || '',
+          forename: travellerInput.forename,
+          surname: travellerInput.surname,
           mobilePhone:
             (phone_code ? '+' + phone_code : '') + travellerInput.mobilePhone,
           residence: travellerInput.residence,
@@ -183,10 +183,21 @@
             column_2={8}
           >
             <div class="row">
-              <div class="d-col-7 m-col-7 mb-0">
-                <Textfield bind:value={name} label="Name" type="text" />
+              <div class="d-col-4 m-col-4 mb-0">
+                <Textfield invalid={errors.forename ? true : false} bind:value={travellerInput.forename} label="Forename" type="text">
+                  <HelperText validationMsg slot="helper">
+                    {errors?.forename || ''}
+                  </HelperText>
+                </Textfield>
               </div>
-              <div class="d-col-5 m-col-5 mb-0">
+              <div class="d-col-4 m-col-4 mb-0">
+                <Textfield invalid={errors.surname ? true : false} bind:value={travellerInput.surname} label="Surname" type="text" >
+                  <HelperText validationMsg slot="helper">
+                    {errors?.surname || ''}
+                  </HelperText>
+                </Textfield>
+              </div>
+              <div class="d-col-4 m-col-4 mb-0">
                 <Select
                   bind:value={travellerInput.salutationType}
                   label="Salutation"
@@ -204,7 +215,11 @@
             column_1={4}
             column_2={8}
           >
-            <Textfield bind:value={me.email} label="" type="email" />
+            <Textfield invalid={errors?.email ? true : false} bind:value={me.email} label="" type="email">
+              <HelperText validationMsg slot="helper">
+                {errors?.email || ''}
+              </HelperText>
+            </Textfield>
           </svelte:component>
           <svelte:component
             this={Field}
@@ -224,15 +239,15 @@
               </div>
               <div class="d-col-8 m-col-9 mb-0">
                 <Textfield
+                  invalid={errors?.mobilePhone ? true : false}
                   bind:value={travellerInput.mobilePhone}
                   label=""
                   type="phone"
-                />
-                {#if errors.mobilePhone}
-                  <span class="text-danger text-eyebrow"
-                    >{errors.mobilePhone}</span
-                  >
-                {/if}
+                >
+                  <HelperText validationMsg slot="helper">
+                    {errors?.mobilePhone || ''}
+                  </HelperText>
+                </Textfield>
               </div>
             </div>
           </svelte:component>
@@ -244,7 +259,7 @@
           >
             <OyDatepicker bind:value={travellerInput.birthday} />
             {#if errors.birthday}
-              <span class="text-danger text-eyebrow">{errors.birthday}</span>
+              <span class="mdc-text-field-helper-text mdc-text-field-helper-text--validation-msg">{errors.birthday}</span>
             {/if}
           </svelte:component>
           <svelte:component
@@ -260,7 +275,7 @@
               bind:value={travellerInput.residence}
             />
             {#if errors.residence}
-              <span class="text-danger text-eyebrow">{errors.residence}</span>
+              <span class="mdc-text-field-helper-text mdc-text-field-helper-text--validation-msg">{errors.residence}</span>
             {/if}
           </svelte:component>
           <svelte:component

@@ -1,34 +1,20 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import {
-    ExperienceSearchResultItem,
-    experienceStore,
-  } from '$lib/store/experience';
+  import { ExperienceSearchResultItem } from '$lib/store/experience';
   import { experienceTypeStore } from '$lib/store/experience-type';
-  import {
-    DestinationSearchResultItem,
-    destinationStore,
-  } from '$lib/store/destination';
+  import { DestinationSearchResultItem } from '$lib/store/destination';
   import { destinationTypeStore } from '$lib/store/destination-type';
   import { countryStore } from '$lib/store/country';
   import { onMount } from 'svelte';
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  import { goto } from '$app/navigation';
   import Textfield from '@smui/textfield';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import IconButton from '@smui/icon-button';
   import { Icon } from '@smui/common';
-  import Select from '@smui/select';
-  import { Option } from '@smui/select';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-  import { Svg } from '@smui/common/elements';
-  import { stringHelper } from '$lib/helpers';
-  import Layout from '$lib/components/common/Layout.svelte';
   import { authStore } from '$lib/store/auth';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import BlurImage from '$lib/components/blur-image.svelte';
   import { Experience } from '$lib/store/experience';
   import { Country } from '$lib/store/country';
   import { Destination } from '$lib/store/destination';
@@ -55,8 +41,6 @@
     SearchResultGroup,
   } from '$lib/store/search';
   import { Category } from '$lib/store/category';
-  import SearchResult from '$lib/components/search-result.svelte';
-  import { makeLink } from '$lib/utils/link';
   import { sortByName } from '$lib/utils/sort';
   import { Nameable } from '$lib/store/types';
   import { contains } from '$lib/utils/array';

@@ -19,7 +19,8 @@
   import { createEventDispatcher } from 'svelte';
   import { deleteTravellerData } from '../../traveller/delete-[id].json';
   import Text from '../components/Text.svelte';
-import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
+  import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
+  import HelperText from '@smui/textfield/helper-text';
 
   export var traveller: Traveller | null;
   export let relationship: string = '';
@@ -36,9 +37,10 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
   });
   if (traveller == null) {
     travellerInput = new TravellerInput();
+    travellerInput.forename = '';
+    travellerInput.surname = '';
   } else {
     travellerInput = convertTravellerToInput(traveller);
-    name = travellerInput.forename + ' ' + travellerInput.surname;
   }
   travellerInput.birthday = travellerInput.birthday || '';
 
@@ -64,7 +66,7 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
           surname: travellerInput.surname,
           forename: travellerInput.forename,
           salutationType: travellerInput.salutationType,
-          birthday: travellerInput.birthday
+          birthday: travellerInput.birthday,
         }),
       });
       if (res.ok) {
@@ -100,12 +102,12 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                parents:travellerInputMe.parents,
+                parents: travellerInputMe.parents,
                 children: travellerInputMe.children,
                 relatives: travellerInputMe.relatives,
                 partners: travellerInputMe.partners,
                 spouse: travellerInputMe.spouse,
-                otherRelations: travellerInputMe.otherRelations
+                otherRelations: travellerInputMe.otherRelations,
               }),
             },
           );
@@ -255,30 +257,33 @@ import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
 </script>
 
 <form on:submit|preventDefault={handleSubmitForm}>
-  <svelte:component this={Field} label="Name*" column_1={4} column_2={8}
+  <svelte:component this={Field} label="Forename*" column_1={4} column_2={8}
     ><div class="row">
-      <div class="d-col-7 m-col-12 d-mb-0 m-mb-15">
+      <div class="d-col-4 m-col-6 d-mb-0 m-mb-15">
         <Textfield
-          bind:value={name}
-          label="Name"
+          invalid={errors?.forename ? true : false}
+          bind:value={travellerInput.forename}
+          label="Forename"
           type="text"
-          on:input={() => {
-            travellerInput.forename = name.split(' ')[0];
-            travellerInput.surname = name.split(' ')[1] || '';
-          }}
-        />
-        {#if errors.surname}
-          <svelte:component this={Text} class="text-danger text-eyebrow"
-            >{errors.surname}</svelte:component
-          >
-        {/if}
-        {#if errors.forename}
-          <svelte:component this={Text} class="text-danger text-eyebrow"
-            >{errors.forename}</svelte:component
-          >
-        {/if}
+        >
+          <HelperText validationMsg slot="helper">
+            {errors?.forename || ''}
+          </HelperText>
+        </Textfield>
       </div>
-      <div class="d-col-5 m-col-12 d-mb-0 m-mb-0">
+      <div class="d-col-4 m-col-6 d-mb-0 m-mb-15">
+        <Textfield
+          invalid={errors?.surname ? true : false}
+          bind:value={travellerInput.surname}
+          label="Surname"
+          type="text"
+        >
+          <HelperText validationMsg slot="helper">
+            {errors?.surname || ''}
+          </HelperText>
+        </Textfield>
+      </div>
+      <div class="d-col-4 m-col-12 d-mb-0 m-mb-0">
         <Select bind:value={travellerInput.salutationType} label="Salutation">
           {#each salutationTypes as item}
             <Option value={item.id}>{item.name}</Option>

@@ -1,10 +1,9 @@
 <script>
   import { authStore } from '$lib/store/auth';
-  import { onMount, afterUpdate } from 'svelte';
+  import { afterUpdate } from 'svelte';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
   import { Icon } from '@smui/common';
-  import Checkbox from '@smui/checkbox';
   import Radio from '@smui/radio';
   import FormField from '@smui/form-field';
   import LayoutGrid from '@smui/layout-grid';

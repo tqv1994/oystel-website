@@ -1,19 +1,9 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import { onMount, afterUpdate, beforeUpdate } from 'svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
-  import { goto } from '$app/navigation';
-  import Textfield from '@smui/textfield';
-  import Button, { Label } from '@smui/button';
+  import Button from '@smui/button';
   import IconButton, { Icon } from '@smui/icon-button';
-  import Select, { Option } from '@smui/select';
-  import Tab from '@smui/tab';
-  import TabBar from '@smui/tab-bar';
-  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
   import { Svg } from '@smui/common/elements';
-  import OyCarousel from '$lib/components/common/OyCarousel.svelte';
-  import Layout from '$lib/components/common/Layout.svelte';
-  import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
   import QuickShopModal from '$lib/components/modals/QuickShopModal.svelte';
 
   import { documentHelper, stringHelper } from '$lib/helpers';

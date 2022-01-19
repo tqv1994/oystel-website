@@ -59,10 +59,10 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
       drawerOpen = false;
     }
     if (window.scrollY < 64) {
-        prominent = true;
-      } else {
-        prominent = false;
-      }
+      prominent = true;
+    } else {
+      prominent = false;
+    }
   }
 
   const handleChangeNavLightColor = () => {
@@ -71,7 +71,6 @@ import { afterUpdate, beforeUpdate, onMount } from 'svelte';
     }else if (window.scrollY < 64) {
       if(classNames && (classNames?.indexOf('header-transparent')) >= 0){
         navLightColor = false;
-        console.log(classNames?.indexOf('header-transparent'));
       }else{
         navLightColor = true;
       }
