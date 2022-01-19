@@ -65,6 +65,8 @@
       travellerInput.birthday = '';
       travellerInput.residence = '';
       travellerInput.salutationType = '';
+      travellerInput.forename = '';
+      travellerInput.surname = '';
     }
   });
 
