@@ -6,11 +6,8 @@
   import { Cell } from '@smui/layout-grid';
   import LayoutGrid from '@smui/layout-grid';
   import { Label } from '@smui/list';
-  import { createEventDispatcher } from 'svelte';
   import BlurImage from './blur-image.svelte';
   import Carousel from './Carousel.svelte';
-  import SignupModal from './modals/SignupModal.svelte';
-  import SigninModal from './modals/SigninModal.svelte';
 
   export let name: string | undefined = undefined;
   export let headline: string | undefined = undefined;
@@ -18,10 +15,6 @@
   export let actions: Action[] | undefined = undefined;
   export let gallery: UploadFile[] | undefined = undefined;
   export let background: UploadFile[] | undefined = undefined;
-
-  const dispatcher = createEventDispatcher();
-  let signupModalOpen = false;
-  let signinModalOpen = false;
 
   const carouselConfig = {
     autoplayDuration: 8000,

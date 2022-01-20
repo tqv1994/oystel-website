@@ -67,7 +67,7 @@
             </Cell>
           </LayoutGrid>
           <svelte:component this={Field} label="Email">
-            <svelte:component this={Text}>{me.email || ''}</svelte:component>
+            <svelte:component this={Text}>{me.travellerMe?.email || me.email}</svelte:component>
           </svelte:component>
           <svelte:component this={Field} label="Cell Phone">
             <svelte:component this={Text}

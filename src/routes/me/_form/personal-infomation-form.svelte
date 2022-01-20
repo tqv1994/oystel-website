@@ -50,7 +50,7 @@
   onMount(async () => {
     if (me.travellerMe) {
       travellerInput = convertTravellerToInput(travellerMe);
-      travellerInput.email = travellerInput.email || me?.email || '';
+      travellerInput.email = travellerInput?.email || me?.email || '';
       me.travellerMe = travellerMe;
       phone_code =
         (travellerInput?.mobilePhone || '').match(createPatternPhoneCode(countries)) +
@@ -217,7 +217,7 @@
             column_1={4}
             column_2={8}
           >
-            <Textfield invalid={errors?.email ? true : false} bind:value={me.email} label="" type="email">
+            <Textfield invalid={errors?.email ? true : false} bind:value={travellerInput.email} label="" type="email">
               <HelperText validationMsg slot="helper">
                 {errors?.email || ''}
               </HelperText>

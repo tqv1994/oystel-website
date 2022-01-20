@@ -1,18 +1,14 @@
 <script lang="ts">
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import { goto } from '$app/navigation';
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  import { Svg } from '@smui/common/elements';
   import { createEventDispatcher } from 'svelte';
   import { authStore } from '$lib/store/auth';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import SearchIcon from '$lib/icons/SearchIcon.svelte';
   import TripIcon from '$lib/icons/TripIcon.svelte';
   import UserIcon from '$lib/icons/UserIcon.svelte';
-import SigninModal from '$lib/components/modals/SigninModal.svelte';
-import SignupModal from '$lib/components/modals/SignupModal.svelte';
 
   export let openSigninModal = false;
   let dispatcher = createEventDispatcher();

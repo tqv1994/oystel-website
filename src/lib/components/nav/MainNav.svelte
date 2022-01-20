@@ -31,10 +31,8 @@
   import { goto } from '$app/navigation';
   import { clickOutside } from '$lib/components/events/clickOutside';
   import { authStore } from '$lib/store/auth';
-  import SigninModal from '$lib/components/modals/SigninModal.svelte';
-  import SignupModal from '../modals/SignupModal.svelte';
   import OySearchModal from '../modals/OySearchModal.svelte';
-import { afterUpdate, beforeUpdate, onMount } from 'svelte';
+  import { afterUpdate } from 'svelte';
   export let items: MainNavItem[];
   export let active: MainNavItem | undefined = undefined;
 
