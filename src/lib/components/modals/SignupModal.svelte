@@ -19,23 +19,20 @@
     AuthErrorCodes,
   } from 'firebase/auth';
   import { authStore } from '$lib/store/auth';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import * as yup from 'yup';
-import { routerHelper } from '$lib/helpers/router';
-import { goto } from '$app/navigation';
-  export let open: boolean;
-  export let authModel;
-  const dispatch = createEventDispatcher();
-  let response = 'Nothing yet.';
+  import { routerHelper } from '$lib/helpers/router';
+  import { goto } from '$app/navigation';
+  let open: boolean;
   let model = {
     email: '',
     password: '',
   };
   let classModal = '';
   export function openModal() {
-    if(!$authStore.user){
+    if (!$authStore.user) {
       open = true;
-    }else{
+    } else {
       goto('/me');
     }
   }
@@ -201,7 +198,7 @@ import { goto } from '$app/navigation';
     }
   }
 
-  onMount(()=>{
+  onMount(() => {
     window.openSignUpModal = openModal;
     window.closeSignUpModal = closeModal;
   });

@@ -32,7 +32,6 @@
   import SearchIcon from '$lib/icons/SearchIcon.svelte';
 
   let miniWindow = false;
-  let searchResult = '';
   let openSubMenu = false;
   let menuItemActive: string;
   let urlViewAllSubmenu: string;
@@ -41,7 +40,6 @@
   let userModel = $authStore.user;
   export let openSignupModal = false;
   export let openSigninModal = false;
-  let openSearchResult = false;
   let contentHeaderAction = '';
   let tabsSubMenu: any[];
   const dispatch = createEventDispatcher();

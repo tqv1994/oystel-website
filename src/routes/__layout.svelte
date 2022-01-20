@@ -66,8 +66,13 @@
     mainMenu[2].children = session.metadata?.feature?.experiences;
     mainMenu[4].children = [
       // {name: 'Limited Drops', url: '/shop/fashion-drops', description: 'Fashion Collection',gallery: [{url: '/img/slides/shop-slide-2.jpg'}]},
-      {name: 'Curated Looks', url: '/shop/curated-looks-listing', description: 'Fashion Collection',gallery: [{url: '/img/shop/shop-thumbnail.jpg'}]},
-    ]
+      {
+        name: 'Curated Looks',
+        url: '/shop/curated-looks-listing',
+        description: 'Fashion Collection',
+        gallery: [{ url: '/img/shop/shop-thumbnail.jpg' }],
+      },
+    ];
 
     var active: MainNavItem;
     let isHomePage = false;
@@ -100,16 +105,16 @@
     personalPreferenceTypeStore,
     travelPreferenceTypeStore,
   } from '$lib/store/preference';
-import Loading from '$lib/components/Loading.svelte';
-import SigninModal from '$lib/components/modals/SigninModal.svelte';
-import SignupModal from '$lib/components/modals/SignupModal.svelte';
+  import Loading from '$lib/components/Loading.svelte';
+  import SigninModal from '$lib/components/modals/SigninModal.svelte';
+  import SignupModal from '$lib/components/modals/SignupModal.svelte';
   export let active: MainNavItem | undefined;
   export let isHomePage = false;
   export let key: string;
   let mainNavClass: string = '';
   if (key == '/destination' || key == '/experience') {
     mainNavClass = 'bg-header-scroll-slightly_blue';
-  }else{
+  } else {
     mainNavClass = '';
   }
 </script>
@@ -118,14 +123,15 @@ import SignupModal from '$lib/components/modals/SignupModal.svelte';
   <MainNav
     items={mainMenu}
     bind:active
-    class={`${isHomePage ? 'header-transparent' : ''} ${mainNavClass}`} navLightColor={!isHomePage}
+    class={`${isHomePage ? 'header-transparent' : ''} ${mainNavClass}`}
+    navLightColor={!isHomePage}
   />
   <section>
     <slot />
   </section>
   <Footer />
 </div>
-<Loading/>
+<Loading />
 <MobileBottomTool />
-<SigninModal/>
-<SignupModal/>
+<SigninModal />
+<SignupModal />
