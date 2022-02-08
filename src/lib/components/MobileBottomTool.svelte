@@ -11,6 +11,7 @@
     let data = event.detail;
     if (data.content) {
       content = event.detail.content;
+      console.log('test',content);
     } else if (data.link !== '') {
       if (userModel && data.link.includes('/me')) {
         goto(data.link);

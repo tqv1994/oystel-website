@@ -163,7 +163,8 @@ import { goto } from '$app/navigation';
           }),
         });
         if (res.ok) {
-          routerHelper.redirect('/');
+          window.pushToast('Logged in successfully');
+          routerHelper.redirect('/me');
         }
       }
     } catch (err) {

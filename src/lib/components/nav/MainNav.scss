@@ -294,10 +294,12 @@
   }
 }
 
-.drawer-open {
+.header-transparent.drawer-open, .drawer-open {
   .mdc-top-app-bar {
     --mdc-theme-primary: #{colors.$slightlyBlue};
-    --mdc-theme-on-primary: #{colors.$black};
+    &, .top-app-bar__main-row{
+      --mdc-theme-on-primary: #{colors.$black};
+    }
   }
   .mdc-icon-button {
     &.nav {

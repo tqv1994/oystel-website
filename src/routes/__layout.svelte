@@ -108,6 +108,7 @@
   import Loading from '$lib/components/Loading.svelte';
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
   import SignupModal from '$lib/components/modals/SignupModal.svelte';
+  import OyNotification from '$lib/components/common/OyNotification.svelte';
   export let active: MainNavItem | undefined;
   export let isHomePage = false;
   export let key: string;
@@ -135,3 +136,4 @@
 <MobileBottomTool />
 <SigninModal />
 <SignupModal />
+<OyNotification/>

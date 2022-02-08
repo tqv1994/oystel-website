@@ -59,7 +59,7 @@
   <a href={makeLink(pathPrefix, item)}>
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, phone: 2 }}
-        ><p class="text-eyebrow text-left m-0 mt-20 mb-17">
+        ><p class="text-eyebrow text-left m-0 mt-20 mb-15">
           {country?.name || ''}
         </p></Cell
       >
@@ -73,6 +73,7 @@
 </div>
 
 <style lang="scss">
+  @use '../../theme/mixins';
   .item {
     :global(.mdc-layout-grid) {
       --mdc-layout-grid-gutter-desktop: 0;
@@ -81,8 +82,11 @@
       background-color: rgba(0, 0, 0, 0.2);
     }
     .title {
-      height: 45px;
+      height: 24px;
       overflow: hidden;
+      @include mixins.mobile{
+        height: 37px;
+      }
     }
     .thumbnail {
       position: relative;

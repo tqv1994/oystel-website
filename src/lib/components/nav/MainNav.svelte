@@ -33,6 +33,8 @@
   import { authStore } from '$lib/store/auth';
   import OySearchModal from '../modals/OySearchModal.svelte';
   import { afterUpdate } from 'svelte';
+  import Menu, { MenuComponentDev } from '@smui/menu';
+  import {Separator } from '@smui/list';
   export let items: MainNavItem[];
   export let active: MainNavItem | undefined = undefined;
 
@@ -42,8 +44,6 @@
   let prominent: boolean = true;
   let activeSubItems: Exhibitable[] | SubNavItem[] | undefined;
   let scrollY: number = 0;
-  export let signinModalOpen: boolean = false;
-  export let signupModalOpen: boolean = false;
   let classNames: string|undefined = undefined;
   export {classNames as class};
   let openSearch: boolean = false;
@@ -62,6 +62,8 @@
       prominent = false;
     }
   }
+
+  let menuUser: MenuComponentDev;
 
   const handleChangeNavLightColor = () => {
     if(activeSubItems && activeSubItems.length > 0){
@@ -235,13 +237,26 @@
         >
           <HeartIcon size="sm" />
         </IconButton>
-        <IconButton
+        <div class="menu-user">
+          <IconButton
           on:click={() => {
-            $authStore.user ? goto('/me') : (window.openSignInModal());
+            $authStore.user ? menuUser.setOpen(true) : (window.openSignInModal());
           }}
         >
           <UserIcon />
         </IconButton>
+        <Menu bind:this={menuUser}
+        >
+          <List>
+            <Item on:SMUI:action={() => (goto('/me'))}>
+              <Text>Account info</Text>
+            </Item>
+            <Item on:SMUI:action={() => (goto('/sign-out'))}>
+              <Text>Logout</Text>
+            </Item>
+          </List>
+        </Menu>
+        </div>
       </Section>
       <Section align="end" class="mobile actions">
         <IconButton class="material-icons nav" on:click={onMenuClick}
@@ -347,4 +362,8 @@
 
 <style lang="scss" global>
   @use './MainNav';
+  .menu-user{
+    display: inline-block;
+    @import "../../../style/partial/menu.scss";
+  }
 </style>

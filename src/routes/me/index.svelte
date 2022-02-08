@@ -60,7 +60,9 @@
           <div class="info">
             <div class="thumbnail d-mr-20">
               <div class="image-cover" style="padding-top: 100%">
+                {#if me.avatar}
                 <BlurImage {...me.avatar} />
+                {/if}
               </div>
             </div>
             <div class="meta">

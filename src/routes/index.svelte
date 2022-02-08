@@ -42,17 +42,7 @@
   import Carousel from '$lib/components/Carousel.svelte';
   import FeatureDrops from '$lib/components/FeatureDrops.svelte';
   import CuratedExperience from '$lib/components/CuratedExperience.svelte';
-  import { Page } from '$lib/store/page';
   import { contains } from '$lib/utils/array';
-
-  let configPage = {
-    header: {
-      page: 'home',
-      transparent: true,
-      theme: 'dark',
-      currentMenu: '',
-    },
-  };
 
   export let data: HomePageData;
   let me: User | undefined = $authStore.user;
@@ -177,9 +167,10 @@
 <svelte:body />
 
 <div class="content home-page-content">
+  {#if data?.gallery.length > 0}
   <section id="slider" class="full-width hero">
     <Carousel {...carouselConfig}>
-      {#each data?.gallery as item}
+      {#each data?.gallery || [] as item}
         <div class="slide">
           <div class="image-cover" style="padding-top: 0; height: 100%">
             <BlurImage {...item} />
@@ -194,6 +185,7 @@
       </div>
     </div>
   </section>
+  {/if}
 
   {#each data.page.sections as section, index}
     {#if section.__typename === 'ComponentGalleriesDropGallery'}

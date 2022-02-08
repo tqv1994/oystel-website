@@ -1,15 +1,11 @@
 <script lang="ts">
   import { authStore } from '$lib/store/auth';
-  import Layout from '$lib/components/common/Layout.svelte';
   import { routerHelper } from '$lib/helpers';
 
   async function signOut() {
     try {
       const res = await fetch(`/auth/sign-out.json?_z=${Date.now()}`);
-      authStore.set({ user: undefined });
       if (res.ok) {
-        document.cookie = `session=; Path=/; Expires=${new Date()};`;
-        document.cookie = `session.sig=; Path=/; Expires=${new Date()};`;
         authStore.set({ user: undefined });
         routerHelper.redirect('/');
         return;
@@ -20,10 +16,8 @@
     }
   }
 </script>
-
-<Layout>
   <div class="content">
-    <div class="container">
+    <div class="container mt-128 pt-20 pb-20">
       {#if $authStore.user}
         <h1>Really sign out?</h1>
         <ul>
@@ -43,4 +37,3 @@
       {/if}
     </div>
   </div>
-</Layout>

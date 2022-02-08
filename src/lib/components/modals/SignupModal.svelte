@@ -17,6 +17,7 @@
     GoogleAuthProvider,
     FacebookAuthProvider,
     AuthErrorCodes,
+sendEmailVerification,
   } from 'firebase/auth';
   import { authStore } from '$lib/store/auth';
   import { onMount } from 'svelte';
@@ -124,7 +125,6 @@
             localStorage.setItem('token', token);
             const user = await res.json();
             authStore.set({ user });
-            authModel = user;
             routerHelper.redirect('/');
           }
           console.error('Error authenticating', res);
@@ -169,12 +169,12 @@
         });
         if (res.ok) {
           const user = await res.json();
-          authStore.set({ user });
           // authModel = authStore.user;
           // doAfterSignup(user);
-          authModel = user;
-          errors = {};
-          routerHelper.redirect('/');
+          sendEmailVerification(cred.user).then(()=>{
+            window.pushToast('Thank you for registering. Please verify your email');
+            routerHelper.redirect('/');
+          });
           // return goto('/me').then(auth.signOut);
         } else {
           const error = await res.json();

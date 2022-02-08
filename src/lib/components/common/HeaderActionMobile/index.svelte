@@ -36,9 +36,9 @@
 </script>
 
 {#if content != ''}
-  <div id="header-action-mobile" class="d-none m-block pt-10">
+  <div id="header-action-mobile" class="d-none m-block pt-10 {content}">
     <div class="wrap mr-20 ml-20">
-      <TopAppBar variant="static" class="demo-top-app-bar light">
+      <TopAppBar variant="static" class="light">
         <Row>
           <Section class="pl-0">
             <Title href="/" class="mdc-theme--primary pl-0">
@@ -99,6 +99,9 @@
     z-index: 10;
     :global(.mdc-top-app-bar){
       --mdc-theme-primary: #{colors.$slightlyBlue};
+    }
+    &.explode :global(.mdc-top-app-bar){
+      --mdc-theme-primary: #{colors.$white};
     }
   }
   .wrap-close-btn {

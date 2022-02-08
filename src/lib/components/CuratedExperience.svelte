@@ -14,6 +14,7 @@
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
   import { contains } from '$lib/utils/array';
   import { authStore, User } from '$lib/store/auth';
+import SliderItems from './SliderItems.svelte';
 
   export let experiences: Experience[];
   export let name: string | undefined = undefined;
@@ -103,19 +104,32 @@
     {/if}
   </Cell>
   <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
-    <LayoutGrid class="experiences--list m-p-0">
+    <div class="experiences--list m-p-0">
       {#if nonHeros?.length}
-        {#each nonHeros as experience}
-          <Cell spanDevices={{ desktop: 6, phone: 2 }}>
-            <Item
-              {...experience}
-              item={experience}
-              pathPrefix="/experience"
-              on:likeItem={(e) => onLike(e, undefined)}
-            />
-          </Cell>
-        {/each}
+        <SliderItems>
+          <div class="row">
+            {#each nonHeros as experience}
+              <div class="col d-col-6 m-col-6">
+                <Item
+                  {...experience}
+                  item={experience}
+                  pathPrefix="/experience"
+                  on:likeItem={(e) => onLike(e, undefined)}
+                />
+              </div>
+            {/each}
+          </div>
+        </SliderItems>
       {/if}
-    </LayoutGrid>
+      </div>
   </Cell>
 </LayoutGrid>
+<style lang="scss">
+   @use '../../style/include/grid';
+   .row .col:nth-child(odd){
+    padding-right: calc(15px /2);
+   }
+   .row .col:nth-child(even){
+    padding-left: calc(15px /2);
+   }
+</style>

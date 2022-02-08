@@ -76,35 +76,33 @@
       <div class="list-featured-drop">
         <Carousel {...carouselConfig}>
           {#each nonHeros as drop}
-            {#if drop.products.length > 0}
               <div
                 class="item-featured-drop slide-content slide-item text-left"
               >
-                <div class="thumbnail dark d-mb-40 m-mb-40">
-                  <div
-                    class="image-cover"
-                    style="padding-top: calc(410/311 * 100%)"
-                  >
-                    <BlurImage {...drop.gallery[0]} />
-                  </div>
-                  <div class="caption">
-                    <span>{drop.products.length} Packages left</span>
-                  </div>
-                </div>
-                <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">
-                  Experience Drop
-                </p>
-                <h4 class="text-h3 mt-0 d-mb-25 m-mb-15 title">
-                  {drop.name}
-                </h4>
-                <Button
-                  class="hover-affect-drop"
-                  variant="outlined"
-                  href={makeLink('/drops', drop)}
-                  ><Label>Plan Your Trip</Label></Button
+              <div class="thumbnail dark d-mb-40 m-mb-40">
+                <div
+                  class="image-cover"
+                  style="padding-top: calc(410/311 * 100%)"
                 >
+                  <BlurImage {...drop.gallery[0]} />
+                </div>
+                <div class="caption">
+                  <span>{drop.products.length} Packages left</span>
+                </div>
               </div>
-            {/if}
+              <p class="mt-0 d-mb-25 m-mb-15 text-eyebrow category">
+                Experience Drop
+              </p>
+              <h4 class="text-h3 mt-0 d-mb-25 m-mb-15 title">
+                {drop.name}
+              </h4>
+              <Button
+                class="hover-affect-drop"
+                variant="outlined"
+                href={makeLink('/drops', drop)}
+                ><Label>Plan Your Trip</Label></Button
+              >
+            </div>
           {/each}
         </Carousel>
       </div>

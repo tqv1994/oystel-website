@@ -1,0 +1,7 @@
+:global(.mdc-menu){
+    :global(.mdc-deprecated-list-item:hover),
+    :global(.mdc-deprecated-list-item--selected),
+    :global(.mdc-ripple-upgraded--background-focused){
+        background: #DEDEDE;
+    }
+}
