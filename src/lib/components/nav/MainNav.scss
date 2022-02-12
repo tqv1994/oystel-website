@@ -45,8 +45,8 @@
   }
 }
 .mdc-top-app-bar {
-  --mdc-theme-primary: #{colors.$slightlyBlue};
-  --mdc-theme-on-primary: #{colors.$black};
+  --mdc-theme-primary: #{colors.$black};
+  --mdc-theme-on-primary: #{colors.$white};
 }
 .mdc-top-app-bar__row {
   max-width: #{sizes.$contentMaxWidth};
@@ -73,9 +73,6 @@
     svg{
       filter: brightness(0.1);
     }
-    *, a {
-      color: #{colors.$black};
-    }
     @include button.outline-color(colors.$white);
     --mdc-theme-primary: #{colors.$slightlyBlue};
     .mdc-tab {
@@ -87,13 +84,19 @@
       @include tab-indicator.underline-height(0.2em);
     }
     .mdc-button {
-      @include button.ink-color(colors.$black);
-      color: #{colors.$black} !important;
-      &.plan{
-        @include button.outline-color(colors.$black);
-      }
+      // @include button.ink-color(colors.$black);
+      // color: #{colors.$black} !important;
+      // &.plan{
+      //   @include button.outline-color(colors.$black);
+      // }
     }
   }
+}
+.mdc-top-app-bar--prominent-fixed-adjust{
+  padding-top: 80px;
+}
+.mdc-top-app-bar--prominent-fixed-adjust, .mdc-top-app-bar--prominent{
+  height: 80px;
 }
 .mdc-top-app-bar--prominent {
   .top-app-bar__main-row {
@@ -103,9 +106,7 @@
   }
 }
 .top-app-bar__main-row {
-  --mdc-theme-primary: #{colors.$slightlyBlue};
   transition: all linear 0.3s;
-  background-color: var(--mdc-theme-primary);
   &::before {
     content: '';
     display: block;

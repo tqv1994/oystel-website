@@ -40,6 +40,7 @@ footer {
         .mdc-button {
             &:hover {
                 border-color: #{colors.$black};
+                --mdc-theme-primary: #{colors.$white};
                 background-color: #{colors.$white};
                 .mdc-button__label {
                     color: colors.$black !important;

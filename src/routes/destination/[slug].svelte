@@ -69,20 +69,12 @@
   import { onMount } from 'svelte';
   import Carousel from '$lib/components/Carousel.svelte';
   import DetailSlide from '$lib/components/DetailSlide.svelte';
+import Markdown from '$lib/components/Markdown.svelte';
 
   type TabData = {
     name: string;
     exhibit: Exhibitable[];
     urlPrefix: string;
-  };
-
-  let configPage = {
-    header: {
-      page: 'destination-detail',
-      transparent: true,
-      theme: 'light',
-      currentMenu: 'destinations',
-    },
   };
   export let id: string;
   let destination: Destination;
@@ -112,7 +104,7 @@
         urlPrefix: '/where-to-explore/',
       },
     ];
-    activeTab = tabs[0];
+    // activeTab = tabs[0];
   });
 
   async function likeExperience(event: CustomEvent) {
@@ -247,39 +239,11 @@
       console.error(error);
     }
   }
-
-  function onScrollFixedHeader() {
-    // if (document.documentElement.clientWidth > 949) {
-    //   if (
-    //     document.body.scrollTop > 900 ||
-    //     document.documentElement.scrollTop > 900
-    //   ) {
-    //     document.getElementById('header').classList.add('fixed');
-    //     document.querySelector('header').style.zIndex = 100;
-    //     document.querySelector('header').style.position = 'relative';
-    //     document
-    //       .querySelector('.header-title')
-    //       .classList.add('fixed', 'is_sticky');
-    //   } else {
-    //     document.getElementById('header').classList.remove('fixed');
-    //     document.querySelector('header').style.zIndex = 'auto';
-    //     document.querySelector('header').style.position = 'relative';
-    //     document
-    //       .querySelector('.header-title')
-    //       .classList.remove('fixed', 'is_sticky');
-    //   }
-    // }
-  }
 </script>
 
-<svelte:window
-  on:scroll={() => {
-    onScrollFixedHeader();
-  }}
-/>
 {#if destination}
   <div class="content destination-detail d-pb-50 m-pb-40">
-    <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-25 full-width">
+    <section class="header-title d-pt-100 d-pb-25 m-pt-90 m-pb-25 full-width">
       <div class="content-wrap">
         <div class="container">
           <DetailSlide data={destination} on:like={likeDestination} />
@@ -326,12 +290,12 @@
           </div>
         </div>
       </section>
+      <div class="container">
+        <LayoutGrid class="p-0">
+          <Cell span="12"><div class="divider" /></Cell>
+        </LayoutGrid>
+      </div>
     {/if}
-    <div class="container">
-      <LayoutGrid class="p-0">
-        <Cell span="12"><div class="divider" /></Cell>
-      </LayoutGrid>
-    </div>
     <section class="d-pt-70 d-pb-40 m-pt-50 m-pb-10">
       <div class="container">
         <LayoutGrid class="p-0">
@@ -339,7 +303,9 @@
             <h1 class="mt-0 m-mb-0">{destination.name}</h1>
           </Cell>
           <Cell spanDevices={{ desktop: 7, tablet: 8, phone: 4 }}>
-            <p class="mt-5">{@html destination.description}</p>
+            <div class="mt-5">
+              <Markdown source={destination.description} />
+            </div>
           </Cell>
         </LayoutGrid>
       </div>
@@ -355,7 +321,7 @@
       />
     {/if}
     {#if destination.experiences && destination.experiences.length > 0}
-      <section class="d-pt-80 d-pb-50 m-pt-40 m-pb-40">
+      <section class="d-pt-120 d-pb-50 m-pt-40 m-pb-40">
         <div class="container">
           <h1 class="mt-0 d-mb-80 m-mb-35">Where to Experience</h1>
           <div class="experiences-list">
@@ -429,7 +395,6 @@
 
     /* Header title */
     .header-title {
-      background-color: #f0f7f8;
       .mdc-layout-grid {
         @include mixins.desktop {
           --mdc-layout-grid-gutter-desktop: 30px;

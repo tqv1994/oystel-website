@@ -8,6 +8,8 @@
   export let infinite = true;
   export let particlesToShow = 1;
   export let chevronPosition = 'inside';
+  export let itemsShowMobile: number | undefined = undefined;
+  let itemsShowDesktop: number = particlesToShow;
 
   let Carousel: Carousel; // for saving Carousel component class
   let carouselObject: Carousel;
@@ -23,7 +25,38 @@
   const handlePrevClick = (carousel: Carousel) => {
     carousel.goToPrev();
   };
+
+  const checkIsDesktop = () => {
+    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    if(width >= 960){
+      return true;
+    }
+    return false;
+  }
+
+  const onResize = () =>{
+    if(!checkIsDesktop()){
+      if(itemsShowMobile){
+        particlesToShow = itemsShowMobile;
+      }
+    }else{
+      particlesToShow = itemsShowDesktop;
+    }
+  }
+
+  onMount(()=>{
+    if(!checkIsDesktop()){
+      if(itemsShowMobile){
+        particlesToShow = itemsShowMobile;
+      }
+    }else{
+        particlesToShow = itemsShowDesktop;
+    }
+  });
 </script>
+<svelte:window
+  on:resize={onResize}
+/>
 
 <svelte:component
   this={Carousel}
@@ -32,7 +65,7 @@
   {autoplayDuration}
   {duration}
   {infinite}
-  {particlesToShow}
+  bind:particlesToShow
   let:showPrevPage
   let:showNextPage
 >
@@ -90,5 +123,14 @@
     &.right {
       right: 0px;
     }
+  }
+  :global(.sc-carousel-dot__dot){
+    --sc-dot-size: 8px;
+    opacity: 1;
+    --sc-color-rgb-light: #fff;
+    border: 1px solid  #000;
+  }
+  :global(.sc-carousel-dot__dot_active){
+    background-color: #000 !important;
   }
 </style>

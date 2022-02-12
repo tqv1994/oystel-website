@@ -31,13 +31,13 @@
   };
 </script>
 
-<LayoutGrid class="p-0 hidden-on-sticky">
+<LayoutGrid class="p-0">
   <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
     <div class="data-detail-image">
       {#if data.gallery.length > 0}
         <Carousel {...carouselConfig}>
           {#each data.gallery as item}
-            <div class="image-cover" style="padding-top: 0; height: calc(90vh - 155px)">
+            <div class="image-cover" style="padding-top: 0; height: calc(90vh - 100px)">
               <BlurImage {...item} />
             </div>
           {/each}
@@ -52,7 +52,7 @@
       <p class="mb-30 short-description m-mt-0">
         {data.intro ? data.intro : ''}
       </p>
-      <Button variant="outlined" class="mb-15"
+      <Button variant="unelevated" class="mb-15"
         ><Label>Find My Advisor</Label></Button
       >
       <br />

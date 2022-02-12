@@ -26,6 +26,9 @@ import Item from './Item.svelte';
             transform: translateY(0%) translateZ(0);
         }
     }
+    .slider-items{
+        overflow: hidden;
+    }
     .slider-items :global(.row .col:nth-child(odd)){
         animation: slideUp 30s linear infinite;
     }

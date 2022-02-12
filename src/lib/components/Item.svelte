@@ -40,13 +40,15 @@
 
 <div class="item">
   <div class="thumbnail">
-    {#if gallery?.length}
       <a href={makeLink(pathPrefix, item)}>
         <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
-          <BlurImage {...gallery[0]} />
+          {#if gallery?.length}
+            <BlurImage {...gallery[0]} />
+          {:else}
+            <BlurImage/>
+          {/if}
         </div>
       </a>
-    {/if}
     <IconButton
       class="btn-favorite {liked ? 'liked' : ''}"
       on:click={callLikeItem}
@@ -59,13 +61,12 @@
   <a href={makeLink(pathPrefix, item)}>
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, phone: 2 }}
-        ><p class="text-eyebrow text-left m-0 mt-20 mb-15">
+        ><p class="text-eyebrow text-left m-0 mt-20 mb-0">
           {country?.name || ''}
         </p></Cell
       >
     </LayoutGrid>
-    <div class="divider" />
-    <h4 class="text-h3 title m-mt-30">{name}</h4>
+    <h4 class="text-h3 title mt-15">{name}</h4>
     <p class="short-text m-none">
       {(description || '').substr(0, 80)}...
     </p>

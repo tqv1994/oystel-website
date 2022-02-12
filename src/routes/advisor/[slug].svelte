@@ -61,14 +61,6 @@
   import { createTripService } from '$lib/services/trip.service';
   import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
 
-  let configPage = {
-    header: {
-      page: 'advisor-detail',
-      transparent: false,
-      theme: 'light',
-      currentMenu: 'travel-advisors',
-    },
-  };
   export let id: string;
   export let destinationOfType1: Destination[];
   export let destinationOfType2: Destination[];

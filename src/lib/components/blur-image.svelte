@@ -1,7 +1,7 @@
 <script lang="ts">
   import BlurhashImage from '$lib/components/svelte-blurhash/BlurhashImage.svelte';
 
-  export let url: string;
+  export let url: string = '';
   export let blurHash: string = 'LjI5DEWB?bRj_4aytRWBozayRjoL';
 </script>
 

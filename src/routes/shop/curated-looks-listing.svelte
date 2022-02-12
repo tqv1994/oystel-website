@@ -97,7 +97,9 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
                     class="image-cover"
                     style="padding-top: calc(90vh - 155px)"
                   >
+                    {#if section.gallery.length > 0}
                     <BlurImage {...section.gallery[0]} />
+                    {/if}
                   </div>
                 {/if}
               </Cell>

@@ -9,11 +9,11 @@
   import { Product } from '$lib/store/product';
 
   export let open = false;
-  let products: Product[] = [];
+  export let products: Product[] = [];
   let productIndex: number;
-  productStore.subscribe(({ items }) => {
-    products = Object.values(items);
-  });
+  // productStore.subscribe(({ items }) => {
+  //   products = Object.values(items);
+  // });
   let openProductSlide = false;
 
   function likeProductItem(item: Product) {}

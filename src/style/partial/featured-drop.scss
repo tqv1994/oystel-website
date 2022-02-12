@@ -142,6 +142,7 @@
         &::after{
           width: 50%;
         }
+        --mdc-outlined-button-label-text-color: #{colors.$black};
     }
 
     .list-featured-drop {

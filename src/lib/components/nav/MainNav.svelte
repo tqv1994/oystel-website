@@ -50,7 +50,6 @@
   let onMobile: boolean = false;
   export let navLightColor = true;
   function adjustNav() {
-    handleChangeNavLightColor();
     if (window.innerWidth < 960) {
       onMobile = true;
     } else {
@@ -65,7 +64,7 @@
 
   let menuUser: MenuComponentDev;
 
-  const handleChangeNavLightColor = () => {
+  /*const handleChangeNavLightColor = () => {
     if(activeSubItems && activeSubItems.length > 0){
       navLightColor = false;
     }else if (window.scrollY < 64) {
@@ -77,11 +76,11 @@
     }else{
       navLightColor = false
     }
-  }
+  }*/
 
-  afterUpdate(()=>{
+  /*afterUpdate(()=>{
     handleChangeNavLightColor();
-  });
+  });*/
 
   function onResize(event: Event) {
     if (window.scrollY < 64) {
@@ -180,7 +179,7 @@
 />
 
 <nav
-  class={`top-app-bar--root ${classNames} ${navLightColor === true ? 'light' : ''}`}
+  class={`top-app-bar--root ${classNames}`}
   class:drawer-open={drawerOpen}
   on:click|stopPropagation={() => {}}
   on:scroll|stopPropagation={() => {}}

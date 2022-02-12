@@ -38,9 +38,10 @@
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import BlurImage from './blur-image.svelte';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
+  import Carousel from './Carousel.svelte';
 
   let dispathcher = createEventDispatcher();
-  export let title: string;
+  export let title: string = "What to Pack";
   export let items: Product[];
   let openProductSlide: boolean = false;
   let productIndex: number;
@@ -49,42 +50,52 @@
       dispathcher('likeItem', { product });
     }, 0);
   }
+
+  const carouselConfig = {
+    autoplayDuration: 8000,
+    duration: 1500,
+    infinite: false,
+    particlesToShow: 6,
+    chevronPosition: 'outside',
+    itemsShowMobile: 2
+  };
 </script>
 
 <section class="d-pt-55 m-pt-40">
   <div class="container">
-    <h1 class="mt-0">What to Pack</h1>
-    <div class="products-list">
-      <LayoutGrid class="p-0">
+    <h1 class="mt-0">{title}</h1>
+    <div class="products-list m-mb-40">
+      <Carousel {...carouselConfig}>
         {#each items as item, i}
-          <Cell spanDevices={{ desktop: 2, tablet: 4, phone: 2 }}>
-            <div
-              on:click={() => {
-                openProductSlide = true;
-                productIndex = i;
-              }}
-              class="item-product"
-            >
-              <div class="thumbnail">
-                <div class="image-cover" style="padding-top: 145%">
-                  <BlurImage {...item.gallery[0]} />
-                </div>
-                <IconButton
-                  class="btn-favorite {item.liked ? 'liked' : ''}"
-                  on:click={() => {
-                    callLikeItem(item);
-                  }}
-                >
-                  <HeartIcon size="sm" />
-                  <HeartFilledIcon size="sm" />
-                </IconButton>
+          <div
+            on:click={() => {
+              openProductSlide = true;
+              productIndex = i;
+            }}
+            class="item-product"
+          >
+            <div class="thumbnail">
+              <div class="image-cover" style="padding-top: 145%">
+                <BlurImage {...item.gallery[0]} />
               </div>
-              <p class="text-eyebrow mt-25">{item.brand}</p>
-              <h3>{item.name}</h3>
+              <IconButton
+                class="btn-favorite {item.liked ? 'liked' : ''}"
+                on:click={() => {
+                  callLikeItem(item);
+                }}
+              >
+                <HeartIcon size="sm" />
+                <HeartFilledIcon size="sm" />
+              </IconButton>
             </div>
-          </Cell>
+            <p class="text-eyebrow mt-25">{item.brand}</p>
+            <h3>{item.name}</h3>
+          </div>
         {/each}
-      </LayoutGrid>
+        {#each Array(6 - items.length > 0 ? 6 - items.length : 0) as _, i}
+            <div></div>
+        {/each}
+      </Carousel>
     </div>
   </div>
 </section>
@@ -105,28 +116,50 @@
       padding-bottom: 40px;
     }
   }
-  .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-track) {
-    background-color: #d3d3d3;
-  }
-  .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar) {
-    height: 10px;
-    background-color: #d3d3d3;
-  }
-  .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-    background-color: colors.$blue;
-  }
 
-  :global(.products-list .item-product) {
-    @include mixins.mobile {
-      h3 {
-        --mdc-typography-headline3-font-size: 14px;
+  .products-list{
+    position: relative;
+    :global(.mdc-layout-grid__inner::-webkit-scrollbar-track) {
+      background-color: #d3d3d3;
+    }
+    :global(.mdc-layout-grid__inner::-webkit-scrollbar) {
+      height: 10px;
+      background-color: #d3d3d3;
+    }
+    :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
+      background-color: colors.$blue;
+    }
+    .item-product {
+      margin-right: var(--mdc-layout-grid-gutter-desktop);
+      @include mixins.mobile {
+        h3 {
+          --mdc-typography-headline3-font-size: 14px;
+        }
+      }
+    }
+    :global(.arrow-outside.left){
+      right: auto;
+    }
+    :global(.arrow-outside){
+      bottom: -65px;
+      top: auto;
+    }
+    :global(.sc-carousel-dots__container){
+      --sc-color-rgb-light: #000;
+      bottom: -5%;
+    }
+
+    :global(.sc-carousel-dots__container){
+      display: none;
+      @include mixins.mobile{
+        display: flex;
       }
     }
   }
 
   .products-list :global(.item-product .thumbnail) {
     width: 100%;
-    background-color: #f2f2f2;
+    background-color: #{colors.$white};
     background-position: center;
     background-repeat: no-repeat;
     position: relative;

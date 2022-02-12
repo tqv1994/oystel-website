@@ -8,7 +8,7 @@
 
   import { documentHelper, stringHelper } from '$lib/helpers';
 
-  export const load: Load = async ({ fetch, session, page }) => {
+  export const load: Load = async ({ fetch, session, params }) => {
     // const res = await fetch(
     //   `/api/pages/product/product-list`,
     //   {

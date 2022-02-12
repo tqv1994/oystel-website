@@ -1,14 +1,15 @@
 @use 'sass:color';
 @use './colors';
-@use './sizes';;
-@use './mixins';;
+@use './sizes';
+@use './mixins';
+@use '../style/include/button' as customButton;
 
 @use '@material/theme/color-palette';
 
 // Svelte Colors!
 @use '@material/theme/index' as theme with
   (
-    $primary: #ff3e00,
+    $primary: #000,
     $secondary: #676778,
     $surface: #fff,
     $background: #fff,

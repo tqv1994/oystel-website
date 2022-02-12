@@ -112,20 +112,12 @@
   export let active: MainNavItem | undefined;
   export let isHomePage = false;
   export let key: string;
-  let mainNavClass: string = '';
-  if (key == '/destination' || key == '/experience') {
-    mainNavClass = 'bg-header-scroll-slightly_blue';
-  } else {
-    mainNavClass = '';
-  }
 </script>
 
 <div class="content-wrap">
   <MainNav
     items={mainMenu}
     bind:active
-    class={`${isHomePage ? 'header-transparent' : ''} ${mainNavClass}`}
-    navLightColor={!isHomePage}
   />
   <section>
     <slot />

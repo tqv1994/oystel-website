@@ -34,6 +34,8 @@
 </script>
 
 <script type="ts">
+import LookItem from "./LookItem.svelte";
+
   export let title: string;
   export let items: Look[];
 </script>
@@ -45,87 +47,13 @@
     </LayoutGrid>
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
-        <div class="item-product">
-          <div class="thumbnail">
-            <div
-              class="image-cover"
-              style="padding-top: calc( 142 / 165 * 100% );"
-            >
-              <BlurImage {...items[0].gallery[0]} />
-            </div>
-          </div>
-          <div class="title-wrap">
-            <h5>Get the Look</h5>
-            <IconButton>
-              <Icon component={Svg} viewBox="0 0 16.583 16.583">
-                <g data-name="Group 397" transform="translate(0)">
-                  <path
-                    id="Path_310"
-                    data-name="Path 310"
-                    d="M9145.428-3682.169v16.583"
-                    transform="translate(-9137.136 3682.169)"
-                    fill="none"
-                    stroke="#000"
-                    stroke-width="1"
-                  />
-                  <path
-                    id="Path_311"
-                    data-name="Path 311"
-                    d="M0,0V16.583"
-                    transform="translate(16.583 8.292) rotate(90)"
-                    fill="none"
-                    stroke="#000"
-                    stroke-width="1"
-                  />
-                </g>
-              </Icon>
-            </IconButton>
-            <div class="divider" />
-          </div>
-        </div>
+        <LookItem item={items[0]}/>
       </Cell>
       <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
         <LayoutGrid class="p-0">
           {#each items.slice(1) as look}
             <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
-              <div class="item-product">
-                <div class="thumbnail">
-                  <div
-                    class="image-cover"
-                    style="padding-top: calc( 58 / 45 * 100% );"
-                  >
-                    <BlurImage {...look.gallery[0]} />
-                  </div>
-                </div>
-                <div class="title-wrap">
-                  <h5>Get the Look</h5>
-                  <IconButton>
-                    <Icon component={Svg} viewBox="0 0 16.583 16.583">
-                      <g data-name="Group 397" transform="translate(0)">
-                        <path
-                          id="Path_310"
-                          data-name="Path 310"
-                          d="M9145.428-3682.169v16.583"
-                          transform="translate(-9137.136 3682.169)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                        <path
-                          id="Path_311"
-                          data-name="Path 311"
-                          d="M0,0V16.583"
-                          transform="translate(16.583 8.292) rotate(90)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                      </g>
-                    </Icon>
-                  </IconButton>
-                  <div class="divider" />
-                </div>
-              </div>
+              <LookItem item={look} />
             </Cell>
           {/each}
         </LayoutGrid>
@@ -139,18 +67,6 @@
     --mdc-typography-headline5-font-size: 14px;
     --mdc-typography-headline5-line-height: 22px;
     /* Products */
-    .item-product .title-wrap {
-      position: relative;
-    }
-    .item-product .title-wrap :global(.mdc-icon-button) {
-      position: absolute;
-      top: 20%;
-      right: 0;
-      transform: translateY(-50%);
-    }
-
-    .item-product .title-wrap .divider:after {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
+    
   }
 </style>

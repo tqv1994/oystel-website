@@ -17,7 +17,6 @@
   import { DestinationLikeData } from '../destination/like.json';
   import { ProductLikeData } from '../product/like.json';
   import Item from '$lib/components/Item.svelte';
-  import Carousel from '$lib/components/Carousel.svelte';
 
   export const load: Load = async ({ fetch, session, params }) => {
     const id = parseId(params.slug);
@@ -55,19 +54,13 @@
 
 <script type="ts">
   import DetailSlide from '$lib/components/DetailSlide.svelte';
-
-  let configPage = {
-    header: {
-      page: 'experience-detail',
-      transparent: true,
-      theme: 'light',
-      currentMenu: 'experiences',
-    },
-  };
+import DetailSticky from '$lib/components/DetailSticky.svelte';
+import Markdown from '$lib/components/Markdown.svelte';
   export let id: string;
   let experience: Experience;
   let productSliderOpen: boolean;
   let activeProduct: number;
+  let stickyShow: boolean = false;
 
   experienceStore.subscribe((store) => {
     experience = store.items[id];
@@ -209,52 +202,60 @@
     }
   }
 
-  function onScrollFixedHeader() {
-    // const header = document.getElementById('header');
-    // const headerTitle = document.querySelector('.header-title.is_sticky');
-    // if (header && headerTitle) {
-    //   if (document.documentElement.clientWidth > 949) {
-    //     if (
-    //       document.body.scrollTop > 900 ||
-    //       document.documentElement.scrollTop > 900
-    //     ) {
-    //       header.classList.add('fixed');
-    //       header.style.setProperty('z-index', '100', 'important');
-    //       headerTitle.classList.add('show');
-    //     } else {
-    //       header.classList.remove('fixed');
-    //       header.style.setProperty('z-index', '');
-    //       headerTitle.classList.remove('show');
-    //     }
-    //   } else {
-    //     header.classList.remove('fixed');
-    //     header.style.setProperty('z-index', '');
-    //     headerTitle.classList.remove('show');
-    //   }
-    // }
+  const onResize = (event: Event) => {
+    if (window.scrollY < 100) {
+      stickyShow = false;
+    } else {
+      stickyShow = false;
+    }
+  };
+
+  const adjustNav = () => {
+    if (window.scrollY < 100) {
+      stickyShow = false;
+    } else {
+      stickyShow = true;
+    }
+  };
+
+  const onScroll = (event: Event) => {
+    adjustNav();
+  };
+
+  function onStart(event: CustomEvent) {
+    adjustNav();
   }
 </script>
 
 <svelte:window
-  on:scroll={() => {
-    onScrollFixedHeader();
-  }}
+  on:resize={onResize}
+  on:scroll={onScroll}
+  on:sveltekit:start={onStart}
 />
 {#if experience}
   <div class="content experience-detail d-pb-100">
-    <section class="header-title d-pt-115 d-pb-25 m-pt-90 m-pb-60 full-width">
+    <section class="header-title d-pt-100 d-pb-25 m-pt-90 m-pb-60 full-width">
       <div class="content-wrap">
         <div class="container">
           <DetailSlide data={experience} on:like={likeExperience} />
         </div>
       </div>
     </section>
+    <section class={`header-title d-pt-100 d-pb-25 m-pt-90 m-pb-60 full-width  is_sticky fixed ${
+      stickyShow ? 'show' : ''
+    }`}>
+      <div class="content-wrap">
+        <div class="container">
+          <DetailSticky data={experience} on:like={likeExperience} />
+        </div>
+      </div>
+    </section>
 
-    <section class="d-pt-70 d-pb-40 m-pt-50 m-pb-35 detail-content">
+    <section class="d-pt-50 d-pb-40 m-pt-40 m-pb-35 detail-content">
       <div class="container">
         <LayoutGrid class="p-0">
           <Cell spanDevices={{ desktop: 8, tablet: 8, phone: 4 }}>
-            <div>{@html experience.description}</div>
+            <Markdown source={experience.description}/>
           </Cell>
           <Cell
             spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}
@@ -325,6 +326,7 @@
   .experience-detail {
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/sticky.scss';
+    
     .mdc-button {
       width: 180px;
       min-width: 180px;
@@ -338,12 +340,19 @@
     }
     /* Header title */
     .header-title {
-      background-color: #f0f7f8;
       .mdc-layout-grid {
         @include mixins.desktop {
           --mdc-layout-grid-gutter-desktop: 30px;
         }
       }
+    }
+
+    .header-title {
+      background-color: #{colors.$white};
+    }
+    .header-title.is_sticky {
+      z-index: 4 !important;
+      box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
     }
 
     .header-title .btn-favorite {
@@ -404,15 +413,6 @@
     #what-to-pack-section {
       --mdc-layout-grid-gutter-phone: 24px;
       --mdc-layout-grid-gutter-tablet: 24px;
-    }
-    .item-product .title-wrap {
-      position: relative;
-    }
-    .item-product .title-wrap :global(.mdc-icon-button) {
-      position: absolute;
-      top: 20%;
-      right: 0;
-      transform: translateY(-50%);
     }
 
     .item-product .title-wrap .divider:after {
@@ -529,10 +529,6 @@
       position: absolute;
       top: 2%;
       right: 2%;
-    }
-
-    :global(.is_sticky.header-title) {
-      padding-bottom: 50px !important;
     }
 
     .divider:after {

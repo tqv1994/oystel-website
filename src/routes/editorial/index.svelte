@@ -51,7 +51,7 @@
   import Carousel from '$lib/components/Carousel.svelte';
   import Pagination from '$lib/components/common/Pagination.svelte';
   import CuratedExperience from '$lib/components/CuratedExperience.svelte';
-  import Item from '$lib/components/Item.svelte';
+  import DropList2 from '$lib/components/DropList2.svelte';
   import WhatToWear from '$lib/components/WhatToWear.svelte';
 
   export let data: EditorialPageData;
@@ -219,7 +219,7 @@
                       <a href="#">
                         <LayoutGrid class="p-0">
                           <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                            ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
+                            ><p class="text-eyebrow text-left m-0 mt-20 mb-15">
                               Fashion
                             </p></Cell
                           >
@@ -237,61 +237,14 @@
           </div>
         </section>
 
-        <section class="all-stories-section d-pb-100 m-pb-90">
+        <section class="d-pb-100 m-pb-90">
           <div class="container">
             <h1>{section.name}</h1>
-            <LayoutGrid class="p-0 stories-list">
-              {#each section.drops as item}
-                <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-                  <div class="story-item">
-                    <div class="thumbnail">
-                      <a href="#">
-                        <!-- <BlurImage {...item.gallery[0]} /> -->
-                        <img src={item.gallery[0].url} />
-                      </a>
-                    </div>
-                    <a href="#">
-                      <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                          ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
-                            Fashion
-                          </p></Cell
-                        >
-                      </LayoutGrid>
-                      <div class="divider" />
-                      <h4 class="text-h3 title m-mt-30">
-                        {item.name}
-                      </h4>
-                    </a>
-                  </div>
-                </Cell>
-              {/each}
-              {#each section.drops as item}
-                <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-                  <div class="story-item">
-                    <div class="thumbnail">
-                      <a href="#">
-                        <!-- <BlurImage {...item.gallery[0]} /> -->
-                        <img src={item.gallery[0].url} />
-                      </a>
-                    </div>
-                    <a href="#">
-                      <LayoutGrid class="p-0">
-                        <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                          ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
-                            Fashion
-                          </p></Cell
-                        >
-                      </LayoutGrid>
-                      <div class="divider" />
-                      <h4 class="text-h3 title m-mt-30">
-                        {item.name}
-                      </h4>
-                    </a>
-                  </div>
-                </Cell>
-              {/each}
-            </LayoutGrid>
+            <DropList2
+              bind:items={section.drops}
+              desktopColumns={4}
+              mobileColumns={2}
+            />
             <!-- <div class="pagination-wrap d-mt-120 m-mt-100">
               <Pagination
                 page={0}
@@ -312,6 +265,7 @@
 
 <style lang="scss" global>
   @use '../../theme/mixins';
+  @use '../../style/include/grid';
   .editorial-content {
     @import './src/style/partial/experience-section.scss';
     @import './src/style/partial/thumbnail.scss';
@@ -420,37 +374,6 @@
       }
     }
     .all-stories-section {
-      .stories-list {
-        > .mdc-layout-grid__inner {
-          -moz-column-count: 4; /*change this to change the grid column count*/
-          -webkit-column-count: 4; /*change this to change the grid column count*/
-          column-count: 4; /*change this to change the grid column count*/
-          -moz-column-gap: var(--mdc-layout-grid-gutter-desktop);
-          -webkit-column-gap: var(--mdc-layout-grid-gutter-desktop);
-          column-gap: var(--mdc-layout-grid-gutter-desktop);
-          @include mixins.mobile {
-            -moz-column-count: 2; /*change this to change the grid column count*/
-            -webkit-column-count: 2; /*change this to change the grid column count*/
-            column-count: 2; /*change this to change the grid column count*/
-            -moz-column-gap: var(--mdc-layout-grid-gutter-mobile);
-            -webkit-column-gap: var(--mdc-layout-grid-gutter-mobile);
-            column-gap: var(--mdc-layout-grid-gutter-mobile);
-          }
-          margin-top: -10px;
-          display: inline-block;
-          width: 100%;
-          overflow: visible;
-          > .mdc-layout-grid__cell {
-            width: 100%;
-            display: inline-block;
-            background: transparent;
-            box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-            margin: 1%;
-          }
-        }
-      }
       .pagination-wrap {
         position: relative;
         width: 100%;
