@@ -104,14 +104,12 @@ export function createSearchHandler<T extends Identifiable>(
       const result: Record<string, SearchResultGroup<T>> = {};
       if (params[TYPE]) {
         result[params[TYPE] as string] = await searchContent<T>(params);
-        console.log(params[TYPE]);
       } else {
         const tRes = await typeIndex.search<Category>();
         if (tRes.nbHits) {
           for (const t of tRes.hits) {
             const id = removeMeilisearchPrefixId(`${index}-type-`,t.id);
             params[TYPE] = id;
-            console.log(params[TYPE]);
             result[id] = await searchContent<T>(params);
           }
         } else {
