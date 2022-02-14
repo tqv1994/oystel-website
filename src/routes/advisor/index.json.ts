@@ -1,4 +1,4 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { searchClient, SearchResultGroup } from '$lib/store/search';
 import { Identifiable } from '$lib/store/types';
@@ -19,9 +19,10 @@ const index = searchClient.index('advisor');
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
   try {
-    const params = parseSearchParams(request.url.searchParams);
+    const params = parseSearchParams(event.url.searchParams);
     const res = await search<Advisor>(params);
     return {
       body: JSON.stringify(res),

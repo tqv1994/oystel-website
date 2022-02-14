@@ -107,7 +107,7 @@
   }
   .popup-products {
     @import './src/style/partial/thumbnail.scss';
-    box-shadow: 0 3px 10px rgb(0 0 0 / 16%);
+    box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
     section {
       --mdc-layout-grid-gutter-desktop: 100px;
       background-color: #fff;

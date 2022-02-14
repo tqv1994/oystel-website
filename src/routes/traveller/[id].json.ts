@@ -1,4 +1,4 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
@@ -34,17 +34,18 @@ const query = `
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
   try {
-    const client = createGraphClientFromRequest(request);
-    const res = await client.query<{traveller: Traveller}>(query, request.params).toPromise();
+    const client = createGraphClientFromRequest(event.request);
+    const res = await client.query<{traveller: Traveller}>(query, event.params).toPromise();
     if (res.data?.traveller) {
       return {
         body: JSON.stringify(res.data.traveller),
       };
     }
     if (res.error) {
-      console.error('Query rejected by server', request.params, query, JSON.stringify(res.error, null, 2));
+      console.error('Query rejected by server', event.params, query, JSON.stringify(res.error, null, 2));
     }
   } catch (error) {
     console.error('Error getting destination', error);

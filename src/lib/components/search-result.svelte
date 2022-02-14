@@ -1,27 +1,17 @@
 <script lang="ts" context="module">
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  import IconButton from '@smui/icon-button';
-  import { Icon } from '@smui/common';
-  import { Svg } from '@smui/common/elements';
-  import BlurImage from '$lib/components/blur-image.svelte';
-  import { makeLink } from '$lib/utils/link';
   import { Identifiable, Nameable, Searchable } from '$lib/store/types';
   import { SearchResultGroup } from '$lib/store/search';
   import { createEventDispatcher } from 'svelte';
-  import { Product } from '$lib/store/product';
-  import { Destination } from '$lib/store/destination';
-  import { Experience } from '$lib/store/experience';
   import Item from '$lib/components/Item.svelte';
 </script>
 
 <script lang="ts">
-  import type { Rec } from '@sveltejs/kit/types/helper';
-
   let dispathcher = createEventDispatcher();
 
   export let categories: (Identifiable & Nameable)[];
-  export let groups: Rec<SearchResultGroup<Searchable>>;
+  export let groups: Record<string, SearchResultGroup<Searchable>>;
   export let pathPrefix: string;
   export let showHeadings: boolean = true;
   function callLikeItem(event: CustomEvent) {

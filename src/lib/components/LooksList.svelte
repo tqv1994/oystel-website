@@ -9,7 +9,6 @@
       let count = 0;
       let groupData: Look[] = [];
       for (const [i,item] of items.entries()) {
-          console.log(count);
         if (count == 0) {
           groupData = [];
         }

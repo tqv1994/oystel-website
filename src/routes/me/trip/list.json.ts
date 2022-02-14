@@ -1,4 +1,4 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
@@ -32,12 +32,12 @@ type TripQueryResult = {
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
-  if(!request.locals.user?.travellerMe){
+export const get: RequestHandler = async (event) => {
+  if(!event.locals.user?.travellerMe){
     return makeErrorResponse(404, 'NOT_FOUND', 'Error not found traveller');
   }
   try {
-    const client = createGraphClientFromRequest(request);
+    const client = createGraphClientFromRequest(event.request);
     const query = `query ($id: ID!){
       trips(where:{lead_traveller : $id}){
         ...tripFields
@@ -69,11 +69,9 @@ export const get: RequestHandler = async (request: Request) => {
     ${currencyFieldsFragment}
     ${travelingWithYouFieldsFragment}
     `;
-    const res = await client.query<TripQueryResult>(query, {id: request.locals.user?.travellerMe?.id}).toPromise();
+    const res = await client.query<TripQueryResult>(query, {id: event.locals.user?.travellerMe?.id}).toPromise();
     if (res.data) {
-      return {
-        body: JSON.stringify(res.data),
-      };
+      return new Response(JSON.stringify(res.data));
     }
     if (res.error) {
       console.log(JSON.stringify(res.error, null, 2));

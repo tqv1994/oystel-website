@@ -1,11 +1,12 @@
-import { RequestHandler, Request } from '@sveltejs/kit';
+import { RequestHandler } from '@sveltejs/kit';
 import { extractSetCookieHeader, getSessionCookie } from '$lib/utils/session';
 import { cmsUrlPrefix } from '$lib/env';
 
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
   try {
     const cookie = getSessionCookie(request.headers.cookie);
     if (cookie) {

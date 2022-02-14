@@ -1,7 +1,6 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Rec } from '@sveltejs/kit/types/helper';
 import { Interest, interestFieldsFragment } from '$lib/store/interest';
 import { Traveller } from '$lib/store/traveller';
 import { updateTravellerData } from '../../traveller/update-me.json';
@@ -10,12 +9,12 @@ import { updateTravellerData } from '../../traveller/update-me.json';
  * @type {import('@sveltejs/kit').Put}
  */
 export const put: RequestHandler = async (
-  request: Request<Rec<any>, AuthForm>) => {
-  if (!request.locals.user?.travellerMe?.id) {
+  event) => {
+  if (!event.locals.user?.travellerMe?.id) {
     return makeErrorResponse(404, 'NOT_FOUND', 'Error not found traveller');
   }
   try {
-    const client = createGraphClientFromRequest(request);
+    const client = createGraphClientFromRequest(event.request);
     const query = `
         mutation ($id: ID!, $interests: [ID]){
             updateTraveller(input:{
@@ -31,7 +30,8 @@ export const put: RequestHandler = async (
           }
           ${interestFieldsFragment}
         `;
-    const res = await client.mutation<updateTravellerData>(query, {id: request.locals.user?.travellerMe?.id, interests: request.body}).toPromise();
+    const reqBody = await event.request.json();
+    const res = await client.mutation<updateTravellerData>(query, {id: event.locals.user?.travellerMe?.id, interests: reqBody}).toPromise();
     if (res.data) {
       return {
         body: JSON.stringify(res.data.updateTraveller?.traveller),

@@ -44,7 +44,6 @@
   import { authStore } from '$lib/store/auth';
   import { DestinationLikeData } from './like.json';
   import { contains } from '$lib/utils/array';
-  import type { Rec } from '@sveltejs/kit/types/helper';
 
   const orderingOptions: Nameable[] = [
     ORDER_BY_NAME_ASC,
@@ -53,7 +52,7 @@
     ORDER_BY_PUBLISH_DATE_DESC,
   ];
 
-  type DestinationGroups = Rec<SearchResultGroup<Destination>>;
+  type DestinationGroups = Record<string, SearchResultGroup<Destination>>;
 
   export const load: Load = async ({ fetch, session, url }) => {
     url.searchParams.set(LIMIT, url.searchParams.get(TYPE) ? '20' : '3');
@@ -114,8 +113,8 @@
       };
     }
     return {
-        props: {},
-      };
+      props: {},
+    };
   };
 </script>
 

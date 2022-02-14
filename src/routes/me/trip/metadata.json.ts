@@ -1,4 +1,4 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
@@ -55,14 +55,13 @@ const query = `
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
   try {
-    const client = createGraphClientFromRequest(request);
+    const client = createGraphClientFromRequest(event.request);
     const res = await client.query<MetaDataTripQuery>(query, {}).toPromise();
     if (res.data) {
-      return {
-        body: JSON.stringify(res.data),
-      };
+      return new Response(JSON.stringify(res.data));
     }
     if (res.error) {
       console.error('Query rejected by server', query, JSON.stringify(res.error, null, 2));

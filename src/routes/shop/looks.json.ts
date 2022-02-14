@@ -1,4 +1,4 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
@@ -12,9 +12,10 @@ type LookQueryResult = {
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
   try {
-    const client = createGraphClientFromRequest(request);
+    const client = createGraphClientFromRequest(event.request);
     const query = `query ($limit: Int){
       looks(limit: $limit,sort: "id:desc"){
         ...lookFields
@@ -23,7 +24,7 @@ export const get: RequestHandler = async (request: Request) => {
     ${lookFieldsFragment}
     ${uploadFileFieldsFragment}
     `;
-    const res = await client.query<LookQueryResult>(query, {limit: request.params['limit'] || 5 }).toPromise();
+    const res = await client.query<LookQueryResult>(query, {limit: event.params['limit'] || 5 }).toPromise();
     if (res.data) {
       return {
         body: JSON.stringify(res.data.looks),

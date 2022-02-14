@@ -1,4 +1,4 @@
-import { RequestHandler, Request } from '@sveltejs/kit';
+import { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { dropFieldsFragment, dropGalleryFieldsFragment } from '$lib/store/drop';
@@ -49,9 +49,10 @@ ${pageFieldsFragment}
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
   try {
-    const client = createGraphClientFromRequest(request);
+    const client = createGraphClientFromRequest(event.request);
     const res = await client.query<QueryResult>(query,{slug: 'Curated Looks Listing'}).toPromise();
     if (res.data) {
       if (res.data.pages) {

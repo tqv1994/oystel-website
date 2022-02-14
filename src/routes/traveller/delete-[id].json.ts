@@ -1,7 +1,6 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Rec } from '@sveltejs/kit/types/helper';
 import { Experience } from '$lib/store/experience';
 import { subTravellerFieldsFragment, Traveller, travellerFieldsFragment } from '$lib/store/traveller';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
@@ -18,9 +17,10 @@ export type deleteTravellerData = {
     };
 };
 
-export const del: RequestHandler = async (request: Request) => {
+export const del: RequestHandler = async (event) => {
+  const request = event.request;
     try {
-        const client = createGraphClientFromRequest(request);
+        const client = createGraphClientFromRequest(event.request);
         const query = `mutation deleteTraveller ($id: ID!){
         deleteTraveller(input:{
             where: {id: $id},
@@ -31,7 +31,7 @@ export const del: RequestHandler = async (request: Request) => {
             }
         }
     `;
-        const res = await client.mutation<deleteTravellerData>(query, {id:request.params.id || '' }).toPromise();
+        const res = await client.mutation<deleteTravellerData>(query, {id:event.params.id || '' }).toPromise();
         if (res.data) {
             return {
                 body: JSON.stringify(res.data),

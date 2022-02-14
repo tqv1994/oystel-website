@@ -1,4 +1,4 @@
-import { RequestHandler, Request } from '@sveltejs/kit';
+import { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { ExperiencePageData } from '$lib/store/pages';
@@ -6,9 +6,10 @@ import { ExperiencePageData } from '$lib/store/pages';
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
   try {
-    const client = createGraphClientFromRequest(request);
+    const client = createGraphClientFromRequest(event.request);
     const query = `query($id: ID!) {
       experience(id: $id) {
         id
@@ -55,11 +56,9 @@ export const get: RequestHandler = async (request: Request) => {
       previewUrl
     }    
     `;
-    const res = await client.query<ExperiencePageData>(query,{id:request.url.searchParams.get('id')}).toPromise();
+    const res = await client.query<ExperiencePageData>(query,{id:event.url.searchParams.get('id')}).toPromise();
     if(res.data){
-      return {
-        body: JSON.stringify(res.data),
-      };
+      return new Response(JSON.stringify(res.data));
     }
     if (res.error) {
       console.log(JSON.stringify(res.error, null, 2));

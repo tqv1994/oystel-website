@@ -1,4 +1,4 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
@@ -38,10 +38,11 @@ ${countryFieldsFragment}
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
     try {
-        const client = createGraphClientFromRequest(request);
-        let me: User = request.locals.user;
+        const client = createGraphClientFromRequest(event.request);
+        let me: User = event.locals.user;
         const res = await client.query<QueryLikeResult>(query,
             {
                 productLikeIds: me?.productLikes.length > 0 ? me?.productLikes.map((item) => item.id) : null,

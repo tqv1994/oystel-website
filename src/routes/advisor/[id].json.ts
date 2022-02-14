@@ -1,4 +1,4 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { countryFieldsFragment } from '$lib/store/country';
@@ -36,10 +36,11 @@ ${destinationFieldsFragment}
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
   try {
-    const client = createGraphClientFromRequest(request);
-    const res = await client.query<{advisor: Advisor}>(query, request.params).toPromise();
+    const client = createGraphClientFromRequest(event.request);
+    const res = await client.query<{advisor: Advisor}>(query, event.params).toPromise();
     if (res.data?.advisor) {
       return {
         body: JSON.stringify(res.data.advisor),

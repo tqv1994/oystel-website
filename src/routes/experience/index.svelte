@@ -45,7 +45,6 @@
   import { destinationStore } from '$lib/store/destination';
   import { authStore } from '$lib/store/auth';
   import { ExperienceLikeData } from './like.json';
-  import type { Rec } from '@sveltejs/kit/types/helper';
 
   const experienceOrderings: Nameable[] = [
     ORDER_BY_NAME_ASC,
@@ -54,7 +53,7 @@
     ORDER_BY_PUBLISH_DATE_DESC,
   ];
 
-  type ExperienceGroups = Rec<SearchResultGroup<Experience>>;
+  type ExperienceGroups = Record<string, SearchResultGroup<Experience>>;
 
   export const load: Load = async ({ fetch, session, url }) => {
     url.searchParams.set(LIMIT, url.searchParams.get(TYPE) ? '20' : '3');
@@ -110,12 +109,10 @@
             ORDER_BY_NAME_ASC,
         },
       };
-    }else{
+    } else {
       return {
-        props: {
-          
-        }
-      }
+        props: {},
+      };
     }
   };
 </script>

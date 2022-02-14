@@ -7,12 +7,15 @@ export const makeErrorResponse = (
   status: number,
   code: string,
   message: string,
-) => ({
-  status,
-  headers: {},
-  body: JSON.stringify({
-    code,
-    status,
-    message,
-  }),
-});
+) =>
+  new Response(
+    JSON.stringify({
+      code,
+      status,
+      message,
+    }),
+    {
+      status,
+      headers: {},
+    },
+  );

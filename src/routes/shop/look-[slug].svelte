@@ -22,7 +22,6 @@
     const resLooks = await fetch(`/shop/looks.json?limit=5`);
     if (resLooks.ok) {
       looks = await resLooks.json();
-      console.log('looks', looks);
     } else {
       const error = await res.json();
       console.log(error);
@@ -31,12 +30,12 @@
       props: {
         id,
         look,
-        looks: looks.reduce((acc : Look[], item: Look) => {
-        if(item.id !== look.id){
-          acc.push(item);
-        }
-        return acc;
-      }, []),
+        looks: (looks || []).reduce((acc: Look[], item: Look) => {
+          if (item.id !== look.id) {
+            acc.push(item);
+          }
+          return acc;
+        }, []),
       },
     };
   };
@@ -45,37 +44,40 @@
 <script lang="ts">
   import BlurImage from '$lib/components/blur-image.svelte';
   import LooksList from '$lib/components/LooksList.svelte';
-import Item from '$lib/components/Item.svelte';
-import ProductShow from '$lib/components/product-show.svelte';
-import { onMount } from 'svelte';
-import Markdown from '$lib/components/Markdown.svelte';
+  import ProductShow from '$lib/components/product-show.svelte';
+  import { onMount } from 'svelte';
+  import Markdown from '$lib/components/Markdown.svelte';
   export let look: Look;
   export let looks: Look[];
   let openQuickShopModal = false;
   let stickyShow = false;
 
-  onMount(()=>{
-    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    if(width >= 960){
+  onMount(() => {
+    const width =
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      document.body.clientWidth;
+    if (width >= 960) {
       stickyShow = true;
-    }else{
+    } else {
       stickyShow = false;
     }
-  })
+  });
 
   const onResize = (event: Event) => {
-    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    if(width >= 960){
+    const width =
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      document.body.clientWidth;
+    if (width >= 960) {
       stickyShow = true;
-    }else{
+    } else {
       stickyShow = false;
     }
   };
 </script>
 
-<svelte:window
-  on:resize={onResize}
-/>
+<svelte:window on:resize={onResize} />
 <div class="content shop-detail-page-content">
   <section class="pt-100 d-pb-50 t-pb-150 m-pb-40 ">
     <div class="container">
@@ -86,13 +88,20 @@ import Markdown from '$lib/components/Markdown.svelte';
         >
           <div class="get-the-look-item mb-30">
             <div class="thumbnail d-mb-20 m-mb-25">
-              <div class="image-cover" style="padding-top: 0; height: calc(90vh - 100px)">
-                <BlurImage {...look.gallery[0]} />
+              <div
+                class="image-cover"
+                style="padding-top: 0; height: calc(90vh - 100px)"
+              >
+                {#if look.gallery && look.gallery.length > 0}
+                  <BlurImage {...look.gallery[0]} />
+                {:else}
+                  <BlurImage />
+                {/if}
               </div>
             </div>
-            <p class="text-eyebrow">
+            <!-- <p class="text-eyebrow">
               Swimsuit, Zimmerman; Dress, Zimmerman; Necklace, Lauren Rubinski
-            </p>
+            </p> -->
           </div>
           <div class="d-pl-115">
             <div class="text-description-wrap mb-50">
@@ -108,7 +117,9 @@ import Markdown from '$lib/components/Markdown.svelte';
           class="content-right"
         >
           <div
-            class="header-title d-pt-100 d-pb-100 d-pl-120 t-pb-50 t-pl-60 {stickyShow ? 'fixed' : ''}"
+            class="header-title d-pt-100 d-pb-100 d-pl-120 t-pb-50 t-pl-60 {stickyShow
+              ? 'fixed'
+              : ''}"
           >
             <LayoutGrid class="p-0">
               <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
@@ -180,8 +191,11 @@ import Markdown from '$lib/components/Markdown.svelte';
   <section class="recommended-wrap d-mb-130 m-mb-50">
     <ProductShow bind:items={look.products} title="Recommended" />
   </section>
+  <QuickShopModal
+    products={look.products || []}
+    bind:open={openQuickShopModal}
+  />
 </div>
-<QuickShopModal products={look.products || []} bind:open={openQuickShopModal} />
 
 <style lang="scss" global>
   @use '../../theme/mixins';
@@ -225,43 +239,6 @@ import Markdown from '$lib/components/Markdown.svelte';
       --mdc-layout-grid-gutter-desktop: 0;
       --mdc-layout-grid-gutter-tablet: 0;
       --mdc-layout-grid-gutter-phone: 0;
-    }
-
-    /* Products */
-    .item-product .title-wrap {
-      position: relative;
-    }
-    .item-product .title-wrap :global(.mdc-icon-button) {
-      position: absolute;
-      top: 50%;
-      right: 0;
-      transform: translateY(-50%);
-    }
-
-    .product-item .title-wrap .divider:after {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-
-    .products-list :global(.product-item .thumbnail) {
-      position: relative;
-    }
-
-    .products-list :global(.product-item .thumbnail .btn-favorite) {
-      position: absolute;
-      filter: brightness(1);
-    }
-    .products-list :global(.product-item .thumbnail .btn-favorite .like) {
-      display: block;
-    }
-    .products-list :global(.product-item .thumbnail .btn-favorite .liked) {
-      display: none;
-    }
-    .products-list :global(.product-item .thumbnail .btn-favorite:hover .like) {
-      display: none;
-    }
-    .products-list
-      :global(.product-item .thumbnail .btn-favorite:hover .liked) {
-      display: block;
     }
 
     .divider:after {

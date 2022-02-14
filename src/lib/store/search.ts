@@ -1,8 +1,8 @@
 import { goto } from '$app/navigation';
 import { meilisearchApiKey, meilisearchUrl } from '$lib/env';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Request, RequestHandler } from '@sveltejs/kit';
-import { Rec } from '@sveltejs/kit/types/helper';
+import { removeMeilisearchPrefixId } from '$lib/utils/string';
+import { RequestHandler } from '@sveltejs/kit';
 import { MeiliSearch } from 'meilisearch';
 import { Category } from './category';
 import {
@@ -98,18 +98,21 @@ export function createSearchHandler<T extends Identifiable>(
   const typeIndex = searchClient.index(`${index}-type`);
   const contentIndex = searchClient.index(index);
 
-  return async (request: Request) => {
+  return async (event) => {
     try {
-      const params = parseSearchParams(request.url.searchParams);
-      const result: Rec<SearchResultGroup<T>> = {};
+      const params = parseSearchParams(event.url.searchParams);
+      const result: Record<string, SearchResultGroup<T>> = {};
       if (params[TYPE]) {
         result[params[TYPE] as string] = await searchContent<T>(params);
+        console.log(params[TYPE]);
       } else {
         const tRes = await typeIndex.search<Category>();
         if (tRes.nbHits) {
           for (const t of tRes.hits) {
-            params[TYPE] = t.id;
-            result[t.id] = await searchContent<T>(params);
+            const id = removeMeilisearchPrefixId(`${index}-type-`,t.id);
+            params[TYPE] = id;
+            console.log(params[TYPE]);
+            result[id] = await searchContent<T>(params);
           }
         } else {
           console.error('Error: "type" has no result');
@@ -120,9 +123,7 @@ export function createSearchHandler<T extends Identifiable>(
           );
         }
       }
-      return {
-        body: JSON.stringify(result),
-      };
+      return new Response(JSON.stringify(result));
     } catch (error) {
       console.error('Error searching for destinations', error);
     }

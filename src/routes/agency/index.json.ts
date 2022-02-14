@@ -1,25 +1,24 @@
 import { cmsUrlPrefix } from '$lib/env';
 import { getSessionCookie } from '$lib/utils/session';
 import { extractSetCookieHeader } from '$lib/utils/session';
-import { RequestHandler, Request } from '@sveltejs/kit';
-import type { Rec } from '@sveltejs/kit/types/helper';
-
+import { RequestHandler } from '@sveltejs/kit';
 
 /**
  * @type {import('@sveltejs/kit').Post}
  */
-export const post: RequestHandler = async (
-  request: Request<Rec<any>, AgencyApplicationForm3>,
-) => {
-  if (!request.body.description) {
-    return {
-      status: 400,
-      body: JSON.stringify({
+export const post: RequestHandler = async (event) => {
+  const reqBody = await event.request.json();
+  if (!reqBody.description) {
+    return new Response(
+      JSON.stringify({
         message: 'name and type are required',
       }),
-    };
+      {
+        status: 400,
+      },
+    );
   }
-  const cookie = getSessionCookie(request.headers.cookie);
+  const cookie = getSessionCookie(event.request.headers.get('cookie') || '');
   if (cookie) {
     try {
       const res = await fetch(`${cmsUrlPrefix}/agencies`, {
@@ -29,17 +28,24 @@ export const post: RequestHandler = async (
           Cookie: cookie,
         },
         body: JSON.stringify({
-          description: request.body.description,
+          description: reqBody.description,
         }),
       });
       const body = await res.json();
-      return {
+      return new Response(body, {
         status: res.status,
-        body,
         headers: extractSetCookieHeader(res.headers),
-      };
+      });
     } catch (error) {
       console.error('Error POST agency info', error);
     }
   }
+  return new Response(
+    JSON.stringify({
+      message: 'bad request',
+    }),
+    {
+      status: 400,
+    },
+  );
 };

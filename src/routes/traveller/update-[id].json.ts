@@ -1,7 +1,6 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Rec } from '@sveltejs/kit/types/helper';
 import { Experience } from '$lib/store/experience';
 import { subTravellerFieldsFragment, Traveller, travellerFieldsFragment } from '$lib/store/traveller';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
@@ -23,9 +22,9 @@ export type updateTravellerData = {
 };
 
 export const put: RequestHandler = async (
-    request: Request<Rec<any>, AuthForm>) => {
+    event) => {
     try {
-        const client = createGraphClientFromRequest(request);
+        const client = createGraphClientFromRequest(event.request);
         const query = `mutation updateTraveller ($id: ID!,$traveller: editTravellerInput){
         updateTraveller(input:{
             where: {id: $id},
@@ -49,7 +48,8 @@ export const put: RequestHandler = async (
         ${personalPreferenceFieldsFragment}
         ${languageFieldsFragment}
     `;
-        const res = await client.mutation<updateTravellerData>(query, {id:request.params.id || '' , traveller: request.body }).toPromise();
+        const reqBody = await event.request.json();
+        const res = await client.mutation<updateTravellerData>(query, {id:event.params.id || '' , traveller: reqBody }).toPromise();
         if (res.data) {
             return {
                 body: JSON.stringify(res.data),

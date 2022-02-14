@@ -41,7 +41,6 @@
   let topAppBar: typeof TopAppBar;
   let drawerOpen: boolean = false;
   let activeSubItem: Exhibitable | SubNavItem | undefined = undefined;
-  let prominent: boolean = true;
   let activeSubItems: Exhibitable[] | SubNavItem[] | undefined;
   let scrollY: number = 0;
   let classNames: string|undefined = undefined;
@@ -54,11 +53,6 @@
       onMobile = true;
     } else {
       drawerOpen = false;
-    }
-    if (window.scrollY < 64) {
-      prominent = true;
-    } else {
-      prominent = false;
     }
   }
 
@@ -83,11 +77,6 @@
   });*/
 
   function onResize(event: Event) {
-    if (window.scrollY < 64) {
-      prominent = true;
-    } else {
-      prominent = false;
-    }
     if (window.innerWidth < 960) {
       activeSubItems = [];
     } else {
@@ -184,7 +173,7 @@
   on:click|stopPropagation={() => {}}
   on:scroll|stopPropagation={() => {}}
 >
-  <TopAppBar bind:this={topAppBar} variant="fixed" class={`${activeSubItem ? 'showing-top-app-bar' : ''}`} {prominent}>
+  <TopAppBar bind:this={topAppBar} variant="fixed" class={`${activeSubItem ? 'showing-top-app-bar' : ''}`} >
     <Row class="top-app-bar__main-row">
       <Section class="logo d-pl-45 m-pl-24">
         <Title component={A} href="/">

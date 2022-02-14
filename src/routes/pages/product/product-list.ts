@@ -1,4 +1,4 @@
-import { RequestHandler, Request } from '@sveltejs/kit';
+import { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { ProductListsData } from '$lib/store/pages';
@@ -6,9 +6,10 @@ import { ProductListsData } from '$lib/store/pages';
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
   try {
-    const client = createGraphClientFromRequest(request);
+    const client = createGraphClientFromRequest(event.request);
     const query = `query{
       products(sort: "published_at:desc") {
         id
@@ -39,9 +40,7 @@ export const get: RequestHandler = async (request: Request) => {
     `;
     const res = await client.query<ProductListsData>(query).toPromise();
     if(res.data){
-      return {
-        body: JSON.stringify(res.data),
-      };
+      return new Response(JSON.stringify(res.data));
     }
     if (res.error) {
       console.log(JSON.stringify(res.error, null, 2));

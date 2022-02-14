@@ -1,4 +1,4 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { ExperienceSearchResultItem } from '$lib/store/experience';
 import {
@@ -22,9 +22,10 @@ const dIndex = searchClient.index('experience');
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
   try {
-    const params = parseSearchParams(request.url.searchParams);
+    const params = parseSearchParams(event.url.searchParams);
     const result: SearchResultGroup<
       ExperienceSearchResultItem | DestinationSearchResultItem
     > = await search<ExperienceSearchResultItem | DestinationSearchResultItem>(

@@ -1,7 +1,6 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Rec } from '@sveltejs/kit/types/helper';
 import { Identification } from '$lib/store/identification';
 /**
  * @type {import('@sveltejs/kit').Post}
@@ -13,9 +12,9 @@ export type deleteIdentificationData = {
 };
 
 export const del: RequestHandler = async (
-    request: Request<Rec<any>, AuthForm>) => {
+    event) => {
     try {
-        const client = createGraphClientFromRequest(request);
+        const client = createGraphClientFromRequest(event.request);
         const query = `mutation deleteIdentification ($id: ID!){
         deleteIdentification(input:{
             where: {id: $id},
@@ -26,7 +25,7 @@ export const del: RequestHandler = async (
             }
         }
     `;
-        const res = await client.mutation<deleteIdentificationData>(query, {id: request.params.id || "" }).toPromise();
+        const res = await client.mutation<deleteIdentificationData>(query, {id: event.params.id || "" }).toPromise();
         if (res.data) {
             return {
                 body: JSON.stringify(res.data),

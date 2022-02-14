@@ -12,17 +12,14 @@ export function getSessionCookie(cookieString: string): string {
   return '';
 }
 
-export function extractSetCookieHeader(headers: Headers): ResponseHeaders {
+export function extractSetCookieHeader(headers: Headers): HeadersInit {
   if (headers.has('set-cookie')) {
     const cookieString = headers.get('set-cookie') || '';
     const parts = cookieString.split(', session.sig=');
-    if (
-      parts.length === 2 &&
-      parts[0].startsWith('session=')
-    ) {
-      return {
-        'set-cookie': [parts[0], 'session.sig=' + parts[1]],
-      };
+    if (parts.length === 2 && parts[0].startsWith('session=')) {
+      const headers = new Headers();
+      headers.set('set-cookie', cookieString);
+      return headers;
     }
   }
   return {};

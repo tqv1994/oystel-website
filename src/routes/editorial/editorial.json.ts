@@ -1,4 +1,4 @@
-import { RequestHandler, Request } from '@sveltejs/kit';
+import { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { experienceFieldsFragment, experienceGalleryFieldsFragment } from '$lib/store/experience';
@@ -46,10 +46,11 @@ export type EditorialPageData = PageQueryResult;
 /**
  * @type {import('@sveltejs/kit').Get}
  */
-export const get: RequestHandler = async (request: Request) => {
+export const get: RequestHandler = async (event) => {
+  const request = event.request;
   // console.log(query)
   try {
-    const client = createGraphClientFromRequest(request);
+    const client = createGraphClientFromRequest(event.request);
     const res = await client.query<QueryResult>(query).toPromise();
     if (res.data) {
       return {

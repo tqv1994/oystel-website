@@ -1,17 +1,14 @@
-import { RequestHandler, Request } from '@sveltejs/kit';
+import { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { UpdateDestination } from '$lib/store/pages';
-import type { Rec } from '@sveltejs/kit/types/helper';
 
 /**
  * @type {import('@sveltejs/kit').Post}
  */
-export const put: RequestHandler = async (
-    request: Request<Rec<any>, AuthForm>) => {
+export const put: RequestHandler = async (event) => {
   try {
-    const client = createGraphClientFromRequest(request);
-    console.log(request.body);
+    const client = createGraphClientFromRequest(event.request);
     const query = `mutation updateDestination ($id: ID!, $users: [ID]){
         updateDestination(input:{
           where:{id: $id},
@@ -25,11 +22,15 @@ export const put: RequestHandler = async (
           }
       }    
     `;
-    const res = await client.mutation<UpdateDestination>(query,{id:request.url.searchParams.get('id'),users: request.body}).toPromise();
-    if(res.data){
-      return {
-        body: JSON.stringify(res.data),
-      };
+    const reqBody = await event.request.json();
+    const res = await client
+      .mutation<UpdateDestination>(query, {
+        id: event.url.searchParams.get('id'),
+        users: reqBody,
+      })
+      .toPromise();
+    if (res.data) {
+      return new Response(JSON.stringify(res.data));
     }
     if (res.error) {
       console.log(JSON.stringify(res.error, null, 2));
@@ -37,5 +38,9 @@ export const put: RequestHandler = async (
   } catch (error) {
     console.error('Error getting experiences', error);
   }
-  return makeErrorResponse(500, 'INTERNAL_SERVER_ERROR', 'Error retrieving data for the experiences');
+  return makeErrorResponse(
+    500,
+    'INTERNAL_SERVER_ERROR',
+    'Error retrieving data for the experiences',
+  );
 };

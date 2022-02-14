@@ -1,7 +1,6 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Rec } from '@sveltejs/kit/types/helper';
 import { countryFieldsFragment } from '$lib/store/country';
 import { Address, addressFieldsFragment } from '$lib/store/address';
 /**
@@ -14,9 +13,9 @@ export type updateAddressData = {
 };
 
 export const put: RequestHandler = async (
-    request: Request<Rec<any>, AuthForm>) => {
+    event) => {
     try {
-        const client = createGraphClientFromRequest(request);
+        const client = createGraphClientFromRequest(event.request);
         const query = `mutation updateAddress ($id: ID!,$address: editAddressInput){
         updateAddress(input:{
             where: {id: $id},
@@ -30,7 +29,8 @@ export const put: RequestHandler = async (
         ${addressFieldsFragment}
         ${countryFieldsFragment}
     `;
-        const res = await client.mutation<updateAddressData>(query, {id: request.params.id || '', address: request.body }).toPromise();
+        const reqBody = await event.request.json();
+        const res = await client.mutation<updateAddressData>(query, {id: event.params.id || '', address: reqBody }).toPromise();
         if (res.data) {
             return {
                 body: JSON.stringify(res.data),

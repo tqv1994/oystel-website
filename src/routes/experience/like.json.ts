@@ -1,7 +1,6 @@
-import type { RequestHandler, Request } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { Rec } from '@sveltejs/kit/types/helper';
 import { Experience, experienceFieldsFragment } from '$lib/store/experience';
 import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
@@ -18,9 +17,9 @@ export type ExperienceLikeData = {
 };
 
 export const put: RequestHandler = async (
-  request: Request<Rec<any>, AuthForm>) => {
+  event) => {
   try {
-    const client = createGraphClientFromRequest(request);
+    const client = createGraphClientFromRequest(event.request);
     const query = `mutation me ($id: ID!, $experienceLikes: [ID]){
         updateUser(input:{
           where:{id: $id},
@@ -34,11 +33,10 @@ export const put: RequestHandler = async (
           }
       }
     `;
-    const res = await client.mutation<ExperienceLikeData>(query, { id: request.locals.user?.id, experienceLikes: request.body }).toPromise();
+    const reqBody = await event.request.json();
+    const res = await client.mutation<ExperienceLikeData>(query, { id: event.locals.user?.id, experienceLikes: reqBody }).toPromise();
     if (res.data) {
-      return {
-        body: JSON.stringify(res.data),
-      };
+      return new Response(JSON.stringify(res.data));
     }
     if (res.error) {
       console.log(JSON.stringify(res.error, null, 2));
