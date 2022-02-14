@@ -19,7 +19,6 @@ const config = {
 
   kit: {
     adapter: vercel(),
-    target: '#svelte',
 
     prerender: {
       onError: handleError,

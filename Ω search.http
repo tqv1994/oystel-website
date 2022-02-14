@@ -1,14 +1,18 @@
-@base = https://search.oysteo.su93rheroes.com
-@auth = X-Meili-API-Key: 4d7ee552408d1fe71a26aae4b3a94f6b7aa9f4b4a06786932289531ef9674e33
-@index = advisor
+@auth = Authorization: Bearer {{private_key}}
+@index = experience
+
+### List keys
+GET {{base_url}}/keys
+Accept: application/json
+Authorization: Bearer {{master_key}}
 
 ### List indexes
-GET {{base}}/indexes
+GET {{base_url}}/indexes
 Accept: application/json
 {{auth}}
 
 ### Create an index
-POST {{base}}/indexes
+POST {{base_url}}/indexes
 Accept: application/json
 Content-Type: application/json
 {{auth}}
@@ -19,22 +23,38 @@ Content-Type: application/json
 }
  
 ### Delete an index
-DELETE {{base}}/indexes/{{index}}
+DELETE {{base_url}}/indexes/{{index}}
 Accept: application/json
 {{auth}}
 
 ### Filterable attributes
-GET {{base}}/indexes/{{index}}/settings/filterable-attributes
+GET {{base_url}}/indexes/{{index}}/settings/filterable-attributes
 Accept: application/json
 {{auth}}
 
 ### sortable attributes
-GET {{base}}/indexes/{{index}}/settings/sortable-attributes
+GET {{base_url}}/indexes/{{index}}/settings/sortable-attributes
 Accept: application/json
 {{auth}}
 
+### 
+### 
 ### Update attributes
-POST {{base}}/indexes/{{index}}/settings
+POST {{base_url}}/indexes/destination/settings
+Content-Type: application/json
+Accept: application/json
+{{auth}}
+
+{
+  "filterableAttributes": [
+    "type1", "type2", "type3",
+    "country"
+  ],
+  "sortableAttributes": ["name", "published_at"]
+}
+
+### Update attributes
+POST {{base_url}}/indexes/experience/settings
 Content-Type: application/json
 Accept: application/json
 {{auth}}
@@ -48,7 +68,7 @@ Accept: application/json
 }
 
 ### Update advisor attributes
-POST {{base}}/indexes/advisor/settings
+POST {{base_url}}/indexes/advisor/settings
 Content-Type: application/json
 Accept: application/json
 {{auth}}
@@ -64,8 +84,10 @@ Accept: application/json
   "sortableAttributes": ["name"]
 }
 
+###
+###
 ### Search: query
-POST {{base}}/indexes/{{index}}/search
+POST {{base_url}}/indexes/{{index}}/search
 Accept: application/json
 Content-Type: application/json
 {{auth}}
@@ -76,7 +98,7 @@ Content-Type: application/json
 }
 
 ### Search: filter by type
-POST {{base}}/indexes/{{index}}/search
+POST {{base_url}}/indexes/{{index}}/search
 Accept: application/json
 Content-Type: application/json
 {{auth}}
