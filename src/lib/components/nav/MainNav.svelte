@@ -34,7 +34,7 @@
   import OySearchModal from '../modals/OySearchModal.svelte';
   import { afterUpdate } from 'svelte';
   import Menu, { MenuComponentDev } from '@smui/menu';
-  import {Separator } from '@smui/list';
+  import { Separator } from '@smui/list';
   export let items: MainNavItem[];
   export let active: MainNavItem | undefined = undefined;
 
@@ -43,8 +43,8 @@
   let activeSubItem: Exhibitable | SubNavItem | undefined = undefined;
   let activeSubItems: Exhibitable[] | SubNavItem[] | undefined;
   let scrollY: number = 0;
-  let classNames: string|undefined = undefined;
-  export {classNames as class};
+  let classNames: string | undefined = undefined;
+  export { classNames as class };
   let openSearch: boolean = false;
   let onMobile: boolean = false;
   export let navLightColor = true;
@@ -86,7 +86,7 @@
 
   function onScroll(event: Event) {
     if (window.innerWidth < 960 && active) {
-    }else if (activeSubItems && Math.abs(window.scrollY - scrollY) > 250) {
+    } else if (activeSubItems && Math.abs(window.scrollY - scrollY) > 250) {
       activeSubItems = [];
       activeSubItem = undefined;
     }
@@ -97,8 +97,8 @@
     adjustNav();
   }
 
-  function onTabActivated(event: CustomEvent<{ index: number }>): void {
-    active = items[event.detail.index];
+  function activateNavItem(item: MainNavItem) {
+    active = item;
     console.log('activated', active.children?.length);
     if (active.children?.length) {
       activeSubItems = active.children;
@@ -107,6 +107,10 @@
     } else {
       goto(active.url);
     }
+  }
+
+  function onTabActivated(event: CustomEvent<{ index: number }>): void {
+    activateNavItem(items[event.detail.index]);
   }
 
   function onMobileMainNavAction(event: CustomEvent<{ index: number }>): void {
@@ -173,7 +177,11 @@
   on:click|stopPropagation={() => {}}
   on:scroll|stopPropagation={() => {}}
 >
-  <TopAppBar bind:this={topAppBar} variant="fixed" class={`${activeSubItem ? 'showing-top-app-bar' : ''}`} >
+  <TopAppBar
+    bind:this={topAppBar}
+    variant="fixed"
+    class={`${activeSubItem ? 'showing-top-app-bar' : ''}`}
+  >
     <Row class="top-app-bar__main-row">
       <Section class="logo d-pl-45 m-pl-24">
         <Title component={A} href="/">
@@ -187,24 +195,36 @@
           bind:active
           on:MDCTabBar:activated={onTabActivated}
         >
-          <Tab {tab} minWidth active={false}>
+          <Tab
+            {tab}
+            minWidth
+            active={false}
+            on:click={() => activateNavItem(tab)}
+          >
             <Label>{tab.name}</Label>
           </Tab>
         </TabBar>
       </Section>
       <Section toolbar align="end" class="desktop actions d-pr-45 m-pr-24">
-        <Button type="button" variant="outlined" class="plan" on:click={()=>{
-          if($authStore.user?.travellerMe){
-            goto('/plan');
-          }else if($authStore.user){
-            window.pushToast('Please update the information before doing this');
-            setTimeout(()=>{
-              goto('/me/my-account');
-            },2000);
-          }else{
-            window.openSignInModal();
-          }
-        }}>
+        <Button
+          type="button"
+          variant="outlined"
+          class="plan"
+          on:click={() => {
+            if ($authStore.user?.travellerMe) {
+              goto('/plan');
+            } else if ($authStore.user) {
+              window.pushToast(
+                'Please update the information before doing this',
+              );
+              setTimeout(() => {
+                goto('/me/my-account');
+              }, 2000);
+            } else {
+              window.openSignInModal();
+            }
+          }}
+        >
           <Label>Plan Your Trip</Label>
         </Button>
         <IconButton
@@ -227,23 +247,24 @@
         </IconButton>
         <div class="menu-user">
           <IconButton
-          on:click={() => {
-            $authStore.user ? menuUser.setOpen(true) : (window.openSignInModal());
-          }}
-        >
-          <UserIcon />
-        </IconButton>
-        <Menu bind:this={menuUser}
-        >
-          <List>
-            <Item on:SMUI:action={() => (goto('/me'))}>
-              <Text>Account info</Text>
-            </Item>
-            <Item on:SMUI:action={() => (goto('/sign-out'))}>
-              <Text>Logout</Text>
-            </Item>
-          </List>
-        </Menu>
+            on:click={() => {
+              $authStore.user
+                ? menuUser.setOpen(true)
+                : window.openSignInModal();
+            }}
+          >
+            <UserIcon />
+          </IconButton>
+          <Menu bind:this={menuUser}>
+            <List>
+              <Item on:SMUI:action={() => goto('/me')}>
+                <Text>Account info</Text>
+              </Item>
+              <Item on:SMUI:action={() => goto('/sign-out')}>
+                <Text>Logout</Text>
+              </Item>
+            </List>
+          </Menu>
         </div>
       </Section>
       <Section align="end" class="mobile actions">
@@ -295,8 +316,9 @@
               <H2>{activeSubItem.name}</H2>
               <Button
                 variant="outlined"
-                href={activeSubItem.id ? makeLink(active?.url || '/', activeSubItem) : activeSubItem.url}
-                >Explore now</Button
+                href={activeSubItem.id
+                  ? makeLink(active?.url || '/', activeSubItem)
+                  : activeSubItem.url}>Explore now</Button
               >
             </Section>
             <Section class="hero">
@@ -350,8 +372,8 @@
 
 <style lang="scss" global>
   @use './MainNav';
-  .menu-user{
+  .menu-user {
     display: inline-block;
-    @import "../../../style/partial/menu.scss";
+    @import '../../../style/partial/menu.scss';
   }
 </style>

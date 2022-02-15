@@ -12,14 +12,16 @@ type AuthForm = {
 /**
  * @type {import('@sveltejs/kit').Post}
  */
-export const post: RequestHandler = async (
-  event,
-) => {
+export const post: RequestHandler = async (event) => {
   const reqBody = await event.request.json();
   if (event.locals.user) {
-    return makeErrorResponse(401, 'ALREADY_AUTHENTICATED', 'Already authenticated')
+    return makeErrorResponse(
+      401,
+      'ALREADY_AUTHENTICATED',
+      'Already authenticated',
+    );
   } else if (!reqBody.token) {
-    return makeErrorResponse(400, 'INVALID_ID_TOKEN', 'ID token is invalid')
+    return makeErrorResponse(400, 'INVALID_ID_TOKEN', 'ID token is invalid');
   }
 
   try {
@@ -29,7 +31,7 @@ export const post: RequestHandler = async (
         Authorization: 'Bearer ' + reqBody.token,
       },
     });
-    const body:User = await res.json();
+    const body: User = await res.json();
     // console.log('Sign in success', `${cmsUrlPrefix}/auth/me`, body);
     event.locals.user = body;
     return new Response(JSON.stringify(body), {

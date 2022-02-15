@@ -125,9 +125,7 @@
         <CuratedExperience {...section} on:likeItem={likeExperience} {index} />
       </section>
     {:else if section.__typename === 'ComponentBannersBanner'}
-      <section class="what-to-wear-section d-pb-105 d-pt-105 full-width">
         <WhatToWear {...section} />
-      </section>
     {:else if section.__typename === 'ComponentGalleriesDestinationGallery'}
       <section class="the-latest-section d-pt-105 m-pt-30">
         <div class="container">
@@ -310,18 +308,6 @@
       }
       #slider .slide-item.slide-item-2 {
         background-position: right;
-      }
-    }
-
-    .what-to-wear-section {
-      @include mixins.desktop {
-        background-image: url(/img/editorial/what-to-wear-background.jpg);
-        background-repeat: no-repeat;
-        background-size: cover;
-      }
-      .what-to-wear-content {
-        background-color: #fff;
-        display: inline-block;
       }
     }
 

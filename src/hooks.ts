@@ -186,16 +186,18 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   const headers: Record<string, string> = {};
   if (!event.locals.user) {
-    if (request.headers.cookie) {
-      const cookie = getSessionCookie(request.headers.cookie);
-      if (cookie) {
+    const cookie = request.headers.get('cookie');
+    if (cookie) {
+      const sessionCookie = getSessionCookie(cookie);
+      if (sessionCookie) {
         console.log('Authenticating user from cookie...');
         try {
-          const client = createGraphClient(cookie);
+          const client = createGraphClient(sessionCookie);
           const res = await client.query<QueryData>(meQuery).toPromise();
           if (res.error) {
             console.error('Failed to get session:', res.error.message);
             const setCookie = res.error.response.headers.getAll('set-cookie');
+            console.log(setCookie);
             if (setCookie) {
               headers['set-cookie'] = setCookie;
             }
@@ -211,7 +213,6 @@ export const handle: Handle = async ({ event, resolve }) => {
   try {
     console.log('Resuming request...', event.url.pathname, counter);
     const response = await resolve(event);
-    // const h = response.headers;
     const body = await response.text();
 
     for (const key in headers) {

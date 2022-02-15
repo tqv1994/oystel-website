@@ -3,9 +3,6 @@
 @use "../../theme/variables" as v;
 @use '../../theme/mixins';
 .experiences {
-  @include mixins.desktop {
-    padding-right: calc(90px + var(--mdc-layout-grid-margin-desktop));
-  }
   .mdc-layout-grid {
     padding-top: 0;
     padding-bottom: 0;

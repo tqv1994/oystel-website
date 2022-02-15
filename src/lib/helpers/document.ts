@@ -77,40 +77,46 @@ export const documentHelper = {
 
         }
     },
-
-    makeMasoryGrid: function (wrapItems: string,itemIdentifier: string) {
-            // Programmatically get the column width
-            let item = document.querySelector(itemIdentifier);
-            let parentWidth = item.parentNode.getBoundingClientRect().width;
-            let itemWidth = item.getBoundingClientRect().width + parseFloat(getComputedStyle(item).marginLeft) + parseFloat(getComputedStyle(item).marginRight);
-            let columnWidth = Math.round((1 / (itemWidth / parentWidth)));
-            console.log(item);
-            // We need this line since JS nodes are dumb
-            let arrayOfItems = Array.prototype.slice.call( document.querySelectorAll(itemIdentifier) );
-            let trackHeights = {};
-            arrayOfItems.forEach(function(item) {
-                // Get index of item
-                let thisIndex = arrayOfItems.indexOf(item);
-                // Get column this and set width
-                let thisColumn = thisIndex % columnWidth;
-                if(typeof trackHeights[thisColumn] == "undefined") {
-                    trackHeights[thisColumn] = 0;
-                }
-                trackHeights[thisColumn] += item.getBoundingClientRect().height + parseFloat(getComputedStyle(item).marginBottom);
-                // If the item has an item above it, then move it to fill the gap
-                if(thisIndex - columnWidth >= 0) {
-                    let getItemAbove = document.querySelector(`${itemIdentifier}:nth-of-type(${thisIndex - columnWidth + 1})`);
-                    let previousBottom = getItemAbove.getBoundingClientRect().bottom;
-                    let currentTop = item.getBoundingClientRect().top - parseFloat(getComputedStyle(item).marginBottom);
-                    item.style.top = `-${currentTop - previousBottom}px`;
-                }
-            });
-            let max = Math.max(...Object.values(trackHeights));
-            document.querySelector(wrapItems).style.height = `${max}px`;
-    },
-
-    scrollToTop: function(){
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
 };
+
+export class Croppenscaler {
+    public url: string;
+    public frameHeight: number;
+    public frameWidth: number;
+    public imageWidth: number;
+    protected positionTop: number;
+    protected positionLeft: number;
+    public width: number;
+    public top: number;
+    public left: number;
+    constructor (values: Object = {}) {
+      Object.assign(this, values);
+      this.frameHeight = this.frameHeight || 400;
+      this.frameWidth = this.frameWidth || 300;
+   
+      var scale = this.frameWidth / 300;
+   
+      this.imageWidth = (this.width) * scale;
+      this.positionTop = (this.top) * scale;
+      this.positionLeft = (this.left) * scale;
+    }
+   
+    buildFrame() {
+   
+      var img = new Element('img',{src:this.url, 'class':'zoom'});
+      img.setStyle({
+        width: this.imageWidth+'px',
+        top: this.positionTop+'px',
+        left: this.positionLeft+'px',
+      });
+   
+      var frame = new Element('div',{'class':'croppenscaler'});
+      frame.update(img);
+      frame.setStyle({
+        height:this.frameHeight+'px',
+        width:this.frameWidth+'px',
+      });
+   
+      return frame;
+    }
+  };

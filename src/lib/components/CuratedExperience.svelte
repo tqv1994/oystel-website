@@ -126,10 +126,18 @@ import SliderItems from './SliderItems.svelte';
 </LayoutGrid>
 <style lang="scss">
    @use '../../style/include/grid';
-   .row .col:nth-child(odd){
-    padding-right: calc(15px /2);
-   }
-   .row .col:nth-child(even){
-    padding-left: calc(15px /2);
+   @use '../../theme/mixins';
+   .row{
+    .col:nth-child(odd){
+      padding-right: calc(15px /2);
+    }
+    .col:nth-child(even){
+      padding-left: calc(15px /2);
+    }
+    .col{
+      @include mixins.mobile{
+        margin-bottom: 15px;
+      }
+    }
    }
 </style>

@@ -7,6 +7,7 @@ export const makeErrorResponse = (
   status: number,
   code: string,
   message: string,
+  headers?: Headers,
 ) =>
   new Response(
     JSON.stringify({
@@ -16,6 +17,6 @@ export const makeErrorResponse = (
     }),
     {
       status,
-      headers: {},
+      headers,
     },
   );

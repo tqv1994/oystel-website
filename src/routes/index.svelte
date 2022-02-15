@@ -43,6 +43,8 @@
   import FeatureDrops from '$lib/components/FeatureDrops.svelte';
   import CuratedExperience from '$lib/components/CuratedExperience.svelte';
   import { contains } from '$lib/utils/array';
+  import FeaturedDrop from '$lib/components/FeaturedDrop.svelte';
+  import WhatToWear from '$lib/components/WhatToWear.svelte';
 
   export let data: HomePageData;
   let me: User | undefined = $authStore.user;
@@ -130,31 +132,6 @@
     }
   }
 
-  function onScrollFixedHeader() {
-    // if (document.documentElement.clientWidth > 949) {
-    //   if (
-    //     document.body.scrollTop > 200 ||
-    //     document.documentElement.scrollTop > 200
-    //   ) {
-    //     document.getElementById('header').classList.add('fixed');
-    //     document.getElementById('header').classList.add('scrolling');
-    //     document.querySelector('header').style.zIndex = 100;
-    //     documentHelper.changeBackgroundHeader('#000');
-    //   } else {
-    //     document.getElementById('header').classList.remove('fixed');
-    //     document.getElementById('header').classList.remove('scrolling');
-    //     document.querySelector('header').style.zIndex = 'auto';
-    //     documentHelper.changeBackgroundHeader('transparent');
-    //   }
-    // } else {
-    //   document.getElementById('header').classList.remove('fixed');
-    //   document.getElementById('header').classList.remove('scrolling');
-    //   document.querySelector('header').style.zIndex = 'auto';
-    //   document.querySelector('header').style.position = 'static';
-    //   documentHelper.changeBackgroundHeader('transparent');
-    // }
-  }
-
   const carouselConfig = {
     autoplayDuration: 8000,
     duration: 1500,
@@ -168,7 +145,7 @@
 
 <div class="content home-page-content">
   {#if data?.gallery.length > 0}
-  <section id="slider" class="full-width hero">
+  <section id="slider" class="full-width hero pt-0">
     <Carousel {...carouselConfig}>
       {#each data?.gallery || [] as item}
         <div class="slide">
@@ -189,11 +166,11 @@
 
   {#each data.page.sections as section, index}
     {#if section.__typename === 'ComponentGalleriesDropGallery'}
-      <section class="has-padding m-pt-40 m-pb-70" id="featured-drops">
+      <section id="featured-drops">
         <FeatureDrops {...section} />
       </section>
     {:else if section.__typename === 'ComponentGalleriesDestinationGallery'}
-      <section class="pb-60 from-advisors">
+      <section class="d-pt-100 m-pt-40 from-advisors">
         <LayoutGrid class="pt-0 pb-0">
           <Cell span={12}>
             <h2 class="text-h1 mt-0">{section.name}</h2>
@@ -220,7 +197,7 @@
       </section>
     {:else if section.__typename === 'ComponentGalleriesExperienceGallery'}
       <section
-        class="has-padding m-pt-48 m-pb-15 experiences experiences-{index}"
+        class="experiences experiences-{index} d-pb-100 m-pb-40"
       >
         <div class="container">
           <p class="text-h1 mt-0 d-mb-35 m-mb-15">{section.name}</p>
@@ -228,15 +205,9 @@
         <CuratedExperience {...section} on:likeItem={likeExperience} {index} />
       </section>
     {:else if section.__typename === 'ComponentBannersBanner'}
-      <section
-        class="d-pt-55 d-pb-70 t-pt-55 t-pb-70 m-pt-20 m-pb-40 full-width"
-        id="signup-section"
-        style="background-color: #F0F7F8"
-      >
-        <div class="content-wrap">
-          <NeverMissDrop {...section} />
-        </div>
-      </section>
+          <WhatToWear {...section} />
+    {:else if section.__typename === 'ComponentGalleriesFeaturedDrop'}
+      <FeaturedDrop {...section} />
     {/if}
   {/each}
 </div>

@@ -2,7 +2,6 @@
 @use './colors';
 @use './sizes';
 @use './mixins';
-@use '../style/include/button' as customButton;
 
 @use '@material/theme/color-palette';
 
@@ -33,6 +32,7 @@
 @use '@material/typography/index' as typography;
 @use '@material/textfield';
 @use '@material/button';
+@use '../style/include/button' as customButton;
 // Input
 
 @use '@material/layout-grid/index' as layoutgrid with (
@@ -296,6 +296,15 @@ button.mdc-button, a.mdc-button {
         transform: scaleX(1);
       }
     }
+  }
+}
+
+section{
+  padding-top: 50px;
+  padding-bottom: 50px;
+  @include mixins.mobile{
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
 }
 

@@ -11,7 +11,7 @@ import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
 import { productFieldsFragment } from '$lib/store/product';
 import { bannerFieldsFragment } from '$lib/store/banner';
 import { actionFieldsFragment } from '$lib/store/action';
-import { pageFieldsFragment, PageQueryResult } from '$lib/store/page';
+import { featuredDropFieldsFragment, pageFieldsFragment, PageQueryResult } from '$lib/store/page';
 
 
 type QueryResult = {
@@ -36,6 +36,7 @@ ${uploadFileFieldsFragment}
 ${dropGalleryFieldsFragment}
 ${experienceGalleryFieldsFragment}
 ${destinationGalleryFieldsFragment}
+${featuredDropFieldsFragment}
 ${bannerFieldsFragment}
 ${actionFieldsFragment}
 ${pageFieldsFragment}

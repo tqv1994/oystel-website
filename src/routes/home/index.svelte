@@ -47,7 +47,6 @@
   import { HomePageData } from './index.json';
 
   export let data: HomePageData;
-  console.log(data);
 
   let Carousel: Carousel; // for saving Carousel component class
   let carousel: Carousel; // for calling methods of the carousel instance

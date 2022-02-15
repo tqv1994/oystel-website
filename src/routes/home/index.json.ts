@@ -17,7 +17,7 @@ import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
 import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
 import { bannerFieldsFragment } from '$lib/store/banner';
 import { actionFieldsFragment } from '$lib/store/action';
-import { pageFieldsFragment, PageQueryResult } from '$lib/store/page';
+import { featuredDropFieldsFragment, pageFieldsFragment, PageQueryResult } from '$lib/store/page';
 
 export type HomePageData = PageQueryResult & {
   gallery: UploadFile[];
@@ -51,6 +51,7 @@ ${destinationGalleryFieldsFragment}
 ${bannerFieldsFragment}
 ${actionFieldsFragment}
 ${pageFieldsFragment}
+${featuredDropFieldsFragment}
 `;
 
 /**

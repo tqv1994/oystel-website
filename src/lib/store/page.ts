@@ -2,15 +2,31 @@ import { ExperienceGallery } from '$lib/store/experience';
 import { Identifiable, Nameable } from '$lib/store/types';
 import { writable } from 'svelte/store';
 import { CollectionStore } from '$lib/store/types';
-import { DropGallery } from './drop';
+import { Drop, DropGallery } from './drop';
 import { DestinationGallery } from './destination';
 import { Banner } from './banner';
+import { Action } from './action';
+import { GalleryComponentBase } from './component';
+import { Look } from './look';
+
+export type FeaturedDrop = {
+  name: string;
+  drop: Drop;
+  button_1: Action;
+  button_2: Action;
+};
+
+export type LookGallery = GalleryComponentBase & {
+  looks: Look[];
+}
 
 export type Section =
   | DropGallery
   | DestinationGallery
   | ExperienceGallery
-  | Banner;
+  | Banner
+  | LookGallery
+  | FeaturedDrop;
 
 export type Page = Identifiable &
   Nameable & {
@@ -43,6 +59,25 @@ fragment pageFields on Page {
     ... on ComponentBannersBanner {
       ...bannerFields
     }
+    ... on ComponentGalleriesFeaturedDrop {
+      ...featuredDropFields
+    }
+  }
+}
+`;
+
+export const featuredDropFieldsFragment = `
+fragment featuredDropFields on ComponentGalleriesFeaturedDrop {
+  id
+  name
+  button_1 {
+    ...actionFields
+  }
+  button_2 {
+    ...actionFields
+  }
+  drop {
+    ...dropFields
   }
 }
 `;

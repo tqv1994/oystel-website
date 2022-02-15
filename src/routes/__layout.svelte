@@ -119,9 +119,9 @@
     items={mainMenu}
     bind:active
   />
-  <section>
+  <div>
     <slot />
-  </section>
+  </div>
   <Footer />
 </div>
 <Loading />
