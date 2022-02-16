@@ -335,9 +335,9 @@
         </form>
         <LayoutGrid class="p-0">
           <Cell span="12">
-            <h1 class="text-center d-mt-115 d-mb-20">
+            <h2 class="text-center d-mt-115 d-mb-20">
               Choose Your Destination
-            </h1>
+            </h2>
             <p class="text-center m-0">
               Bespoke destinations created by our leading tastemakers.
             </p>
@@ -360,7 +360,7 @@
     </div>
   </section>
   <section
-    class={`header-title d-pt-94 d-pb-95 m-pt-80 m-pb-25 full-width fixed is_sticky ${
+    class={`header-title d-pt-150 d-pb-95 m-pt-80 m-pb-25 full-width fixed is_sticky ${
       stickyShow ? 'show' : ''
     }`}
   >

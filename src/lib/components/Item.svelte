@@ -66,10 +66,7 @@
         </p></Cell
       >
     </LayoutGrid>
-    <h4 class="text-h3 title mt-15">{name}</h4>
-    <p class="short-text m-none">
-      {(description || '').substr(0, 80)}...
-    </p>
+    <h3 class="title mt-15">{name}</h3>
   </a>
 </div>
 
@@ -83,7 +80,7 @@
       background-color: rgba(0, 0, 0, 0.2);
     }
     .title {
-      height: 24px;
+      height: 32px;
       overflow: hidden;
       @include mixins.mobile{
         height: 37px;

@@ -43,7 +43,7 @@ import LookItem from "./LookItem.svelte";
 <section class="pt-40" id="shop-by-look-section">
   <div class="container">
     <LayoutGrid class="p-0 pb-30">
-      <Cell span="12"><h1 class="mt-0 mb-0">Shop By Look</h1></Cell>
+      <Cell span="12"><h2 class="mt-0 mb-0">Shop By Look</h2></Cell>
     </LayoutGrid>
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>

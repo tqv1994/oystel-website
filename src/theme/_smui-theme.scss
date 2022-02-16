@@ -58,7 +58,7 @@
 
 @font-face {
   font-family: Surt;
-  src: url('./fonts/surt-semi-bold/Surt-SemiBoldExtended.woff');
+  src: url('./fonts/surt-normal-ultra-bold/SurtNormal-UltraBold.woff');
   font-weight: 700;
 }
 
@@ -66,6 +66,18 @@
   font-family: GTSupper;
   src: url('./fonts/gt-super/GT-Super-Display-Light.woff');
   font-weight: 300;
+}
+
+@font-face {
+  font-family: GTSupper;
+  src: url('./fonts/gt-super/GT-Super-Display-Regular.woff');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: GTSupperTextBook;
+  src: url('./fonts/gt-super/GT-Super-Text-Book.woff');
+  font-weight: 400;
 }
 /* Variables */
 // $contentMaxWidth: sizes.$contentMaxWidth;

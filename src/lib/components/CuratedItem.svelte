@@ -17,9 +17,9 @@
     </div>
     <p class="mt-0 d-mb-25 text-eyebrow t-mb-25 m-mb-15">Fashion</p>
     <div class="divider d-pb-30 t-pb-30 m-pb-25" />
-    <h4 class="text-h3 mt-0 d-mb-30 t-mb-30 m-mb-25 title">
+    <h3 class="mt-0 d-mb-30 t-mb-30 m-mb-25 title">
       {item.name}
-    </h4>
+    </h3>
     <p class="mt-0 d-mb-0 m-none">
       {(item.description || '').substr(0, 80)}...
     </p>

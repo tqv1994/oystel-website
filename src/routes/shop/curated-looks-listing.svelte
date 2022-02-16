@@ -109,9 +109,9 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
         </div>
       </section>
     {:else if section.__typename === "ComponentGalleriesDropGallery" && section.name === "The Latest"}
-        <section class="d-pt-60 t-pt-60 m-pt-40" id="latest-wrap">
+        <section id="latest-wrap">
             <div class="container d-pl-160 d-pr-160 t-pl-80 t-pr-80 d-pb-80 t-pb-80">
-                <h1 class="mt-0 mb-50">{section.name}</h1>
+                <h2 class="mt-0 mb-50">{section.name}</h2>
                 <div class="latest-list">
                     <LayoutGrid class="p-0">
                         {#each section.drops as drop}
@@ -128,7 +128,7 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
       </section>
     {:else if section.__typename === "ComponentGalleriesDropGallery" && section.name === null}
     <section
-        class="d-pt-90 d-pb-45 t-pt-90 t-pb-45 m-pb-45 m-pt-50 products-list-wrap"
+        class="products-list-wrap"
     >
         <div class="container">
         <div class="text-center d-mb-80 t-mb-80 m-mb-55 filter-wrap">
@@ -206,7 +206,7 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
     }
     .products-list .product-item .title {
       @include mixins.desktop {
-        height: 50px;
+        height: 33px;
         overflow: hidden;
       }
     }

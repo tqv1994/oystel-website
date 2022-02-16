@@ -1,13 +1,18 @@
 @use "../../theme/colors";
 @use "../../theme/sizes";
 @use "../../theme/variables" as v;
-@use '../../theme/mixins';
+@use "../../theme/mixins";
 #slider {
     position: relative;
     .search-form .mdc-text-field {
         -webkit-backdrop-filter: blur(7px) brightness(0.7);
         backdrop-filter: blur(7px) brightness(0.7);
-        background-color: rgba(255, 255, 255, 0.65);
+        background-color: rgba(154, 154, 154, 0.2);
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+            border-color: rgba(255,255,255,0.7);
+        }
     }
     .search-form {
         .open-search-complete:before {
@@ -15,7 +20,7 @@
         }
     }
     .slide {
-        @include mixins.desktop{
+        @include mixins.desktop {
             height: 100vh;
         }
         @include mixins.mobile {
@@ -46,37 +51,38 @@
             top: 38%;
         }
     }
-    .arrow {
+    .arrow-inside {
         @include mixins.mobile {
             display: none;
         }
         position: absolute;
         z-index: 1;
         top: 50%;
-        &:hover{
-            color: #fff;
+        color: #{colors.$white};
+        &:hover {
+            color: #{colors.$black};
         }
-        &.left{
+        &.left {
             left: 20px;
         }
-        &.right{
+        &.right {
             right: 20px;
         }
     }
-    
+
     @include mixins.mobile {
         .control {
             display: none;
         }
     }
-    .sc-carousel-dots__container{
+    .sc-carousel-dots__container {
         position: absolute;
         bottom: 45px;
         --sc-color-rgb-light: #fff;
         @include mixins.desktop {
             display: none;
         }
-        .sc-carousel-dot__dot_active{
+        .sc-carousel-dot__dot_active {
             opacity: 1;
         }
     }

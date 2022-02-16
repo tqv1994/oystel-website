@@ -37,9 +37,9 @@ import Carousel from './Carousel.svelte';
         <Cell span={12}>
             <div class="row mb-25">
                 <div class="d-col-6 m-col-12 m-mb-0">
-                    <h2 class="text-h1 mt-0 mb-0 featured-drop__title">{name}</h2>
+                    <h2 class="mt-0 mb-0 featured-drop__title">{name}</h2>
                 </div>
-                <div class="d-col-6 text-right featured-drop__actions d-block m-none">
+                <div class="d-col-6 text-right featured-drop__actions d-block m-none pt-10">
                     {#if button_1}
                         <Button
                             class="mr-10"
@@ -110,7 +110,7 @@ import Carousel from './Carousel.svelte';
                             <h3>{drop.name}</h3>
                         </div>
                         <div class="d-col-7 m-col-12">
-                            <p class="d-mt-20">{drop.description}</p>
+                            <p class="d-mt-50">{drop.description}</p>
                             <Button
                                 class="hover-affect-drop"
                                 variant="outlined"

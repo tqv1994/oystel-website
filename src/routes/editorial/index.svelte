@@ -16,22 +16,6 @@
     const res = await fetch(`/editorial/editorial.json?_z=${Date.now()}`);
     if (res.ok) {
       const data: EditorialPageData = await res.json();
-      // insertToStore(
-      //   experienceStore, data.page.
-      // data.page..map((item: Experience) => {
-      //   if (session.user) {
-      //     let indexExist = (session.user?.experienceLikes || []).findIndex(
-      //       (itemLike: Experience) => itemLike.id === item.id,
-      //     );
-      //     if (indexExist >= 0) {
-      //       item.liked = true;
-      //     } else {
-      //       item.liked = false;
-      //     }
-      //   }
-      //   return item;
-      // }),
-      // );
       return {
         props: {
           data,
@@ -49,10 +33,9 @@
 
 <script lang="ts">
   import Carousel from '$lib/components/Carousel.svelte';
-  import Pagination from '$lib/components/common/Pagination.svelte';
   import CuratedExperience from '$lib/components/CuratedExperience.svelte';
-  import DropList2 from '$lib/components/DropList2.svelte';
   import WhatToWear from '$lib/components/WhatToWear.svelte';
+  import ListItem from '$lib/components/ListItem.svelte';
 
   export let data: EditorialPageData;
 
@@ -112,51 +95,52 @@
   };
 </script>
 
-<div class="content editorial-content d-pt-128 m-pt-60">
+<div class="content editorial-content d-pt-90 m-pt-65">
   {#each data.page.sections as section, index}
     {#if section.__typename === 'ComponentGalleriesExperienceGallery'}
-      <section
-        class="d-pt-60 d-pb-100 m-pt-48 m-pb-15 experiences experiences-{index}"
-      >
+      <section class="d-pb-100 m-pb-40 experiences experiences-{index}">
         <div class="container">
           <p class="text-eyebrow m-0">{section.headline}</p>
-          <p class="text-h1 mt-30 d-mb-40 m-mb-15">{section.name}</p>
+          <h2 class="mt-20 d-mb-40 m-mb-15">{section.name}</h2>
         </div>
         <CuratedExperience {...section} on:likeItem={likeExperience} {index} />
       </section>
     {:else if section.__typename === 'ComponentBannersBanner'}
-        <WhatToWear {...section} />
-    {:else if section.__typename === 'ComponentGalleriesDestinationGallery'}
-      <section class="the-latest-section d-pt-105 m-pt-30">
+      <WhatToWear {...section} />
+    {:else if section.__typename === 'ComponentGalleriesDropGallery'}
+      <section class="the-latest-section d-pt-100 m-pt-40">
         <div class="container">
-          <div class="stories-list d-pl-100 d-pr-100 d-mb-115 m-mb-60">
-            <h1 class="m-0 mb-40">{section.name}</h1>
-            {#if section.destinations?.length > 0}
+          <div class="stories-list d-pl-100 d-pr-100">
+            <h2 class="m-0 mb-40">{section.name}</h2>
+            {#if section.drops?.length > 0}
               <Carousel {...carouselConfigMobile}>
-                {#each section.destinations as item}
+                {#each section.drops as item}
                   <div class="slide-content slide-item text-left">
                     <div class="story-item">
                       <div class="thumbnail">
-                        <a href={makeLink('/destination', item)}>
+                        <a href={makeLink('/drop', item)}>
                           <div
                             class="image-cover"
                             style="padding-top: calc(410 / 529 * 100%)"
                           >
-                            <BlurImage {...item.gallery[0]} />
+                            {#if item.gallery.length > 0}
+                              <BlurImage {...item.gallery[0]} />
+                            {:else}
+                              <BlurImage />
+                            {/if}
                           </div>
                         </a>
                       </div>
-                      <a href={makeLink('/destination', item)}>
+                      <a href={makeLink('/drop', item)}>
                         <LayoutGrid class="p-0">
                           <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                            ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
-                              {item.name || ''}
+                            ><p class="text-eyebrow text-left m-0 mt-25">
+                              Fashion
                             </p></Cell
                           >
                         </LayoutGrid>
-                        <div class="divider" />
-                        <h4 class="text-h3 title m-mt-30">{item.intro}</h4>
-                        <p class="short-text m-none">
+                        <h3 class="text-h3 title m-mt-30 mb-15">{item.name}</h3>
+                        <p class="short-text m-none m-0">
                           {(item.description || '').substr(0, 80)}...
                         </p>
                       </a>
@@ -168,81 +152,18 @@
           </div>
         </div>
       </section>
-    {:else if section.__typename === 'ComponentGalleriesDropGallery'}
-      {#if section.drops.length > 0}
-        <section class="the-latest-section d-pt-105 d-pb-105 m-pt-30 pb-100 ">
+    {:else if section.__typename === 'ComponentGalleriesDestinationGallery'}
+      {#if section.destinations.length > 0}
+        <section>
           <div class="container">
-            <div class="stories-list d-block m-none">
-              <Carousel {...carouselConfigDesktop}>
-                {#each section.drops as item}
-                  <div class="slide-content slide-item text-left">
-                    <div class="story-item">
-                      <div class="thumbnail">
-                        <a href="#">
-                          <div class="image-cover">
-                            <BlurImage {...item.gallery[0]} />
-                          </div>
-                        </a>
-                      </div>
-                      <a href="#">
-                        <LayoutGrid class="p-0">
-                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                            ><p class="text-eyebrow text-left m-0 mt-25 mb-25">
-                              Fashion
-                            </p></Cell
-                          >
-                        </LayoutGrid>
-                        <div class="divider" />
-                        <h4 class="text-h3 title m-mt-30">
-                          {item.name}
-                        </h4>
-                      </a>
-                    </div>
-                  </div>
-                {/each}
-              </Carousel>
+            <div class=" d-pl-100 d-pr-100">
+              <h2>{section.name}</h2>
+              <ListItem
+                bind:items={section.destinations}
+                desktopColumns={3}
+                mobileColumns={2}
+              />
             </div>
-            <div class="stories-list  d-none m-block">
-              <Carousel {...carouselConfigMobile}>
-                {#each section.drops as item}
-                  <div class="slide-content slide-item text-left">
-                    <div class="story-item">
-                      <div class="thumbnail">
-                        <a href="#">
-                          <div class="image-cover">
-                            <BlurImage {...item.gallery[0]} />
-                          </div>
-                        </a>
-                      </div>
-                      <a href="#">
-                        <LayoutGrid class="p-0">
-                          <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                            ><p class="text-eyebrow text-left m-0 mt-20 mb-15">
-                              Fashion
-                            </p></Cell
-                          >
-                        </LayoutGrid>
-                        <div class="divider" />
-                        <h4 class="text-h3 title m-mt-30">
-                          {item.name}
-                        </h4>
-                      </a>
-                    </div>
-                  </div>
-                {/each}
-              </Carousel>
-            </div>
-          </div>
-        </section>
-
-        <section class="d-pb-100 m-pb-90">
-          <div class="container">
-            <h1>{section.name}</h1>
-            <DropList2
-              bind:items={section.drops}
-              desktopColumns={4}
-              mobileColumns={2}
-            />
             <!-- <div class="pagination-wrap d-mt-120 m-mt-100">
               <Pagination
                 page={0}
@@ -274,26 +195,6 @@
         }
       }
     }
-
-    .experiences {
-      @include mixins.desktop {
-        padding-left: calc(90px - var(--mdc-layout-grid-margin-desktop));
-        padding-right: calc(90px - var(--mdc-layout-grid-margin-desktop));
-      }
-      .experiences--item.featured {
-        .title {
-          height: 28px;
-          overflow: hidden;
-          @include mixins.mobile {
-            height: 26px;
-          }
-        }
-        :global(.thumbnail .btn-favorite) {
-          top: 0;
-          right: -2px;
-        }
-      }
-    }
     @media screen and (max-width: 1239px) {
       #slider :global(.dots) {
         margin-top: -45px;
@@ -320,7 +221,7 @@
       }
       .title {
         @include mixins.desktop {
-          height: 45px;
+          height: 34px;
           overflow: hidden;
         }
         width: 80%;
@@ -342,12 +243,12 @@
       }
       .stories-list {
         .slide-item {
-          margin-right: var(--mdc-layout-grid-gutter-desktop);
+          padding-right: var(--mdc-layout-grid-gutter-desktop);
           direction: ltr;
         }
         .wrap-control {
           top: auto;
-          bottom: -45px;
+          bottom: -80px;
           img {
             cursor: pointer;
             filter: brightness(0%);

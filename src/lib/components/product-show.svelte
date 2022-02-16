@@ -61,9 +61,9 @@
   };
 </script>
 
-<section class="d-pt-55 m-pt-40">
+<section>
   <div class="container">
-    <h1 class="mt-0">{title}</h1>
+    <h2 class="mt-0">{title}</h2>
     <div class="products-list m-mb-40">
       <Carousel {...carouselConfig}>
         {#each items as item, i}

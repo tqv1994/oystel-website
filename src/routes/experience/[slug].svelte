@@ -261,7 +261,7 @@ import Markdown from '$lib/components/Markdown.svelte';
             spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}
             class="m-none"
           >
-            <h1 class="mt-0 mb-40">My Favorites Places</h1>
+            <h2 class="mt-0 mb-40">My Favorites Places</h2>
             <div class="experiences-list">
               <LayoutGrid class="p-0">
                 {#each experience.destinations || [] as item}
@@ -293,7 +293,7 @@ import Markdown from '$lib/components/Markdown.svelte';
     {#if experience.destinations?.length}
       <section class="m-pt-50 m-pb-85 d-none m-block">
         <div class="container">
-          <h1 class="mt-0 d-mb-80 m-mb-35">My Favorite Places</h1>
+          <h2 class="mt-0 d-mb-80 m-mb-35">My Favorite Places</h2>
           <div class="experiences-list">
             <LayoutGrid class="p-0">
               {#each experience.destinations as item}

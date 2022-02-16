@@ -66,10 +66,8 @@
   import { Product } from '$lib/store/product';
   import { DestinationLikeData } from './like.json';
   import { ProductLikeData } from '../product/like.json';
-  import { onMount } from 'svelte';
-  import Carousel from '$lib/components/Carousel.svelte';
   import DetailSlide from '$lib/components/DetailSlide.svelte';
-import Markdown from '$lib/components/Markdown.svelte';
+  import Markdown from '$lib/components/Markdown.svelte';
 
   type TabData = {
     name: string;
@@ -300,7 +298,7 @@ import Markdown from '$lib/components/Markdown.svelte';
       <div class="container">
         <LayoutGrid class="p-0">
           <Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }}>
-            <h1 class="mt-0 m-mb-0">{destination.name}</h1>
+            <h2 class="mt-0 m-mb-0">{destination.name}</h2>
           </Cell>
           <Cell spanDevices={{ desktop: 7, tablet: 8, phone: 4 }}>
             <div class="mt-5">
@@ -321,9 +319,9 @@ import Markdown from '$lib/components/Markdown.svelte';
       />
     {/if}
     {#if destination.experiences && destination.experiences.length > 0}
-      <section class="d-pt-120 d-pb-50 m-pt-40 m-pb-40">
+      <section class="">
         <div class="container">
-          <h1 class="mt-0 d-mb-80 m-mb-35">Where to Experience</h1>
+          <h2 class="mt-0 d-mb-60 m-mb-35">Where to Experience</h2>
           <div class="experiences-list">
             <LayoutGrid class="p-0">
               {#each destination.experiences as item}

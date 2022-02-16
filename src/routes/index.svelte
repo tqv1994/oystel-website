@@ -155,7 +155,7 @@
         </div>
       {/each}
     </Carousel>
-    <div class="light text-box">
+    <div class="dark text-box">
       <div class="container">
         <h1>Explore the World in Style</h1>
         <OySearch searchResult="" />
@@ -173,7 +173,7 @@
       <section class="d-pt-100 m-pt-40 from-advisors">
         <LayoutGrid class="pt-0 pb-0">
           <Cell span={12}>
-            <h2 class="text-h1 mt-0">{section.name}</h2>
+            <h2 class="mt-0">{section.name}</h2>
           </Cell>
         </LayoutGrid>
 
@@ -200,7 +200,7 @@
         class="experiences experiences-{index} d-pb-100 m-pb-40"
       >
         <div class="container">
-          <p class="text-h1 mt-0 d-mb-35 m-mb-15">{section.name}</p>
+          <h2 class="mt-0 d-mb-35 m-mb-15">{section.name}</h2>
         </div>
         <CuratedExperience {...section} on:likeItem={likeExperience} {index} />
       </section>
@@ -246,21 +246,7 @@
         text-transform: uppercase;
       }
     }
-    .experiences {
-      .experiences--item.featured {
-        .title {
-          height: 28px;
-          overflow: hidden;
-          @include mixins.mobile {
-            height: 26px;
-          }
-        }
-        :global(.thumbnail .btn-favorite) {
-          top: 0;
-          right: -2px;
-        }
-      }
-    }
+  
     @media screen and (max-width: 1239px) {
       #slider :global(.dots) {
         margin-top: -45px;

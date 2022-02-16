@@ -94,9 +94,9 @@ import SliderItems from './SliderItems.svelte';
           <div class="caption text-left">
             <p class="mt-0 text-eyebrow pl-25 pr-25">{name}</p>
             <a class="" href={makeLink('/experience', hero)}>
-              <h4 class="pl-25 pr-25 text-h2 mt-20 title">
+              <h2 class="pl-25 pr-25 mt-20 title">
                 {hero.name}
-              </h4>
+              </h2>
             </a>
           </div>
         </div>
@@ -127,6 +127,20 @@ import SliderItems from './SliderItems.svelte';
 <style lang="scss">
    @use '../../style/include/grid';
    @use '../../theme/mixins';
+    
+      .experiences--item.featured {
+        .title {
+          height: 48px;
+          overflow: hidden;
+          @include mixins.mobile {
+            height: 26px;
+          }
+        }
+        :global(.thumbnail .btn-favorite) {
+          top: 0;
+          right: -2px;
+        }
+      }
    .row{
     .col:nth-child(odd){
       padding-right: calc(15px /2);

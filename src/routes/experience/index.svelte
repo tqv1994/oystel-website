@@ -355,7 +355,7 @@
     </div>
   </section>
   <section
-    class={`header-title d-pt-94 d-pb-60 m-pt-80 m-pb-25 full-width is_sticky fixed ${
+    class={`header-title d-pt-150 d-pb-60 m-pt-80 m-pb-25 full-width is_sticky fixed ${
       stickyShow ? 'show' : ''
     }`}
   >

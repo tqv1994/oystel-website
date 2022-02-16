@@ -93,13 +93,16 @@
   }
 }
 .mdc-top-app-bar__row{
-  height: 80px;
+  height: 87px;
+  @include mixins.mobile{
+    height: 65px;
+  }
 }
 .mdc-top-app-bar--prominent-fixed-adjust{
-  padding-top: 80px;
+  padding-top: 87px;
 }
 .mdc-top-app-bar--prominent-fixed-adjust, .mdc-top-app-bar--prominent{
-  height: 80px;
+  height: 87px;
 }
 .mdc-top-app-bar--prominent {
   .top-app-bar__main-row {
@@ -270,11 +273,6 @@
     @include tab-indicator.underline-color(colors.$black);
     @include tab-indicator.underline-height(0.2em);
     height: 84%;
-  }
-  .mdc-button {
-    @include button.ink-color(colors.$black);
-    @include button.outline-color(colors.$black);
-    @include button.horizontal-padding(2em);
   }
   .all {
     padding: 1.5em 2.5em 2em;

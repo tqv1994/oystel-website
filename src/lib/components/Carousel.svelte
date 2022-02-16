@@ -114,7 +114,7 @@
       display: none;
     }
     position: absolute;
-    top: -65px;
+    top: -82px;
     left: auto;
     transform: translateX(0);
     &.left {

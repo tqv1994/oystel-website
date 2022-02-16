@@ -33,7 +33,7 @@
         <div class="section-title">
           <LayoutGrid class="p-0">
             <Cell span="12"
-              ><h2 class="text-h1 title {i === 0 ? 'mt-0' : ''} d-mb-30">
+              ><h2 class="title {i === 0 ? 'mt-0' : ''} d-mb-30">
                 {cat.name}
               </h2></Cell
             >
