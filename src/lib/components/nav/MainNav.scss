@@ -43,6 +43,13 @@
         --mdc-theme-primary: #{colors.$slightlyBlue};
       }
   }
+  header.mdc-top-app-bar{
+    font-family: var(--mdc-typography-navlink-font-family);
+    font-size: var(--mdc-typography-navlink-font-size);
+    font-weight: var(--mdc-typography-navlink-font-weight);
+    line-height: var(--mdc-typography-navlink-line-height);
+    letter-spacing: var(--mdc-typography-navlink-letter-spacing);
+  }
 }
 .mdc-top-app-bar {
   --mdc-theme-primary: #{colors.$black};
