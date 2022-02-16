@@ -130,7 +130,7 @@
       background-color: colors.$blue;
     }
     .item-product {
-      margin-right: var(--mdc-layout-grid-gutter-desktop);
+      padding-right: var(--mdc-layout-grid-gutter-desktop);
       @include mixins.mobile {
         h3 {
           --mdc-typography-headline3-font-size: 14px;

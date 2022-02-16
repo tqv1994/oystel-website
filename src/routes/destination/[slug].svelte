@@ -313,7 +313,7 @@
     {/if}
     {#if destination.pack?.length}
       <ProductShow
-        title="What to pack"
+        title="What to Pack"
         bind:items={destination.pack}
         on:likeItem={likeProduct}
       />

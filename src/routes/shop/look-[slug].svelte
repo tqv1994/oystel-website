@@ -189,7 +189,7 @@
     </div>
   </section>
   <section class="recommended-wrap d-mb-130 m-mb-50">
-    <ProductShow bind:items={look.products} title="Recommended" />
+    <ProductShow bind:items={look.products} title="Shop the Story" />
   </section>
   <QuickShopModal
     products={look.products || []}

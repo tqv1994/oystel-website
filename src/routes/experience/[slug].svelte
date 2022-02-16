@@ -285,7 +285,7 @@ import Markdown from '$lib/components/Markdown.svelte';
     {/if}
     {#if experience.pack?.length}
       <ProductShow
-        title="What to pack"
+        title="What to Pack"
         items={experience.pack}
         on:likeItem={likeProduct}
       />
