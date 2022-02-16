@@ -65,6 +65,7 @@
   <div class="container">
     <h2 class="mt-0">{title}</h2>
     <div class="products-list m-mb-40">
+      {#if items.length > 0}
       <Carousel {...carouselConfig}>
         {#each items as item, i}
           <div
@@ -96,6 +97,7 @@
             <div></div>
         {/each}
       </Carousel>
+      {/if}
     </div>
   </div>
 </section>
