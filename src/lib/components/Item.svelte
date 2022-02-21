@@ -22,9 +22,10 @@
   export let liked: boolean = false;
   export let id: string;
   export let name: string;
+  export let intro: string;
   export let description: string | undefined = undefined;
   export let country: Country | undefined = undefined;
-
+  export let introShow: boolean = false;
   let dispathcher = createEventDispatcher();
   function callLikeItem() {
     setTimeout(() => {
@@ -66,7 +67,10 @@
         </p></Cell
       >
     </LayoutGrid>
-    <h3 class="title mt-15">{name}</h3>
+    <h3 class="title mt-15 mb-15">{name}</h3>
+    {#if introShow}
+      <p class="short-text m-none m-0">{(intro || '').substring(0, 80)}</p>
+    {/if}
   </a>
 </div>
 
@@ -83,7 +87,7 @@
       height: 32px;
       overflow: hidden;
       @include mixins.mobile{
-        height: 37px;
+        height: 42px;
       }
     }
     .thumbnail {

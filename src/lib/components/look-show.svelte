@@ -47,7 +47,7 @@ import LookItem from "./LookItem.svelte";
     </LayoutGrid>
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
-        <LookItem item={items[0]}/>
+        <LookItem item={items[0]} isHero={true}/>
       </Cell>
       <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
         <LayoutGrid class="p-0">

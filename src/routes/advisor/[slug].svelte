@@ -1,8 +1,6 @@
 <script context="module" lang="ts">
   import type { Load } from '@sveltejs/kit';
   import { onMount } from 'svelte';
-  import LayoutGrid from '@smui/layout-grid';
-  import { Cell } from '@smui/layout-grid';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
   import IconButton from '@smui/icon-button';
@@ -23,29 +21,23 @@
     const res = await fetch(`/advisor/${id}.json`);
     if (res.ok) {
       const data: Advisor = await res.json();
-      let destinationOfType1: Destination[] = [];
-      const destinationOfType2: Destination[] = [];
-      const destinationOfType3: Destination[] = [];
+      let destinationTypes: Category[] = [];
       for (let destination of data.destinations || []) {
-        switch (destination.type?.id) {
-          case data.destinationTypes1?.id:
-            destinationOfType1.push(destination);
-            break;
-          case data.destinationTypes2?.id:
-            destinationOfType2.push(destination);
-            break;
-          case data.destinationTypes3?.id:
-            destinationOfType3.push(destination);
-            break;
+        if (destination.type1) {
+          destinationTypes.push(destination.type1);
+        }
+        if (destination.type2) {
+          destinationTypes.push(destination.type2);
+        }
+        if (destination.type3) {
+          destinationTypes.push(destination.type3);
         }
       }
       insertToStore(advisorStore, [data]);
       return {
         props: {
           id,
-          destinationOfType1,
-          destinationOfType2,
-          destinationOfType3,
+          destinationTypes,
         },
       };
     } else {
@@ -60,20 +52,29 @@
   import { updateUserService } from '$lib/services/user.service';
   import { createTripService } from '$lib/services/trip.service';
   import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
+  import LayoutGrid, { Cell } from '@smui/layout-grid';
+  import Markdown from '$lib/components/Markdown.svelte';
+  import { Category } from '$lib/store/category';
+  import Carousel from '$lib/components/Carousel.svelte';
+  import Item from '$lib/components/Item.svelte';
 
   export let id: string;
-  export let destinationOfType1: Destination[];
-  export let destinationOfType2: Destination[];
-  export let destinationOfType3: Destination[];
+  export let destinationTypes: Category[] = [];
   let advisor: Advisor | undefined;
   let stickyShow = false;
+  const carouselConfig = {
+    autoplayDuration: 8000,
+    duration: 1500,
+    infinite: true,
+    particlesToShow: 1,
+    chevronPosition: 'inside',
+  };
   advisorStore.subscribe((store) => {
     advisor = store.items[id];
     if (!advisor) {
       return;
     }
   });
-  onMount(async () => {});
 
   function onScrollFixedContactInfo() {
     // const classList = document.querySelector('.contact-info')?.classList;
@@ -127,8 +128,9 @@
         );
       }
     } else {
-      window.pushToast(
-        'You are not a member, so you cannot perform this action',
+      window.openSignUpModal(
+        'Join Us. Stay Inspired.',
+        'Get access to exclusive promotions, travel guides, and curated editorial content.',
       );
     }
   };
@@ -165,396 +167,162 @@
 />
 {#if advisor}
   <div class="content d-mt-25 advisor-detail">
-    <section
-      class="header-title full-width"
-      style="background-image: url(/img/advisors/detail-advisor-banner.jpg)"
-    >
-      <div class="content-wrap m-none">
-        <div class="container">
-          <div
-            class={`contact-info d-p-45 d-pr-65 d-pt-80 d-pb-85 m-pt-30 m-pb-45 ${
-              stickyShow ? 'fixed' : ''
-            }`}
-          >
-            <IconButton class="btn-share d-none t-none m-block">
-              <Icon component={Svg} viewBox="0 0 16.833 24.384">
-                <g
-                  id="Group_439"
-                  data-name="Group 439"
-                  transform="translate(-1661.127 -152.323)"
-                >
-                  <path
-                    id="Path_319"
-                    data-name="Path 319"
-                    d="M156.364-5869.48l4.489-4.489,4.489,4.489"
-                    transform="translate(1508.69 6027)"
-                    fill="none"
-                    stroke="#000"
-                    stroke-width="1"
-                  />
-                  <g id="Group_438" data-name="Group 438">
-                    <path
-                      id="Path_318"
-                      data-name="Path 318"
-                      d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
-                      transform="translate(1510.927 6027.899)"
-                      fill="none"
-                      stroke="#000"
-                      stroke-width="1"
-                    />
-                    <path
-                      id="Path_320"
-                      data-name="Path 320"
-                      d="M161.543-5858.913v-14.377"
-                      transform="translate(1508 6027)"
-                      fill="none"
-                      stroke="#000"
-                      stroke-width="1"
-                    />
-                  </g>
-                </g>
-              </Icon>
-            </IconButton>
-            <LayoutGrid class="p-0">
-              <Cell
-                spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
-                class="text-left"
-              >
+    <div class="container">
+      <LayoutGrid class="p-0 d-pt-90">
+        <Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}>
+          <section class="contact-info-wrap d-pr-40">
+            <div
+              class={`contact-info d-p-25 d-pb-40 ${stickyShow ? 'fixed' : ''}`}
+            >
+              <div class="contact-info__header">
                 <div class="thumbnail">
-                  <div class="image-cover" style="padding-top: 100%">
-                    <BlurImage {...advisor.avatar} />
+                  <div class="image-cover">
+                    {#if advisor.avatar}
+                      <BlurImage {...advisor.avatar} />
+                    {:else}
+                      <BlurImage />
+                    {/if}
                   </div>
                 </div>
-              </Cell>
-              <Cell
-                spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
-                class="text-right t-block m-none"
-              >
-                <IconButton class="btn-share">
-                  <Icon component={Svg} viewBox="0 0 16.833 24.384">
-                    <g
-                      id="Group_439"
-                      data-name="Group 439"
-                      transform="translate(-1661.127 -152.323)"
-                    >
-                      <path
-                        id="Path_319"
-                        data-name="Path 319"
-                        d="M156.364-5869.48l4.489-4.489,4.489,4.489"
-                        transform="translate(1508.69 6027)"
-                        fill="none"
-                        stroke="#000"
-                        stroke-width="1"
-                      />
-                      <g id="Group_438" data-name="Group 438">
-                        <path
-                          id="Path_318"
-                          data-name="Path 318"
-                          d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
-                          transform="translate(1510.927 6027.899)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                        <path
-                          id="Path_320"
-                          data-name="Path 320"
-                          d="M161.543-5858.913v-14.377"
-                          transform="translate(1508 6027)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                      </g>
-                    </g>
-                  </Icon>
-                </IconButton>
-              </Cell>
-            </LayoutGrid>
-            <h1 class="mt-30 mb-10">
-              {advisor && advisor.name}
-            </h1>
-            <p class="mt-0 d-mb-25 m-mb-20 description">
-              {@html advisor.description || ''}
-            </p>
-            <h4 class="mt-0 d-mb-55 m-mb-40">
-              Advisor | {advisor.country?.name || ''}
-            </h4>
-            <Button
-              variant="outlined"
-              class="hover-affect"
-              on:click={onContactAdvisor}><Label>Contact Me</Label></Button
-            >
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="contact-info-mobile" class="d-none m-block">
-      <div class="content-wrap">
-        <div class="container">
-          <div
-            class="contact-info d-p-45 d-pt-80 d-pb-85 t-pt-80 t-pb-85 m-pt-30 m-pb-45"
-          >
-            <IconButton class="btn-share d-none t-none m-block">
-              <Icon component={Svg} viewBox="0 0 16.833 24.384">
-                <g
-                  id="Group_439"
-                  data-name="Group 439"
-                  transform="translate(-1661.127 -152.323)"
-                >
-                  <path
-                    id="Path_319"
-                    data-name="Path 319"
-                    d="M156.364-5869.48l4.489-4.489,4.489,4.489"
-                    transform="translate(1508.69 6027)"
-                    fill="none"
-                    stroke="#000"
-                    stroke-width="1"
-                  />
-                  <g id="Group_438" data-name="Group 438">
-                    <path
-                      id="Path_318"
-                      data-name="Path 318"
-                      d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
-                      transform="translate(1510.927 6027.899)"
-                      fill="none"
-                      stroke="#000"
-                      stroke-width="1"
-                    />
-                    <path
-                      id="Path_320"
-                      data-name="Path 320"
-                      d="M161.543-5858.913v-14.377"
-                      transform="translate(1508 6027)"
-                      fill="none"
-                      stroke="#000"
-                      stroke-width="1"
-                    />
-                  </g>
-                </g>
-              </Icon>
-            </IconButton>
-            <LayoutGrid class="p-0">
-              <Cell
-                spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
-                class="text-left"
-              >
-                <div class="thumbnail">
-                  <div class="image-cover" style="padding-top: 100%">
-                    <BlurImage {...advisor.avatar} />
-                  </div>
+                <div class="">
+                  <Button variant="unelevated" on:click={onContactAdvisor}
+                    ><Label>Contact Me</Label></Button
+                  >
                 </div>
-              </Cell>
-              <Cell
-                spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
-                class="text-center t-block m-none"
-              >
-                <IconButton class="btn-share">
-                  <Icon component={Svg} viewBox="0 0 16.833 24.384">
-                    <g
-                      id="Group_439"
-                      data-name="Group 439"
-                      transform="translate(-1661.127 -152.323)"
+              </div>
+              <h2 class="mt-30 mb-25">
+                {advisor && advisor.name}
+              </h2>
+              <div class="divider" />
+              <div class="row">
+                <div class="col">
+                  <p class="text-eyebrow">Location</p>
+                  <h4 class="m-0">{advisor.country?.name || ''}</h4>
+                </div>
+                <div class="col">
+                  <p class="text-eyebrow">Years of Experience</p>
+                  <h4 class="m-0">Years</h4>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <p class="text-eyebrow">Languages</p>
+                  <h4 class="m-0">
+                    {implodeString(
+                      [
+                        advisor.language1?.name,
+                        advisor.language2?.name,
+                        advisor.language3?.name,
+                      ],
+                      ', ',
+                    )}
+                  </h4>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <p class="text-eyebrow">Specialities</p>
+                  <h4 class="m-0">
+                    {implodeString(
+                      [
+                        advisor.type1?.name,
+                        advisor.type2?.name,
+                        advisor.type3?.name,
+                      ],
+                      ', ',
+                    )}
+                  </h4>
+                </div>
+              </div>
+            </div>
+          </section>
+        </Cell>
+        <Cell spanDevices={{ desktop: 8, tablet: 8, phone: 4 }}>
+          <section>
+            <h2 class="mt-0">Biography</h2>
+            <div class="row">
+              <div class="d-col-10 m-col-10 m-0">
+                <Markdown source={advisor.description} />
+              </div>
+            </div>
+          </section>
+          <section class="destinations-wrap">
+            <h2 class="mt-0">Destinations</h2>
+            <div class="mb-25">
+              <Carousel {...carouselConfig}>
+                {#each advisor.destinations || [] as destination}
+                  <div class="thumbnail">
+                    <div
+                      class="image-cover"
+                      style="padding-top: calc(430 / 747 * 100%)"
                     >
-                      <path
-                        id="Path_319"
-                        data-name="Path 319"
-                        d="M156.364-5869.48l4.489-4.489,4.489,4.489"
-                        transform="translate(1508.69 6027)"
-                        fill="none"
-                        stroke="#000"
-                        stroke-width="1"
-                      />
-                      <g id="Group_438" data-name="Group 438">
-                        <path
-                          id="Path_318"
-                          data-name="Path 318"
-                          d="M154.564-5867H150.7v15.309h15.833V-5867H162.8"
-                          transform="translate(1510.927 6027.899)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                        <path
-                          id="Path_320"
-                          data-name="Path 320"
-                          d="M161.543-5858.913v-14.377"
-                          transform="translate(1508 6027)"
-                          fill="none"
-                          stroke="#000"
-                          stroke-width="1"
-                        />
-                      </g>
-                    </g>
-                  </Icon>
-                </IconButton>
-              </Cell>
-            </LayoutGrid>
-            <h1 class="mt-30 mb-10">
-              {advisor.name}
-            </h1>
-            <p class="mt-0 d-mb-25 m-mb-20 description">
-              {@html advisor.description || ''}
-            </p>
-            <h4 class="mt-0 d-mb-55 m-mb-40">
-              Advisor | {advisor.address ? advisor.address.line1 : ''}
-            </h4>
-            <Button
-              variant="outlined"
-              class="hover-affect"
-              on:click={onContactAdvisor}><Label>Contact Me</Label></Button
-            >
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="d-pt-80 d-pb-100 m-pt-55 m-pb-80">
-      <div class="container">
-        <LayoutGrid class="p-0 d-pl-105 d-pr-105 t-pl-0 t-pr-0">
-          <Cell spanDevices={{ desktop: 6 }} class="m-none t-block" />
-          <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
-            <div class="destinations-wrap">
-              <h1 class="mt-0">Destinations</h1>
-              <LayoutGrid class="p-0">
-                {#if advisor.destinationTypes1 || advisor.destinationTypes2}
-                  <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
-                    {#if advisor.destinationTypes1}
-                      <div class="mb-30">
-                        <h5 class="mb-10 mt-0">
-                          {advisor.destinationTypes1.name}
-                        </h5>
-                        {#each destinationOfType1 || [] as destination, indexChild}
-                          <p
-                            class={indexChild + 1 < destinationOfType1.length
-                              ? 'mb-10 mt-0'
-                              : 'm-0'}
-                          >
-                            {destination.name}
-                          </p>
-                        {/each}
-                      </div>
-                    {/if}
-                    {#if advisor.destinationTypes2}
-                      <div class="mb-0">
-                        <h5 class="mb-10 mt-0">
-                          {advisor.destinationTypes2.name}
-                        </h5>
-                        {#each destinationOfType2 || [] as destination, indexChild}
-                          <p
-                            class={indexChild + 1 < destinationOfType2.length
-                              ? 'mb-10 mt-0'
-                              : 'm-0'}
-                          >
-                            {destination.name}
-                          </p>
-                        {/each}
-                      </div>
-                    {/if}
+                      {#if destination.gallery.length > 0}
+                        <BlurImage {...destination.gallery[0]} />
+                      {:else}
+                        <BlurImage />
+                      {/if}
+                    </div>
+                  </div>
+                {/each}
+              </Carousel>
+            </div>
+            <div class="row">
+              {#each destinationTypes as destination}
+                <div class="d-col-6 m-col-12">
+                  <h4 class="m-0">{destination.name}</h4>
+                </div>
+              {/each}
+            </div>
+          </section>
+          <section>
+            <h2 class="mt-0">Favorite Experiences</h2>
+            <LayoutGrid class="p-0">
+              {#if advisor.experiences && advisor.experiences.length > 0}
+                {#each advisor.experiences as item}
+                  <Cell
+                    spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}
+                    class="d-mb-20 m-mb-25"
+                  >
+                    <Item {...item} {item} pathPrefix="experience" />
                   </Cell>
-                  {#if advisor.destinationTypes3}
-                    <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
-                      <div class="mb-0">
-                        <h5 class="mb-15 mt-0">
-                          {advisor.destinationTypes3.name}
-                        </h5>
-                        {#each destinationOfType3 || [] as destination, indexChild}
-                          <p
-                            class={indexChild + 1 < destinationOfType2.length
-                              ? 'mb-10 mt-0'
-                              : 'm-0'}
-                          >
-                            {destination.name}
-                          </p>
-                        {/each}
-                      </div>
-                    </Cell>
-                  {/if}
-                {/if}
-              </LayoutGrid>
+                {/each}
+              {/if}
+            </LayoutGrid>
+          </section>
+          <section>
+            <h2 class="mt-0">Details</h2>
+            <div class="row">
+              <div class="col m-col-12">
+                <p class="text-eyebrow">Affiliate Agency</p>
+                <h4 class="m-0">Travel Edge</h4>
+              </div>
+              <div class="col m-col-12">
+                <p class="text-eyebrow">Affiliate Network</p>
+                <h4 class="m-0">Virtuoso</h4>
+              </div>
             </div>
-            <div class="pt-90 m-pt-80">
-              <h1 class="mt-0">My Recent Trips</h1>
-              <p class="mt-0 mb-30 text-eyebrow">Travel Advisor Insight</p>
-              <p class="mt-0 d-mb-50 m-mb-45">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem
-                ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
-              <LayoutGrid class="p-0">
-                {#if advisor.experiences && advisor.experiences.length > 0}
-                  {#each advisor.experiences as item}
-                    <Cell
-                      spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}
-                      class="d-mb-20 m-mb-25"
-                    >
-                      <a href={makeLink('/experience', item)}>
-                        <div class="trip-item">
-                          <div class="thumbnail">
-                            <div
-                              class="image-cover"
-                              style="padding-top: calc(335 / 258 * 100%)"
-                            >
-                              <BlurImage {...item.gallery[0]} />
-                            </div>
-                          </div>
-                          <LayoutGrid class="p-0">
-                            <Cell
-                              spanDevices={{
-                                desktop: 12,
-                                phone: 4,
-                                tablet: 8,
-                              }}
-                              ><p
-                                class="text-eyebrow text-left d-mt-25 d-mb-25 m-mt-15 m-mb-15"
-                              >
-                                {item.country ? item.country.name : 'country'}
-                              </p></Cell
-                            >
-                          </LayoutGrid>
-                          <div class="divider" />
-                          <h4 class="text-h3 title mt-25 mb-0">
-                            {item.name}
-                          </h4>
-                        </div>
-                      </a>
-                    </Cell>
-                  {/each}
-                {/if}
-              </LayoutGrid>
+            <div class="row">
+              <div class="col m-col-12">
+                <p class="text-eyebrow">Benefit Program</p>
+                <h4 class="m-0">Four Seasons, Marriot, Rosewood</h4>
+              </div>
             </div>
-            <div class="d-pt-80 m-pt-20 qualifications-wrap">
-              <h1 class="mt-0">Qualifications</h1>
-              <p class="title mt-0 mb-30 label-specialities">Specialties</p>
-              <p class="text-content mt-0 mb-55">
-                {implodeString(
-                  [
-                    advisor.type1?.name,
-                    advisor.type2?.name,
-                    advisor.type3?.name,
-                  ],
-                  ', ',
-                )}
-              </p>
-              <p class="title mt-0 mb-30">Languages</p>
-              <p class="text-content mt-0">
-                {implodeString(
-                  [
-                    advisor.language1?.name,
-                    advisor.language2?.name,
-                    advisor.language3?.name,
-                  ],
-                  ', ',
-                )}
-              </p>
+            <div class="row">
+              <div class="col m-col-12">
+                <p class="text-eyebrow">Planning Fee</p>
+                <h4 class="m-0">Minimum Fee of $60,000.</h4>
+              </div>
             </div>
-          </Cell>
-        </LayoutGrid>
-      </div>
-    </section>
+          </section>
+        </Cell>
+      </LayoutGrid>
+    </div>
   </div>
 {/if}
 <OyNotification />
 
 <style lang="scss" global>
+  @use '../../style/include/grid';
   @use '../../theme/mixins';
   .advisor-detail {
     @import './src/style/partial/thumbnail.scss';
@@ -566,25 +334,54 @@
     }
     .contact-info {
       --mdc-typography-button-font-size: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      position: absolute;
       @include mixins.mobile {
         position: relative;
         top: auto;
         left: auto;
       }
-      left: 0;
-      background-color: #f0f7f8;
-      width: calc(475px - 90px);
+      background-color: #f2f2f2;
       transition: top 1s ease;
+
+      .contact-info__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        div:first-child {
+          justify-self: start;
+        }
+        div:last-child {
+          justify-self: end;
+        }
+      }
+
+      .divider::after {
+        background-color: #000;
+      }
     }
     .contact-info.fixed {
-      top: 40% !important;
-      transform: translateY(-40%);
+      position: sticky !important;
+      top: 150px !important;
+      transition: top 2s;
+      z-index: auto !important;
     }
-    .contact-info.fixed {
-      margin-left: 0;
+    .contact-info-wrap {
+      @include mixins.desktop {
+        height: 100%;
+      }
+      @include mixins.mobile {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        .contact-info {
+          padding-top: 109px;
+          padding-bottom: 50px;
+          padding-left: var(--mdc-layout-grid-margin-phone);
+          padding-right: var(--mdc-layout-grid-margin-phone);
+        }
+      }
     }
     .contact-info .thumbnail {
       width: 100px;
@@ -642,25 +439,9 @@
     }
 
     @include mixins.mobile {
-      .header-title {
-        height: auto;
-        padding-bottom: 82.67%;
-      }
-      #contact-info-mobile{
-        height: 200px;
-      }
       .contact-info {
-        text-align: center !important;
-        width: calc(100vw - 90px);
-        margin: auto;
-        margin-top: -90px;
-        padding-left: 8px;
-        padding-right: 8px;
         .description {
           width: 100%;
-        }
-        .thumbnail {
-          margin: 0 auto;
         }
         .btn-share {
           position: absolute;

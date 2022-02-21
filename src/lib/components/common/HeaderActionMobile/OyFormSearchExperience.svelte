@@ -1,24 +1,27 @@
 <script lang="ts">
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { Destination } from '$lib/store/destination';
   import { Experience } from '$lib/store/experience';
   import { Country } from '$lib/store/country';
   import { Category } from '$lib/store/category';
   import { Nameable } from '$lib/store/types';
-  import Dropdown from '$lib/components/Dropdown.svelte';
+  import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
   let menuActive;
   export let searchModel: {
-    experience_type: Category | undefined;
-    destination_type: Category | undefined;
-    country: Country | undefined;
+    experience_type: string;
+    destination_type: string;
+    country: string;
     ordering: Nameable | undefined;
   };
   let { experience_type, destination_type, country, ordering } = searchModel;
+  let experience: Experience | undefined;
+  let destination: Destination | undefined;
+  let countryData: Country | undefined;
   export let destination_types: Destination[];
   export let experience_types: Experience[];
   export let countries: Country[];
@@ -33,6 +36,24 @@
       });
     }, 0);
   }
+
+  onMount(()=>{
+    destination = destination_types.find((item)=>item.id + "" === destination_type );
+    experience = experience_types.find((item)=>item.id + "" === experience_type );
+    countryData = countries.find((item)=>item.id+"" === country);
+  });
+
+  const onExperienceTypeChange = (event: CustomEvent<DropdownValue<Category>>) => {
+    experience_type = event.detail.value.id;
+  }
+
+  const onDestinationTypeChange = (event: CustomEvent<DropdownValue<Category>>) => {
+    destination_type = event.detail.value.id;
+  }
+
+  const onCountryChange = (event: CustomEvent<DropdownValue<Country>>) => {
+    country = event.detail.value.id;
+  }
 </script>
 
 <div id="form-search-experience-wrap" class="mt-40">
@@ -44,25 +65,25 @@
     <div class="form-control mb-40">
       <Dropdown
         label="By Experience Type"
-        blankItem="All"
         items={experience_types}
-        bind:value={experience_type}
+        bind:value={experience}
+        on:MDCSelect:change={onExperienceTypeChange}
       />
     </div>
     <div class="form-control mb-40">
       <Dropdown
         label="By Destination Type"
-        blankItem="All"
         items={destination_types}
-        bind:value={destination_type}
+        bind:value={destination}
+        on:MDCSelect:change={onDestinationTypeChange}
       />
     </div>
     <div class="form-control mb-40">
       <Dropdown
         label="By Country"
-        blankItem="All"
         items={countries}
-        bind:value={country}
+        bind:value={countryData}
+        on:MDCSelect:change={onCountryChange}
       />
     </div>
     <div class="form-control mb-80">

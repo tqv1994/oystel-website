@@ -16,14 +16,14 @@ import OyAutocomplete from "./common/OyAutocomplete.svelte";
   export let items: Nameable[];
   export let value: Nameable | undefined;
   export let blankItem: string = '';
-  export let variant: string = "outlined";
+  export let variant: "outlined" | "filled" | "standard" | undefined = "outlined";
 
   function getKey(item: Nameable): string {
     return item?.name || '-';
   }
 </script>
 
-<Select key={getKey} {variant}  on:MDCSelect:change bind:value {label}>
+<Select key={getKey} variant={variant}  on:MDCSelect:change bind:value {label}>
   {#if blankItem}
     <Option>{blankItem}</Option>
   {/if}

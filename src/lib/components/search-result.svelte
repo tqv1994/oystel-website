@@ -51,6 +51,7 @@
                 group_id={cat.id}
                 key={index}
                 on:likeItem={callLikeItem}
+                introShow={true}
               />
             </Cell>
           {/each}

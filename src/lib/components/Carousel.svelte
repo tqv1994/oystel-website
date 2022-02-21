@@ -124,6 +124,11 @@
       right: 0px;
     }
   }
+  :global(.sc-carousel-dots__container){
+    @include mixins.desktop {
+      display: none !important;
+    }
+  }
   :global(.sc-carousel-dot__dot){
     --sc-dot-size: 8px;
     opacity: 1;

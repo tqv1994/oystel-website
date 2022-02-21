@@ -35,6 +35,7 @@
   import { Drop, dropStore } from '$lib/store/drop';
   import { getItems } from '$lib/store/types';
   import BlurImage from '$lib/components/blur-image.svelte';
+import ShopNavigation from '$lib/components/ShopNavigation.svelte';
 
   let filterActive = 'Current Drops';
   let configPage = {
@@ -56,10 +57,10 @@
     chevronPosition: 'inside',
   };
 </script>
-
+<ShopNavigation />
 <div class="content shop-page-content">
   <section
-    class="header-title full-width dark d-pt-128 d-pb-20 t-pt-80 t-pb-20 m-pt-90 m-pb-15"
+    class="header-title full-width d-pt-128 d-pb-20 t-pt-80 t-pb-20 m-pt-90 m-pb-15"
   >
     <div class="content-wrap">
       <div class="container">
@@ -141,7 +142,7 @@
     @import './src/style/partial/signup-section.scss';
 
     .header-title {
-      background-color: #000;
+      background-color: #F2F2F2;
     }
     .shop-slides {
       height: 100%;

@@ -43,6 +43,7 @@
   import { makeLink } from '$lib/utils/link';
   import { implodeString } from '$lib/utils/string';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
+import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
 
   type SearchResultItem = AdvisorBase & {
     country: string;
@@ -118,9 +119,9 @@
             destinationTypes.items[
               url.searchParams.get(DESTINATION_TYPE) || ''
             ],
-          type: advisorTypes.items[url.searchParams.get(TYPE) || ''],
+          type: url.searchParams.get(TYPE) || '',
           language: languages.items[url.searchParams.get(LANGUAGE) || ''],
-          country: countries.items[url.searchParams.get(COUNTRY) || ''],
+          country: url.searchParams.get(COUNTRY) || '',
           ordering:
             orderings[url.searchParams.get(ORDERING) || ''] ||
             ORDER_BY_NAME_ASC,
@@ -142,23 +143,14 @@
   export let query: string = '';
   export let experiencetype: Category | undefined;
   export let destinationtype: Category | undefined;
-  export let type: Category | undefined;
+  export let type: string;
   export let language: Language | undefined;
-  export let country: Country | undefined;
+  export let country: string;
   export let ordering: Ordering;
   let contentHeaderActionMobile: string = '';
 
   const advisorTypes = sortByName(Object.values($advisorTypeStore.items));
-
-  let configPage = {
-    header: {
-      page: 'advisors',
-      transparent: true,
-      theme: 'light',
-      currentMenu: 'advisors',
-    },
-  };
-
+  advisorTypes.unshift({id: "", name: "All"});
   // let experienceTypes: Category[];
   // experienceTypeStore.subscribe(
   //   (store) => (experienceTypes = sortByName(Object.values(store.items))),
@@ -167,16 +159,17 @@
   let countries: Country[];
   countryStore.subscribe((store) => {
     countries = sortByName(Object.values(store.items));
+    countries.unshift({id: "", name: "All"});
   });
 
   function go(params: SearchParams) {
     search({
       [QUERY]: query,
-      [TYPE]: type?.id,
+      [TYPE]: type,
       [DESTINATION_TYPE]: destinationtype?.id,
       [EXPERIENCE_TYPE]: experiencetype?.id,
       [LANGUAGE]: language?.id,
-      [COUNTRY]: country?.id,
+      [COUNTRY]: country,
       [ORDERING]: ordering.key,
       ...params,
     });
@@ -204,10 +197,9 @@
 
   function onSearchSubmitMobile(event: CustomEvent) {
     contentHeaderActionMobile = '';
-    console.log(event.detail);
     go({
-      [COUNTRY]: event.detail.country?.id || '',
-      [TYPE]: event.detail.type?.id || '',
+      [COUNTRY]: event.detail.country || '',
+      [TYPE]: event.detail.type || '',
     });
   }
 
@@ -251,9 +243,9 @@
   <section class="header-title d-pt-120 d-pb-95 m-pt-100 m-pb-25 full-width">
     <div class="content-wrap">
       <div class="container">
-        <h1 class="text-center mb-20 m-mt-0 d-mt-70 hidden-on-sticky">
+        <h2 class="text-center mb-20 m-mt-0 d-mt-70 hidden-on-sticky">
           Crafted from Experience
-        </h1>
+        </h2>
         <p
           class="text-center mt-0 m-pl-40 m-pr-40 m-mb-40 d-mb-0 hidden-on-sticky"
         >
@@ -293,7 +285,7 @@
   <section class="d-pt-80 d-pb-200 m-pt-40 m-pb-95">
     <div class="container">
       <form
-        class="m-none search-form-advisor mb-50"
+        class="m-none search-form-advisor mb-50 d-pl-100 d-pr-100"
         on:submit|preventDefault={() => {
           go({});
         }}
@@ -320,40 +312,28 @@
           >
             <div>
               <div class="form-control text-left">
-                <label class="text-h3">Filter by Speciality</label>
-                <Dropdown
-                  label=""
-                  blankItem="All"
-                  items={advisorTypes}
-                  value={type}
-                  on:MDCSelect:change={onTypeChange}
-                />
+                <label class="text-h5">Speciality</label>
+                <div class="display-inline">
+                  <OyAutocomplete
+                    getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                    bind:value={type}
+                    options={advisorTypes}
+                    key={'id'}
+                    on:SMUIAutocomplete:change={onTypeChange}
+                  />
+                </div>
               </div>
               <div class="form-control text-left">
-                <label class="text-h3">By Country</label>
-                <Dropdown
-                  label=""
-                  blankItem="All"
-                  items={countries}
-                  value={country}
-                  on:MDCSelect:change={onCountryChange}
-                />
-              </div>
-            </div>
-          </Cell>
-          <Cell
-            spanDevices={{ desktop: 4 }}
-            class="form-inline d-tablet text-right"
-          >
-            <div>
-              <div class="form-control text-left">
-                <Dropdown
-                  label="Filter by Speciality"
-                  blankItem="All"
-                  items={advisorTypes}
-                  value={type}
-                  on:MDCSelect:change={onTypeChange}
-                />
+                <label class="text-h5">By Country</label>
+                <div class="display-inline">
+                  <OyAutocomplete
+                      getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                      bind:value={country}
+                      options={countries}
+                      key={'id'}
+                      on:SMUIAutocomplete:change={onCountryChange}
+                  />
+                </div>
               </div>
             </div>
           </Cell>
@@ -363,13 +343,29 @@
           >
             <div>
               <div class="form-control text-left">
-                <Dropdown
-                  label="By Country"
-                  blankItem="All"
-                  items={countries}
-                  value={country}
-                  on:MDCSelect:change={onCountryChange}
-                />
+                <OyAutocomplete
+                      getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                      bind:value={type}
+                      options={advisorTypes}
+                      key={'id'}
+                      on:SMUIAutocomplete:change={onTypeChange}
+                  />
+              </div>
+            </div>
+          </Cell>
+          <Cell
+            spanDevices={{ desktop: 4 }}
+            class="form-inline d-tablet text-right"
+          >
+            <div>
+              <div class="form-control text-left">
+                <OyAutocomplete
+                      getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                      bind:value={country}
+                      options={countries}
+                      key={'id'}
+                      on:SMUIAutocomplete:change={onCountryChange}
+                  />
               </div>
             </div>
           </Cell>
@@ -380,9 +376,9 @@
           <Head>
             <Row>
               <CellTable style="width: 10%" />
-              <CellTable style="width: 35%;">Name</CellTable>
-              <CellTable style="width: 35%;">Specialties</CellTable>
-              <CellTable style="width: 20%;">Location</CellTable>
+              <CellTable style="width: 35%;"><h6>Name</h6></CellTable>
+              <CellTable style="width: 35%;"><h6>Specialties</h6></CellTable>
+              <CellTable style="width: 20%;"><h6>Location</h6></CellTable>
             </Row>
           </Head>
           <Body>
@@ -398,6 +394,7 @@
                         {#if item.avatar}
                           <BlurImage {...item.avatar} />
                         {:else}
+                          <BlurImage />
                           <!-- TODO: Display placeholder avatar -->
                         {/if}
                       </div></a
@@ -446,6 +443,8 @@
                             >
                               {#if item.avatar}
                                 <BlurImage {...item.avatar} />
+                              {:else}
+                                <BlurImage  />
                               {/if}
                             </div>
                           </div>
@@ -495,7 +494,7 @@
     @import './src/style/partial/sticky.scss';
     @import './src/style/partial/form.scss';
     .header-title {
-      background-color: #f0f7f8;
+      background-color: #F2F2F2;
     }
     .is_sticky .hidden-on-sticky {
       display: none;
@@ -645,5 +644,8 @@
         border-bottom: 1px solid rgba(0, 0, 0, 0.2);
       }
     }
+  }
+  .display-inline{
+    display: inline-block;
   }
 </style>

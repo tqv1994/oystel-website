@@ -9,7 +9,7 @@
     .mdc-text-field,
     .mdc-select {
         height: 35px;
-        width: 90%;
+        width: 100%;
         padding-right: 15px;
     }
     .mdc-select.mdc-select--outlined .mdc-select__anchor {
@@ -23,19 +23,19 @@
     .mdc-select .mdc-notched-outline__trailing {
         border-color: #000;
     }
-    .mdc-select{
-        .mdc-notched-outline__notch{
-            border-top: 0;
-        }
-        .mdc-notched-outline__leading{
-            border-top: 0;
-            border-left: 0;
-        }
-        .mdc-notched-outline__trailing{
-            border-top: 0;
-            border-right: 0;
-        }
-    }
+    // .mdc-select{
+    //     .mdc-notched-outline__notch{
+    //         border-top: 0;
+    //     }
+    //     .mdc-notched-outline__leading{
+    //         border-top: 0;
+    //         border-left: 0;
+    //     }
+    //     .mdc-notched-outline__trailing{
+    //         border-top: 0;
+    //         border-right: 0;
+    //     }
+    // }
     
     .mdc-text-field img {
         filter: brightness(0.1);

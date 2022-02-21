@@ -16,7 +16,7 @@
         class="m-block d-none"
       >
         <div class="widget">
-          <h4 class="mt-0 widget-title">Sign Up for Updates</h4>
+          <h5 class="mt-0 widget-title">Sign Up for Updates</h5>
           <div class="widget-content">
             <p>
               Exclusive content and special rewards from our travel and fashion
@@ -41,7 +41,7 @@
         </div>
 
         <div class="widget mb-20 m-block d-none">
-          <h4 class="mt-0 widget-title">Follow Oysteo</h4>
+          <h5 class="mt-0 widget-title">Follow Oysteo</h5>
           <div class="widget-content button-socials">
             <a href="#" class="mr-20" target="_blank"
               ><img src="/img/icons/icon-instagram.svg" alt="" />
@@ -59,7 +59,7 @@
         <LayoutGrid>
           <Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}>
             <div class="widget">
-              <h4 class="mt-0 widget-title">Explore Oysteo</h4>
+              <h5 class="mt-0 widget-title">Explore Oysteo</h5>
               <div class="widget-content">
                 <ul>
                   <li><a href="#">About Us</a></li>
@@ -72,7 +72,7 @@
           </Cell>
           <Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}>
             <div class="widget">
-              <h4 class="mt-0 widget-title">Contact Oysteo</h4>
+              <h5 class="mt-0 widget-title">Contact Oysteo</h5>
               <div class="widget-content">
                 <ul>
                   <li><a href="#">Advisor Log In</a></li>
@@ -81,7 +81,7 @@
               </div>
             </div>
             <div class="widget mb-0 m-none">
-              <h4 class="mt-0 widget-title">Follow Oysteo</h4>
+              <h5 class="mt-0 widget-title">Follow Oysteo</h5>
               <div class="widget-content button-socials">
                 <a href="#" class="mr-20" target="_blank"
                   ><img src="/img/icons/icon-instagram.svg" alt="" />
@@ -99,7 +99,7 @@
       </Cell>
       <Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }} class="m-none">
         <div class="widget pl-50">
-          <h4 class="mt-0 widget-title">Sign Up for Updates</h4>
+          <h5 class="mt-0 widget-title">Sign Up for Updates</h5>
           <div class="widget-content">
             <p>
               Exclusive content and special rewards from our travel and fashion

@@ -32,7 +32,7 @@
     {#each itemGroup as item, index}
       {#if index == 0}
         <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 8 }}>
-          <LookItem bind:item />
+          <LookItem bind:item isHero={true} />
         </Cell>
       {:else}
         <Cell spanDevices={{ desktop: 6, phone: 4, tablet: 8 }} class={`${index == 2 ? 'd-mt-80' : ''}`}>

@@ -7,12 +7,13 @@ import { getSlug, makeLink } from '$lib/utils/link';
 
   import BlurImage from './blur-image.svelte';
   export let item: Look;
+  export let isHero: boolean = false;
 </script>
 
 <div class="item-product">
   <a href={`/shop/look-${getSlug(item)}`}>
     <div class="thumbnail">
-      <div class="image-cover" style="padding-top: calc( 142 / 165 * 100% );">
+      <div class="image-cover" style={`padding-top: calc( ${ isHero ? "568 / 638 * 100%" : "410 / 311 * 100%"} );`}>
         {#if item.gallery?.length}
             <BlurImage {...item.gallery[0]} />
           {:else}

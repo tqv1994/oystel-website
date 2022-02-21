@@ -586,6 +586,15 @@ section {
   }
 }
 
+.full-width-without-container {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
 /* mdc-dialog */
 body.mdc-dialog-scroll-lock{ // Fixed error jumpled screen when open dialog
   overflow: auto;

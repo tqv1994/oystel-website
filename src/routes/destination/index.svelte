@@ -44,6 +44,7 @@
   import { authStore } from '$lib/store/auth';
   import { DestinationLikeData } from './like.json';
   import { contains } from '$lib/utils/array';
+import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
 
   const orderingOptions: Nameable[] = [
     ORDER_BY_NAME_ASC,
@@ -102,10 +103,8 @@
         props: {
           destinations,
           query: url.searchParams.get(QUERY) || '',
-          type: get(destinationTypeStore).items[
-            url.searchParams.get(TYPE) || ''
-          ],
-          country: get(countryStore).items[url.searchParams.get(COUNTRY) || ''],
+          category: url.searchParams.get(TYPE) || '',
+          country: url.searchParams.get(COUNTRY) || '',
           ordering:
             orderings[url.searchParams.get(ORDERING) || ''] ||
             ORDER_BY_NAME_ASC,
@@ -121,24 +120,17 @@
 <script lang="ts">
   export let destinations: DestinationGroups = {};
   export let query: string = '';
-  export let category: Category | undefined;
-  export let country: Country | undefined;
+  export let category: string;
+  export let country: string;
   export let ordering: Ordering;
   let stickyShow: boolean = false;
   let contentHeaderActionMobile: string = '';
 
-  let configPage = {
-    header: {
-      page: 'destinations',
-      transparent: true,
-      theme: 'light',
-      currentMenu: 'destinations',
-    },
-  };
-
   let destinationTypes: Category[];
   destinationTypeStore.subscribe((store) => {
     destinationTypes = sortByName(Object.values(store.items));
+    const hasAll = destinationTypes.findIndex((item)=>item.id == "");
+    destinationTypes.unshift({id: "", name: "All"});
   });
 
   // let experienceTypes: Category[];
@@ -149,13 +141,15 @@
   let countries: Country[];
   countryStore.subscribe((store) => {
     countries = sortByName(Object.values(store.items));
+    const hasAll = countries.findIndex((item)=>item.id === "");
+    countries.unshift({id: "", name: "All"});
   });
 
   function go(params: SearchParams) {
     search({
       q: query,
-      t: category?.id,
-      c: country?.id,
+      t: category,
+      c: country,
       o: ordering.key,
       ...params,
     });
@@ -170,6 +164,7 @@
   }
 
   function onTypeChange(event: CustomEvent<DropdownValue<Category>>) {
+    console.log(category);
     go({ [TYPE]: event.detail.value.id });
   }
 
@@ -184,8 +179,8 @@
   function onSearchSubmitMobile(event: CustomEvent) {
     contentHeaderActionMobile = '';
     go({
-      [COUNTRY]: event.detail.country?.id || '',
-      [TYPE]: event.detail.destination_type?.id || '',
+      [COUNTRY]: event.detail.country || '',
+      [TYPE]: event.detail.destination_type || '',
       [ORDERING]: event.detail.ordering?.key || '',
     });
   }
@@ -273,9 +268,19 @@
 />
 
 <div class="content destinations-listing-content">
-  <section class="header-title d-pt-150 d-pb-95 m-pt-130 m-pb-25 full-width">
+  <section class="header-title d-pt-150 d-pb-0 m-pt-130 m-pb-25 full-width">
     <div class="content-wrap">
       <div class="container m-none">
+        <LayoutGrid class="p-0 mb-50">
+          <Cell span="12">
+            <h2 class="text-center d-mt-0 d-mb-20">
+              Choose Your Destination
+            </h2>
+            <p class="text-center m-0">
+              Bespoke destinations created by our leading tastemakers.
+            </p>
+          </Cell>
+        </LayoutGrid>
         <form
           class="search-form-experiences"
           method="GET"
@@ -301,29 +306,34 @@
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
+                <OyAutocomplete
+                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                  bind:value={category}
+                  options={destinationTypes}
+                  key={'id'}
                   label="By Destination"
-                  blankItem="All"
-                  items={destinationTypes}
-                  value={category}
-                  on:MDCSelect:change={onTypeChange}
+                  variant="outlined"
+                  on:SMUIAutocomplete:change={onTypeChange}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
+                <OyAutocomplete
+                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                  bind:value={country}
+                  options={countries}
+                  key={'id'}
                   label="By Country"
-                  blankItem="All"
-                  items={countries}
-                  value={country}
-                  on:MDCSelect:change={onCountryChange}
+                  variant="outlined"
+                  on:SMUIAutocomplete:change={onCountryChange}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
                 <Dropdown
+                  variant="outlined"
                   label="Sort By"
                   items={orderingOptions}
                   value={ordering}
@@ -333,16 +343,6 @@
             </Cell>
           </LayoutGrid>
         </form>
-        <LayoutGrid class="p-0">
-          <Cell span="12">
-            <h2 class="text-center d-mt-115 d-mb-20">
-              Choose Your Destination
-            </h2>
-            <p class="text-center m-0">
-              Bespoke destinations created by our leading tastemakers.
-            </p>
-          </Cell>
-        </LayoutGrid>
       </div>
       <div class="container m-block d-none">
         <LayoutGrid class="p-0">
@@ -391,29 +391,34 @@
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
+                <OyAutocomplete
+                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                  bind:value={category}
+                  options={destinationTypes}
+                  key={'id'}
                   label="By Destination"
-                  blankItem="All"
-                  items={destinationTypes}
-                  value={category}
-                  on:MDCSelect:change={onTypeChange}
+                  variant="outlined"
+                  on:SMUIAutocomplete:change={onTypeChange}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
+                <OyAutocomplete
+                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                  bind:value={country}
+                  options={countries}
+                  key={'id'}
                   label="By Country"
-                  blankItem="All"
-                  items={countries}
-                  value={country}
-                  on:MDCSelect:change={onCountryChange}
+                  variant="outlined"
+                  on:SMUIAutocomplete:change={onCountryChange}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
                 <Dropdown
+                  variant="outlined"
                   label="Sort By"
                   items={orderingOptions}
                   value={ordering}
@@ -440,7 +445,7 @@
     </div>
   </section>
   {#if destinationTypes.length > 0}
-    <section class="d-pt-85 d-pb-95 m-pt-50 m-pb-70">
+    <section>
       <SearchResult
         pathPrefix="/destination"
         categories={destinationTypes}
@@ -469,9 +474,10 @@
     @import './src/style/partial/sticky';
     @import './src/style/partial/experiences-search-form.scss';
     .header-title {
-      background-color: #f0f7f8;
+      background-color: #fff;
     }
     .header-title.is_sticky {
+      box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
       @include mixins.desktop {
         padding-bottom: 55px !important;
       }

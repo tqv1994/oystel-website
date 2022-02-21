@@ -45,6 +45,7 @@
   import { destinationStore } from '$lib/store/destination';
   import { authStore } from '$lib/store/auth';
   import { ExperienceLikeData } from './like.json';
+  import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
 
   const experienceOrderings: Nameable[] = [
     ORDER_BY_NAME_ASC,
@@ -102,8 +103,8 @@
         props: {
           experiences,
           query: url.searchParams.get(QUERY) || '',
-          type: get(experienceStore).items[url.searchParams.get(TYPE) || ''],
-          country: get(countryStore).items[url.searchParams.get(COUNTRY) || ''],
+          type: url.searchParams.get(TYPE) || '',
+          country: url.searchParams.get(COUNTRY) || '',
           ordering:
             orderings[url.searchParams.get(ORDERING) || ''] ||
             ORDER_BY_NAME_ASC,
@@ -120,23 +121,16 @@
 <script lang="ts">
   export let experiences: ExperienceGroups = {};
   export let query: string = '';
-  export let type: Category | undefined;
-  export let country: Country | undefined;
+  export let type: string;
+  export let country: string;
   export let ordering: Ordering;
   let contentHeaderActionMobile: string = '';
   let stickyShow: boolean = false;
-  let configPage = {
-    header: {
-      page: 'experiences',
-      transparent: true,
-      theme: 'light',
-      currentMenu: 'experiences',
-    },
-  };
 
   let experienceTypes: Category[];
   experienceTypeStore.subscribe((store) => {
     experienceTypes = sortByName(Object.values(store.items));
+    experienceTypes.unshift({id: "", name: "All"});
   });
 
   // let experienceTypes: Category[];
@@ -147,14 +141,15 @@
   let countries: Country[];
   countryStore.subscribe((store) => {
     countries = sortByName(Object.values(store.items));
+    countries.unshift({id: "", name: "All"});
   });
 
   function go(params: SearchParams) {
     search({
       [QUERY]: query,
-      [TYPE]: type?.id,
-      [COUNTRY]: country?.id,
-      [ORDERING]: ordering.key,
+      [TYPE]: type,
+      [COUNTRY]: country,
+      [ORDERING]: ordering?.key,
       ...params,
     });
   }
@@ -168,11 +163,11 @@
   }
 
   function onTypeChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ [TYPE]: event.detail.value.id });
+    go({ [TYPE]: event.detail.value?.id });
   }
 
   function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
-    go({ [COUNTRY]: event.detail.value.id });
+    go({ [COUNTRY]: event.detail.value?.id });
   }
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
@@ -182,8 +177,8 @@
   function onSearchSubmitMobile(event: CustomEvent) {
     contentHeaderActionMobile = '';
     go({
-      [COUNTRY]: event.detail.country?.id || '',
-      [TYPE]: event.detail.experience_type?.id || '',
+      [COUNTRY]: event.detail.country || '',
+      [TYPE]: event.detail.experience_type || '',
       [ORDERING]: event.detail.ordering?.key || '',
     });
   }
@@ -240,7 +235,7 @@
   }
 
   const onResize = (event: Event) => {
-    if (window.scrollY < 64) {
+    if (window.scrollY < 180) {
       stickyShow = false;
     } else {
       stickyShow = false;
@@ -248,7 +243,7 @@
   };
 
   const adjustNav = () => {
-    if (window.scrollY < 64) {
+    if (window.scrollY < 180) {
       stickyShow = false;
     } else {
       stickyShow = true;
@@ -270,9 +265,17 @@
   on:sveltekit:start={onStart}
 />
 <div class="content experiences-listing-content">
-  <section class="header-title d-pt-150 d-pb-95 m-pt-130 m-pb-25 full-width">
+  <section class="header-title d-pt-150 d-pb-0 m-pt-130 m-pb-25 full-width">
     <div class="content-wrap">
       <div class="container m-none">
+        <LayoutGrid class="p-0 mb-50">
+          <Cell span="12">
+            <h2 class="text-center d-mb-20">Curate Your Experience</h2>
+            <p class="text-center m-0">
+              Bespoke experiences created by our leading tastemakers.
+            </p>
+          </Cell>
+        </LayoutGrid>
         <form
           class="search-form-experiences"
           method="GET"
@@ -298,29 +301,34 @@
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
+                <OyAutocomplete
+                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                  bind:value={type}
+                  options={experienceTypes}
+                  key={'id'}
                   label="By Experience"
-                  blankItem="All"
-                  items={experienceTypes}
-                  value={type}
-                  on:MDCSelect:change={onTypeChange}
+                  variant="outlined"
+                  on:SMUIAutocomplete:change={onTypeChange}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
+                <OyAutocomplete
+                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                  bind:value={country}
+                  options={countries}
+                  key={'id'}
                   label="By Country"
-                  blankItem="All"
-                  items={countries}
-                  value={country}
-                  on:MDCSelect:change={onCountryChange}
+                  variant="outlined"
+                  on:SMUIAutocomplete:change={onCountryChange}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
                 <Dropdown
+                variant="outlined"
                   label="Sort By"
                   items={experienceOrderings}
                   value={ordering}
@@ -330,14 +338,6 @@
             </Cell>
           </LayoutGrid>
         </form>
-        <LayoutGrid class="p-0 hidden-on-sticky">
-          <Cell span="12">
-            <h1 class="text-center d-mt-115 d-mb-20">Choose Your Experience</h1>
-            <p class="text-center m-0">
-              Bespoke experiences created by our leading tastemakers.
-            </p>
-          </Cell>
-        </LayoutGrid>
       </div>
       <div class="container m-block d-none">
         <LayoutGrid class="p-0">
@@ -386,23 +386,27 @@
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
+                <OyAutocomplete
+                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                  bind:value={type}
+                  options={experienceTypes}
+                  key={'id'}
                   label="By Experience"
-                  blankItem="All"
-                  items={experienceTypes}
-                  value={type}
-                  on:MDCSelect:change={onTypeChange}
+                  variant="outlined"
+                  on:SMUIAutocomplete:change={onTypeChange}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
+                <OyAutocomplete
+                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                  bind:value={country}
+                  options={countries}
+                  key={'id'}
                   label="By Country"
-                  blankItem="All"
-                  items={countries}
-                  value={country}
-                  on:MDCSelect:change={onCountryChange}
+                  variant="outlined"
+                  on:SMUIAutocomplete:change={onCountryChange}
                 />
               </div>
             </Cell>
@@ -435,7 +439,7 @@
     </div>
   </section>
   {#if experienceTypes.length > 0}
-    <section class="d-pt-85 d-pb-95 m-pt-50 m-pb-70">
+    <section>
       <SearchResult
         pathPrefix="/experience"
         categories={experienceTypes}
@@ -464,9 +468,10 @@
     @import './src/style/partial/sticky.scss';
     @import './src/style/partial/experiences-search-form.scss';
     .header-title {
-      background-color: #f0f7f8;
+      background-color: #fff;
     }
     .header-title.is_sticky {
+      box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
       z-index: 4 !important;
       @include mixins.desktop {
         padding-bottom: 55px !important;

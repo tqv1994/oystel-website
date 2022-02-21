@@ -99,9 +99,9 @@
                 {/if}
               </div>
             </div>
-            <!-- <p class="text-eyebrow">
-              Swimsuit, Zimmerman; Dress, Zimmerman; Necklace, Lauren Rubinski
-            </p> -->
+            <p class="text-eyebrow">
+              {look.intro || ''}
+            </p>
           </div>
           <div class="d-pl-115">
             <div class="text-description-wrap mb-50">
@@ -110,6 +110,9 @@
             {#if looks.length > 0}
               <LooksList items={looks} />
             {/if}
+            <div class="text-description-wrap mb-50">
+              <Markdown source={look.description2 || ''} />
+            </div>
           </div>
         </Cell>
         <Cell

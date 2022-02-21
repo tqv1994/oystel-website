@@ -1,30 +1,39 @@
 <script lang="ts">
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { Country } from '$lib/store/country';
   import { Category } from '$lib/store/category';
-  import Dropdown from '$lib/components/Dropdown.svelte';
+  import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
-  let menuActive;
   export let searchModel: {
-    type: Category | undefined;
-    country: Country | undefined;
-  } = {
-    type: undefined,
-    country: undefined,
+    type: string;
+    country: string;
   };
   export let locations: Country[];
   export let advisorTypes: Category[];
-  let country: Country | undefined = searchModel.country;
-  let type: Category | undefined = searchModel.type;
+  let typeData: Category | undefined;
+  let countryData: Country | undefined;
+  let { country, type } = searchModel;
   function onSearchSubmit() {
     setTimeout(() => {
       dispatch('close', { country, type });
     }, 0);
   }
+  onMount(()=>{
+    typeData = advisorTypes.find((item)=>item.id+"" === type);
+    countryData = locations.find((item)=>item.id+"" === country);
+  });
+
+  const onAdvisorTypeChange = (event: CustomEvent<DropdownValue<Category>>) => {
+    type = event.detail.value.id;
+  };
+
+  const onCountryChange = (event: CustomEvent<DropdownValue<Country>>) => {
+    country = event.detail.value.id;
+  };
 </script>
 
 <div id="form-search-advisor-wrap" class="mt-40">
@@ -36,17 +45,17 @@
     <div class="form-control mb-40">
       <Dropdown
         label="By Speciality"
-        blankItem="All"
         items={advisorTypes}
-        value={type}
+        value={countryData}
+        on:MDCSelect:change={onAdvisorTypeChange}
       />
     </div>
     <div class="form-control mb-40">
       <Dropdown
         label="By Location"
-        blankItem="All"
         items={locations}
-        bind:value={country}
+        bind:value={typeData}
+        on:MDCSelect:change={onCountryChange}
       />
     </div>
     <div class="form-control btn-submit-wrap">
