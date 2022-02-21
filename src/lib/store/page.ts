@@ -62,6 +62,9 @@ fragment pageFields on Page {
     ... on ComponentGalleriesFeaturedDrop {
       ...featuredDropFields
     }
+    ... on ComponentGalleriesLookGallery {
+      ...lookGalleryFields
+    }
   }
 }
 `;

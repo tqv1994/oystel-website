@@ -1,75 +1,35 @@
 <script lang="ts">
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
-import Button from '@smui/button';
-
+  import Button from '@smui/button';
   import Tab, { Label } from '@smui/tab';
-
   import TabBar from '@smui/tab-bar';
+  import { clickOutside } from '$lib/components/events/clickOutside';
+  import { productDesignerStore, productTypeStore } from '$lib/store/product';
+  import { get } from 'svelte/store';
+  import { Category } from '$lib/store/category';
+  const types = get(productTypeStore);
+  const designers = get(productDesignerStore);
+  type MenuItem = Category & {
+    items?: Category[];
+  };
+  let tabs: MenuItem[] = [];
+  for (let k in types.items) {
+    tabs.push(types.items[k]);
+  }
 
-  let tabs = [
-    {
-      k: 1,
-      label: 'New Arrivals',
-      items: [
-        {
-          id: '1',
-          name: 'Designer Name',
-        },
-        {
-          id: '2',
-          name: 'Designer Name',
-        },
-        {
-          id: '3',
-          name: 'Designer Name',
-        },
-        {
-          id: '4',
-          name: 'Designer Name',
-        },
-        {
-          id: '5',
-          name: 'Designer Name',
-        },
-        {
-          id: '6',
-          name: 'Designer Name',
-        },
-        {
-          id: '7',
-          name: 'Designer Name',
-        },
-        {
-          id: '8',
-          name: 'Designer Name',
-        },
-      ],
-    },
-    {
-      k: 2,
-      label: 'Designers',
-    },
-    {
-      k: 3,
-      label: 'Clothing',
-    },
-    {
-      k: 4,
-      label: 'Shoes',
-    },
-    {
-      k: 5,
-      label: 'Bags',
-    },
-    {
-      k: 6,
-      label: 'Accessories',
-    },
-    {
-      k: 7,
-      label: 'Vacation Shop',
-    },
-  ];
+  let designerItems: Category[] = [];
+  for (let k in designers.items) {
+    designerItems.push(designers.items[k]);
+  }
+
+  let menuDesigner: MenuItem = {
+    id: '999',
+    name: 'Designers',
+    items: designerItems,
+  };
+
+  tabs.splice(1, 0, menuDesigner);
+
   let tabFilters = [
     'A',
     'B',
@@ -95,52 +55,84 @@ import Button from '@smui/button';
     'Y',
     'Z',
   ];
-  let active: {
-    k: number;
-    label: string;
-    items?: { id: string; name: string }[];
-  } = { k: 0, label: '' };
+  let active: MenuItem = { id: '', name: '' };
   let activeFilter: string = tabFilters[0];
+
+  const getItemsSubMenu = (filter: string): { id: string; name: string }[] => {
+    if (filter) {
+      if (active.items) {
+        return active.items.filter((item) => {
+          let firstLetter = item.name.charAt(0);
+          if (firstLetter === filter) {
+            return item;
+          }
+        });
+      }
+    }
+    return [];
+  };
+
+  const onCloseSubTabActived = () => {
+    active = { id: '', name: '' };
+    activeFilter = tabFilters[0];
+  };
 </script>
 
-<div class="shop-navigation">
-  <div class="shop-navigation__menus">
-    <TabBar {tabs} let:tab key={(tab) => tab.k} bind:active>
-      <Tab
-        {tab}
-        stacked={true}
-        indicatorSpanOnlyContent={true}
-        tabIndicator$transition="fade"
+{#if tabs.length > 0}
+  <div class="shop-navigation m-none">
+    <div class="shop-navigation__menus">
+      <TabBar {tabs} let:tab key={(tab) => tab.id} bind:active>
+        <Tab
+          {tab}
+          stacked={true}
+          indicatorSpanOnlyContent={true}
+          tabIndicator$transition="fade"
+        >
+          <Label>{tab.name}</Label>
+        </Tab>
+      </TabBar>
+    </div>
+    {#if active.items}
+      <div
+        use:clickOutside
+        on:click_outside={() => {
+          onCloseSubTabActived();
+        }}
+        class={`shop-navigation__content ${active?.name ? 'active' : ''}`}
       >
-        <Label>{tab.label}</Label>
-      </Tab>
-    </TabBar>
-  </div>
-  <div class={`shop-navigation__content ${active?.label ? 'active' : ''}`}>
-    <div class="shop-navigation__content_header">
-      <h3>{active?.label}</h3>
-      <div class="filters-wrap">
-        {#each tabFilters as tabFilter}
-          <Button on:click={() => (activeFilter = tabFilter)}
-            ><Label class="text-body">{tabFilter}</Label></Button
-          >
-        {/each}
+        <div class="shop-navigation__content_header">
+          <h3>{active?.name}</h3>
+          <div class="filters-wrap">
+            {#each tabFilters as tabFilter}
+              <Button on:click={() => (activeFilter = tabFilter)}
+                ><Label
+                  class={`text-body ${
+                    activeFilter == tabFilter ? 'active' : ''
+                  }`}>{tabFilter}</Label
+                ></Button
+              >
+            {/each}
+          </div>
+        </div>
+        <div class="shop-navigation__content_sub_menus">
+          <h3>{activeFilter}</h3>
+          <div class="row">
+            {#if getItemsSubMenu(activeFilter).length > 0}
+              {#each getItemsSubMenu(activeFilter) as item}
+                <div class="menu-item col d-col-3">
+                  <a href="#"
+                    ><span class="material-icons mr-5">favorite_border</span>
+                    {item.name}</a
+                  >
+                </div>
+              {/each}
+            {/if}
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="shop-navigation__content_sub_menus">
-      <h3>{activeFilter}</h3>
-      <div class="row">
-        {#if active.items}
-          {#each active.items as item}
-            <div class="menu-item col d-col-3">
-              <a href="#"><span class="material-icons mr-5">favorite_border</span> {item.name}</a>
-            </div>
-          {/each}
-        {/if}
-      </div>
-    </div>
+    {/if}
   </div>
-</div>
+{/if}
 
 <style lang="scss">
   @use '../../theme/mixins';
@@ -153,13 +145,20 @@ import Button from '@smui/button';
       background-color: #f2f2f2;
       padding-left: 100px;
       padding-right: 100px;
+      :global(.mdc-tab.mdc-tab) {
+        font-family: var(--mdc-typography-navlink-font-family);
+        font-size: var(--mdc-typography-navlink-font-size);
+        font-weight: var(--mdc-typography-navlink-font-weight);
+        line-height: var(--mdc-typography-navlink-line-height);
+        letter-spacing: var(--mdc-typography-navlink-letter-spacing);
+      }
     }
     .shop-navigation__content {
-      display: none;
-      &.active {
-        display: block;
-      }
-      z-index: 1;
+      // display: none;
+      // &.active {
+      //   display: block;
+      // }
+      z-index: 2;
       padding-top: 30px;
       padding-bottom: 50px;
       padding-left: 100px;
@@ -180,15 +179,29 @@ import Button from '@smui/button';
       .filters-wrap :global(.mdc-button) {
         min-width: auto;
         padding: 0 10px;
+        :global(.active) {
+          font-weight: bold;
+        }
       }
-      .menu-item a{
+      .shop-navigation__content_sub_menus {
+        padding: 0 50px;
+      }
+      .menu-item a {
         display: flex;
-        justify-content: center;
-        &:hover{
-          span{
+        justify-items: center;
+        align-items: flex-start;
+        &:hover {
+          span {
             text-decoration: none;
           }
           text-decoration: underline;
+        }
+        :global(.mdc-label) {
+          font-family: var(--mdc-typography-navlink-font-family);
+          font-size: var(--mdc-typography-navlink-font-size);
+          font-weight: var(--mdc-typography-navlink-font-weight);
+          line-height: var(--mdc-typography-navlink-line-height);
+          letter-spacing: var(--mdc-typography-navlink-letter-spacing);
         }
       }
     }

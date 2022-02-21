@@ -49,6 +49,9 @@
       session.metadata?.travelPreferenceTypes,
       false,
     );
+    insertToStore(productColourStore, session.metadata?.productColours, false);
+    insertToStore(productDesignerStore, session.metadata?.productDesigners, false);
+    insertToStore(productTypeStore, session.metadata?.productTypes, false);
     insertToStore(
       personalPreferenceTypeStore,
       session.metadata?.personalPreferenceTypes,
@@ -109,6 +112,7 @@
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
   import SignupModal from '$lib/components/modals/SignupModal.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
+import { productColourStore, productDesignerStore, productTypeStore } from '$lib/store/product';
   export let active: MainNavItem | undefined;
   export let isHomePage = false;
   export let key: string;

@@ -3,9 +3,10 @@
   import type { Load } from '@sveltejs/kit';
 
   export const load: Load = async ({ fetch, session, url }) => {
-    const res = await fetch(`/home.json?_z=${Date.now()}`);
+    const res = await fetch(`/shop.json?_z=${Date.now()}`);
     if (res.ok) {
-      const data: HomePageData = await res.json();
+      const data: Page = await res.json();
+      console.log(data);
       return {
         props: {
           data,
@@ -36,6 +37,12 @@
   import { getItems } from '$lib/store/types';
   import BlurImage from '$lib/components/blur-image.svelte';
 import ShopNavigation from '$lib/components/ShopNavigation.svelte';
+import { Page } from '$lib/store/page';
+import { Actions } from '@smui/dialog';
+import FeaturedDrop from '$lib/components/FeaturedDrop.svelte';
+import { makeLink } from '$lib/utils/link';
+import LookList2 from '$lib/components/LookList2.svelte';
+import DropSlides from '$lib/components/DropSlides.svelte';
 
   let filterActive = 'Current Drops';
   let configPage = {
@@ -47,7 +54,7 @@ import ShopNavigation from '$lib/components/ShopNavigation.svelte';
     },
   };
 
-  export let data: HomePageData[];
+  export let data: Page;
 
   const carouselConfig = {
     autoplayDuration: 8000,
@@ -56,65 +63,75 @@ import ShopNavigation from '$lib/components/ShopNavigation.svelte';
     particlesToShow: 1,
     chevronPosition: 'inside',
   };
+
+  const carouselConfigMobile = {
+    autoplayDuration: 8000,
+    duration: 1500,
+    infinite: true,
+    particlesToShow: 2,
+    chevronPosition: 'outside',
+  };
 </script>
 <ShopNavigation />
 <div class="content shop-page-content">
-  <section
-    class="header-title full-width d-pt-128 d-pb-20 t-pt-80 t-pb-20 m-pt-90 m-pb-15"
-  >
-    <div class="content-wrap">
-      <div class="container">
-        <LayoutGrid class="p-0 mb-15">
-          <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
-            <div class="content-left">
-              <div>
-                <span class="text-h3 d-mr-50 m-mr-60">Fashion Drop</span>
-                <Button variant="outlined"><Label>Shop the Drop</Label></Button>
+  {#each data?.sections as section}
+    {#if section.__typename === 'ComponentBannersBanner'}
+    <section
+      class="header-title full-width d-pb-20 m-pb-15 pt-0"
+    >
+      <div class="content-wrap">
+        <div class="container">
+          <LayoutGrid class="p-0 mb-15">
+            <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
+              <div class="content-left">
+                <div>
+                  <span class="text-eyebrow d-mr-50 m-mr-60">{section.headline}</span>
+                  {#if section.actions.length > 0}
+                    <Button variant="outlined" href={section.actions[0].url}><Label>{section.actions[0].name}</Label></Button>
+                  {/if}
+                </div>
+                <h2 class="d-mb-30 d-mt-30 d-mt-25 m-mb-15">
+                  {section.name}
+                </h2>
+                <p class="mb-0 mt-0 short-description">
+                  {section.description}
+                </p>
               </div>
-              <h1 class="d-mb-30 d-mt-30 d-mt-25 m-mb-15">
-                Louis Vuitton Resort Collection Summer
-              </h1>
-              <p class="mb-0 mt-0 short-description">
-                First hand experience to craft your perfect vacation.
-              </p>
-            </div>
-          </Cell>
-          <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
-            <div class="shop-slides">
-              <Carousel {...carouselConfig}>
-                {#if data.gallery.length > 0}
-                  {#each data.gallery as item}
-                    <div class="slides">
-                      <BlurImage {...item} />
-                    </div>
-                  {/each}
-                {/if}
-              </Carousel>
-            </div>
-          </Cell>
-        </LayoutGrid>
-        <div class="divider" />
+            </Cell>
+            <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
+              <div class="shop-slides">
+                <Carousel {...carouselConfig}>
+                  {#if section.gallery.length > 0}
+                    {#each section.gallery as item}
+                      <div class="slides">
+                        <BlurImage {...item} />
+                      </div>
+                    {/each}
+                  {/if}
+                </Carousel>
+              </div>
+            </Cell>
+          </LayoutGrid>
+        </div>
       </div>
-    </div>
-  </section>
-  {#each data.page.sections as section}
-    {#if section.__typename === 'ComponentGalleriesDropGallery'}
-      <section class="has-padding m-pt-40 m-pb-70" id="featured-drops">
-        <FeatureDrops {...section} />
+    </section>
+    {:else if section.__typename === 'ComponentGalleriesFeaturedDrop'}
+      <FeaturedDrop {...section} />
+    {:else if section.__typename === 'ComponentGalleriesDropGallery'}
+      <section class="the-latest-section">
+        <div class="container">
+          <DropSlides title={section.name} drops={section.drops}  />
+        </div>
       </section>
-    {:else if section.__typename === 'ComponentBannersBanner'}
-      <section
-        class="d-pt-55 d-pb-70 t-pt-55 t-pb-70 m-pt-20 m-pb-40 full-width"
-        id="signup-section"
-        style="background-color: #F0F7F8"
-      >
-        <div class="content-wrap">
-          <NeverMissDrop {...section} />
+      {:else if section.__typename === 'ComponentGalleriesLookGallery'}
+      <section class="">
+        <div class="container">
+          <LookList2 items={section.looks} title={section.headline} />
         </div>
       </section>
     {/if}
   {/each}
-  <section class="d-pt-90 t-pt-90 m-pt-50 trips-list-wrap">
+  <!-- <section class="d-pt-90 t-pt-90 m-pt-50 trips-list-wrap">
     <div class="container">
       <div class="text-center d-mb-80 t-mb-80 m-mb-55 filter-wrap">
         <label class="d-mr-100 t-mr-100">Filter Curations</label>
@@ -130,7 +147,7 @@ import ShopNavigation from '$lib/components/ShopNavigation.svelte';
         {/if}
       {/each}
     </div>
-  </section>
+  </section> -->
 </div>
 
 <style lang="scss" global>
@@ -173,7 +190,7 @@ import ShopNavigation from '$lib/components/ShopNavigation.svelte';
     .shop-slides .carousel,
     .shop-slides .slides,
     .shop-slides .slides div {
-      height: calc(90vh - 155px);
+      height: 90vh;
     }
     .shop-slides .slide-item {
       width: 100%;
@@ -183,7 +200,7 @@ import ShopNavigation from '$lib/components/ShopNavigation.svelte';
       background-position: center;
     }
     .header-title .content-left {
-      padding-top: 40vh;
+      padding-top: 30vh;
     }
     .header-title .short-description {
       @include mixins.desktop {

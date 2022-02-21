@@ -19,3 +19,14 @@ fragment lookFields on Look {
   }
 }
 `;
+
+export const lookGalleryFieldsFragment = `
+fragment lookGalleryFields on ComponentGalleriesLookGallery {
+  id
+  name
+  headline
+  looks {
+    ...lookFields
+  }
+}
+`;

@@ -16,4 +16,8 @@ export type Metadata = {
   interestTypes: InterestType[];
   travelPreferenceTypes:TravelPreferenceType[];
   personalPreferenceTypes:PersonalPreferenceType[];
+  productColours: Category[];
+  productPattners: Category[];
+  productDesigners: Category[];
+  productTypes: Category[];
 };

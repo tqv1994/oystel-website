@@ -18,6 +18,7 @@ import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
 import { bannerFieldsFragment } from '$lib/store/banner';
 import { actionFieldsFragment } from '$lib/store/action';
 import { featuredDropFieldsFragment, Page, pageFieldsFragment, PageQueryResult } from '$lib/store/page';
+import { lookFieldsFragment, lookGalleryFieldsFragment } from '$lib/store/look';
 
 export type CuratedLooksPageData = PageQueryResult;
 
@@ -42,6 +43,8 @@ ${dropGalleryFieldsFragment}
 ${experienceGalleryFieldsFragment}
 ${destinationGalleryFieldsFragment}
 ${featuredDropFieldsFragment}
+${lookGalleryFieldsFragment}
+${lookFieldsFragment}
 ${bannerFieldsFragment}
 ${actionFieldsFragment}
 ${pageFieldsFragment}

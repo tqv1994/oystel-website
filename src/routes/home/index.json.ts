@@ -18,6 +18,7 @@ import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
 import { bannerFieldsFragment } from '$lib/store/banner';
 import { actionFieldsFragment } from '$lib/store/action';
 import { featuredDropFieldsFragment, pageFieldsFragment, PageQueryResult } from '$lib/store/page';
+import { lookFieldsFragment, lookGalleryFieldsFragment } from '$lib/store/look';
 
 export type HomePageData = PageQueryResult & {
   gallery: UploadFile[];
@@ -48,6 +49,8 @@ ${uploadFileFieldsFragment}
 ${dropGalleryFieldsFragment}
 ${experienceGalleryFieldsFragment}
 ${destinationGalleryFieldsFragment}
+${lookGalleryFieldsFragment}
+${lookFieldsFragment}
 ${bannerFieldsFragment}
 ${actionFieldsFragment}
 ${pageFieldsFragment}
