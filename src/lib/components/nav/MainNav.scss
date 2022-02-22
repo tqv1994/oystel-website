@@ -108,10 +108,14 @@
   }
 }
 .mdc-top-app-bar--prominent-fixed-adjust,.mdc-top-app-bar--fixed-adjust{
-  padding-top: 87px;
+  @include mixins.desktop{
+    padding-top: 87px;
+  }
 }
 .mdc-top-app-bar--prominent-fixed-adjust, .mdc-top-app-bar--prominent{
-  height: 87px;
+  @include mixins.desktop{
+    height: 87px;
+  }
 }
 .mdc-top-app-bar--prominent {
   .top-app-bar__main-row {
@@ -137,6 +141,10 @@
   .logo {
     flex-grow: 0;
     flex-shrink: 0;
+    padding-left: calc(8% + 45px);
+    @include mixins.mobile{
+      padding-left: 24px;
+    }
   }
   .mdc-top-app-bar__title {
     padding: 0;

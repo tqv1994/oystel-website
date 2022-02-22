@@ -183,7 +183,7 @@
     class={`${activeSubItem ? 'showing-top-app-bar' : ''}`}
   >
     <Row class="top-app-bar__main-row">
-      <Section class="logo d-pl-150 m-pl-24">
+      <Section class="logo">
         <Title component={A} href="/">
           <OysteoLogo width={130} height={17.217} />
         </Title>

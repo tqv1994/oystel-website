@@ -16,6 +16,7 @@
   import { Nameable } from '$lib/store/types';
   import OysteoLogo from '$lib/components/OysteoLogo.svelte';
   import CloseIcon from '$lib/icons/CloseIcon.svelte';
+import ShopNavMobile from './ShopNavMobile.svelte';
 
   let dispathcher = createEventDispatcher();
   export let open = false;
@@ -80,6 +81,8 @@
             on:close={callCloseHeaderActionMobile}
             >no content</OyFormSearchAdvisor
           >
+        {:else if content == "shop-nav"}
+          <ShopNavMobile on:close={callCloseHeaderActionMobile}/>
         {/if}
       </div>
     </div>
