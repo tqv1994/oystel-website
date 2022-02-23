@@ -41,7 +41,7 @@ export let params: any;
     <section class="header-title">
         <div class="container">
             <h2 class="text-center mt-0">Shop Collection</h2>
-            <p class="text-center m-0 d-mb-50">Bespoke itineraries created by our leading tastemakers.</p>
+            <p class="text-center m-0 d-mb-50 m-mb-30">Bespoke itineraries created by our leading tastemakers.</p>
             <ProductSearchForm {...params}/>
         </div>
     </section>

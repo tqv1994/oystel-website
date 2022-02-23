@@ -9,6 +9,7 @@
   import { get } from 'svelte/store';
   import { productDesignerStore, productTypeStore } from '$lib/store/product';
 import Follow from '../Follow.svelte';
+import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
@@ -56,8 +57,13 @@ import Follow from '../Follow.svelte';
   function doOpenSubmenu(menu: MenuItem) {
     menuActive = menu;
   }
-  function openLink(menu: any) {
-    routerHelper.redirect(menu.link);
+  function openLinkCategory(menu: Category) {
+    routerHelper.redirect(makeLinkShopCategory(menu));
+    dispatch('close');
+  }
+
+  function openLinkDesginer(menu: Category){
+    routerHelper.redirect(makeLinkShopDesigner(menu));
     dispatch('close');
   }
 
@@ -88,7 +94,7 @@ import Follow from '../Follow.svelte';
             on:click={() => {
               menu.items && menu.items.length > 0
                 ? doOpenSubmenu(menu)
-                : openLink(menu);
+                : openLinkCategory(menu);
             }}
             >{menu.name}
             {#if menu.items && menu.items.length > 0}<i class="material-icons"
@@ -119,20 +125,20 @@ import Follow from '../Follow.svelte';
                 <a
                   href="javascript:void(0)"
                   on:click={() => {
-                    openLink(menu);
+                    openLinkDesginer(menu);
                   }}>{menu.name}</a
                 >
               </li>
             {/each}
           {/if}
-          <li>
+          <!-- <li>
             <a
               href="javascript:void(0)"
               on:click={() => {
                 openLink(menuActive);
               }}>All {menuActive.name}</a
             >
-          </li>
+          </li> -->
         </ul>
       </ul>
       <div class="filter-wrap">

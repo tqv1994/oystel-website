@@ -8,6 +8,9 @@
   import { get } from 'svelte/store';
   import { Category } from '$lib/store/category';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
+import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
+import { goto } from '$app/navigation';
+import { routerHelper } from '$lib/helpers';
   const types = get(productTypeStore);
   const designers = get(productDesignerStore);
   let contentHeaderActionMobile: string = '';
@@ -89,6 +92,7 @@
           stacked={true}
           indicatorSpanOnlyContent={true}
           tabIndicator$transition="fade"
+          on:click={()=>{ if(tab.id !== "999") goto(makeLinkShopCategory(tab))}}
         >
           <Label>{tab.name}</Label>
         </Tab>
@@ -122,7 +126,7 @@
             {#if getItemsSubMenu(activeFilter).length > 0}
               {#each getItemsSubMenu(activeFilter) as item}
                 <div class="menu-item col d-col-3">
-                  <a href="#"
+                  <a href={`#`} on:click={()=>{ routerHelper.redirect(makeLinkShopDesigner(item))}}
                     ><span class="material-icons mr-5">favorite_border</span>
                     {item.name}</a
                   >

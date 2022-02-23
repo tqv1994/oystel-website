@@ -1,13 +1,21 @@
 <script lang="ts">
   import { Category } from '$lib/store/category';
-import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
+  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
   import {
     productColourStore,
     productDesignerStore,
     productPattnerStore,
     productTypeStore,
   } from '$lib/store/product';
-    import { PRODUCT_COLOUR, PRODUCT_DESIGNER, PRODUCT_PATTERN, QUERY, search, SearchParams, TYPE } from '$lib/store/search';
+  import {
+    PRODUCT_COLOUR,
+    PRODUCT_DESIGNER,
+    PRODUCT_PATTERN,
+    QUERY,
+    search,
+    SearchParams,
+    TYPE,
+  } from '$lib/store/search';
   import { sortByName } from '$lib/utils/sort';
 
   import LayoutGrid, { Cell } from '@smui/layout-grid';
@@ -16,8 +24,8 @@ import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.
   import OyAutocomplete from './common/OyAutocomplete.svelte';
   import Dropdown, { DropdownValue } from './Dropdown.svelte';
   import _ from 'lodash';
-import Button from '@smui/button/src/Button.svelte';
-import Label from '@smui/list/src/Label.svelte';
+  import Button from '@smui/button/src/Button.svelte';
+  import Label from '@smui/list/src/Label.svelte';
 
   export let query: string = '';
   export let type: string = '';
@@ -26,7 +34,7 @@ import Label from '@smui/list/src/Label.svelte';
   export let pattern: string = '';
   export let vacationStyle: string = '';
 
-  let contentHeaderActionMobile: string = ''
+  let contentHeaderActionMobile: string = '';
   let types: Category[] = [];
   productTypeStore.subscribe((store) => {
     types = sortByName(Object.values(store.items));
@@ -43,14 +51,14 @@ import Label from '@smui/list/src/Label.svelte';
     colours.unshift({ id: '', name: 'All' });
   });
   let patterns: Category[] = [];
-  productPattnerStore.subscribe((store)=>{
-      patterns = sortByName(Object.values(store.items));
-      patterns.unshift({id: "", name: "All"});
+  productPattnerStore.subscribe((store) => {
+    patterns = sortByName(Object.values(store.items));
+    patterns.unshift({ id: '', name: 'All' });
   });
 
   function go(params: SearchParams) {
     search({
-        [QUERY]: query,
+      [QUERY]: query,
       [TYPE]: type,
       [PRODUCT_DESIGNER]: designer,
       [PRODUCT_COLOUR]: colour,
@@ -145,69 +153,77 @@ import Label from '@smui/list/src/Label.svelte';
       </div>
     </Cell>
     <Cell span="2">
-        <div class="form-control">
-          <OyAutocomplete
-            getOptionLabel={(option) => (option ? `${option.name}` : '')}
-            bind:value={colour}
-            options={colours}
-            key={'id'}
-            label="Colour"
-            variant="outlined"
-            on:SMUIAutocomplete:change={onColourChange}
-          />
-        </div>
+      <div class="form-control">
+        <OyAutocomplete
+          getOptionLabel={(option) => (option ? `${option.name}` : '')}
+          bind:value={colour}
+          options={colours}
+          key={'id'}
+          label="Colour"
+          variant="outlined"
+          on:SMUIAutocomplete:change={onColourChange}
+        />
+      </div>
     </Cell>
     <Cell span="2">
-        <div class="form-control">
-          <OyAutocomplete
-            getOptionLabel={(option) => (option ? `${option.name}` : '')}
-            bind:value={pattern}
-            options={[]}
-            key={'id'}
-            label="Pattern"
-            variant="outlined"
-            on:SMUIAutocomplete:change={onPatternChange}
-          />
-        </div>
+      <div class="form-control">
+        <OyAutocomplete
+          getOptionLabel={(option) => (option ? `${option.name}` : '')}
+          bind:value={pattern}
+          options={[]}
+          key={'id'}
+          label="Pattern"
+          variant="outlined"
+          on:SMUIAutocomplete:change={onPatternChange}
+        />
+      </div>
     </Cell>
     <Cell span="2">
-        <div class="form-control">
-          <OyAutocomplete
-            getOptionLabel={(option) => (option ? `${option.name}` : '')}
-            bind:value={pattern}
-            options={[]}
-            key={'id'}
-            label="Vacation Style"
-            variant="outlined"
-          />
-        </div>
+      <div class="form-control">
+        <OyAutocomplete
+          getOptionLabel={(option) => (option ? `${option.name}` : '')}
+          bind:value={pattern}
+          options={[]}
+          key={'id'}
+          label="Vacation Style"
+          variant="outlined"
+        />
+      </div>
     </Cell>
   </LayoutGrid>
 </form>
 <div class="button-show-search-form-wrap d-none m-block">
-    <Button variant="outlined" on:click={()=>{contentHeaderActionMobile = 'product-search-form'}}><Label>Start your Search</Label></Button>
+  <Button
+    variant="outlined"
+    on:click={() => {
+      contentHeaderActionMobile = 'product-search-form';
+    }}><Label>Start your Search</Label></Button
+  >
 </div>
 
 <HeaderActionMobile
-    bind:content={contentHeaderActionMobile}
+  bind:content={contentHeaderActionMobile}
+  searchModel={{ type, designer, colour, pattern, query }}
+  on:close={onSearchSubmitMobile}
 />
+
 <style lang="scss">
-.search-form{
+  .search-form {
     :global(.mdc-layout-grid) {
-        --mdc-layout-grid-gutter-desktop: 0;
-        --mdc-select-idle-line-color: #000;
-        --mdc-select-hover-line-color: #000;
+      --mdc-layout-grid-gutter-desktop: 0;
+      --mdc-select-idle-line-color: #000;
+      --mdc-select-hover-line-color: #000;
     }
-}
-.search-form {
+  }
+  .search-form {
     :global(.mdc-text-field),
     :global(.mdc-select) {
-        height: 35px;
-        width: 100%;
-        padding-right: 15px;
+      height: 35px;
+      width: 100%;
+      padding-right: 15px;
     }
     :global(.mdc-select.mdc-select--outlined .mdc-select__anchor) {
-        height: 35px;
+      height: 35px;
     }
     :global(.mdc-text-field .mdc-notched-outline__leading),
     :global(.mdc-text-field .mdc-notched-outline__notch),
@@ -215,16 +231,15 @@ import Label from '@smui/list/src/Label.svelte';
     :global(.mdc-select .mdc-notched-outline__leading),
     :global(.mdc-select .mdc-notched-outline__notch),
     :global(.mdc-select .mdc-notched-outline__trailing) {
-        border-color: #000;
+      border-color: #000;
     }
-    
+
     :global(.mdc-text-field img) {
-        filter: brightness(0.1);
+      filter: brightness(0.1);
     }
-}
+  }
 
-.button-show-search-form-wrap :global(.mdc-button){
+  .button-show-search-form-wrap :global(.mdc-button) {
     width: 100%;
-}
-
+  }
 </style>

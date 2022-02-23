@@ -11,6 +11,8 @@
 import { productColourStore, productDesignerStore, productPattnerStore, productTypeStore } from '$lib/store/product';
 import { sortByName } from '$lib/utils/sort';
 import OyAutocomplete from '../OyAutocomplete.svelte';
+import Textfield from '@smui/textfield';
+import Icon from '@smui/textfield/icon';
   
     const dispatch = createEventDispatcher();
     export let searchModel: {
@@ -21,11 +23,9 @@ import OyAutocomplete from '../OyAutocomplete.svelte';
       colour: string;
     };
     let { type, designer, pattner, colour, query } = searchModel;
-    let experience: Experience | undefined;
-    let destination: Destination | undefined;
-    let countryData: Country | undefined;
     function onSearchSubmit() {
       setTimeout(() => {
+        console.log('test');
         dispatch('close', {
           query,
           type,
@@ -65,6 +65,18 @@ import OyAutocomplete from '../OyAutocomplete.svelte';
       action="/"
       on:submit|preventDefault={onSearchSubmit}
     >
+      <div class="form-control mb-40">
+        <Textfield
+          variant="outlined"
+          bind:value={query}
+          label="Start with a search"
+          withTrailingIcon={false}
+        >
+          <Icon slot="trailingIcon"
+            ><img src="/img/icons/icon-search.svg" /></Icon
+          >
+        </Textfield>
+      </div>
       <div class="form-control mb-40">
         <OyAutocomplete
           getOptionLabel={(option) => (option ? `${option.name}` : '')}
@@ -106,7 +118,7 @@ import OyAutocomplete from '../OyAutocomplete.svelte';
         />
       </div>
       <div class="form-control btn-submit-wrap">
-        <Button variant="outlined" style="width: 100%;" type="submit"
+        <Button variant="unelevated" style="width: 100%;" type="submit"
           ><Label>Filter Your Results</Label></Button
         >
       </div>
@@ -126,12 +138,17 @@ import OyAutocomplete from '../OyAutocomplete.svelte';
         }
       }
     }
-    .search-form-experiences :global(.mdc-select) {
+    .search-form-experiences :global(.mdc-select),
+    .search-form-experiences :global(.mdc-text-field) {
       width: 100%;
     }
     .search-form-experiences
-      :global(.mdc-select.mdc-select--outlined .mdc-select__anchor) {
+      :global(.mdc-select.mdc-select--outlined .mdc-select__anchor){
       height: 35px;
+    }
+
+    .search-form-experiences :global(.mdc-text-field--outlined){
+      height: 40px;
     }
     .search-form-experiences
       :global(.mdc-text-field .mdc-notched-outline__leading),
@@ -142,6 +159,9 @@ import OyAutocomplete from '../OyAutocomplete.svelte';
     .search-form-experiences :global(.mdc-select .mdc-notched-outline__notch),
     .search-form-experiences :global(.mdc-select .mdc-notched-outline__trailing) {
       border-color: #000;
+    }
+    .search-form-experiences :global(.mdc-text-field__icon img){
+      filter: brightness(0%);
     }
   </style>
   

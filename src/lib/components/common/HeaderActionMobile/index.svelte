@@ -86,7 +86,9 @@ import ProductSearchFormMobile from './ProductSearchFormMobile.svelte';
           <ShopNavMobile on:close={callCloseHeaderActionMobile}/>
         {:else if content == "product-search-form"}
         <ProductSearchFormMobile
-          bind:searchModel/>
+          bind:searchModel
+          on:close={callCloseHeaderActionMobile}
+          />
       {/if}
       </div>
     </div>
