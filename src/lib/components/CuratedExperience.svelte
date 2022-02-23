@@ -26,7 +26,8 @@ import SliderItems from './SliderItems.svelte';
   let hero: Experience | undefined;
   let nonHeros: Experience[] | undefined;
   $: if (prominent && experiences.length) {
-    experiences = storeHelper.getItems(experiences, 7);
+    experiences = storeHelper.getItems([...experiences], 7);
+    console.log(experiences);
     if (me) {
       experiences = experiences.map((item: Experience) => {
         item.liked = contains(me.experienceLikes || [], 'id', item.id);
@@ -79,7 +80,11 @@ import SliderItems from './SliderItems.svelte';
         <div class="thumbnail dark">
           <a href={makeLink('/experience', hero)}>
             <div class="image-cover" style="padding-top: calc(568/529 * 100%)">
-              <BlurImage {...hero.gallery[0]} />
+              {#if hero.gallery.length > 0 || hero.gallery[0] != null}
+                <BlurImage {...hero.gallery[0]} />
+              {:else}
+                <BlurImage/>
+              {/if}
             </div>
           </a>
           <IconButton

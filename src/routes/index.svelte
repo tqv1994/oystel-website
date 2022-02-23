@@ -144,16 +144,25 @@
 <svelte:body />
 
 <div class="content home-page-content">
-  {#if data?.gallery.length > 0}
+  
   <section id="slider" class="full-width hero pt-0">
     <Carousel {...carouselConfig}>
-      {#each data?.gallery || [] as item}
+      {#if data?.gallery.length > 0}
+        {#each data?.gallery || [] as item}
+          <div class="slide">
+            <div class="image-cover" style="padding-top: 0; height: 100%">
+              <BlurImage {...item} />
+            </div>
+          </div>
+        {/each}
+      {:else}
         <div class="slide">
           <div class="image-cover" style="padding-top: 0; height: 100%">
-            <BlurImage {...item} />
-          </div>
+          <BlurImage />
         </div>
-      {/each}
+      </div>
+      {/if}
+
     </Carousel>
     <div class="dark text-box">
       <div class="container">
@@ -162,7 +171,7 @@
       </div>
     </div>
   </section>
-  {/if}
+  
 
   {#each data.page.sections as section, index}
     {#if section.__typename === 'ComponentGalleriesDropGallery'}

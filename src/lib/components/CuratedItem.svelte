@@ -12,7 +12,11 @@
   <div class={`${classItem} t-mb-0 m-mb-50`}>
     <div class="thumbnail d-mb-25 t-mb-25 m-mb-20">
       <div class="image-cover" style={`padding-top: ${heightThumbnail}`}>
-        <BlurImage {...item.gallery[0]} />
+        {#if item.gallery[0] !== null}
+          <BlurImage {...item.gallery[0]} />
+        {:else}
+          <BlurImage />
+        {/if}
       </div>
     </div>
     <p class="mt-0 d-mb-25 text-eyebrow t-mb-25 m-mb-15">Fashion</p>

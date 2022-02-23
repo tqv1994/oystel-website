@@ -21,6 +21,9 @@ export const DESTINATION_TYPE = 'd';
 export const LANGUAGE = 'lo';
 export const ORDERING = 'o';
 export const LIMIT = 'l';
+export const PRODUCT_DESIGNER = 'pd';
+export const PRODUCT_COLOUR = 'pc';
+export const PRODUCT_PATTERN = 'pt';
 
 export type SearchParamKey =
   | typeof QUERY
@@ -30,7 +33,10 @@ export type SearchParamKey =
   | typeof DESTINATION_TYPE
   | typeof LANGUAGE
   | typeof ORDERING
-  | typeof LIMIT;
+  | typeof LIMIT
+  | typeof PRODUCT_DESIGNER
+  | typeof PRODUCT_COLOUR
+  | typeof PRODUCT_PATTERN;
 
 export type SearchParams = {
   [QUERY]?: string;
@@ -41,6 +47,9 @@ export type SearchParams = {
   [LANGUAGE]?: string;
   [ORDERING]?: OrderingKey;
   [LIMIT]?: number;
+  [PRODUCT_DESIGNER]?: string;
+  [PRODUCT_COLOUR]?: string;
+  [PRODUCT_PATTERN]?: string;
 };
 
 export type SearchResultGroup<T extends Identifiable> = {
@@ -87,6 +96,9 @@ export function parseSearchParams(query: URLSearchParams): SearchParams {
     [LANGUAGE]: query.get(LANGUAGE) || undefined,
     [ORDERING]: (query.get(ORDERING) as OrderingKey) || NAME_ASC_KEY,
     [LIMIT]: parseInt(query.get(LIMIT) || '20', 10),
+    [PRODUCT_DESIGNER]: query.get(PRODUCT_DESIGNER) || undefined,
+    [PRODUCT_COLOUR]: query.get(PRODUCT_COLOUR) || undefined,
+    [PRODUCT_PATTERN]: query.get(PRODUCT_PATTERN) || undefined
   };
 }
 

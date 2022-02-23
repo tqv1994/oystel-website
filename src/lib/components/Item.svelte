@@ -14,7 +14,9 @@
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import { UploadFile } from '$lib/store/upload-file';
   import { Country } from '$lib/store/country';
-  export let item: Experience | Destination | Searchable;
+import { Category } from '$lib/store/category';
+import { Product } from '$lib/store/product';
+  export let item: Experience | Destination | Product | Searchable;
   export let pathPrefix: string;
   export let key: number | null = null;
   export let group_id: number | string | null = null;
@@ -25,6 +27,7 @@
   export let intro: string;
   export let description: string | undefined = undefined;
   export let country: Country | undefined = undefined;
+  export let type: Category | undefined = undefined;
   export let introShow: boolean = false;
   let dispathcher = createEventDispatcher();
   function callLikeItem() {
@@ -43,7 +46,8 @@
   <div class="thumbnail">
       <a href={makeLink(pathPrefix, item)}>
         <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
-          {#if gallery?.length}
+          <BlurImage/>
+          {#if gallery && gallery.length > 0 && gallery[0] !== null}
             <BlurImage {...gallery[0]} />
           {:else}
             <BlurImage/>
@@ -63,7 +67,7 @@
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, phone: 2 }}
         ><p class="text-eyebrow text-left m-0 mt-20 mb-0">
-          {country?.name || ''}
+          {country?.name || type?.name || ''}
         </p></Cell
       >
     </LayoutGrid>

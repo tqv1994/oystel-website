@@ -61,25 +61,47 @@ import Carousel from './Carousel.svelte';
             <div class="featured-drop__content">
                 <div class="gallery gallery-carousel d-none m-block  mb-10">
                     <Carousel {...carouselConfig}>
-                        {#each drop.gallery as item}
-                        <div class="thumbnail">
-                            <div class="image-cover" style="padding-top: 473px">
-                                <BlurImage {...item} />
+                        {#if  drop.gallery.length > 0}
+                            {#each drop.gallery as item}
+                                <div class="thumbnail">
+                                    <div class="image-cover" style="padding-top: 473px">
+                                        {#if item === null}
+                                            <BlurImage {...item} />
+                                        {:else}
+                                            <BlurImage />
+                                        {/if}
+                                    </div>
+                                </div>
+                            {/each}
+                        {:else}
+                            <div class="thumbnail">
+                                <div class="image-cover" style="padding-top: 473px">
+                                    <BlurImage/>
+                                </div>
                             </div>
-                        </div>
-                        {/each}
+                        {/if}
                     </Carousel>
                 </div>
                 <div class="gallery gallery-images d-block m-none  mb-35">
-                    {#each drop.gallery as item, i}
-                    <div class={`gallery-images__item ${i === 0 ? 'active' : ''}`}>
-                        <div class="thumbnail">
-                            <div class="image-cover" style="padding-top: 473px;">
-                                <BlurImage {...item} />
+                    {#if drop.gallery.length > 0}
+                        {#each drop.gallery as item, i}
+                            <div class={`gallery-images__item ${i === 0 ? 'active' : ''}`}>
+                                <div class="thumbnail">
+                                    <div class="image-cover" style="padding-top: 473px;">
+                                        <BlurImage {...item} />
+                                    </div>
+                                </div>
+                            </div>
+                        {/each}
+                    {:else}
+                        <div class={`gallery-images__item active`}>
+                            <div class="thumbnail">
+                                <div class="image-cover" style="padding-top: 473px;">
+                                    <BlurImage />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {/each}
+                    {/if}
                 </div>
                 <div class="featured-drop__actions d-none m-block">
                     <div class="row mr--5 ml--5">

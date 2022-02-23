@@ -17,6 +17,7 @@
   import OysteoLogo from '$lib/components/OysteoLogo.svelte';
   import CloseIcon from '$lib/icons/CloseIcon.svelte';
 import ShopNavMobile from './ShopNavMobile.svelte';
+import ProductSearchFormMobile from './ProductSearchFormMobile.svelte';
 
   let dispathcher = createEventDispatcher();
   export let open = false;
@@ -83,7 +84,10 @@ import ShopNavMobile from './ShopNavMobile.svelte';
           >
         {:else if content == "shop-nav"}
           <ShopNavMobile on:close={callCloseHeaderActionMobile}/>
-        {/if}
+        {:else if content == "product-search-form"}
+        <ProductSearchFormMobile
+          bind:searchModel/>
+      {/if}
       </div>
     </div>
   </div>
