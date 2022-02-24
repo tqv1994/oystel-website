@@ -35,16 +35,6 @@
   import LookList2 from '$lib/components/LookList2.svelte';
   import DropSlides from '$lib/components/DropSlides.svelte';
 
-  let filterActive = 'Current Drops';
-  let configPage = {
-    header: {
-      page: 'shop',
-      transparent: true,
-      theme: 'dark',
-      currentMenu: 'shop',
-    },
-  };
-
   export let data: Page;
 
   const carouselConfig = {

@@ -6,15 +6,17 @@ import type { Load } from "@sveltejs/kit";
         const res = await fetch(`/product.json?${url.searchParams.toString()}`);
         if (res.ok) {
             const products: Product[] = await res.json();
+            let params = stringHelper.queryURLParamToJSON(url.searchParams.toString());
+            console.log(params);
             return {
                 props: {
                     products,
                     params: {
-                        query: url.searchParams.get(QUERY) || '',
-                        type: url.searchParams.get(TYPE) || '',
-                        designer: url.searchParams.get(PRODUCT_DESIGNER) || '',
-                        pattner: url.searchParams.get(PRODUCT_PATTERN) || '',
-                        colour: url.searchParams.get(PRODUCT_COLOUR) || '',
+                        query: params[QUERY] || '',
+                        type: params[TYPE] || '',
+                        designer: params[PRODUCT_DESIGNER] || '',
+                        pattners: (params[PRODUCT_PATTERN] || '').split(","),
+                        colours: (params[PRODUCT_COLOUR] || '').split(","),
                     }
                 }
             }
@@ -33,6 +35,7 @@ import Item from "$lib/components/Item.svelte";
 import LayoutGrid from "@smui/layout-grid";
 import Cell from "@smui/layout-grid/src/Cell.svelte";
 import { PRODUCT_COLOUR, PRODUCT_DESIGNER, PRODUCT_PATTERN, QUERY, TYPE } from "$lib/store/search";
+import { stringHelper } from "$lib/helpers";
 export let products: Product[];
 export let params: any;
 </script>

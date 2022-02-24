@@ -22,7 +22,7 @@
 >
   <div class="what-to-wear-content d-pl-150 d-pr-160">
     <p class="text-eyebrow m-0">{description}</p>
-    <h2 class="d-mt-25 d-mb-35 m-mt-20 m-mb-25">{name}</h2>
+    <h1 class="d-mt-25 d-mb-35 m-mt-20 m-mb-25">{name}</h1>
     {#if actions?.length}
       {#each actions as action}
         <Button variant="outlined" class="hover-affect" href={action.url}

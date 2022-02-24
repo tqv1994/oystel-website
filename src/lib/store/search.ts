@@ -24,6 +24,7 @@ export const LIMIT = 'l';
 export const PRODUCT_DESIGNER = 'pd';
 export const PRODUCT_COLOUR = 'pc';
 export const PRODUCT_PATTERN = 'pt';
+export const VACATION_STYLE = 'vs';
 
 export type SearchParamKey =
   | typeof QUERY
@@ -36,7 +37,8 @@ export type SearchParamKey =
   | typeof LIMIT
   | typeof PRODUCT_DESIGNER
   | typeof PRODUCT_COLOUR
-  | typeof PRODUCT_PATTERN;
+  | typeof PRODUCT_PATTERN
+  | typeof VACATION_STYLE;
 
 export type SearchParams = {
   [QUERY]?: string;
@@ -48,8 +50,9 @@ export type SearchParams = {
   [ORDERING]?: OrderingKey;
   [LIMIT]?: number;
   [PRODUCT_DESIGNER]?: string;
-  [PRODUCT_COLOUR]?: string;
-  [PRODUCT_PATTERN]?: string;
+  [PRODUCT_COLOUR]?: string[];
+  [PRODUCT_PATTERN]?: string[];
+  [VACATION_STYLE]?: string;
 };
 
 export type SearchResultGroup<T extends Identifiable> = {
@@ -77,8 +80,11 @@ export function makeQueryString(params: SearchParams): string {
   let k: keyof SearchParams;
   for (k in params) {
     if (Object.prototype.hasOwnProperty.call(params, k)) {
-      const v = params[k];
+      let v = params[k];
       if (v) {
+        if(Array.isArray(v)){
+          v = v.toString();
+        }
         s.append(k, v as string);
       }
     }
@@ -97,8 +103,9 @@ export function parseSearchParams(query: URLSearchParams): SearchParams {
     [ORDERING]: (query.get(ORDERING) as OrderingKey) || NAME_ASC_KEY,
     [LIMIT]: parseInt(query.get(LIMIT) || '20', 10),
     [PRODUCT_DESIGNER]: query.get(PRODUCT_DESIGNER) || undefined,
-    [PRODUCT_COLOUR]: query.get(PRODUCT_COLOUR) || undefined,
-    [PRODUCT_PATTERN]: query.get(PRODUCT_PATTERN) || undefined
+    [PRODUCT_COLOUR]:  query.get(PRODUCT_COLOUR) || undefined,
+    [PRODUCT_PATTERN]: query.get(PRODUCT_PATTERN) || undefined,
+    [VACATION_STYLE]: query.get(VACATION_STYLE) || undefined
   };
 }
 

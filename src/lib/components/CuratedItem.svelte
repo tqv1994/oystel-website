@@ -12,7 +12,7 @@
   <div class={`${classItem} t-mb-0 m-mb-50`}>
     <div class="thumbnail d-mb-25 t-mb-25 m-mb-20">
       <div class="image-cover" style={`padding-top: ${heightThumbnail}`}>
-        {#if item.gallery[0] !== null}
+        {#if item.gallery && typeof(item.gallery[0]) !== "undefined"}
           <BlurImage {...item.gallery[0]} />
         {:else}
           <BlurImage />

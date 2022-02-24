@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import { Category } from './category';
+import { GalleryComponentBase } from './component';
 import { CollectionStore, Exhibitable, Identifiable } from './types';
 
 export const productStore = writable<CollectionStore<Product>>({
@@ -12,6 +13,10 @@ export type Product = Identifiable & Exhibitable & {
   intro: string;
   available: boolean;
 }
+
+export type ProductGallery = GalleryComponentBase & {
+  products: Product[];
+};
 
 export const productDesignerStore = writable<CollectionStore<Category>>({
   items: {},
@@ -26,6 +31,10 @@ export const productColourStore = writable<CollectionStore<Category>>({
 });
 
 export const productPattnerStore = writable<CollectionStore<Category>>({
+  items: {},
+});
+
+export const vacationStyleStore = writable<CollectionStore<Category>>({
   items: {},
 });
 
@@ -65,3 +74,22 @@ fragment productTypeFields on ProductType {
   name
 }
 `;
+
+export const vacationStyleFieldsFragment = `
+fragment vacationStyleFields on VacationStyle {
+  id
+  name
+}
+`;
+
+export const productGalleryFieldsFragment = `
+fragment productGalleryFields on ComponentGalleriesProductGallery {
+  id
+  name
+  headline
+  prominent
+  vertical
+  products {
+    ...productFields
+  }
+}`;

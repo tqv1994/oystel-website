@@ -6,6 +6,7 @@
     productDesignerStore,
     productPattnerStore,
     productTypeStore,
+    vacationStyleStore,
   } from '$lib/store/product';
   import {
     PRODUCT_COLOUR,
@@ -15,6 +16,7 @@
     search,
     SearchParams,
     TYPE,
+    VACATION_STYLE,
   } from '$lib/store/search';
   import { sortByName } from '$lib/utils/sort';
 
@@ -26,34 +28,37 @@
   import _ from 'lodash';
   import Button from '@smui/button/src/Button.svelte';
   import Label from '@smui/list/src/Label.svelte';
+  import OySelect from './common/OySelect.svelte';
 
   export let query: string = '';
   export let type: string = '';
   export let designer: string = '';
-  export let colour: string = '';
-  export let pattern: string = '';
+  export let colours: string[] = [];
+  export let patterns: string[] = [];
   export let vacationStyle: string = '';
 
   let contentHeaderActionMobile: string = '';
-  let types: Category[] = [];
+  let typeOptions: Category[] = [];
   productTypeStore.subscribe((store) => {
-    types = sortByName(Object.values(store.items));
-    types.unshift({ id: '', name: 'All' });
+    typeOptions = sortByName(Object.values(store.items));
+    typeOptions.unshift({ id: '', name: 'All' });
   });
-  let designers: Category[] = [];
+  let designerOptions: Category[] = [];
   productDesignerStore.subscribe((store) => {
-    designers = sortByName(Object.values(store.items));
-    designers.unshift({ id: '', name: 'All' });
+    designerOptions = sortByName(Object.values(store.items));
   });
-  let colours: Category[] = [];
+  let colourOptions: Category[] = [];
   productColourStore.subscribe((store) => {
-    colours = sortByName(Object.values(store.items));
-    colours.unshift({ id: '', name: 'All' });
+    colourOptions = sortByName(Object.values(store.items));
   });
-  let patterns: Category[] = [];
+  let patternOptions: Category[] = [];
   productPattnerStore.subscribe((store) => {
-    patterns = sortByName(Object.values(store.items));
-    patterns.unshift({ id: '', name: 'All' });
+    patternOptions = sortByName(Object.values(store.items));
+  });
+
+  let vacationStyleOptions: Category[] = [];
+  vacationStyleStore.subscribe((store) => {
+    vacationStyleOptions = sortByName(Object.values(store.items));
   });
 
   function go(params: SearchParams) {
@@ -61,8 +66,9 @@
       [QUERY]: query,
       [TYPE]: type,
       [PRODUCT_DESIGNER]: designer,
-      [PRODUCT_COLOUR]: colour,
-      [PRODUCT_PATTERN]: pattern,
+      [PRODUCT_COLOUR]: colours,
+      [PRODUCT_PATTERN]: patterns,
+      [VACATION_STYLE]: vacationStyle,
       ...params,
     });
   }
@@ -80,15 +86,34 @@
   }
 
   function onDesignerChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ [PRODUCT_DESIGNER]: event.detail.value?.id });
+    console.log('event value pd', event.detail);
+    go({ [PRODUCT_DESIGNER]: event.detail.value?.id || null });
   }
 
   function onColourChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ [PRODUCT_COLOUR]: event.detail.value?.id });
+    console.log('event value', event.detail);
+    if (event.detail.value) {
+      go({
+        [PRODUCT_COLOUR]: event.detail.value.map((item: Category) => item.id),
+      });
+    } else {
+      go({ [PRODUCT_COLOUR]: null });
+    }
   }
 
   function onPatternChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ [PRODUCT_PATTERN]: event.detail.value?.id });
+    console.log('event value', event.detail);
+    if (event.detail.value) {
+      go({
+        [PRODUCT_PATTERN]: event.detail.value.map((item: Category) => item.id),
+      });
+    } else {
+      go({ [PRODUCT_PATTERN]: null });
+    }
+  }
+
+  function onVacationStyleChange(event: CustomEvent<DropdownValue<Category>>) {
+    go({ [VACATION_STYLE]: event.detail.value?.id });
   }
 
   function onSearchSubmitMobile(event: CustomEvent) {
@@ -97,8 +122,9 @@
       [QUERY]: event.detail.query || '',
       [TYPE]: event.detail.type || '',
       [PRODUCT_DESIGNER]: event.detail.designer || '',
-      [PRODUCT_PATTERN]: event.detail.pattern || '',
-      [PRODUCT_COLOUR]: event.detail.colour || '',
+      [PRODUCT_PATTERN]: event.detail.patterns || null,
+      [PRODUCT_COLOUR]: event.detail.colours || null,
+      [VACATION_STYLE]: event.detail.vacationStyle || '',
     });
   }
 </script>
@@ -128,65 +154,68 @@
     </Cell>
     <Cell span="2">
       <div class="form-control">
-        <OyAutocomplete
-          getOptionLabel={(option) => (option ? `${option.name}` : '')}
-          bind:value={type}
-          options={types}
-          key={'id'}
-          label="Category"
-          variant="outlined"
-          on:SMUIAutocomplete:change={onTypeChange}
+        <OySelect
+          items={typeOptions}
+          optionIdentifier="id"
+          labelIdentifier="name"
+          placeholder="Category"
+          on:select={onTypeChange}
+          on:clear={onTypeChange}
+          value={type}
         />
       </div>
     </Cell>
     <Cell span="2">
       <div class="form-control">
-        <OyAutocomplete
-          getOptionLabel={(option) => (option ? `${option.name}` : '')}
-          bind:value={designer}
-          options={designers}
-          key={'id'}
-          label="Designer"
-          variant="outlined"
-          on:SMUIAutocomplete:change={onDesignerChange}
+        <OySelect
+          items={designerOptions}
+          optionIdentifier="id"
+          labelIdentifier="name"
+          placeholder="Designer"
+          on:select={onDesignerChange}
+          on:clear={onDesignerChange}
+          value={designer}
         />
       </div>
     </Cell>
     <Cell span="2">
       <div class="form-control">
-        <OyAutocomplete
-          getOptionLabel={(option) => (option ? `${option.name}` : '')}
-          bind:value={colour}
-          options={colours}
-          key={'id'}
-          label="Colour"
-          variant="outlined"
-          on:SMUIAutocomplete:change={onColourChange}
+        <OySelect
+          items={colourOptions}
+          optionIdentifier="id"
+          labelIdentifier="name"
+          placeholder="Colours"
+          on:select={onColourChange}
+          on:clear={onColourChange}
+          value={colours}
+          isMulti={true}
         />
       </div>
     </Cell>
     <Cell span="2">
       <div class="form-control">
-        <OyAutocomplete
-          getOptionLabel={(option) => (option ? `${option.name}` : '')}
-          bind:value={pattern}
-          options={[]}
-          key={'id'}
-          label="Pattern"
-          variant="outlined"
-          on:SMUIAutocomplete:change={onPatternChange}
+        <OySelect
+          items={patternOptions}
+          optionIdentifier="id"
+          labelIdentifier="name"
+          placeholder="Patterns"
+          on:select={onPatternChange}
+          on:clear={onPatternChange}
+          value={patterns}
+          isMulti={true}
         />
       </div>
     </Cell>
     <Cell span="2">
       <div class="form-control">
-        <OyAutocomplete
-          getOptionLabel={(option) => (option ? `${option.name}` : '')}
-          bind:value={pattern}
-          options={[]}
-          key={'id'}
-          label="Vacation Style"
-          variant="outlined"
+        <OySelect
+          items={vacationStyleOptions}
+          optionIdentifier="id"
+          labelIdentifier="name"
+          placeholder="Vacation Style"
+          on:select={onVacationStyleChange}
+          on:clear={onVacationStyleChange}
+          value={patterns}
         />
       </div>
     </Cell>
@@ -203,7 +232,7 @@
 
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  searchModel={{ type, designer, colour, pattern, query }}
+  searchModel={{ type, designer, colours, patterns, query }}
   on:close={onSearchSubmitMobile}
 />
 

@@ -4,7 +4,7 @@ import { makeErrorResponse } from '$lib/utils/fetch';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
 import { stringHelper } from '$lib/helpers';
 import { Product, productFieldsFragment} from '$lib/store/product';
-import { PRODUCT_COLOUR, PRODUCT_DESIGNER, PRODUCT_PATTERN, QUERY, TYPE } from '$lib/store/search';
+import { PRODUCT_COLOUR, PRODUCT_DESIGNER, PRODUCT_PATTERN, QUERY, TYPE, VACATION_STYLE } from '$lib/store/search';
 
 const query = `
 query($params: JSON) {
@@ -25,21 +25,30 @@ export const get: RequestHandler = async (event) => {
         const client = createGraphClientFromRequest(event.request);
         let paramsInput: any = {};
         const params = stringHelper.queryURLParamToJSON(event.url.searchParams.toString());
-        if(params[TYPE]){
+        for(let i in params){
+            if(i === TYPE){
 
+            }
+            else if(i === QUERY){
+                paramsInput['name'] = params[QUERY];
+            }
+            else if(i === PRODUCT_DESIGNER){
+                paramsInput['product_designer'] = params[PRODUCT_DESIGNER];
+            }
+            else if(i === PRODUCT_PATTERN && params[PRODUCT_PATTERN]){
+                paramsInput['product_pattern'] = (params[PRODUCT_PATTERN] || '').split(",");
+            }
+            else if(i === PRODUCT_COLOUR && params[PRODUCT_COLOUR]){
+                paramsInput['product_colour'] = (params[PRODUCT_COLOUR] || '').split(",");
+            }else if(i === VACATION_STYLE){
+                paramsInput['vacation_style'] = params[VACATION_STYLE];
+            }else{
+                if(params[i]){
+                    paramsInput[i] = params[i];
+                }
+            }
         }
-        if(params[QUERY]){
-            paramsInput['name'] = params[QUERY];
-        }
-        if(params[PRODUCT_DESIGNER]){
-            paramsInput['product_designer'] = params[PRODUCT_DESIGNER];
-        }
-        if(params[PRODUCT_PATTERN]){
-            paramsInput['product_pattern'] = params[PRODUCT_PATTERN];
-        }
-        if(params[PRODUCT_COLOUR]){
-            paramsInput['product_colour'] = params[PRODUCT_COLOUR];
-        }
+        console.log(paramsInput);
         const res = await client.query<{ products: Product[] }>(query, {params: paramsInput}).toPromise();
         if (res.data?.products) {
             return {

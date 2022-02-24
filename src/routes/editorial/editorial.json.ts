@@ -8,7 +8,7 @@ import { dropFieldsFragment, dropGalleryFieldsFragment } from '$lib/store/drop';
 import { destinationFieldsFragment, destinationGalleryFieldsFragment } from '$lib/store/destination';
 import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
 import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
-import { productFieldsFragment } from '$lib/store/product';
+import { productFieldsFragment, productGalleryFieldsFragment } from '$lib/store/product';
 import { bannerFieldsFragment } from '$lib/store/banner';
 import { actionFieldsFragment } from '$lib/store/action';
 import { featuredDropFieldsFragment, pageFieldsFragment, PageQueryResult } from '$lib/store/page';
@@ -43,6 +43,7 @@ ${lookFieldsFragment}
 ${bannerFieldsFragment}
 ${actionFieldsFragment}
 ${pageFieldsFragment}
+${productGalleryFieldsFragment}
 `;
 
 export type EditorialPageData = PageQueryResult;

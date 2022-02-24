@@ -12,7 +12,7 @@
   tripInput.desiredDestinations = tripInput.desiredDestinations || '';
 </script>
 
-<Step title="Where would you like to go?" subtitle="Check all that apply">
+<Step title="Where would you like to travel?" subtitle="Check all that apply">
   <div class="options">
     {#each destinationTypes as option}
       <FormField>

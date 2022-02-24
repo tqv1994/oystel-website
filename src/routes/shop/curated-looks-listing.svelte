@@ -27,19 +27,9 @@
   import { Page } from '$lib/store/page';
   import Carousel from '$lib/components/Carousel.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
-import CuratedItem from '$lib/components/CuratedItem.svelte';
+  import CuratedItem from '$lib/components/CuratedItem.svelte';
   export let data: Page;
-  let openSignupModal, openSigninModal;
-  let userModel = $authStore.user;
   let filterActive = 'All';
-  let configPage = {
-    header: {
-      page: 'shop',
-      transparent: true,
-      theme: 'light',
-      currentMenu: 'shop',
-    },
-  };
   const carouselConfig = {
     autoplayDuration: 8000,
     duration: 1500,
@@ -47,20 +37,6 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
     particlesToShow: 1,
     chevronPosition: 'inside',
   };
-  function callOpenSignupModal() {
-    if (!userModel) {
-      openSignupModal = true;
-      openSigninModal = false;
-    }
-    openSignupModal = true;
-    openSigninModal = false;
-  }
-  function callOpenSigninModal() {
-    if (!userModel) {
-      openSignupModal = false;
-      openSigninModal = true;
-    }
-  }
 </script>
 
 <div class="content curated-looks-listing-page">
@@ -88,17 +64,23 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
                   <Carousel {...carouselConfig}>
                     {#each section.gallery as item}
                       <div class="slides">
-                        <BlurImage {...item} />
+                        {#if item !== null}
+                          <BlurImage {...item} />
+                        {:else}
+                          <BlurImage/>
+                        {/if}
                       </div>
                     {/each}
                   </Carousel>
                 {:else}
                   <div
                     class="image-cover"
-                    style="padding-top: calc(90vh - 155px)"
+                    style="padding-top: calc(90vh - 87px)"
                   >
                     {#if section.gallery.length > 0}
-                    <BlurImage {...section.gallery[0]} />
+                      <BlurImage {...section.gallery[0]} />
+                    {:else}
+                      <BlurImage/>
                     {/if}
                   </div>
                 {/if}
@@ -114,7 +96,7 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
                 <h2 class="mt-0 mb-50">{section.name}</h2>
                 <div class="latest-list">
                     <LayoutGrid class="p-0">
-                        {#each section.drops as drop}
+                        {#each (section.drops || []) as drop}
                             <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
                                 <CuratedItem item={drop} heightThumbnail="calc(555/739 * 100%)" classItem="latest-item"/>
                             </Cell>
@@ -139,7 +121,7 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
         </div>
         <div class="products-list">
             <LayoutGrid class="p-0">
-                {#each section.drops as drop}
+                {#each (section.drops || []) as drop}
                     <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
                         <CuratedItem item={drop} heightThumbnail="calc(410/315 * 100%)" classItem="product-item"/>
                     </Cell>
