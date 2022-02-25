@@ -324,7 +324,7 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
                 </div>
               </div>
               <div class="form-control text-left">
-                <label class="text-h5">By Country</label>
+                <label class="text-h5">Location</label>
                 <div class="display-inline">
                   <OyAutocomplete
                       getOptionLabel={(option) => (option ? `${option.name}` : '')}
@@ -402,7 +402,7 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
                   >
                   <CellTable style="width: 35%;"
                     ><a href={makeLink('/advisor', item)}
-                      ><p class="name text-h3">
+                      ><p class="name text-h4">
                         {item.name}
                       </p></a
                     ></CellTable
@@ -450,9 +450,9 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
                           </div>
                         </Cell>
                         <Cell spanDevices={{ phone: 3, tablet: 6, desktop: 8 }}>
-                          <h3 class="mt-0 mb-15">
+                          <h4 class="mt-0 mb-15">
                             {item.name}
-                          </h3>
+                          </h4>
                           <p class="mt-0 mb-30">
                             {item.country?.name || ''}
                           </p>
@@ -485,14 +485,30 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
   {advisorTypes}
   countries={sortByName(Object.values($countryStore.items))}
   on:close={onSearchSubmitMobile}
-  searchModel={{ type: type, country: country }}
+  searchModel={{ type, country }}
 />
 
 <style lang="scss" global>
+  @use '../../theme/mixins';
   .advisor-listing-page {
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/sticky.scss';
     @import './src/style/partial/form.scss';
+    --mdc-typography-headline6-text-transform: none;
+    --mdc-typography-body1-font-size: 16px;
+    --mdc-typography-body1-font-weight: 400;
+    --mdc-typography-body1-line-height: 29px;
+    @include mixins.mobile{
+      --mdc-typography-body1-font-size: 14px;
+      --mdc-typography-body1-font-weight: 400;
+      --mdc-typography-body1-line-height: 27px;
+
+      --mdc-typography-headline6-text-transform: none;
+
+      --mdc-typography-headline4-font-size: 20px;
+      --mdc-typography-headline4-font-weight: 400;
+      --mdc-typography-headline4-line-height: 24px;
+    }
     .header-title {
       background-color: #F2F2F2;
     }
@@ -634,9 +650,7 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
         --mdc-layout-grid-gutter-desktop: 30px;
         --mdc-layout-grid-gutter-phone: 20px;
       }
-      .advisors-list .mdc-layout-grid .mdc-layout-grid__cell .item-advisor {
-        border-top: 1px solid rgba(0, 0, 0, 0.2);
-      }
+      
       .advisors-list
         .mdc-layout-grid
         .mdc-layout-grid__cell:last-child

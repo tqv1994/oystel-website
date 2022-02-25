@@ -106,7 +106,7 @@ import Carousel from './Carousel.svelte';
                 <div class="featured-drop__actions d-none m-block">
                     <div class="row mr--5 ml--5">
                         {#if button_1}
-                            <div class="col pr-5 pl-5">
+                            <div class="col m-col-6 pr-5 pl-5">
                                 <Button
                                     variant="unelevated"
                                     href={button_1.url}
@@ -115,7 +115,7 @@ import Carousel from './Carousel.svelte';
                             </div>
                         {/if}
                         {#if button_2}
-                            <div class="col pr-5 pl-5">
+                            <div class="col m-col-6 pr-5 pl-5">
                                 <Button
                                     variant="outlined"
                                     href={button_2.url}
@@ -166,6 +166,7 @@ import Carousel from './Carousel.svelte';
             @include mixins.mobile{
                 :global(button), :global(a){
                     width: 100%;
+                    min-width: 100%;
                 }
             }
         }

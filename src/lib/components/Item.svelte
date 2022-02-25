@@ -71,7 +71,7 @@ import { Product } from '$lib/store/product';
         </p></Cell
       >
     </LayoutGrid>
-    <h3 class="title mt-15 mb-15">{name}</h3>
+    <h4 class="title mt-15 mb-15">{name}</h4>
     {#if introShow}
       <p class="short-text m-none m-0">{(intro || '').substring(0, 80)}</p>
     {/if}

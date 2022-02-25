@@ -23,8 +23,8 @@
     }, 0);
   }
   onMount(()=>{
-    typeData = advisorTypes.find((item)=>item.id+"" === type);
-    countryData = locations.find((item)=>item.id+"" === country);
+    typeData = advisorTypes.find((item)=>item.id+"" === type+"");
+    countryData = locations.find((item)=>item.id+"" === country+"");
   });
 
   const onAdvisorTypeChange = (event: CustomEvent<DropdownValue<Category>>) => {
@@ -46,7 +46,7 @@
       <Dropdown
         label="By Speciality"
         items={advisorTypes}
-        value={countryData}
+        bind:value={typeData}
         on:MDCSelect:change={onAdvisorTypeChange}
       />
     </div>
@@ -54,7 +54,7 @@
       <Dropdown
         label="By Location"
         items={locations}
-        bind:value={typeData}
+        bind:value={countryData}
         on:MDCSelect:change={onCountryChange}
       />
     </div>

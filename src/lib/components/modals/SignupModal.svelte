@@ -282,7 +282,7 @@
         </div>
       </div>
       <div class="col d-col-6 m-col-12">
-        <div class="signup-socials">
+        <div class="signup-socials m-mb-20">
           <p class="text-input m-mb-10">Or sign up using</p>
           <LayoutGrid class="m-0">
             <Cell spanDevices={{ desktop: 12, tablet: 8, phone: 4 }}>
