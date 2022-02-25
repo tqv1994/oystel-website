@@ -20,7 +20,7 @@
     duration: 1500,
     infinite: true,
     particlesToShow: 1,
-    chevronPosition: 'inside',
+    chevronPosition: 'inside' 
   };
 </script>
 
@@ -59,7 +59,7 @@
               </g>
             </Icon>
           </IconButton>
-          <Carousel {...carouselConfig}>
+          <Carousel {...carouselConfig} initialPageIndex={active}>
             {#each products as item}
               <div class="slide-content slide-item">
                 <LayoutGrid class="p-0">
@@ -68,7 +68,7 @@
                     <div class="thumbnail">
                       <div
                         class="image-cover"
-                        style="padding-top: calc(305 / 191 * 100%)"
+                        style="padding-top: calc(406 / 301 * 100%)"
                       >
                         <BlurImage {...item.gallery[0]} />
                       </div>

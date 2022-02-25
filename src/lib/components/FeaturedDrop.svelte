@@ -108,7 +108,7 @@ import Carousel from './Carousel.svelte';
                         {#if button_1}
                             <div class="col pr-5 pl-5">
                                 <Button
-                                    variant="raised"
+                                    variant="unelevated"
                                     href={button_1.url}
                                     ><Label>{button_1.name}</Label></Button
                                 >
@@ -129,10 +129,10 @@ import Carousel from './Carousel.svelte';
                     <div class="row">
                         <div class="d-col-5 m-col-12">
                             <p class="text-eyebrow">Fashion Drop</p>
-                            <h3>{drop.name}</h3>
+                            <h3 class="m-mb-0">{drop.name}</h3>
                         </div>
                         <div class="d-col-7 m-col-12">
-                            <p class="d-mt-50">{drop.description}</p>
+                            <p class="d-mt-50 m-mt-0 m-mb-20">{drop.description}</p>
                             <Button
                                 class="hover-affect-drop"
                                 variant="outlined"

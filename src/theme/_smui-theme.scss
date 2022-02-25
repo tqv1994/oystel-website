@@ -631,7 +631,7 @@ body.mdc-dialog-scroll-lock{ // Fixed error jumpled screen when open dialog
 
 .mdc-drawer {
   .mdc-deprecated-list-item.mdc-deprecated-list-item {
-    @include typography.typography('headline4');
+    @include typography.typography('headline5');
     text-transform: uppercase;
 
     &.active {

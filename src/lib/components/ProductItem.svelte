@@ -2,21 +2,18 @@
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import { Experience } from '$lib/store/experience';
-  import { Destination } from '$lib/store/destination';
   import { makeLink } from '$lib/utils/link';
   import IconButton from '@smui/icon-button';
   import { Icon } from '@smui/common';
   import { Svg } from '@smui/common/elements';
   import { createEventDispatcher } from 'svelte';
-  import { Searchable } from '$lib/store/types';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import { UploadFile } from '$lib/store/upload-file';
   import { Country } from '$lib/store/country';
-import { Category } from '$lib/store/category';
-import { Product } from '$lib/store/product';
-  export let item: Experience | Destination | Product | Searchable;
+  import { Category } from '$lib/store/category';
+  import { Product } from '$lib/store/product';
+  export let item: Product;
   export let pathPrefix: string;
   export let key: number | null = null;
   export let group_id: number | string | null = null;
@@ -29,6 +26,9 @@ import { Product } from '$lib/store/product';
   export let country: Country | undefined = undefined;
   export let type: Category | undefined = undefined;
   export let introShow: boolean = false;
+  export let brand: string | undefined = undefined;
+  
+
   let dispathcher = createEventDispatcher();
   function callLikeItem() {
     setTimeout(() => {
@@ -42,18 +42,18 @@ import { Product } from '$lib/store/product';
   }
 </script>
 
-<div class="item">
+<div class="item" on:click>
   <div class="thumbnail">
-      <a href={makeLink(pathPrefix, item)}>
-        <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
-          <BlurImage/>
-          {#if gallery && gallery.length > 0 && gallery[0] !== null}
-            <BlurImage {...gallery[0]} />
-          {:else}
-            <BlurImage/>
-          {/if}
-        </div>
-      </a>
+    <a href="javascript:void(0);" >
+      <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
+        <BlurImage />
+        {#if gallery && gallery.length > 0 && gallery[0] !== null}
+          <BlurImage {...gallery[0]} />
+        {:else}
+          <BlurImage />
+        {/if}
+      </div>
+    </a>
     <IconButton
       class="btn-favorite {liked ? 'liked' : ''}"
       on:click={callLikeItem}
@@ -67,11 +67,11 @@ import { Product } from '$lib/store/product';
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, phone: 2 }}
         ><p class="text-eyebrow text-left m-0 mt-20 mb-0">
-          {country?.name || type?.name || ''}
+          {brand || ''}
         </p></Cell
       >
     </LayoutGrid>
-    <h3 class="title mt-15 mb-15">{name}</h3>
+    <h3 class="text-body1 mt-15 mb-15">{name}</h3>
     {#if introShow}
       <p class="short-text m-none m-0">{(intro || '').substring(0, 80)}</p>
     {/if}
@@ -90,8 +90,8 @@ import { Product } from '$lib/store/product';
     .title {
       height: 32px;
       overflow: hidden;
-      @include mixins.mobile{
-        height: 43px;
+      @include mixins.mobile {
+        height: 42px;
       }
     }
     .thumbnail {

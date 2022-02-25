@@ -9,6 +9,7 @@
   export let particlesToShow = 1;
   export let chevronPosition = 'inside';
   export let itemsShowMobile: number | undefined = undefined;
+  export let initialPageIndex: number = 0;
   let itemsShowDesktop: number = particlesToShow;
 
   let Carousel: Carousel; // for saving Carousel component class
@@ -66,6 +67,7 @@
   {duration}
   {infinite}
   bind:particlesToShow
+  bind:initialPageIndex
   let:showPrevPage
   let:showNextPage
 >

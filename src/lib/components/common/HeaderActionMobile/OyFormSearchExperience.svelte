@@ -37,23 +37,31 @@
     }, 0);
   }
 
-  onMount(()=>{
-    destination = destination_types.find((item)=>item.id + "" === destination_type );
-    experience = experience_types.find((item)=>item.id + "" === experience_type );
-    countryData = countries.find((item)=>item.id+"" === country);
+  onMount(() => {
+    destination = destination_types.find(
+      (item) => item.id + '' === destination_type,
+    );
+    experience = experience_types.find(
+      (item) => item.id + '' === experience_type,
+    );
+    countryData = countries.find((item) => item.id + '' === country);
   });
 
-  const onExperienceTypeChange = (event: CustomEvent<DropdownValue<Category>>) => {
+  const onExperienceTypeChange = (
+    event: CustomEvent<DropdownValue<Category>>,
+  ) => {
     experience_type = event.detail.value.id;
-  }
+  };
 
-  const onDestinationTypeChange = (event: CustomEvent<DropdownValue<Category>>) => {
+  const onDestinationTypeChange = (
+    event: CustomEvent<DropdownValue<Category>>,
+  ) => {
     destination_type = event.detail.value.id;
-  }
+  };
 
   const onCountryChange = (event: CustomEvent<DropdownValue<Country>>) => {
     country = event.detail.value.id;
-  }
+  };
 </script>
 
 <div id="form-search-experience-wrap" class="mt-40">
@@ -62,22 +70,26 @@
     action="/"
     on:submit|preventDefault={onSearchSubmit}
   >
-    <div class="form-control mb-40">
-      <Dropdown
-        label="By Experience Type"
-        items={experience_types}
-        bind:value={experience}
-        on:MDCSelect:change={onExperienceTypeChange}
-      />
-    </div>
-    <div class="form-control mb-40">
-      <Dropdown
-        label="By Destination Type"
-        items={destination_types}
-        bind:value={destination}
-        on:MDCSelect:change={onDestinationTypeChange}
-      />
-    </div>
+    {#if experience_types.length > 0 && experience_types[0].id === "" }
+      <div class="form-control mb-40">
+        <Dropdown
+          label="By Experience Type"
+          items={experience_types}
+          bind:value={experience}
+          on:MDCSelect:change={onExperienceTypeChange}
+        />
+      </div>
+    {/if}
+    {#if destination_types.length > 0 && destination_types[0].id === "" }
+      <div class="form-control mb-40">
+        <Dropdown
+          label="By Destination Type"
+          items={destination_types}
+          bind:value={destination}
+          on:MDCSelect:change={onDestinationTypeChange}
+        />
+      </div>
+    {/if}
     <div class="form-control mb-40">
       <Dropdown
         label="By Country"

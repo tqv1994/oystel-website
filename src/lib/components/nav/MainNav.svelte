@@ -35,6 +35,7 @@
   import { afterUpdate } from 'svelte';
   import Menu, { MenuComponentDev } from '@smui/menu';
   import { Separator } from '@smui/list';
+import Follow from '../common/Follow.svelte';
   export let items: MainNavItem[];
   export let active: MainNavItem | undefined = undefined;
 
@@ -335,17 +336,20 @@
         {#if active}
           <List>
             <Item on:SMUI:action={() => (active = undefined)}>
-              <Graphic class="material-icons">chevron_left</Graphic>
+              <Graphic class="material-icons mr-5">chevron_left</Graphic>
               <Text>Back</Text>
+            </Item>
+            <Item>
+              <Text>{active.name}</Text>
             </Item>
             {#if activeSubItems?.length}
               {#each activeSubItems as item}
-                <Item href={makeLink(active.url, item)}>
+                <Item class="ml-25" href={makeLink(active.url, item)}>
                   <Text>{item.name}</Text>
                 </Item>
               {/each}
             {/if}
-            <Item href={active?.url} class="all">
+            <Item href={active?.url} class="all ml-25">
               <Label>View all</Label>
             </Item>
           </List>
@@ -354,7 +358,8 @@
             {#each items as item, index}
               {#if item.children?.length}
                 <Item>
-                  <Text>{item.name}</Text>
+                  <Text class="mr-30">{item.name}</Text>
+                  <Graphic class="material-icons">chevron_right</Graphic>
                 </Item>
               {:else}
                 <Item href={item.url}>
@@ -364,6 +369,7 @@
             {/each}
           </List>
         {/if}
+        <Follow/>
       </Content>
     </Drawer>
     <slot />

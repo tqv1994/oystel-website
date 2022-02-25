@@ -268,12 +268,12 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
 />
 
 <div class="content destinations-listing-content">
-  <section class="header-title d-pt-150 d-pb-0 m-pt-130 m-pb-25 full-width">
+  <section class="header-title d-pt-150 d-pb-0 m-pt-80 m-pb-25 full-width">
     <div class="content-wrap">
-      <div class="container m-none">
-        <LayoutGrid class="p-0 mb-50">
+      <div class="container">
+        <LayoutGrid class="p-0 d-mb-50 m-mb-20">
           <Cell span="12">
-            <h2 class="text-center d-mt-0 d-mb-20">
+            <h2 class="text-center d-mt-0 d-mb-20 m-mb-10">
               Choose Your Destination
             </h2>
             <p class="text-center m-0">
@@ -282,7 +282,7 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
           </Cell>
         </LayoutGrid>
         <form
-          class="search-form-experiences"
+          class="search-form-experiences m-none"
           method="GET"
           on:submit|preventDefault={() => {
             go({});

@@ -31,11 +31,9 @@ import type { Load } from "@sveltejs/kit";
 <script lang="ts">
 import ShopNavigation from "$lib/components/ShopNavigation.svelte";
 import ProductSearchForm from "$lib/components/ProductSearchForm.svelte";
-import Item from "$lib/components/Item.svelte";
-import LayoutGrid from "@smui/layout-grid";
-import Cell from "@smui/layout-grid/src/Cell.svelte";
 import { PRODUCT_COLOUR, PRODUCT_DESIGNER, PRODUCT_PATTERN, QUERY, TYPE } from "$lib/store/search";
 import { stringHelper } from "$lib/helpers";
+import ProductList from "$lib/components/ProductList.svelte";
 export let products: Product[];
 export let params: any;
 </script>
@@ -49,13 +47,9 @@ export let params: any;
         </div>
     </section>
     <section class="results">
-        <LayoutGrid class="pt-0 pb-0">
-            {#each products || [] as product}
-                <Cell spanDevices={{desktop: 3, tablet: 4, phone: 2}}>
-                    <Item item={product} {...product} />
-                </Cell>
-            {/each}
-        </LayoutGrid>
+        <div class="container">
+            <ProductList items={products} />
+        </div>
     </section>
 </div>
 <style lang="scss" global>

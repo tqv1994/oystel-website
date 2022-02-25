@@ -10,7 +10,7 @@ footer {
             padding-bottom: 90px;
         }
         @include mixins.desktop {
-            padding: 95px 126px 50px calc(100px + var(--mdc-layout-grid-margin-desktop));
+            padding: 95px 126px 50px calc(8% + var(--mdc-layout-grid-margin-desktop));
         }
         .mdc-layout-grid {
             --mdc-layout-grid-margin-desktop: 0;

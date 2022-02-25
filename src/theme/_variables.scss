@@ -3,8 +3,8 @@
 @use "./mixins";
 #svelte {
   --mdc-theme-primary: #000;
+  --mdc-theme-secondary: #F2F2F2;
   --mdc-theme-surface: #{colors.$white};
-  --mdc-theme-secondary: #{colors.$slightlyBlue};
   --mdc-theme-on-secondary: #{colors.$black};
   --mdc-ripple-color: transparent;
   --desktop-width: #{sizes.$desktop-width};

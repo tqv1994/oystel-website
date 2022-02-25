@@ -90,7 +90,7 @@
           </Icon>
         </IconButton>
       </div>
-      <h1 class="mb-0 mt-40">{data?.name}</h1>
+      <h2 class="mb-0 mt-40">{data?.name}</h2>
     </Cell>
     <Cell spanDevices={{ desktop: 5 }} class="text-right">
       <div class="mt-100">
