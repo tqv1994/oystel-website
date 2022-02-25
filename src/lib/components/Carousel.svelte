@@ -28,36 +28,38 @@
   };
 
   const checkIsDesktop = () => {
-    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    if(width >= 960){
+    const width =
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      document.body.clientWidth;
+    if (width >= 960) {
       return true;
     }
     return false;
-  }
+  };
 
-  const onResize = () =>{
-    if(!checkIsDesktop()){
-      if(itemsShowMobile){
+  const onResize = () => {
+    if (!checkIsDesktop()) {
+      if (itemsShowMobile) {
         particlesToShow = itemsShowMobile;
       }
-    }else{
+    } else {
       particlesToShow = itemsShowDesktop;
     }
-  }
+  };
 
-  onMount(()=>{
-    if(!checkIsDesktop()){
-      if(itemsShowMobile){
+  onMount(() => {
+    if (!checkIsDesktop()) {
+      if (itemsShowMobile) {
         particlesToShow = itemsShowMobile;
       }
-    }else{
-        particlesToShow = itemsShowDesktop;
+    } else {
+      particlesToShow = itemsShowDesktop;
     }
   });
 </script>
-<svelte:window
-  on:resize={onResize}
-/>
+
+<svelte:window on:resize={onResize} />
 
 <svelte:component
   this={Carousel}
@@ -126,18 +128,20 @@
       right: 0px;
     }
   }
-  :global(.sc-carousel-dots__container){
+  :global(.sc-carousel__carousel-container
+      .sc-carousel-dots__container.sc-carousel-dots__container) {
     @include mixins.desktop {
       display: none !important;
     }
+    padding-top: 10px;
   }
-  :global(.sc-carousel-dot__dot){
+  :global(.sc-carousel-dot__dot) {
     --sc-dot-size: 8px;
     opacity: 1;
     --sc-color-rgb-light: #fff;
-    border: 1px solid  #000;
+    border: 1px solid #000;
   }
-  :global(.sc-carousel-dot__dot_active){
+  :global(.sc-carousel-dot__dot_active) {
     background-color: #000 !important;
   }
 </style>

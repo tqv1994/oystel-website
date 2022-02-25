@@ -39,10 +39,10 @@
   import BlurImage from './blur-image.svelte';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
   import Carousel from './Carousel.svelte';
-import ProductItem from './ProductItem.svelte';
+  import ProductItem from './ProductItem.svelte';
 
   let dispathcher = createEventDispatcher();
-  export let title: string = "What to Pack";
+  export let title: string = 'What to Pack';
   export let items: Product[];
   let openProductSlide: boolean = false;
   let productIndex: number;
@@ -53,12 +53,12 @@ import ProductItem from './ProductItem.svelte';
   }
 
   const carouselConfig = {
-    autoplayDuration: 8000,
+    autoplayDuration: 5000,
     duration: 1500,
     infinite: false,
     particlesToShow: 6,
     chevronPosition: 'outside',
-    itemsShowMobile: 2
+    itemsShowMobile: 2,
   };
 </script>
 
@@ -67,15 +67,18 @@ import ProductItem from './ProductItem.svelte';
     <h2 class="mt-0">{title}</h2>
     <div class="products-list m-mb-40">
       {#if items.length > 0}
-      <Carousel {...carouselConfig}>
-        {#each items as item, i}
-          <ProductItem {...item} {item} on:click={() => {
-            openProductSlide = true;
-            productIndex = i;
-          }}/>
-          
-        {/each}
-      </Carousel>
+        <Carousel {...carouselConfig}>
+          {#each items as item, i}
+            <ProductItem
+              {...item}
+              {item}
+              on:click={() => {
+                openProductSlide = true;
+                productIndex = i;
+              }}
+            />
+          {/each}
+        </Carousel>
       {/if}
     </div>
   </div>
@@ -94,7 +97,7 @@ import ProductItem from './ProductItem.svelte';
     grid-auto-flow: column;
   }
 
-  .products-list{
+  .products-list {
     position: relative;
     :global(.mdc-layout-grid__inner::-webkit-scrollbar-track) {
       background-color: #d3d3d3;
@@ -109,21 +112,21 @@ import ProductItem from './ProductItem.svelte';
     :global(.item) {
       padding-right: var(--mdc-layout-grid-gutter-desktop);
     }
-    :global(.arrow-outside.left){
+    :global(.arrow-outside.left) {
       right: auto;
     }
-    :global(.arrow-outside){
+    :global(.arrow-outside) {
       bottom: -65px;
       top: auto;
     }
-    :global(.sc-carousel-dots__container){
+    :global(.sc-carousel-dots__container) {
       --sc-color-rgb-light: #000;
       bottom: -5%;
     }
 
-    :global(.sc-carousel-dots__container){
+    :global(.sc-carousel-dots__container) {
       display: none;
-      @include mixins.mobile{
+      @include mixins.mobile {
         display: flex;
       }
     }
@@ -144,28 +147,35 @@ import ProductItem from './ProductItem.svelte';
     filter: brightness(0);
   }
 
-  .products-list .image-cover :global(div), .products-list  .thumbnail .image-cover :global(div) {
+  .products-list .image-cover :global(div),
+  .products-list .thumbnail .image-cover :global(div) {
     width: 100% !important;
     height: 100% !important;
   }
-  .products-list{
-    .image-cover :global(img), .image-cover :global(div), .thumbnail .image-cover :global(img), .thumbnail .image-cover :global(div) {
-    -webkit-transition: opacity .6s,-webkit-filter .6s,-webkit-transform .6s,-webkit-box-shadow .3s;
-    transition: opacity .6s,-webkit-filter .6s,-webkit-transform .6s,-webkit-box-shadow .3s;
-    -o-transition: filter .6s,opacity .6s,transform .6s,box-shadow .3s;
-    transition: filter .6s,opacity .6s,transform .6s,box-shadow .3s;
-    transition: filter .6s,opacity .6s,transform .6s,box-shadow .3s,-webkit-filter .6s,-webkit-transform .6s,-webkit-box-shadow .3s;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    bottom: 0;
-    left: 0;
-    top: 0;
-    position: absolute;
-    -o-object-position: 50% 50%;
-    object-position: 50% 50%;
-    -o-object-fit: cover;
-    object-fit: cover;
-  }
+  .products-list {
+    .image-cover :global(img),
+    .image-cover :global(div),
+    .thumbnail .image-cover :global(img),
+    .thumbnail .image-cover :global(div) {
+      -webkit-transition: opacity 0.6s, -webkit-filter 0.6s,
+        -webkit-transform 0.6s, -webkit-box-shadow 0.3s;
+      transition: opacity 0.6s, -webkit-filter 0.6s, -webkit-transform 0.6s,
+        -webkit-box-shadow 0.3s;
+      -o-transition: filter 0.6s, opacity 0.6s, transform 0.6s, box-shadow 0.3s;
+      transition: filter 0.6s, opacity 0.6s, transform 0.6s, box-shadow 0.3s;
+      transition: filter 0.6s, opacity 0.6s, transform 0.6s, box-shadow 0.3s,
+        -webkit-filter 0.6s, -webkit-transform 0.6s, -webkit-box-shadow 0.3s;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      bottom: 0;
+      left: 0;
+      top: 0;
+      position: absolute;
+      -o-object-position: 50% 50%;
+      object-position: 50% 50%;
+      -o-object-fit: cover;
+      object-fit: cover;
+    }
   }
 </style>

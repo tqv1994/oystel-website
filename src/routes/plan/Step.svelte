@@ -8,7 +8,7 @@
 </script>
 
 <div class="root {className}">
-  <H2 class="mdc-typography--headline1 mb-20 title">{title}</H2>
+  <H2 class="mdc-typography--headline2 mb-20 title">{title}</H2>
   {#if subtitle}
     <p>{subtitle}</p>
   {/if}

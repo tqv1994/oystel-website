@@ -37,6 +37,7 @@
   import Item from '$lib/components/Item.svelte';
 import ProductList from '$lib/components/ProductList.svelte';
 import Section from '@smui/top-app-bar/src/Section.svelte';
+import ProductItem from '$lib/components/ProductItem.svelte';
 
   export let data: Page;
   console.log(data);
@@ -80,7 +81,7 @@ import Section from '@smui/top-app-bar/src/Section.svelte';
       <section class="header-title full-width dark">
         <div class="content-wrap">
           <div class="container">
-            <LayoutGrid class="p-0 mb-15">
+            <LayoutGrid class="p-0">
               <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
                 {#if section.drop.gallery && section.drop.gallery.length >= 2}
                   <Carousel {...carouselConfig}>
@@ -171,13 +172,14 @@ import Section from '@smui/top-app-bar/src/Section.svelte';
                   {section.looks[0].products.length || 0} items in this look
                 </h5>
                 <div class="products-list">
-                  <LayoutGrid class="p-0">
+                  <ProductList columnsDesktop={4} items={section.looks[0].products} />
+                  <!-- <LayoutGrid class="p-0">
                     {#each section.looks[0].products || [] as product}
                       <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-                        <Item item={product} {...product} />
+                        <ProductItem item={product} {...product} />
                       </Cell>
                     {/each}
-                  </LayoutGrid>
+                  </LayoutGrid> -->
                 </div>
               </div>
             </Cell>
@@ -251,7 +253,6 @@ import Section from '@smui/top-app-bar/src/Section.svelte';
     }
     .header-title .content-left {
       padding-top: 30vh;
-      padding-bottom: 180px;
     }
     .header-title .short-description {
       width: 80%;
@@ -265,20 +266,22 @@ import Section from '@smui/top-app-bar/src/Section.svelte';
       }
     }
 
-    .products-list .item-product .thumbnail {
+    .products-list .item .thumbnail {
       width: 100%;
-      padding-bottom: 145%;
+      .image-cover{
+        padding-top: 145% !important;
+      }
       background-color: #f2f2f2;
       background-position: center;
       background-repeat: no-repeat;
       position: relative;
     }
 
-    .products-list .item-product {
+    .products-list .item {
       padding-bottom: 30px;
     }
 
-    .products-list .item-product .thumbnail :global(.btn-favorite) {
+    .products-list .item .thumbnail :global(.btn-favorite) {
       filter: brightness(0);
     }
 
@@ -287,9 +290,6 @@ import Section from '@smui/top-app-bar/src/Section.svelte';
       .shop-slides :global(.slides),
       .shop-slides :global(.slides div) {
         height: auto;
-      }
-      .shop-slides :global(.slide-item) {
-        padding-top: 70%;
       }
       .header-title .short-description {
         width: 100%;

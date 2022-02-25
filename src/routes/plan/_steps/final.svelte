@@ -15,7 +15,7 @@ import { TripInput } from '$lib/store/trip';
   tripInput.numberOfTripsInSixMonths ||= 0;
 </script>
 
-<Step title="One final question.." subtitle="">
+<Step title="One final question..." subtitle="">
   <div class="row mt-20">
     <div class="d-col-6 m-col-12 text-left">
       <label class="mdc-typography--headline1 m-0"
@@ -46,6 +46,13 @@ import { TripInput } from '$lib/store/trip';
   @use '../../../theme/mixins';
   div {
     --mdc-typography-headline1-font-size: 30px;
+    @include mixins.mobile{
+      --mdc-typography-headline1-font-size: 20px;
+    }
+  }
+  label{
+    --mdc-typography-headline1-font-size: 30px;
+    --mdc-typography-headline1-font-weight: 300;
     @include mixins.mobile{
       --mdc-typography-headline1-font-size: 20px;
     }

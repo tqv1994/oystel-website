@@ -21,23 +21,15 @@
     const res = await fetch(`/advisor/${id}.json`);
     if (res.ok) {
       const data: Advisor = await res.json();
-      let destinationTypes: Category[] = [];
+      let destinationCountries: Country[] = [];
       for (let destination of data.destinations || []) {
-        if (destination.type1) {
-          destinationTypes.push(destination.type1);
-        }
-        if (destination.type2) {
-          destinationTypes.push(destination.type2);
-        }
-        if (destination.type3) {
-          destinationTypes.push(destination.type3);
-        }
+        destinationCountries.push(destination.country);
       }
       insertToStore(advisorStore, [data]);
       return {
         props: {
           id,
-          destinationTypes,
+          destinationCountries,
         },
       };
     } else {
@@ -57,9 +49,10 @@
   import { Category } from '$lib/store/category';
   import Carousel from '$lib/components/Carousel.svelte';
   import Item from '$lib/components/Item.svelte';
+import { Country } from '$lib/store/country';
 
   export let id: string;
-  export let destinationTypes: Category[] = [];
+  export let destinationCountries: Country[] = [];
   let advisor: Advisor | undefined;
   let stickyShow = false;
   const carouselConfig = {
@@ -242,7 +235,7 @@
             <h2 class="mt-0">Biography</h2>
             <div class="row">
               <div class="d-col-10 m-col-10 m-0">
-                <Markdown source={advisor.description} />
+                <Markdown source={advisor.description || ''} />
               </div>
             </div>
           </section>
@@ -267,10 +260,12 @@
               </Carousel>
             </div>
             <div class="row">
-              {#each destinationTypes as destination}
+              {#each destinationCountries as country}
+                {#if country?.name}
                 <div class="d-col-6 m-col-12">
-                  <h4 class="m-0">{destination.name}</h4>
+                  <h4 class="m-0">{country.name}</h4>
                 </div>
+                {/if}
               {/each}
             </div>
           </section>
@@ -324,8 +319,27 @@
 <style lang="scss" global>
   @use '../../style/include/grid';
   @use '../../theme/mixins';
+  @use '../../theme/colors';
   .advisor-detail {
     @import './src/style/partial/thumbnail.scss';
+    --mdc-typography-headline6-text-transform: none;
+    --mdc-typography-body1-font-size: 16px;
+    --mdc-typography-body1-font-weight: 400;
+    --mdc-typography-body1-line-height: 29px;
+    @include mixins.mobile{
+      --mdc-typography-body1-font-size: 14px;
+      --mdc-typography-body1-font-weight: 400;
+      --mdc-typography-body1-line-height: 27px;
+
+      --mdc-typography-headline6-text-transform: none;
+
+      --mdc-typography-headline4-font-size: 20px;
+      --mdc-typography-headline4-font-weight: 400;
+      --mdc-typography-headline4-line-height: 24px;
+    }
+    .text-eyebrow{
+      font-size: 13px !important;
+    }
     .header-title {
       height: 100vh;
       background-size: cover;
@@ -394,36 +408,7 @@
       transform: translateY(-50%);
     }
 
-    .trip-item .mdc-layout-grid {
-      --mdc-layout-grid-gutter-desktop: 0;
-    }
-    .trip-item .divider::after {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-    .trip-item .title {
-      height: 55px;
-      overflow: hidden;
-    }
-    .trip-item .thumbnail {
-      position: relative;
-    }
-    .trip-item .thumbnail :global(.btn-favorite) {
-      position: absolute;
-      top: 2%;
-      right: 2%;
-    }
-    .trip-item .thumbnail :global(.btn-favorite .like) {
-      display: block;
-    }
-    .trip-item .thumbnail :global(.btn-favorite .liked) {
-      display: none;
-    }
-    .trip-item .thumbnail :global(.btn-favorite:hover .like) {
-      display: none;
-    }
-    .trip-item .thumbnail :global(.btn-favorite:hover .liked) {
-      display: block;
-    }
+    
     .qualifications-wrap {
       padding-right: 10%;
     }
@@ -479,17 +464,14 @@
         }
       }
     }
-    .destinations-wrap h5 {
-      font-weight: bold;
-      font-size: 16px;
-      line-height: 34px;
-      letter-spacing: 0.2px;
-    }
-    @media (max-width: 949px) {
-      .destinations-wrap h5 {
-        font-size: 12px;
-        line-height: 20px;
-        letter-spacing: 0.1px;
+    .destinations-wrap{
+      .arrow-inside{
+        .mdc-icon-button{
+          color: #{colors.$white};
+          &:hover{
+            color: #{colors.$black};
+          }
+        }
       }
     }
   }

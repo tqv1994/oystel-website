@@ -61,7 +61,7 @@
       <section class="header-title full-width d-pb-20 m-pb-15 pt-0">
         <div class="content-wrap">
           <div class="container">
-            <LayoutGrid class="p-0 mb-15">
+            <LayoutGrid class="p-0">
               <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
                 <div class="content-left">
                   <div>

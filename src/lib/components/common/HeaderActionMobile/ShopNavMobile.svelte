@@ -2,7 +2,7 @@
   import Button from '@smui/button';
   import { Icon } from '@smui/common';
   import { Svg } from '@smui/common/elements';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { menus } from '$lib/const';
   import { routerHelper } from '$lib/helpers/router';
   import { Category } from '$lib/store/category';
@@ -82,6 +82,13 @@ import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
     }
     return [];
   };
+
+  const onScrollToTop = () => {
+    let subMenuWrap = document.querySelector('#menu-wrap');
+    if(subMenuWrap){
+      subMenuWrap.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+  }
 </script>
 
 <div id="menu-wrap" class="mt-20">
@@ -123,6 +130,7 @@ import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
             {#each getItemsSubMenu(activeFilter) as menu}
               <li>
                 <a
+                  class=""
                   href="javascript:void(0)"
                   on:click={() => {
                     openLinkDesginer(menu);
@@ -144,7 +152,7 @@ import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
       <div class="filter-wrap">
           <ul>
               {#each tabFilters as item}
-                <li><a href="javascript:void(0)" on:click={()=>{activeFilter = item;}}>{item}</a></li>
+                <li><a href="javascript:void(0)" on:click={()=>{activeFilter = item; onScrollToTop()}}>{item}</a></li>
               {/each}
           </ul>
       </div>

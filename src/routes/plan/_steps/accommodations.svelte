@@ -21,7 +21,7 @@ import { TripInput } from '$lib/store/trip';
   tripInput.roomPreferences = tripInput.roomPreferences || [];
 </script>
 
-<Step title="Your accommodations" subtitle="Check as many as you wish.">
+<Step title="Your accommodation" subtitle="Check as many as you wish.">
   <div class="row">
     <div class="d-col-4 m-col-12">
       <h3 class="mdc-typography--headline1 text-left mt-0 m-mb-15">Lodging</h3>
@@ -63,6 +63,13 @@ import { TripInput } from '$lib/store/trip';
   @use '../../../theme/mixins';
   * {
     --mdc-typography-headline1-font-size: 30px;
+    @include mixins.mobile{
+      --mdc-typography-headline1-font-size: 20px;
+    }
+  }
+  label{
+    --mdc-typography-headline1-font-size: 30px;
+    --mdc-typography-headline1-font-weight: 300;
     @include mixins.mobile{
       --mdc-typography-headline1-font-size: 20px;
     }

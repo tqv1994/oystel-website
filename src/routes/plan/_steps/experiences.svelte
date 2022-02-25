@@ -58,6 +58,13 @@
       --mdc-typography-headline1-font-size: 20px;
     }
   }
+  label{
+    --mdc-typography-headline1-font-size: 30px;
+    --mdc-typography-headline1-font-weight: 300;
+    @include mixins.mobile{
+      --mdc-typography-headline1-font-size: 20px;
+    }
+  }
   :global(.root.experiences-step-content){
     :global(.content.content) {
       max-width: 75em;

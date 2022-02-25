@@ -84,11 +84,14 @@
     :global(.mdc-layout-grid) {
       --mdc-layout-grid-gutter-desktop: 0;
     }
+    :global(.mdc-icon-button){
+        filter:brightness(0%);
+    }
     .divider::after {
       background-color: rgba(0, 0, 0, 0.2);
     }
     .title {
-      height: 32px;
+      height: 34px;
       overflow: hidden;
       @include mixins.mobile {
         height: 42px;

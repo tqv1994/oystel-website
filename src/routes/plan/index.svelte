@@ -153,10 +153,10 @@
 <div>
   <PlanTemplate {image1} {image2} {image3}>
     <H2>Let’s start planning your holiday.</H2>
-    <h6 class="font-size-h6">
+    <p>
       To help our expert travel advisors tailor a holiday just for you, we need
       some information to get started.
-    </h6>
+    </p>
     <Button
       class="btn-plan-your-trip mr-10"
       type="button"
@@ -329,9 +329,6 @@
     .mdc-button.mdc-button--outlined:hover {
       background-color: #{colors.$black};
       --mdc-theme-primary: #{colors.$white};
-    }
-    .font-size-h6 {
-      font-size: 16px;
     }
   }
   
