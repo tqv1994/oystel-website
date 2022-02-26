@@ -18,7 +18,8 @@ import { TripInput } from '$lib/store/trip';
   export let currencies: Currency[] = [];
   export let tripInput: TripInput = new TripInput();
   tripInput.budget = tripInput.budget || 0;
-  tripInput.numberOfRoom = tripInput.numberOfRoom || 1;
+  //tripInput.numberOfRoom = tripInput.numberOfRoom || 1;
+  tripInput.numberOfNights = tripInput.budget || 0;
 </script>
 
 <Step
@@ -62,12 +63,19 @@ import { TripInput } from '$lib/store/trip';
       >
     </div>
     <div class="d-col-6 m-col-12">
-      <Select id="budget-accommodation" noLabel bind:value={tripInput.numberOfRoom}>
+      <Textfield
+        id="budget-accommodation"
+        bind:value={tripInput.numberOfNights}
+        input$min={1}
+        label="E.g. 1.250"
+        type="number"
+      />
+      <!--<Select id="budget-accommodation" noLabel bind:value={tripInput.numberOfRoom}>
         <Option value={1}>1</Option>
         <Option value={2}>2</Option>
         <Option value={3}>3</Option>
         <Option value={4}>4</Option>
-      </Select>
+      </Select>-->
     </div>
   </div>
 </Step>

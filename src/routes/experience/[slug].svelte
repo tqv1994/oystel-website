@@ -54,8 +54,8 @@
 
 <script type="ts">
   import DetailSlide from '$lib/components/DetailSlide.svelte';
-import DetailSticky from '$lib/components/DetailSticky.svelte';
-import Markdown from '$lib/components/Markdown.svelte';
+  import DetailSticky from '$lib/components/DetailSticky.svelte';
+  import Markdown from '$lib/components/Markdown.svelte';
   export let id: string;
   let experience: Experience;
   let productSliderOpen: boolean;
@@ -241,9 +241,11 @@ import Markdown from '$lib/components/Markdown.svelte';
         </div>
       </div>
     </section>
-    <section class={`m-none header-title d-pt-100 d-pb-25 m-pt-90 m-pb-60 full-width  is_sticky fixed ${
-      stickyShow ? 'show' : ''
-    }`}>
+    <section
+      class={`m-none header-title d-pt-100 d-pb-25 m-pt-90 m-pb-60 full-width  is_sticky fixed ${
+        stickyShow ? 'show' : ''
+      }`}
+    >
       <div class="content-wrap">
         <div class="container">
           <DetailSticky data={experience} on:like={likeExperience} />
@@ -255,12 +257,9 @@ import Markdown from '$lib/components/Markdown.svelte';
       <div class="container">
         <LayoutGrid class="p-0">
           <Cell spanDevices={{ desktop: 8, tablet: 8, phone: 4 }}>
-            <Markdown source={experience.description}/>
+            <Markdown source={experience.description} />
           </Cell>
-          <Cell
-            spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}
-            class=""
-          >
+          <Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }} class="">
             <h2 class="mt-0 mb-40 m-mt-40">My Favorites Places</h2>
             <div class="experiences-list">
               <LayoutGrid class="p-0">
@@ -306,7 +305,7 @@ import Markdown from '$lib/components/Markdown.svelte';
   .experience-detail {
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/sticky.scss';
-    
+
     .mdc-button {
       width: 180px;
       min-width: 180px;
@@ -398,8 +397,6 @@ import Markdown from '$lib/components/Markdown.svelte';
     .item-product .title-wrap .divider:after {
       background-color: rgba(0, 0, 0, 0.2);
     }
-
-
 
     :global(.products-list .item-product) {
       @include mixins.mobile {

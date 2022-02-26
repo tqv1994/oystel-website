@@ -330,6 +330,9 @@
       background-color: #{colors.$black};
       --mdc-theme-primary: #{colors.$white};
     }
+    .font-size-h6 {
+      font-size: 16px;
+    }
   }
   
 </style>

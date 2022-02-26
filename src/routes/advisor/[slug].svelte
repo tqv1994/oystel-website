@@ -50,6 +50,7 @@
   import Carousel from '$lib/components/Carousel.svelte';
   import Item from '$lib/components/Item.svelte';
 import { Country } from '$lib/store/country';
+import { goto } from '$app/navigation';
 
   export let id: string;
   export let destinationCountries: Country[] = [];
@@ -104,21 +105,14 @@ import { Country } from '$lib/store/country';
         }
       }
       if (user.travellerMe) {
-        await createTripService(
-          new TripInput({
-            advisor: advisor.id,
-            lead_traveller: user.travellerMe.id,
-            state: ENUM_TRIP_STATE.enquired,
-          }),
-        ).then((trip) => {
-          window.pushToast(
-            'Thank you for contacting our advisor. We will contact you as soon as possible',
-          );
-        });
+        goto('/plan');
       } else {
         window.pushToast(
-          'Please update your personal information before taking this action',
+          'Please update your information before doing this',
         );
+        setTimeout(()=>{
+          goto('/me/my-account');
+        },1000);
       }
     } else {
       window.openSignUpModal(
