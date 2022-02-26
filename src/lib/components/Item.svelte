@@ -16,6 +16,7 @@
   import { Country } from '$lib/store/country';
 import { Category } from '$lib/store/category';
 import { Product } from '$lib/store/product';
+import { authStore } from '$lib/store/auth';
   export let item: Experience | Destination | Product | Searchable;
   export let pathPrefix: string;
   export let key: number | null = null;
@@ -31,14 +32,19 @@ import { Product } from '$lib/store/product';
   export let introShow: boolean = false;
   let dispathcher = createEventDispatcher();
   function callLikeItem() {
-    setTimeout(() => {
-      if (group_id && key) {
-        dispathcher('likeItem', { group_id, key });
-      } else {
-        dispathcher('likeItem', { item });
-      }
-      liked = !liked;
-    }, 0);
+    if($authStore.user){
+      setTimeout(() => {
+        if (group_id && key) {
+          dispathcher('likeItem', { group_id, key });
+        } else {
+          dispathcher('likeItem', { item });
+        }
+        liked = !liked;
+      }, 0);
+    }else{
+      window.openSignInModal();
+    }
+    
   }
 </script>
 

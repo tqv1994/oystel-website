@@ -62,12 +62,12 @@
   };
 </script>
 
-<section>
+<section class="what-to-pack">
   <div class="container">
     <h2 class="mt-0">{title}</h2>
     <div class="products-list m-mb-40">
       {#if items.length > 0}
-        <Carousel {...carouselConfig}>
+        <Carousel {...carouselConfig} totalItems={items.length || 0}>
           {#each items as item, i}
             <ProductItem
               {...item}

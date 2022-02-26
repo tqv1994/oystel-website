@@ -20,7 +20,7 @@
   <h2 class="m-0 mb-40">{title}</h2>
   <div class="m-none d-block">
     {#if drops?.length > 0}
-      <Carousel {...carouselConfig}>
+      <Carousel {...carouselConfig} totalItems={drops.length}>
         {#each drops as item}
           <div class="slide-content slide-item text-left">
             <div class="story-item">

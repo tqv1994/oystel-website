@@ -51,12 +51,16 @@ import SliderItems from './SliderItems.svelte';
   }
   const dispatcher = createEventDispatcher();
   const onLike = (event: CustomEvent, experience: Experience | undefined) => {
-    if (experience) {
-      hero.liked = !experience.liked;
-      dispatcher('likeItem', { data: experience });
-    } else {
-      const item = event.detail.item;
-      dispatcher('likeItem', { data: item });
+    if($authStore.user){
+      if (experience) {
+        hero.liked = !experience.liked;
+        dispatcher('likeItem', { data: experience });
+      } else {
+        const item = event.detail.item;
+        dispatcher('likeItem', { data: item });
+      }
+    }else{
+      window.openSignInModal();
     }
   };
 </script>

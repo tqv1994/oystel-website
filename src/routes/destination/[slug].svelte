@@ -265,7 +265,7 @@
                 spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}
                 class="text-right m-none"
               >
-                <Button variant="outlined"
+                <Button variant="outlined" href="/advisor"
                   ><Label>Find My Advisor</Label></Button
                 >
               </Cell>

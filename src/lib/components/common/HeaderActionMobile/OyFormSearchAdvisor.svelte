@@ -2,33 +2,45 @@
   import Button from '@smui/button';
   import { Label } from '@smui/common';
   import { createEventDispatcher, onMount } from 'svelte';
-  import { Country } from '$lib/store/country';
+  import { Country, countryStore } from '$lib/store/country';
   import { Category } from '$lib/store/category';
   import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
+import { sortByName } from '$lib/utils/sort';
+import { experienceTypeStore } from '$lib/store/experience-type';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
   export let searchModel: {
-    type: string;
+    experiencetype: string;
     country: string;
   };
-  export let locations: Country[];
-  export let advisorTypes: Category[];
-  let typeData: Category | undefined;
+  let experienceTypeData: Category | undefined;
   let countryData: Country | undefined;
-  let { country, type } = searchModel;
+  let { country, experiencetype } = searchModel;
+  const experienceTypes = sortByName(Object.values($experienceTypeStore.items));
+  experienceTypes.unshift({ id: '', name: 'All' });
+  // let experienceTypes: Category[];
+  // experienceTypeStore.subscribe(
+  //   (store) => (experienceTypes = sortByName(Object.values(store.items))),
+  // );
+
+  let locations: Country[];
+  countryStore.subscribe((store) => {
+    locations = sortByName(Object.values(store.items));
+    locations.unshift({ id: '', name: 'All' });
+  });
   function onSearchSubmit() {
     setTimeout(() => {
-      dispatch('close', { country, type });
+      dispatch('close', { country, experiencetype });
     }, 0);
   }
   onMount(()=>{
-    typeData = advisorTypes.find((item)=>item.id+"" === type+"");
+    experienceTypeData = experienceTypes.find((item)=>item.id+"" === experiencetype+"");
     countryData = locations.find((item)=>item.id+"" === country+"");
   });
 
   const onAdvisorTypeChange = (event: CustomEvent<DropdownValue<Category>>) => {
-    type = event.detail.value.id;
+    experiencetype = event.detail.value.id;
   };
 
   const onCountryChange = (event: CustomEvent<DropdownValue<Country>>) => {
@@ -45,8 +57,8 @@
     <div class="form-control mb-40">
       <Dropdown
         label="By Speciality"
-        items={advisorTypes}
-        bind:value={typeData}
+        items={experienceTypes}
+        bind:value={experienceTypeData}
         on:MDCSelect:change={onAdvisorTypeChange}
       />
     </div>

@@ -42,12 +42,15 @@ export type AdvisorBase = Exhibitable & {
   initials?: string;
   gallery?: UploadFile;
   trips?: Trip[];
+
 };
 
 export type Advisor = AdvisorBase & {
   experienceType1?: Category;
   experienceType2?: Category;
   experienceType3?: Category;
+  experienceType4?: Category;
+  experienceType5?: Category;
   destinationType1?: Category;
   destinationType2?: Category;
   destinationType3?: Category;

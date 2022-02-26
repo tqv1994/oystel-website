@@ -14,6 +14,7 @@
   import { createEventDispatcher } from 'svelte';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
+import { documentHelper } from '$lib/helpers';
 
   const dispatcher = createEventDispatcher();
   export let data: Experience | Destination;
@@ -29,6 +30,10 @@
     particlesToShow: 1,
     chevronPosition: 'inside',
   };
+
+  const onClickWhatToPack = () => {
+    documentHelper.onScrollToSectionSelector(".what-to-pack");
+  }
 </script>
 
 <LayoutGrid class="p-0">
@@ -58,11 +63,11 @@
       <p class="mb-30 short-description m-mt-0">
         {data.intro ? data.intro : ''}
       </p>
-      <Button variant="unelevated" class="mb-15"
+      <Button variant="unelevated" class="mb-15" href="/advisor"
         ><Label>Find My Advisor</Label></Button
       >
       <br />
-      <Button variant="outlined"><Label>What to Pack</Label></Button>
+      <Button variant="outlined" on:click={onClickWhatToPack}><Label>What to Pack</Label></Button>
     </div>
     <div class="action-buttons m-none">
       <IconButton>

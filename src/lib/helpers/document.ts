@@ -77,46 +77,12 @@ export const documentHelper = {
 
         }
     },
-};
 
-export class Croppenscaler {
-    public url: string;
-    public frameHeight: number;
-    public frameWidth: number;
-    public imageWidth: number;
-    protected positionTop: number;
-    protected positionLeft: number;
-    public width: number;
-    public top: number;
-    public left: number;
-    constructor (values: Object = {}) {
-      Object.assign(this, values);
-      this.frameHeight = this.frameHeight || 400;
-      this.frameWidth = this.frameWidth || 300;
-   
-      var scale = this.frameWidth / 300;
-   
-      this.imageWidth = (this.width) * scale;
-      this.positionTop = (this.top) * scale;
-      this.positionLeft = (this.left) * scale;
+    onScrollToSectionSelector: function(selector: string){
+        const offsetTop = document.querySelector(selector).offsetTop;
+        scroll({
+            top: offsetTop,
+            behavior: "smooth"
+        });
     }
-   
-    buildFrame() {
-   
-      var img = new Element('img',{src:this.url, 'class':'zoom'});
-      img.setStyle({
-        width: this.imageWidth+'px',
-        top: this.positionTop+'px',
-        left: this.positionLeft+'px',
-      });
-   
-      var frame = new Element('div',{'class':'croppenscaler'});
-      frame.update(img);
-      frame.setStyle({
-        height:this.frameHeight+'px',
-        width:this.frameWidth+'px',
-      });
-   
-      return frame;
-    }
-  };
+};
