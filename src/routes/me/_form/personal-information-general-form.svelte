@@ -38,6 +38,12 @@
   travellerInput.workPhone =
     travellerInput.workPhone?.replace(workPhoneCode, '') || '';
   workPhoneCode = workPhoneCode.replace('+', '');
+
+  let whatsAppCode: string =
+    (travellerInput.whatsapp || '').match(createPatternPhoneCode(countries)) + '';
+  travellerInput.whatsapp =
+    travellerInput.whatsapp?.replace(whatsAppCode, '') || '';
+  whatsAppCode = whatsAppCode.replace('+', '');
   let addressInput: AddressInput;
   if (me.travellerMe?.addresses[0]) {
     addressInput = convertAddressToInput(me.travellerMe?.addresses[0]);
@@ -103,7 +109,7 @@
         instagram: travellerInput.instagram,
         facebook: travellerInput.facebook,
         messenger: travellerInput.messenger,
-        whatsapp: travellerInput.whatsapp,
+        whatsapp: whatsAppCode && travellerInput.whatsapp ? ((whatsAppCode ? '+' + whatsAppCode : '') + travellerInput.whatsapp) : null,
         language: travellerInput.language,
         addresses: travellerInput.addresses[0] ? [travellerInput.addresses[0]] : [],
         homePhone:
@@ -311,7 +317,24 @@
       column_1={4}
       column_2={6}
     >
-      <Textfield bind:value={travellerInput.whatsapp} label="" type="text" />
+    <div class="row">
+      <div class="d-col-4 m-col-3 mb-0">
+        <OyAutocomplete
+          key="phone"
+          options={countries}
+          getOptionLabel={(option) =>
+            option ? `${option.name} +${option.phone}` : ''}
+          bind:value={whatsAppCode}
+        />
+      </div>
+      <div class="d-col-8 m-col-9 mb-0">
+        <Textfield
+          bind:value={travellerInput.whatsapp}
+          label=""
+          type="phone"
+        />
+      </div>
+    </div>
     </svelte:component>
     <div class="d-block m-none text-right">
       <Button variant="unelevated" type="submit">Save Changes</Button>

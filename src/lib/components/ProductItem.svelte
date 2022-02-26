@@ -48,7 +48,7 @@ import { authStore } from '$lib/store/auth';
   }
 </script>
 
-<div class="item" on:click>
+<div class="item" on:click on:pointerdown>
   <div class="thumbnail">
     <a href="javascript:void(0);" >
       <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">

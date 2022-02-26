@@ -56,7 +56,7 @@ import Carousel from '../Carousel.svelte';
     </div>
 </div>
 
-<style>
+<style type="scss">
   .slide-items :global(.mdc-layout-grid__inner) {
     overflow-x: auto;
     grid-auto-flow: column;

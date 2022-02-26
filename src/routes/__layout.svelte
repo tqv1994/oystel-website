@@ -50,10 +50,14 @@
       false,
     );
     insertToStore(productColourStore, session.metadata?.productColours, false);
-    console.log(session.metadata?.productColours);
     insertToStore(
       productDesignerStore,
       session.metadata?.productDesigners,
+      false,
+    );
+    insertToStore(
+      productPattnerStore,
+      session.metadata?.productPatterns,
       false,
     );
     insertToStore(productTypeStore, session.metadata?.productTypes, false);
@@ -100,7 +104,6 @@
     if (url.pathname === '/') {
       isHomePage = true;
     }
-    console.log(url.pathname);
     return {
       props: {
         key: url.pathname,
@@ -127,6 +130,7 @@
   import {
     productColourStore,
     productDesignerStore,
+    productPattnerStore,
     productTypeStore,
     vacationStyleStore,
   } from '$lib/store/product';

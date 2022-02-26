@@ -82,6 +82,13 @@ fragment vacationStyleFields on VacationStyle {
 }
 `;
 
+export const productPatternFieldsFragment = `
+fragment productPatternFields on ProductPatterns {
+  id
+  name
+}
+`;
+
 export const productGalleryFieldsFragment = `
 fragment productGalleryFields on ComponentGalleriesProductGallery {
   id

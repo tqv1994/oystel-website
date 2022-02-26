@@ -81,7 +81,7 @@ export const documentHelper = {
     onScrollToSectionSelector: function(selector: string){
         const offsetTop = document.querySelector(selector).offsetTop;
         scroll({
-            top: offsetTop,
+            top: offsetTop - 87,
             behavior: "smooth"
         });
     }

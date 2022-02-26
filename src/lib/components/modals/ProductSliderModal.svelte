@@ -118,12 +118,15 @@ import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
   @use '../../../theme/mixins';
   @include mixins.mobile {
     .slide-item {
-      .thumbnail {
-        margin: auto calc(100px - var(--mdc-layout-grid-margin-phone));
-      }
+      // .thumbnail {
+      //   margin: auto calc(100px - var(--mdc-layout-grid-margin-phone));
+      // }
     }
   }
   .popup-products {
+    padding-top: 87px;
+    max-height: 100vh;
+    overflow-y: scroll;
     .slide-item{
       .mdc-icon-button{
           filter:brightness(0%);

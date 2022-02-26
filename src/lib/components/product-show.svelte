@@ -69,14 +69,14 @@
       {#if items.length > 0}
         <Carousel {...carouselConfig} totalItems={items.length || 0}>
           {#each items as item, i}
-            <ProductItem
-              {...item}
-              {item}
-              on:click={() => {
-                openProductSlide = true;
-                productIndex = i;
-              }}
-            />
+              <ProductItem
+                {...item}
+                {item}
+                on:pointerdown={() => {
+                  openProductSlide = true;
+                  productIndex = i;
+                }}
+              />
           {/each}
         </Carousel>
       {/if}

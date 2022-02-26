@@ -6,6 +6,7 @@
   import FormField from '@smui/form-field';
   import Checkbox from '@smui/checkbox';
   import { createEventDispatcher } from 'svelte';
+import { TravelPreference } from '$lib/store/preference';
   export let data;
   export let selected: string[];
   export let is_edit: boolean = true;
@@ -13,16 +14,52 @@
   const onSubmit = () => {
     dispatcher('submit');
   };
+  const checkLimitOfField = (index: number, value: string) => {
+    setTimeout(()=>{
+      if(data[index]){
+        let beforeSelected = selected;
+        let selectedCurrent: string[] = beforeSelected.reduce((acc: string[] , item: string)=>{
+          const exist = data[index].preferences.find((preference: string) => preference === item);
+          if(exist){
+            acc.push(exist);
+          }
+          return acc;
+        },[]);
+        // if(selectedCurrent.length === 5){
+        //     selected.splice(selectedCurrent.length, 1);
+        //   }
+        console.log('selectedCurrent',selectedCurrent);
+        if(index !== 1){
+          if(selectedCurrent.length > 5){
+            const idx = beforeSelected.indexOf(value);
+            if(index > -1){
+              beforeSelected.splice(idx, 1);
+              selected = beforeSelected;
+            }
+            window.pushToast('You can only choose up to 5 options');
+          }
+        }else{
+          if(selectedCurrent.length > 1){
+            const idx = beforeSelected.indexOf(selectedCurrent[selectedCurrent.length - 2]);
+            if(index > -1){
+              beforeSelected.splice(idx, 1);
+              selected = beforeSelected;
+            }
+          }
+        }
+      }
+    },0);
+  }
 </script>
 
 <form>
   <FormToggle bind:is_edit title="Style Preferences">
-    {#each data as type}
+    {#each data as type, index}
       <Field label={type.name} column_1={3} column_2={9} class="mb-10">
         <div class="options options-1">
           {#each type.preferences as option}
             <FormField>
-              <Checkbox bind:group={selected} value={option} />
+              <Checkbox bind:group={selected} value={option} on:click={(e)=>checkLimitOfField(index, option)}/>
               <span slot="label">{option}</span>
             </FormField>
           {/each}

@@ -11,6 +11,8 @@
   import { goto } from '$app/navigation';
   import AlertBox from './components/AlertBox.svelte';
   import ButtonUnderline from './components/ButtonUnderline.svelte';
+import { sortByName } from '$lib/utils/sort';
+import { productColourStore, productPattnerStore } from '$lib/store/product';
 
   export type MySizeSelected = {
     topSize: string;
@@ -78,6 +80,8 @@
   export let me: User | undefined;
   export let mySizeSelected: MySizeSelected;
   export let myStylePreferenceSelected: string[];
+  const productColours = sortByName(Object.values($productColourStore.items));
+  const productPatterns = sortByName(Object.values($productPattnerStore.items));
 
   let tmpStylePreferenceSelected: string[] = [
     ...(myStylePreferenceSelected || []),
@@ -106,11 +110,15 @@
   const myStylePreferenceData = [
     {
       name: 'COLOURS',
-      preferences: ['Black', 'Brown', 'Cream', 'White'],
+      preferences: productColours.map((item)=>item.name),
     },
     {
-      name: 'CLOTHING Styles',
-      preferences: ['Coordinated Neutrals', 'Tailored', 'Pop Color'],
+      name: 'FIT',
+      preferences: ['Loose fitting', 'Fitted', 'Bodycon'],
+    },
+    {
+      name: 'PATTERNS',
+      preferences: productPatterns.map((item)=>item.name),
     },
   ];
 

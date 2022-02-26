@@ -60,6 +60,14 @@ export type Advisor = AdvisorBase & {
   language1?: Language;
   language2?: Language;
   language3?: Language;
+  agency?: Agency;
+}
+
+export type Agency = {
+  id: string;
+  affiliate_agencies?: Category[],
+  affiliate_networks?: Category[],
+  affiliate_benefit_programs?: Category[]
 }
 
 export const advisorStore = writable<CollectionStore<Advisor>>({

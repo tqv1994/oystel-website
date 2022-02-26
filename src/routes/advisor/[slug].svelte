@@ -212,9 +212,11 @@ import { goto } from '$app/navigation';
                   <h4 class="m-0">
                     {implodeString(
                       [
-                        advisor.type1?.name,
-                        advisor.type2?.name,
-                        advisor.type3?.name,
+                        advisor.experienceType1?.name,
+                        advisor.experienceType2?.name,
+                        advisor.experienceType3?.name,
+                        advisor.experienceType4?.name,
+                        advisor.experienceType5?.name,
                       ],
                       ', ',
                     )}
@@ -283,17 +285,26 @@ import { goto } from '$app/navigation';
             <div class="row">
               <div class="col m-col-12">
                 <p class="text-eyebrow">Affiliate Agency</p>
-                <h4 class="m-0">Travel Edge</h4>
+                <h4 class="m-0">{implodeString(
+                  (advisor?.agency?.affiliate_agencies || []).map(item=>item.name),
+                  ', ',
+                )}</h4>
               </div>
               <div class="col m-col-12">
                 <p class="text-eyebrow">Affiliate Network</p>
-                <h4 class="m-0">Virtuoso</h4>
+                <h4 class="m-0">{implodeString(
+                  (advisor?.agency?.affiliate_networks || []).map(item=>item.name),
+                  ', ',
+                )}</h4>
               </div>
             </div>
             <div class="row">
               <div class="col m-col-12">
                 <p class="text-eyebrow">Benefit Program</p>
-                <h4 class="m-0">Four Seasons, Marriot, Rosewood</h4>
+                <h4 class="m-0">{implodeString(
+                  (advisor?.agency?.affiliate_benefit_programs || []).map(item=>item.name),
+                  ', ',
+                )}</h4>
               </div>
             </div>
             <div class="row">

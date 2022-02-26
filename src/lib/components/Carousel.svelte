@@ -78,6 +78,7 @@
   bind:initialPageIndex
   let:showPrevPage
   let:showNextPage
+  swiping={false}
   on:pageChange={
     event => currentPageIndex = event.detail
   }
