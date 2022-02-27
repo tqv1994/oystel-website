@@ -33,7 +33,7 @@
     top: calc(117px + 25px);
     z-index: 1;
     :global(.search-form .mdc-text-field){
-      width: 390px;
+      width: 315px;
     }
   }
   .backdrop {
