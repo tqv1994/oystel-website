@@ -13,9 +13,9 @@ import Carousel from '../Carousel.svelte';
   const carouselConfig = {
     autoplayDuration: 8000,
     duration: 1500,
-    infinite: false,
+    infinite: true,
     particlesToShow: 4,
-    chevronPosition: 'inside',
+    chevronPosition: 'outside',
   };
 </script>
 
@@ -37,15 +37,15 @@ import Carousel from '../Carousel.svelte';
               <div class="item-image">
                 <div
                   class="thumbnail"
-                  on:mouseover={() => {
+                  on:pointerover={() => {
                     featuredImage = item;
                   }}
-                  on:mouseleave={() => {
+                  on:pointerleave={() => {
                     featuredImage = images[0];
                   }}
                 >
-                  <div class="image-cover" style="padding-top: calc(93/115 * 100%)">
-                    <BlurImage {...featuredImage} />
+                  <div class="image-cover" style="padding-top: calc(115/93 * 100%)">
+                    <BlurImage {...item} />
                   </div>
                 </div>
               </div>
@@ -57,10 +57,29 @@ import Carousel from '../Carousel.svelte';
 </div>
 
 <style type="scss">
+  @use '../../../theme/mixins';
+  .slide-items{
+    padding-top: 24px;
+    @include mixins.mobile{
+      padding-top: 25px;
+    }
+    .item-image{
+      padding: 0 20px;
+      @include mixins.mobile{
+        padding: 0 25px;
+      }
+    }
+    :global(.arrow-outside){
+      top: auto;
+      bottom: -58px;
+    }
+    :global(.arrow-outside.left){
+      left: 0;
+    }
+  }
   .slide-items :global(.mdc-layout-grid__inner) {
     overflow-x: auto;
     grid-auto-flow: column;
-    padding-bottom: 30px;
   }
   .slide-items :global(.mdc-layout-grid__inner::-webkit-scrollbar-track) {
     background-color: #d3d3d3;
