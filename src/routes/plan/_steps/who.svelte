@@ -44,6 +44,13 @@ import { afterUpdate } from 'svelte';
 
 <style lang="scss">
   @use '../../../theme/mixins';
+  label{
+    --mdc-typography-headline1-font-size: 30px;
+    --mdc-typography-headline1-font-weight: 300;
+    @include mixins.mobile{
+      --mdc-typography-headline1-font-size: 20px;
+    }
+  }
   .options {
     display: grid;
     grid-template-columns: 1fr 1fr;

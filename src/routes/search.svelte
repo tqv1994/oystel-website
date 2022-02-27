@@ -356,7 +356,7 @@
   }}
 />
 <div class="content search-page-content">
-  <section class="header-title d-pt-120 d-pb-55 m-pt-90 m-pb-25 full-width">
+  <section class="header-title d-pt-150 d-pb-55 m-pt-100 m-pb-25 full-width">
     <div class="content-wrap">
       <div class="container m-none">
         <form

@@ -14,13 +14,23 @@
     import { createEventDispatcher } from 'svelte';
     import HeartIcon from '$lib/icons/HeartIcon.svelte';
     import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
+import { authStore } from '$lib/store/auth';
+import { goto } from '$app/navigation';
+import { documentHelper } from '$lib/helpers/document';
   
     const dispatcher = createEventDispatcher();
     export let data: Experience | Destination;
   
     export const likeItem = () => {
-      dispatcher('like');
+      if($authStore.user){
+        dispatcher('like');
+      }else{
+        window.openSignInModal();
+      }
     };
+    const onClickWhatToPack = () => {
+      documentHelper.onScrollToSectionSelector(".what-to-pack");
+    }
   </script>
   
   <LayoutGrid class="p-0 show-on-sticky m-none">
@@ -90,15 +100,15 @@
           </Icon>
         </IconButton>
       </div>
-      <h1 class="mb-0 mt-40">{data?.name}</h1>
+      <h2 class="mb-0 mt-40">{data?.name}</h2>
     </Cell>
     <Cell spanDevices={{ desktop: 5 }} class="text-right">
       <div class="mt-100">
         <div class="btn-group">
-            <Button variant="outlined"
+            <Button variant="outlined" href={'/advisor'}
             ><Label>Find My Advisor</Label></Button
             >
-            <Button variant="outlined"><Label>What to Pack</Label></Button>
+            <Button variant="outlined" on:click={()=>onClickWhatToPack()}><Label>What to Pack</Label></Button>
         </div>
       </div>
     </Cell>

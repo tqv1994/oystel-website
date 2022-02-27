@@ -28,6 +28,7 @@
   import PlanTemplate from './PlanTemplate.svelte';
   import { goto } from '$app/navigation';
   import { UploadFile } from '$lib/store/upload-file';
+  import { H2 } from '@smui/common/elements';
 
   export const load: Load<{ session: Locals }> = async ({
     session,
@@ -151,11 +152,11 @@
 
 <div>
   <PlanTemplate {image1} {image2} {image3}>
-    <h1>Let’s start planning your holiday.</h1>
-    <h6>
+    <H2>Let’s start planning your holiday.</H2>
+    <p>
       To help our expert travel advisors tailor a holiday just for you, we need
       some information to get started.
-    </h6>
+    </p>
     <Button
       class="btn-plan-your-trip mr-10"
       type="button"
@@ -329,5 +330,9 @@
       background-color: #{colors.$black};
       --mdc-theme-primary: #{colors.$white};
     }
+    .font-size-h6 {
+      font-size: 16px;
+    }
   }
+  
 </style>

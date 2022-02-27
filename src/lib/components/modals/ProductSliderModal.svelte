@@ -11,6 +11,10 @@
   import BlurImage from '../blur-image.svelte';
   import { onMount } from 'svelte';
   import Carousel from '../Carousel.svelte';
+import Markdown from '../Markdown.svelte';
+import { authStore } from '$lib/store/auth';
+import HeartIcon from '$lib/icons/HeartIcon.svelte';
+import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
   export let open = false;
   export let products: Product[];
   export let active: number;
@@ -20,8 +24,16 @@
     duration: 1500,
     infinite: true,
     particlesToShow: 1,
-    chevronPosition: 'inside',
+    chevronPosition: 'inside' 
   };
+
+  const callLikeItem = (item: Product)=> {
+    if($authStore.user){
+      item.liked = true;
+    }else{
+      window.openSignInModal();
+    }
+  }
 </script>
 
 <div class="content-wrap popup-products {open ? 'open' : 'close'}">
@@ -59,7 +71,7 @@
               </g>
             </Icon>
           </IconButton>
-          <Carousel {...carouselConfig}>
+          <Carousel {...carouselConfig} initialPageIndex={active}>
             {#each products as item}
               <div class="slide-content slide-item">
                 <LayoutGrid class="p-0">
@@ -68,18 +80,24 @@
                     <div class="thumbnail">
                       <div
                         class="image-cover"
-                        style="padding-top: calc(305 / 191 * 100%)"
+                        style="padding-top: calc(406 / 301 * 100%)"
                       >
                         <BlurImage {...item.gallery[0]} />
                       </div>
+                      <IconButton
+                        class="btn-favorite {item.liked ? 'liked' : ''}"
+                        on:click={() => callLikeItem(item)}
+                      >
+                        <HeartIcon size="sm" />
+                        <HeartFilledIcon size="sm" />
+                      </IconButton>
                     </div>
                   </Cell>
                   <Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}>
                     <div class="d-mt-90">
                       <p class="text-eyebrow ">{item.brand}</p>
-                      <div class="divider mt-25 pb-25" />
-                      <h2 class="mb-25">{item.name}</h2>
-                      <p>{item.intro ? item.intro : ''}</p>
+                      <h6 class="mb-20 mt-20">{item.name}</h6>
+                      <p><Markdown source={item.description || ''} /></p>
                       <h3 class="mb-35 mt-20">${item.price}</h3>
                       <Button variant="outlined"
                         ><Label>Purchase Item</Label></Button
@@ -100,19 +118,29 @@
   @use '../../../theme/mixins';
   @include mixins.mobile {
     .slide-item {
-      .thumbnail {
-        margin: auto calc(100px - var(--mdc-layout-grid-margin-phone));
-      }
+      // .thumbnail {
+      //   margin: auto calc(100px - var(--mdc-layout-grid-margin-phone));
+      // }
     }
   }
   .popup-products {
+    padding-top: 87px;
+    max-height: 100vh;
+    overflow-y: scroll;
+    .slide-item{
+      .mdc-icon-button{
+          filter:brightness(0%);
+      }
+    }
     @import './src/style/partial/thumbnail.scss';
     box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
     section {
       --mdc-layout-grid-gutter-desktop: 100px;
       background-color: #fff;
     }
-
+    .arrow-inside .mdc-icon-button:hover{
+      color: rgba(0,0,0,0.7);
+    }
     .arrow {
       @include mixins.mobile {
         display: none;
@@ -121,7 +149,7 @@
       z-index: 1;
       top: 50%;
       &:hover {
-        color: #fff;
+        color: rgba(0,0,0,0.7);
       }
       &.left {
         left: 20px;
@@ -144,7 +172,7 @@
     .divider:after {
       background-color: rgba(0, 0, 0, 0.2);
     }
-    z-index: 100;
+    z-index: 5;
     position: fixed;
     left: 50%;
     bottom: 0;

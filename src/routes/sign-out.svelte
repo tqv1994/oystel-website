@@ -17,7 +17,8 @@
   }
 </script>
   <div class="content">
-    <div class="container mt-128 pt-20 pb-20">
+    <section class=" d-pt-128 m-pt-70">
+    <div class="container">
       {#if $authStore.user}
         <h1>Really sign out?</h1>
         <ul>
@@ -36,4 +37,13 @@
         >
       {/if}
     </div>
+    </section>
   </div>
+  <style lang="scss">
+    @use '../theme/mixins';
+    section{
+      @include mixins.desktop{
+        padding-left: calc(8%);
+      }
+    }
+  </style>

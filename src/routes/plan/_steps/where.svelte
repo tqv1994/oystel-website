@@ -12,7 +12,7 @@
   tripInput.desiredDestinations = tripInput.desiredDestinations || '';
 </script>
 
-<Step title="Where would you like to go?" subtitle="Check all that apply">
+<Step title="Where would you like to travel?" subtitle="Check all that apply">
   <div class="options">
     {#each destinationTypes as option}
       <FormField>
@@ -31,6 +31,13 @@
 
 <style lang="scss">
   @use '../../../theme/mixins';
+  label{
+    --mdc-typography-headline1-font-size: 30px;
+    --mdc-typography-headline1-font-weight: 300;
+    @include mixins.mobile{
+      --mdc-typography-headline1-font-size: 20px;
+    }
+  }
   .options {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;

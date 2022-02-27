@@ -10,7 +10,7 @@
   const carouselConfig = {
     autoplayDuration: 8000,
     duration: 1500,
-    infinite: true,
+    infinite: false,
     particlesToShow: 2,
     chevronPosition: 'outside',
   };
@@ -18,41 +18,78 @@
 
 <div class="stories-list d-pl-100 d-pr-100">
   <h2 class="m-0 mb-40">{title}</h2>
-  {#if drops?.length > 0}
-    <Carousel {...carouselConfig}>
-      {#each drops as item}
-        <div class="slide-content slide-item text-left">
-          <div class="story-item">
-            <div class="thumbnail">
+  <div class="m-none d-block">
+    {#if drops?.length > 0}
+      <Carousel {...carouselConfig} totalItems={drops.length}>
+        {#each drops as item}
+          <div class="slide-content slide-item text-left">
+            <div class="story-item">
+              <div class="thumbnail">
+                <a href={makeLink('/drop', item)}>
+                  <div
+                    class="image-cover"
+                    style="padding-top: calc(410 / 529 * 100%)"
+                  >
+                    {#if item.gallery.length > 0}
+                      <BlurImage {...item.gallery[0]} />
+                    {:else}
+                      <BlurImage />
+                    {/if}
+                  </div>
+                </a>
+              </div>
               <a href={makeLink('/drop', item)}>
-                <div
-                  class="image-cover"
-                  style="padding-top: calc(410 / 529 * 100%)"
-                >
-                  {#if item.gallery.length > 0}
-                    <BlurImage {...item.gallery[0]} />
-                  {:else}
-                    <BlurImage />
-                  {/if}
-                </div>
+                <LayoutGrid class="p-0">
+                  <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                    ><p class="text-eyebrow text-left m-0 mt-25">Fashion</p></Cell
+                  >
+                </LayoutGrid>
+                <h4 class="title m-mt-30 d-mt-15 mb-15">{item.name}</h4>
+                <p class="short-text m-none m-0">
+                  {(item.description || '').substr(0, 80)}...
+                </p>
               </a>
             </div>
-            <a href={makeLink('/drop', item)}>
-              <LayoutGrid class="p-0">
-                <Cell spanDevices={{ desktop: 6, phone: 2 }}
-                  ><p class="text-eyebrow text-left m-0 mt-25">Fashion</p></Cell
-                >
-              </LayoutGrid>
-              <h3 class="text-h3 title m-mt-30 mb-15">{item.name}</h3>
-              <p class="short-text m-none m-0">
-                {(item.description || '').substr(0, 80)}...
-              </p>
-            </a>
           </div>
-        </div>
-      {/each}
-    </Carousel>
-  {/if}
+        {/each}
+      </Carousel>
+    {/if}
+  </div>
+  <div class="m-block d-none">
+    <LayoutGrid class="p-0">
+      <Cell spanDevices={{phone: 4, tablet: 8}}>
+        {#each drops as item}
+            <div class="story-item">
+              <div class="thumbnail">
+                <a href={makeLink('/drop', item)}>
+                  <div
+                    class="image-cover"
+                    style="padding-top: calc(404 / 358 * 100%)"
+                  >
+                    {#if item.gallery.length > 0}
+                      <BlurImage {...item.gallery[0]} />
+                    {:else}
+                      <BlurImage />
+                    {/if}
+                  </div>
+                </a>
+              </div>
+              <a href={makeLink('/drop', item)}>
+                <LayoutGrid class="p-0">
+                  <Cell spanDevices={{ desktop: 6, phone: 2 }}
+                    ><p class="text-eyebrow text-left m-0 mt-25">Fashion</p></Cell
+                  >
+                </LayoutGrid>
+                <h3 class="text-h3 title m-mt-30 mb-15">{item.name}</h3>
+                <p class="short-text m-none m-0">
+                  {(item.description || '').substr(0, 80)}...
+                </p>
+              </a>
+            </div>
+        {/each}
+      </Cell>
+    </LayoutGrid>
+  </div>
 </div>
 <style lang="scss">
     @use '../../theme/mixins';

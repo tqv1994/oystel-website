@@ -51,6 +51,12 @@
     return;
   }
 
+  const onSubmit = () => {
+    goto(`/search?q=${searchResult}`);
+    dispatcher('close');
+    return;
+  }
+
   onMount(async () => {
     checkDeviceToDisableInput();
   });
@@ -72,7 +78,7 @@
     checkDeviceToDisableInput();
   }}
 />
-<form class="search-form">
+<form class="search-form" on:submit|preventDefault={onSubmit}>
   <div
     class="form-control {openSearchComplete == true
       ? 'open-search-complete'

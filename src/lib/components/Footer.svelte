@@ -26,6 +26,7 @@
           <form>
             <div class="form-control mb-40">
               <Textfield
+                class="has-padding-left"
                 style="width: 100%;"
                 bind:value={emailSubscribe}
                 label="Email Address"
@@ -110,6 +111,7 @@
             <div class="form-control mb-40">
               <Textfield
                 style="width: 100%;"
+                class="has-padding-left"
                 bind:value={emailSubscribe}
                 label="Email Address"
                 type="email"

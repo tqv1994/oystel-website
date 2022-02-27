@@ -1,25 +1,39 @@
 <script lang="ts">
+import { UploadFile } from '$lib/store/upload-file';
+
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  export let images: string[] = [];
-  let featuredImage: string;
+import BlurImage from '../blur-image.svelte';
+import Carousel from '../Carousel.svelte';
+  export let images: UploadFile[] = [];
+  let featuredImage: UploadFile;
   if (images.length > 0) {
     featuredImage = images[0];
   }
+  const carouselConfig = {
+    autoplayDuration: 8000,
+    duration: 1500,
+    infinite: false,
+    particlesToShow: 4,
+    chevronPosition: 'inside',
+  };
 </script>
 
 <div class="slides-product-wrap">
-  {#if images.length > 0}
     <div class="thumbnail featured-image">
       <div class="image-cover" style="padding-top:calc(568px)">
-        <img src={featuredImage} alt="" />
+        {#if featuredImage}
+          <BlurImage {...featuredImage} />
+        {:else}
+          <BlurImage/>
+        {/if}
       </div>
     </div>
     <div class="slide-items">
-      <LayoutGrid class="p-0 pb-0 pt-25 ">
+      {#if images.length > 0}
+      <Carousel {...carouselConfig}>
         {#each images as item, i}
           {#if i > 0}
-            <Cell spanDevices={{ desktop: 3, tablet: 2, phone: 1 }}>
               <div class="item-image">
                 <div
                   class="thumbnail"
@@ -30,18 +44,19 @@
                     featuredImage = images[0];
                   }}
                 >
-                  <img src={item} alt="" />
+                  <div class="image-cover" style="padding-top: calc(93/115 * 100%)">
+                    <BlurImage {...featuredImage} />
+                  </div>
                 </div>
               </div>
-            </Cell>
           {/if}
         {/each}
-      </LayoutGrid>
+      </Carousel>
+      {/if}
     </div>
-  {/if}
 </div>
 
-<style>
+<style type="scss">
   .slide-items :global(.mdc-layout-grid__inner) {
     overflow-x: auto;
     grid-auto-flow: column;

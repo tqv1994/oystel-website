@@ -7,7 +7,7 @@ form {
     .mdc-button {
         border-radius: 0 !important;
     }
-    .mdc-text-field:not(.mdc-text-field--outlined) {
+    .mdc-text-field:not(.mdc-text-field--outlined):not(.has-padding-left) {
             .mdc-text-field__input,
             .mdc-floating-label {
                 padding-left: max(16px, calc(var(--mdc-shape-small, 4px) + 4px));
@@ -20,7 +20,7 @@ form {
             }
     }
     .mdc-select {
-        &:not(.mdc-select-outlined){
+        &:not(.mdc-select-outlined):not(.has-padding-left){
             .mdc-select__selected-text,
             .mdc-floating-label {
                 padding-left: max(16px, calc(var(--mdc-shape-small, 4px) + 4px));

@@ -10,7 +10,7 @@
   tripInput.numberOfNights = tripInput.numberOfNights || 1;
 </script>
 
-<Step title="When would you like to go?">
+<Step title="When would you like to travel?">
   <div class="plan-wrap-form">
     <div class="calendar d-mb-25 m-mb-20">
       <OyDatepicker bind:value={tripInput.depart_at} type="inline" options={{width: '30rem'}} />
@@ -26,6 +26,13 @@
 
 <style lang="scss">
   @use '../../../theme/mixins';
+  label{
+    --mdc-typography-headline1-font-size: 30px;
+    --mdc-typography-headline1-font-weight: 300;
+    @include mixins.mobile{
+      --mdc-typography-headline1-font-size: 20px;
+    }
+  }
   @include mixins.mobile{
     .calendar{
       & > :global(div) {

@@ -61,39 +61,61 @@ import Carousel from './Carousel.svelte';
             <div class="featured-drop__content">
                 <div class="gallery gallery-carousel d-none m-block  mb-10">
                     <Carousel {...carouselConfig}>
-                        {#each drop.gallery as item}
-                        <div class="thumbnail">
-                            <div class="image-cover" style="padding-top: 473px">
-                                <BlurImage {...item} />
+                        {#if  drop.gallery.length > 0}
+                            {#each drop.gallery as item}
+                                <div class="thumbnail">
+                                    <div class="image-cover" style="padding-top: 473px">
+                                        {#if item === null}
+                                            <BlurImage {...item} />
+                                        {:else}
+                                            <BlurImage />
+                                        {/if}
+                                    </div>
+                                </div>
+                            {/each}
+                        {:else}
+                            <div class="thumbnail">
+                                <div class="image-cover" style="padding-top: 473px">
+                                    <BlurImage/>
+                                </div>
                             </div>
-                        </div>
-                        {/each}
+                        {/if}
                     </Carousel>
                 </div>
                 <div class="gallery gallery-images d-block m-none  mb-35">
-                    {#each drop.gallery as item, i}
-                    <div class={`gallery-images__item ${i === 0 ? 'active' : ''}`}>
-                        <div class="thumbnail">
-                            <div class="image-cover" style="padding-top: 473px;">
-                                <BlurImage {...item} />
+                    {#if drop.gallery.length > 0}
+                        {#each drop.gallery as item, i}
+                            <div class={`gallery-images__item ${i === 0 ? 'active' : ''}`}>
+                                <div class="thumbnail">
+                                    <div class="image-cover" style="padding-top: 473px;">
+                                        <BlurImage {...item} />
+                                    </div>
+                                </div>
+                            </div>
+                        {/each}
+                    {:else}
+                        <div class={`gallery-images__item active`}>
+                            <div class="thumbnail">
+                                <div class="image-cover" style="padding-top: 473px;">
+                                    <BlurImage />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {/each}
+                    {/if}
                 </div>
                 <div class="featured-drop__actions d-none m-block">
                     <div class="row mr--5 ml--5">
                         {#if button_1}
-                            <div class="col pr-5 pl-5">
+                            <div class="col m-col-6 pr-5 pl-5">
                                 <Button
-                                    variant="raised"
+                                    variant="unelevated"
                                     href={button_1.url}
                                     ><Label>{button_1.name}</Label></Button
                                 >
                             </div>
                         {/if}
                         {#if button_2}
-                            <div class="col pr-5 pl-5">
+                            <div class="col m-col-6 pr-5 pl-5">
                                 <Button
                                     variant="outlined"
                                     href={button_2.url}
@@ -107,10 +129,10 @@ import Carousel from './Carousel.svelte';
                     <div class="row">
                         <div class="d-col-5 m-col-12">
                             <p class="text-eyebrow">Fashion Drop</p>
-                            <h3>{drop.name}</h3>
+                            <h3 class="m-mb-0">{drop.name}</h3>
                         </div>
                         <div class="d-col-7 m-col-12">
-                            <p class="d-mt-50">{drop.description}</p>
+                            <p class="d-mt-50 m-mt-0 m-mb-20">{drop.description}</p>
                             <Button
                                 class="hover-affect-drop"
                                 variant="outlined"
@@ -144,6 +166,7 @@ import Carousel from './Carousel.svelte';
             @include mixins.mobile{
                 :global(button), :global(a){
                     width: 100%;
+                    min-width: 100%;
                 }
             }
         }

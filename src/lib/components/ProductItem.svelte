@@ -2,22 +2,19 @@
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import { Experience } from '$lib/store/experience';
-  import { Destination } from '$lib/store/destination';
   import { makeLink } from '$lib/utils/link';
   import IconButton from '@smui/icon-button';
   import { Icon } from '@smui/common';
   import { Svg } from '@smui/common/elements';
   import { createEventDispatcher } from 'svelte';
-  import { Searchable } from '$lib/store/types';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import { UploadFile } from '$lib/store/upload-file';
   import { Country } from '$lib/store/country';
-import { Category } from '$lib/store/category';
-import { Product } from '$lib/store/product';
+  import { Category } from '$lib/store/category';
+  import { Product } from '$lib/store/product';
 import { authStore } from '$lib/store/auth';
-  export let item: Experience | Destination | Product | Searchable;
+  export let item: Product;
   export let pathPrefix: string;
   export let key: number | null = null;
   export let group_id: number | string | null = null;
@@ -30,6 +27,9 @@ import { authStore } from '$lib/store/auth';
   export let country: Country | undefined = undefined;
   export let type: Category | undefined = undefined;
   export let introShow: boolean = false;
+  export let brand: string | undefined = undefined;
+  
+
   let dispathcher = createEventDispatcher();
   function callLikeItem() {
     if($authStore.user){
@@ -48,18 +48,18 @@ import { authStore } from '$lib/store/auth';
   }
 </script>
 
-<div class="item">
+<div class="item" on:click on:pointerdown>
   <div class="thumbnail">
-      <a href={makeLink(pathPrefix, item)}>
-        <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
-          <BlurImage/>
-          {#if gallery && gallery.length > 0 && gallery[0] !== null}
-            <BlurImage {...gallery[0]} />
-          {:else}
-            <BlurImage/>
-          {/if}
-        </div>
-      </a>
+    <a href="javascript:void(0);" >
+      <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
+        <BlurImage />
+        {#if gallery && gallery.length > 0 && gallery[0] !== null}
+          <BlurImage {...gallery[0]} />
+        {:else}
+          <BlurImage />
+        {/if}
+      </div>
+    </a>
     <IconButton
       class="btn-favorite {liked ? 'liked' : ''}"
       on:click={callLikeItem}
@@ -73,11 +73,11 @@ import { authStore } from '$lib/store/auth';
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, phone: 2 }}
         ><p class="text-eyebrow text-left m-0 mt-20 mb-0">
-          {country?.name || type?.name || ''}
+          {brand || ''}
         </p></Cell
       >
     </LayoutGrid>
-    <h4 class="title mt-15 mb-15">{name}</h4>
+    <h3 class="text-body1 mt-15 mb-15">{name}</h3>
     {#if introShow}
       <p class="short-text m-none m-0">{(intro || '').substring(0, 80)}</p>
     {/if}
@@ -90,14 +90,17 @@ import { authStore } from '$lib/store/auth';
     :global(.mdc-layout-grid) {
       --mdc-layout-grid-gutter-desktop: 0;
     }
+    :global(.mdc-icon-button){
+        filter:brightness(0%);
+    }
     .divider::after {
       background-color: rgba(0, 0, 0, 0.2);
     }
     .title {
-      height: 32px;
+      height: 34px;
       overflow: hidden;
-      @include mixins.mobile{
-        height: 43px;
+      @include mixins.mobile {
+        height: 42px;
       }
     }
     .thumbnail {

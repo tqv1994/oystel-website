@@ -17,26 +17,19 @@ import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
 import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
 import { bannerFieldsFragment } from '$lib/store/banner';
 import { actionFieldsFragment } from '$lib/store/action';
-import { featuredDropFieldsFragment, pageFieldsFragment, PageQueryResult } from '$lib/store/page';
+import { featuredDropFieldsFragment, Page, pageFieldsFragment, PageQueryResult } from '$lib/store/page';
 import { lookFieldsFragment, lookGalleryFieldsFragment } from '$lib/store/look';
 
-export type HomePageData = PageQueryResult & {
-  gallery: UploadFile[];
-};
+export type CuratedLooksPageData = PageQueryResult;
 
 type QueryResult = {
-  homePage: HomePageData;
+  pages: Page[];
 };
 
-const query = `query {
-  homePage {
-    gallery {
-      ...uploadFileFields
-    }
-    page {
+const query = `query($slug: String) {
+  pages (where:{name: $slug}){
       ...pageFields
     }
-  }
 }
 ${dropFieldsFragment}
 ${experienceFieldsFragment}
@@ -44,44 +37,55 @@ ${destinationFieldsFragment}
 ${experienceTypeFieldsFragment}
 ${destinationTypeFieldsFragment}
 ${countryFieldsFragment}
-${productFieldsFragment}
 ${uploadFileFieldsFragment}
 ${dropGalleryFieldsFragment}
 ${experienceGalleryFieldsFragment}
 ${destinationGalleryFieldsFragment}
-${lookGalleryFieldsFragment}
+${productGalleryFieldsFragment}
+${featuredDropFieldsFragment}
+fragment lookGalleryFields on ComponentGalleriesLookGallery {
+    id
+    name
+    headline
+    looks {
+      ...lookFields
+      products{
+          ...productFields
+      }
+    }
+}
 ${lookFieldsFragment}
 ${bannerFieldsFragment}
 ${actionFieldsFragment}
 ${pageFieldsFragment}
-${featuredDropFieldsFragment}
-${productGalleryFieldsFragment}
+${productFieldsFragment}
 `;
 
 /**
  * @type {import('@sveltejs/kit').Get}
  */
 export const get: RequestHandler = async (event) => {
+  const request = event.request;
   try {
     const client = createGraphClientFromRequest(event.request);
-    const res = await client.query<QueryResult>(query).toPromise();
+    const res = await client.query<QueryResult>(query,{slug: 'Fashion Drops'}).toPromise();
     if (res.data) {
-      if (res.data.homePage) {
+      if (res.data.pages) {
         return {
-          body: JSON.stringify(res.data.homePage),
+          body: JSON.stringify(res.data.pages.length > 0 ? res.data.pages[0] : null),
         };
       }
-      console.log('Home page could not be read - perhaps a permission issue?')
+      console.log('Fashion Drops could not be read - perhaps a permission issue?')
     }
     if (res.error) {
       console.log('Res error:', JSON.stringify(res.error, null, 2));
     }
   } catch (error) {
-    console.error('Error getting home page', error);
+    console.error('Error getting page', error);
   }
   return makeErrorResponse(
     500,
     'INTERNAL_SERVER_ERROR',
-    'Error retrieving data for the home page',
+    'Error retrieving data for the page',
   );
 };

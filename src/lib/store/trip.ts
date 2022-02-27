@@ -25,7 +25,7 @@ export type Trip = Base & {
     budget: number;
     vaccinated: boolean;
     documents:Document[];
-    insurances:Insurance[];
+    insurance:Insurance[];
     emergencyName: string;
     emergencyPhone: string;
     emergencyRole: string;
@@ -63,7 +63,7 @@ export class TripInput {
     budget: number
     vaccinated: boolean
     documents: string[] // ID[]
-    insurances: string[] // ID[]
+    insurance: string // ID
     travellers: string[] // ID[]
     published_at: string | Date
     emergencyName: string;
@@ -105,7 +105,7 @@ export const convertTripToInput = (trip: Trip): TripInput => {
     data.advisor = trip.advisor.id;
     data.destinations = trip.destinations?.map((destination) => destination.id);
     data.documents = trip.documents.map((item) => item.id);
-    data.insurances = trip.insurances.map((item) => item.id);
+    data.insurance = trip.insurance;
     data.travellers = trip.travellers.map((item) => item.id);
     data.experiences = (trip.experiences || []).map((item)=>item.id+"");
     data.travelingWithYous = (trip.travelingWithYous || []).map((item)=>item.id+"");
@@ -162,7 +162,7 @@ fragment tripFields on Trip{
     documents{
         ...documentFields
     }
-    insurances{
+    insurance{
         ...insuranceFields
     }
     budget

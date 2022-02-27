@@ -76,8 +76,8 @@
     }
   };
 </script>
-
 <svelte:window on:resize={onResize} />
+{#if look}
 <div class="content shop-detail-page-content">
   <section class="pt-100 d-pb-50 t-pb-150 m-pb-40 ">
     <div class="container">
@@ -92,7 +92,7 @@
                 class="image-cover"
                 style="padding-top: 0; height: calc(90vh - 100px)"
               >
-                {#if look.gallery && look.gallery.length > 0}
+                {#if look?.gallery && Array.isArray(look.gallery) && look.gallery.length > 0}
                   <BlurImage {...look.gallery[0]} />
                 {:else}
                   <BlurImage />
@@ -199,6 +199,7 @@
     bind:open={openQuickShopModal}
   />
 </div>
+{/if}
 
 <style lang="scss" global>
   @use '../../theme/mixins';

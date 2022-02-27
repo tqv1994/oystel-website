@@ -7,8 +7,13 @@
   import { productDesignerStore, productTypeStore } from '$lib/store/product';
   import { get } from 'svelte/store';
   import { Category } from '$lib/store/category';
+  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
+import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
+import { goto } from '$app/navigation';
+import { routerHelper } from '$lib/helpers';
   const types = get(productTypeStore);
   const designers = get(productDesignerStore);
+  let contentHeaderActionMobile: string = '';
   type MenuItem = Category & {
     items?: Category[];
   };
@@ -87,6 +92,7 @@
           stacked={true}
           indicatorSpanOnlyContent={true}
           tabIndicator$transition="fade"
+          on:click={()=>{ if(tab.id !== "999") goto(makeLinkShopCategory(tab))}}
         >
           <Label>{tab.name}</Label>
         </Tab>
@@ -120,7 +126,7 @@
             {#if getItemsSubMenu(activeFilter).length > 0}
               {#each getItemsSubMenu(activeFilter) as item}
                 <div class="menu-item col d-col-3">
-                  <a href="#"
+                  <a href={`#`} on:click={()=>{ routerHelper.redirect(makeLinkShopDesigner(item))}}
                     ><span class="material-icons mr-5">favorite_border</span>
                     {item.name}</a
                   >
@@ -132,6 +138,12 @@
       </div>
     {/if}
   </div>
+  <div class="shop-navigation d-none m-block">
+    <Button variant="outlined" on:click={()=>{contentHeaderActionMobile = 'shop-nav';}}><Label>Shop Menu</Label></Button>
+  </div>
+  <HeaderActionMobile
+    bind:content={contentHeaderActionMobile}
+/>
 {/if}
 
 <style lang="scss">
@@ -139,6 +151,7 @@
   @use '../../theme/colors';
   @use '../../style/include/grid';
   .shop-navigation {
+    // desktop
     margin-top: 87px;
     position: relative;
     .shop-navigation__menus {
@@ -161,8 +174,8 @@
       z-index: 2;
       padding-top: 30px;
       padding-bottom: 50px;
-      padding-left: 100px;
-      padding-right: 100px;
+      padding-left: calc(8% - 45px);
+      padding-right: calc(8% - 45px);
       position: absolute;
       background-color: #{colors.$white};
       width: 100%;
@@ -171,7 +184,7 @@
         align-items: center;
         justify-content: space-between;
         border-bottom: 1px solid #{colors.$black};
-        padding: 0 50px;
+        padding: 0 calc(8% - 45px);
         .filters-wrap {
           justify-self: flex-end;
         }
@@ -184,7 +197,7 @@
         }
       }
       .shop-navigation__content_sub_menus {
-        padding: 0 50px;
+        padding: 0 calc(8% - 45px);
       }
       .menu-item a {
         display: flex;
@@ -203,6 +216,15 @@
           line-height: var(--mdc-typography-navlink-line-height);
           letter-spacing: var(--mdc-typography-navlink-letter-spacing);
         }
+      }
+    }
+    // mobile
+    &.m-block{
+      background: #f2f2f2;
+      padding: 25px  var(--mdc-layout-grid-margin-phone);
+      :global(.mdc-button){
+        width: 100%;
+        
       }
     }
   }

@@ -239,6 +239,7 @@
               <Cell spanDevices={{ desktop: 12, tablet: 8, phone: 4 }}>
                 <div class="form-control">
                   <Textfield
+                    class="has-padding-left"
                     style="width: 100%;"
                     bind:value={model.email}
                     label="Email address"
@@ -254,6 +255,7 @@
               <Cell spanDevices={{ desktop: 12, tablet: 8, phone: 4 }}>
                 <div class="form-control">
                   <Textfield
+                    class="has-padding-left"
                     style="width: 100%;"
                     bind:value={model.password}
                     label="Password"
@@ -280,7 +282,7 @@
         </div>
       </div>
       <div class="col d-col-6 m-col-12">
-        <div class="signup-socials">
+        <div class="signup-socials m-mb-20">
           <p class="text-input m-mb-10">Or sign up using</p>
           <LayoutGrid class="m-0">
             <Cell spanDevices={{ desktop: 12, tablet: 8, phone: 4 }}>
@@ -335,7 +337,7 @@
     @import './src/style/partial/form.scss';
     .signup-modal__wrap{
       @include mixins.mobile{
-        margin-top: 70px;
+        margin-top: 20px;
       }
       .col{
         padding-left: 70px;
@@ -358,7 +360,6 @@
     }
     @media screen and (max-width: 999px) {
       button.mdc-button {
-        min-width: auto;
         padding-left: 15px;
         padding-right: 15px;
       }

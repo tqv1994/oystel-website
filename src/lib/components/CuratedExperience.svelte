@@ -26,7 +26,8 @@ import SliderItems from './SliderItems.svelte';
   let hero: Experience | undefined;
   let nonHeros: Experience[] | undefined;
   $: if (prominent && experiences.length) {
-    experiences = storeHelper.getItems(experiences, 7);
+    experiences = storeHelper.getItems([...experiences], 7);
+    console.log(experiences);
     if (me) {
       experiences = experiences.map((item: Experience) => {
         item.liked = contains(me.experienceLikes || [], 'id', item.id);
@@ -50,12 +51,16 @@ import SliderItems from './SliderItems.svelte';
   }
   const dispatcher = createEventDispatcher();
   const onLike = (event: CustomEvent, experience: Experience | undefined) => {
-    if (experience) {
-      hero.liked = !experience.liked;
-      dispatcher('likeItem', { data: experience });
-    } else {
-      const item = event.detail.item;
-      dispatcher('likeItem', { data: item });
+    if($authStore.user){
+      if (experience) {
+        hero.liked = !experience.liked;
+        dispatcher('likeItem', { data: experience });
+      } else {
+        const item = event.detail.item;
+        dispatcher('likeItem', { data: item });
+      }
+    }else{
+      window.openSignInModal();
     }
   };
 </script>
@@ -79,7 +84,11 @@ import SliderItems from './SliderItems.svelte';
         <div class="thumbnail dark">
           <a href={makeLink('/experience', hero)}>
             <div class="image-cover" style="padding-top: calc(568/529 * 100%)">
-              <BlurImage {...hero.gallery[0]} />
+              {#if hero.gallery.length > 0 || hero.gallery[0] != null}
+                <BlurImage {...hero.gallery[0]} />
+              {:else}
+                <BlurImage/>
+              {/if}
             </div>
           </a>
           <IconButton
@@ -94,9 +103,9 @@ import SliderItems from './SliderItems.svelte';
           <div class="caption text-left">
             <p class="mt-0 text-eyebrow pl-25 pr-25">{name}</p>
             <a class="" href={makeLink('/experience', hero)}>
-              <h2 class="pl-25 pr-25 mt-20 title">
+              <h3 class="pl-25 pr-25 mt-20 title">
                 {hero.name}
-              </h2>
+              </h3>
             </a>
           </div>
         </div>
@@ -131,9 +140,11 @@ import SliderItems from './SliderItems.svelte';
       .experiences--item.featured {
         .title {
           height: 48px;
+          font-size: 32px;
           overflow: hidden;
           @include mixins.mobile {
             height: 26px;
+            font-size: 20px;
           }
         }
         :global(.thumbnail .btn-favorite) {

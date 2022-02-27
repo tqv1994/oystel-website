@@ -37,7 +37,7 @@
   .section-content {
     --mdc-typography-heading1-font-size: 32px;
     --mdc-typography-body1-font-size: 14px;
-    padding: 30px 25px;
+    padding: 0 25px;
     .section-title {
       position: relative;
     }

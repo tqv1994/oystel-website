@@ -11,7 +11,7 @@ import {
   destinationGalleryFieldsFragment,
 } from '$lib/store/destination';
 import { countryFieldsFragment } from '$lib/store/country';
-import { productFieldsFragment } from '$lib/store/product';
+import { productFieldsFragment, productGalleryFieldsFragment } from '$lib/store/product';
 import { UploadFile, uploadFileFieldsFragment } from '$lib/store/upload-file';
 import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
 import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
@@ -42,6 +42,7 @@ ${uploadFileFieldsFragment}
 ${dropGalleryFieldsFragment}
 ${experienceGalleryFieldsFragment}
 ${destinationGalleryFieldsFragment}
+${productGalleryFieldsFragment}
 ${featuredDropFieldsFragment}
 ${lookGalleryFieldsFragment}
 ${lookFieldsFragment}

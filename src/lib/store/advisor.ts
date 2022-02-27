@@ -42,12 +42,15 @@ export type AdvisorBase = Exhibitable & {
   initials?: string;
   gallery?: UploadFile;
   trips?: Trip[];
+
 };
 
 export type Advisor = AdvisorBase & {
   experienceType1?: Category;
   experienceType2?: Category;
   experienceType3?: Category;
+  experienceType4?: Category;
+  experienceType5?: Category;
   destinationType1?: Category;
   destinationType2?: Category;
   destinationType3?: Category;
@@ -57,6 +60,14 @@ export type Advisor = AdvisorBase & {
   language1?: Language;
   language2?: Language;
   language3?: Language;
+  agency?: Agency;
+}
+
+export type Agency = {
+  id: string;
+  affiliate_agencies?: Category[],
+  affiliate_networks?: Category[],
+  affiliate_benefit_programs?: Category[]
 }
 
 export const advisorStore = writable<CollectionStore<Advisor>>({

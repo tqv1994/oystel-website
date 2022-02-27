@@ -21,6 +21,21 @@ query($id: ID!) {
     destinations {
       ...destinationFields
     }
+    agency{
+      id
+      affiliate_agencies{
+        id
+        name
+      }
+      affiliate_networks{
+        id
+        name
+      }
+      affiliate_benefit_programs{
+        id
+        name
+      }
+    }
   }
 }
 ${advisorFieldsFragment}

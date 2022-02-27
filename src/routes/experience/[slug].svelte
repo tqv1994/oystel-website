@@ -54,8 +54,8 @@
 
 <script type="ts">
   import DetailSlide from '$lib/components/DetailSlide.svelte';
-import DetailSticky from '$lib/components/DetailSticky.svelte';
-import Markdown from '$lib/components/Markdown.svelte';
+  import DetailSticky from '$lib/components/DetailSticky.svelte';
+  import Markdown from '$lib/components/Markdown.svelte';
   export let id: string;
   let experience: Experience;
   let productSliderOpen: boolean;
@@ -241,9 +241,11 @@ import Markdown from '$lib/components/Markdown.svelte';
         </div>
       </div>
     </section>
-    <section class={`header-title d-pt-100 d-pb-25 m-pt-90 m-pb-60 full-width  is_sticky fixed ${
-      stickyShow ? 'show' : ''
-    }`}>
+    <section
+      class={`m-none header-title d-pt-100 d-pb-25 m-pt-90 m-pb-60 full-width  is_sticky fixed ${
+        stickyShow ? 'show' : ''
+      }`}
+    >
       <div class="content-wrap">
         <div class="container">
           <DetailSticky data={experience} on:like={likeExperience} />
@@ -251,26 +253,24 @@ import Markdown from '$lib/components/Markdown.svelte';
       </div>
     </section>
 
-    <section class="d-pt-50 d-pb-40 m-pt-40 m-pb-35 detail-content">
+    <section class="d-pt-50 d-pb-40 m-pt-40 m-pb-0 detail-content">
       <div class="container">
         <LayoutGrid class="p-0">
           <Cell spanDevices={{ desktop: 8, tablet: 8, phone: 4 }}>
-            <Markdown source={experience.description}/>
+            <Markdown source={experience.description} />
           </Cell>
-          <Cell
-            spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}
-            class="m-none"
-          >
-            <h2 class="mt-0 mb-40">My Favorites Places</h2>
+          <Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }} class="">
+            <h2 class="mt-0 mb-40 m-mt-40">My Favorites Places</h2>
             <div class="experiences-list">
               <LayoutGrid class="p-0">
                 {#each experience.destinations || [] as item}
-                  <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 4 }}>
+                  <Cell spanDevices={{ desktop: 12, phone: 4, tablet: 8 }}>
                     <Item
                       {...item}
                       pathPrefix="/destination"
                       bind:item
                       on:likeItem={likeDestination}
+                      introShow={true}
                     />
                   </Cell>
                 {/each}
@@ -290,27 +290,6 @@ import Markdown from '$lib/components/Markdown.svelte';
         on:likeItem={likeProduct}
       />
     {/if}
-    {#if experience.destinations?.length}
-      <section class="m-pt-50 m-pb-85 d-none m-block">
-        <div class="container">
-          <h2 class="mt-0 d-mb-80 m-mb-35">My Favorite Places</h2>
-          <div class="experiences-list">
-            <LayoutGrid class="p-0">
-              {#each experience.destinations as item}
-                <Cell spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}>
-                  <Item
-                    {...item}
-                    pathPrefix="/destination"
-                    bind:item
-                    on:likeItem={likeDestination}
-                  />
-                </Cell>
-              {/each}
-            </LayoutGrid>
-          </div>
-        </div>
-      </section>
-    {/if}
   </div>
 {/if}
 <ProductSliderModal
@@ -326,7 +305,7 @@ import Markdown from '$lib/components/Markdown.svelte';
   .experience-detail {
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/sticky.scss';
-    
+
     .mdc-button {
       width: 180px;
       min-width: 180px;
@@ -419,85 +398,6 @@ import Markdown from '$lib/components/Markdown.svelte';
       background-color: rgba(0, 0, 0, 0.2);
     }
 
-    .products-list :global(.mdc-layout-grid__inner) {
-      overflow-x: auto;
-      grid-auto-flow: column;
-      padding-bottom: 80px;
-    }
-    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-track) {
-      background-color: #d3d3d3;
-    }
-    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar) {
-      height: 10px;
-      background-color: #d3d3d3;
-    }
-    .products-list :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
-      background-color: colors.$blue;
-    }
-    @media (min-width: 1240px) {
-      .products-list :global(.mdc-layout-grid__inner) {
-        grid-auto-columns: minmax(
-          calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)),
-          1fr
-        );
-        grid-template-columns: repeat(
-          auto-fill,
-          minmax(
-            calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-desktop)),
-            1fr
-          )
-        );
-      }
-    }
-    @media (max-width: 1239px) and (min-width: 905px) {
-      .products-list :global(.mdc-layout-grid__inner) {
-        grid-auto-columns: minmax(
-          calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)),
-          1fr
-        );
-        grid-template-columns: repeat(
-          auto-fill,
-          minmax(
-            calc(2 / 12 * 100% - var(--mdc-layout-grid-gutter-tablet)),
-            1fr
-          )
-        );
-      }
-    }
-    @media (max-width: 904px) and (min-width: 600px) {
-      .products-list :global(.mdc-layout-grid__inner) {
-        grid-auto-columns: minmax(
-          calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
-          1fr
-        );
-        grid-template-columns: repeat(
-          auto-fill,
-          minmax(calc(1 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
-        );
-      }
-    }
-    @media (max-width: 599px) {
-      .products-list :global(.mdc-layout-grid__inner) {
-        grid-auto-columns: minmax(
-          calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)),
-          1fr
-        );
-        grid-template-columns: repeat(
-          auto-fill,
-          minmax(calc(3 / 12 * 100% - var(--mdc-layout-grid-gutter-phone)), 1fr)
-        );
-      }
-    }
-
-    .products-list :global(.item-product .thumbnail) {
-      width: 100%;
-      padding-bottom: 145%;
-      background-color: #f2f2f2;
-      background-position: center;
-      background-repeat: no-repeat;
-      position: relative;
-    }
-
     :global(.products-list .item-product) {
       @include mixins.mobile {
         h3 {
@@ -535,12 +435,6 @@ import Markdown from '$lib/components/Markdown.svelte';
       background-color: #000;
     }
 
-    @media (max-width: 1222px) {
-      .detail-content .container > :global(.mdc-layout-grid) {
-        --mdc-layout-grid-gutter-desktop: 30px;
-      }
-    }
-
     @media screen and (max-width: 1304px) {
       .header-title .show-on-sticky button.mdc-button {
         width: auto;
@@ -551,12 +445,6 @@ import Markdown from '$lib/components/Markdown.svelte';
     @media screen and (max-width: 999px) {
       .header-title .show-on-sticky button.mdc-button {
         padding: 10px;
-      }
-    }
-
-    @media screen and (max-width: 949px) {
-      .products-list :global(.mdc-layout-grid__inner) {
-        margin-bottom: 45px;
       }
     }
   }

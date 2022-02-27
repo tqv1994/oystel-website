@@ -50,8 +50,18 @@
       false,
     );
     insertToStore(productColourStore, session.metadata?.productColours, false);
-    insertToStore(productDesignerStore, session.metadata?.productDesigners, false);
+    insertToStore(
+      productDesignerStore,
+      session.metadata?.productDesigners,
+      false,
+    );
+    insertToStore(
+      productPattnerStore,
+      session.metadata?.productPatterns,
+      false,
+    );
     insertToStore(productTypeStore, session.metadata?.productTypes, false);
+    insertToStore(vacationStyleStore, session.metadata?.vacationStyles, false);
     insertToStore(
       personalPreferenceTypeStore,
       session.metadata?.personalPreferenceTypes,
@@ -75,6 +85,12 @@
         description: 'Fashion Collection',
         gallery: [{ url: '/img/shop/shop-thumbnail.jpg' }],
       },
+      {
+        name: 'Fashion Drops',
+        url: '/shop/fashion-drops',
+        description: 'Fashion Collection',
+        gallery: [{ url: '/img/shop/shop-thumbnail.jpg' }],
+      },
     ];
 
     var active: MainNavItem;
@@ -88,7 +104,6 @@
     if (url.pathname === '/') {
       isHomePage = true;
     }
-    console.log(url.pathname);
     return {
       props: {
         key: url.pathname,
@@ -112,17 +127,20 @@
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
   import SignupModal from '$lib/components/modals/SignupModal.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-import { productColourStore, productDesignerStore, productTypeStore } from '$lib/store/product';
+  import {
+    productColourStore,
+    productDesignerStore,
+    productPattnerStore,
+    productTypeStore,
+    vacationStyleStore,
+  } from '$lib/store/product';
   export let active: MainNavItem | undefined;
   export let isHomePage = false;
   export let key: string;
 </script>
 
 <div class="content-wrap">
-  <MainNav
-    items={mainMenu}
-    bind:active
-  />
+  <MainNav items={mainMenu} bind:active />
   <div>
     <slot />
   </div>
@@ -132,4 +150,4 @@ import { productColourStore, productDesignerStore, productTypeStore } from '$lib
 <MobileBottomTool />
 <SigninModal />
 <SignupModal />
-<OyNotification/>
+<OyNotification />

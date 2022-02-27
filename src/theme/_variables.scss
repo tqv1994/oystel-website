@@ -3,8 +3,8 @@
 @use "./mixins";
 #svelte {
   --mdc-theme-primary: #000;
+  --mdc-theme-secondary: #F2F2F2;
   --mdc-theme-surface: #{colors.$white};
-  --mdc-theme-secondary: #{colors.$slightlyBlue};
   --mdc-theme-on-secondary: #{colors.$black};
   --mdc-ripple-color: transparent;
   --desktop-width: #{sizes.$desktop-width};
@@ -56,7 +56,7 @@
   --mdc-typography-headline6-letter-spacing: 0.1px;
 
   --mdc-typography-subtitle1-font-family: Surt;
-  --mdc-typography-subtitle1-font-size: 14px;
+  --mdc-typography-subtitle1-font-size: 13px;
   --mdc-typography-subtitle1-font-weight: 400;
   --mdc-typography-subtitle1-line-height: 22px;
   --mdc-typography-subtitle1-letter-spacing: 0.1px;
@@ -114,18 +114,25 @@
   --mdc-typography-form-line-height: 24px;
   --mdc-typography-form-letter-spacing: 0.5;
 
+  /* Photo Detail */
+  --mdc-typography-photodetail-font-family: Surt;
+  --mdc-typography-photodetail-font-size: 13px;
+  --mdc-typography-photodetail-font-weight: 300;
+  --mdc-typography-photodetail-line-height: 20px;
+  --mdc-typography-photodetail-letter-spacing: 0;
+
   /* Character styles mobile */
   @include mixins.mobile {
     --mdc-typography-headline1-font-size: 32px;
     --mdc-typography-headline1-line-height: 38px;
 
-    --mdc-typography-headline2-font-size: 20px;
-    --mdc-typography-headline2-line-height: 27.5px;
+    --mdc-typography-headline2-font-size: 32px;
+    --mdc-typography-headline2-line-height: 38px;
 
     --mdc-typography-headline3-font-size: 18px;
     --mdc-typography-headline3-line-height: 22px;
 
-    --mdc-typography-headline4-font-size: 12px;
+    --mdc-typography-headline4-font-size: 18px;
     --mdc-typography-headline4-line-height: 22px;
 
     --mdc-typography-headline5-font-size: 12px;
@@ -134,10 +141,7 @@
     --mdc-typography-headline6-font-size: 12px;
     --mdc-typography-headline6-line-height: 20px;
 
-    --mdc-typography-subtitle1-font-size: 14px;
-    --mdc-typography-subtitle1-line-height: 18px;
-
-    --mdc-typography-subtitle1-font-size: 14px;
+    --mdc-typography-subtitle1-font-size: 13px;
     --mdc-typography-subtitle1-line-height: 18px;
 
     --mdc-typography-subtitle2-font-size: 9px;

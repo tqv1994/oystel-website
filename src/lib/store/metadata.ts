@@ -20,4 +20,5 @@ export type Metadata = {
   productPattners: Category[];
   productDesigners: Category[];
   productTypes: Category[];
+  vacationStyles: Category[];
 };

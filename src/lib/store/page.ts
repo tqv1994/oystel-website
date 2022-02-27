@@ -8,6 +8,7 @@ import { Banner } from './banner';
 import { Action } from './action';
 import { GalleryComponentBase } from './component';
 import { Look } from './look';
+import { ProductGallery } from './product';
 
 export type FeaturedDrop = {
   name: string;
@@ -26,7 +27,8 @@ export type Section =
   | ExperienceGallery
   | Banner
   | LookGallery
-  | FeaturedDrop;
+  | FeaturedDrop
+  | ProductGallery;
 
 export type Page = Identifiable &
   Nameable & {
@@ -64,6 +66,9 @@ fragment pageFields on Page {
     }
     ... on ComponentGalleriesLookGallery {
       ...lookGalleryFields
+    }
+    ... on ComponentGalleriesProductGallery {
+      ...productGalleryFields
     }
   }
 }

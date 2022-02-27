@@ -197,11 +197,18 @@ p,
 .text-body2 {
   @include typography.typography('body2');
 }
+.text-photodetail {
+  font-family: var(--mdc-typography-photodetail-font-family);
+  font-size: var(--mdc-typography-photodetail-font-size);
+  font-weight: var(--mdc-typography-photodetail-font-weight);
+  line-height:  var(--mdc-typography-photodetail-line-height);
+  letter-spacing: var(--mdc-typography-photodetail-letter-spacing);
+}
 
 button .text-eyebrow,
 .mdc-button .text-eyebrow,
 .text-eyebrow {
-  font-size: 13px !important;
+  font-size: 11px !important;
   letter-spacing: 0.2px !important;
   line-height: 18px !important;
 }
@@ -631,7 +638,7 @@ body.mdc-dialog-scroll-lock{ // Fixed error jumpled screen when open dialog
 
 .mdc-drawer {
   .mdc-deprecated-list-item.mdc-deprecated-list-item {
-    @include typography.typography('headline4');
+    @include typography.typography('headline5');
     text-transform: uppercase;
 
     &.active {

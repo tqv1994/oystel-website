@@ -26,7 +26,7 @@ import {
   interestFieldsFragment,
   interestTypeFieldsFragment,
 } from '$lib/store/interest';
-import { productColourFieldsFragment, productDesignerFieldsFragment, productFieldsFragment, productTypeFieldsFragment } from '$lib/store/product';
+import { productColourFieldsFragment, productDesignerFieldsFragment, productFieldsFragment, productPatternFieldsFragment, productTypeFieldsFragment, vacationStyleFieldsFragment } from '$lib/store/product';
 import { addressFieldsFragment } from '$lib/store/address';
 import {
   personalPreferenceFieldsFragment,
@@ -142,6 +142,12 @@ const metadataQuery = `query {
   productTypes{
     ...productTypeFields
   }
+  vacationStyles{
+    ...vacationStyleFields
+  }
+  productPatterns{
+    ...productPatternFields
+  }
 }
 ${destinationTypeFieldsFragment}
 ${experienceTypeFieldsFragment}
@@ -162,6 +168,8 @@ ${personalPreferenceTypeFieldsFragment}
 ${productColourFieldsFragment}
 ${productDesignerFieldsFragment}
 ${productTypeFieldsFragment}
+${productPatternFieldsFragment}
+${vacationStyleFieldsFragment}
 `;
 
 let counter = 0;

@@ -1,6 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { makeErrorResponse } from '$lib/utils/fetch';
-import { searchClient, SearchResultGroup } from '$lib/store/search';
+import { EXPERIENCE_TYPE, searchClient, SearchResultGroup } from '$lib/store/search';
 import { Identifiable } from '$lib/store/types';
 import {
   COUNTRY,
@@ -28,12 +28,12 @@ export const get: RequestHandler = async (event) => {
       body: JSON.stringify(res),
     };
   } catch (error) {
-    console.error('Error searching for destinations', error);
+    console.error('Error searching for advisors', error);
   }
   return makeErrorResponse(
     500,
     'INTERNAL_SERVER_ERROR',
-    'Error searching for destinations',
+    'Error searching for advisors',
   );
 };
 
@@ -41,11 +41,13 @@ async function search<T extends Identifiable>(
   params: SearchParams,
 ): Promise<SearchResultGroup<T>> {
   const filter: Array<string | Array<string>> = [];
-  if (params[TYPE]) {
+  if (params[EXPERIENCE_TYPE]) {
     filter.push([
-      `type1 = ${params[TYPE]}`,
-      `type2 = ${params[TYPE]}`,
-      `type3 = ${params[TYPE]}`,
+      `experienceType1 = ${params[EXPERIENCE_TYPE]}`,
+      `experienceType2 = ${params[EXPERIENCE_TYPE]}`,
+      `experienceType3 = ${params[EXPERIENCE_TYPE]}`,
+      `experienceType4 = ${params[EXPERIENCE_TYPE]}`,
+      `experienceType5 = ${params[EXPERIENCE_TYPE]}`,
     ]);
   }
   if (params[COUNTRY]) {

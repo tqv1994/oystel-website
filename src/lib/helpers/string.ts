@@ -23,7 +23,6 @@ export const stringHelper = {
   },
 
   queryURLParamToJSON: (query: string) => {
-    console.log(query);
     var re = /([^&=]+)=?([^&]*)/g;
     var decodeRE = /\+/g;
 

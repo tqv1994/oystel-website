@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { H1 } from '@smui/common/elements';
+  import { H2 } from '@smui/common/elements';
 
   let className: string = '';
   export { className as class };
@@ -8,7 +8,7 @@
 </script>
 
 <div class="root {className}">
-  <H1 class="mdc-typography--headline1 mb-20 title">{title}</H1>
+  <H2 class="mdc-typography--headline2 mb-20 title">{title}</H2>
   {#if subtitle}
     <p>{subtitle}</p>
   {/if}
@@ -25,7 +25,6 @@
     text-align: center;
     --mdc-typography-headline2-font-family: GTSupper;
     :global(.title) {
-      max-width: 710px;
       margin: 0 auto;
     }
     p {

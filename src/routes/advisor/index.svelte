@@ -43,7 +43,7 @@
   import { makeLink } from '$lib/utils/link';
   import { implodeString } from '$lib/utils/string';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+  import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
 
   type SearchResultItem = AdvisorBase & {
     country: string;
@@ -64,13 +64,17 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
   export const load: Load = async ({ fetch, url }) => {
     url.searchParams.set(LIMIT, '20');
     const res = await fetch(`/advisor.json?${url.searchParams.toString()}`);
+    let advisors: {hasMore: boolean, items: Advisor[]} = {
+      hasMore: false,
+      items: []
+    };
+    const destinationTypes = get(destinationTypeStore);
+    const experienceTypes = get(experienceTypeStore);
+    const countries = get(countryStore);
+    const advisorTypes = get(advisorTypeStore);
+    const languages = get(languageStore);
     if (res.ok) {
       const searchData: SearchResultGroup<SearchResultItem> = await res.json();
-      const destinationTypes = get(destinationTypeStore);
-      const experienceTypes = get(experienceTypeStore);
-      const countries = get(countryStore);
-      const advisorTypes = get(advisorTypeStore);
-      const languages = get(languageStore);
       const items: Advisor[] = [];
       for (const item of searchData.items) {
         items.push({
@@ -106,19 +110,17 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
           language3: languages.items[item.language3],
         });
       }
-      return {
+      advisors = {
+        hasMore: searchData.hasMore,
+        items
+      };
+    }
+    return {
         props: {
-          advisors: {
-            hasMore: searchData.hasMore,
-            items,
-          },
+          advisors,
           query: url.searchParams.get(QUERY) || '',
-          experienceType:
-            experienceTypes.items[url.searchParams.get(EXPERIENCE_TYPE) || ''],
-          destinationType:
-            destinationTypes.items[
-              url.searchParams.get(DESTINATION_TYPE) || ''
-            ],
+          experiencetype: url.searchParams.get(EXPERIENCE_TYPE) || '',
+          destinationtype: url.searchParams.get(DESTINATION_TYPE) || '',
           type: url.searchParams.get(TYPE) || '',
           language: languages.items[url.searchParams.get(LANGUAGE) || ''],
           country: url.searchParams.get(COUNTRY) || '',
@@ -127,11 +129,6 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
             ORDER_BY_NAME_ASC,
         },
       };
-    }else{
-      return {
-        props:{}
-      }
-    }
   };
 </script>
 
@@ -141,16 +138,17 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
     items: [],
   };
   export let query: string = '';
-  export let experiencetype: Category | undefined;
-  export let destinationtype: Category | undefined;
+  export let experiencetype: string ;
+  export let destinationtype: string;
   export let type: string;
   export let language: Language | undefined;
   export let country: string;
   export let ordering: Ordering;
   let contentHeaderActionMobile: string = '';
+  console.log(experiencetype);
 
-  const advisorTypes = sortByName(Object.values($advisorTypeStore.items));
-  advisorTypes.unshift({id: "", name: "All"});
+  const experienceTypes = sortByName(Object.values($experienceTypeStore.items));
+  experienceTypes.unshift({ id: '', name: 'All' });
   // let experienceTypes: Category[];
   // experienceTypeStore.subscribe(
   //   (store) => (experienceTypes = sortByName(Object.values(store.items))),
@@ -159,15 +157,15 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
   let countries: Country[];
   countryStore.subscribe((store) => {
     countries = sortByName(Object.values(store.items));
-    countries.unshift({id: "", name: "All"});
+    countries.unshift({ id: '', name: 'All' });
   });
 
   function go(params: SearchParams) {
     search({
       [QUERY]: query,
       [TYPE]: type,
-      [DESTINATION_TYPE]: destinationtype?.id,
-      [EXPERIENCE_TYPE]: experiencetype?.id,
+      [DESTINATION_TYPE]: destinationtype,
+      [EXPERIENCE_TYPE]: experiencetype,
       [LANGUAGE]: language?.id,
       [COUNTRY]: country,
       [ORDERING]: ordering.key,
@@ -184,7 +182,7 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
   }
 
   function onTypeChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ [TYPE]: event.detail.value.id });
+    go({ [EXPERIENCE_TYPE]: event.detail.value.id });
   }
 
   function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
@@ -199,7 +197,7 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
     contentHeaderActionMobile = '';
     go({
       [COUNTRY]: event.detail.country || '',
-      [TYPE]: event.detail.type || '',
+      [EXPERIENCE_TYPE]: event.detail.type || '',
     });
   }
 
@@ -315,23 +313,25 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
                 <label class="text-h5">Speciality</label>
                 <div class="display-inline">
                   <OyAutocomplete
-                    getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                    bind:value={type}
-                    options={advisorTypes}
+                    getOptionLabel={(option) =>
+                      option ? `${option.name}` : ''}
+                    bind:value={experiencetype}
+                    options={experienceTypes}
                     key={'id'}
                     on:SMUIAutocomplete:change={onTypeChange}
                   />
                 </div>
               </div>
               <div class="form-control text-left">
-                <label class="text-h5">By Country</label>
+                <label class="text-h5">Location</label>
                 <div class="display-inline">
                   <OyAutocomplete
-                      getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                      bind:value={country}
-                      options={countries}
-                      key={'id'}
-                      on:SMUIAutocomplete:change={onCountryChange}
+                    getOptionLabel={(option) =>
+                      option ? `${option.name}` : ''}
+                    bind:value={country}
+                    options={countries}
+                    key={'id'}
+                    on:SMUIAutocomplete:change={onCountryChange}
                   />
                 </div>
               </div>
@@ -344,12 +344,12 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
             <div>
               <div class="form-control text-left">
                 <OyAutocomplete
-                      getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                      bind:value={type}
-                      options={advisorTypes}
-                      key={'id'}
-                      on:SMUIAutocomplete:change={onTypeChange}
-                  />
+                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                  bind:value={experiencetype}
+                  options={experienceTypes}
+                  key={'id'}
+                  on:SMUIAutocomplete:change={onTypeChange}
+                />
               </div>
             </div>
           </Cell>
@@ -360,12 +360,12 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
             <div>
               <div class="form-control text-left">
                 <OyAutocomplete
-                      getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                      bind:value={country}
-                      options={countries}
-                      key={'id'}
-                      on:SMUIAutocomplete:change={onCountryChange}
-                  />
+                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                  bind:value={country}
+                  options={countries}
+                  key={'id'}
+                  on:SMUIAutocomplete:change={onCountryChange}
+                />
               </div>
             </div>
           </Cell>
@@ -376,9 +376,15 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
           <Head>
             <Row>
               <CellTable style="width: 10%" />
-              <CellTable style="width: 35%;"><h6>Name</h6></CellTable>
-              <CellTable style="width: 35%;"><h6>Specialties</h6></CellTable>
-              <CellTable style="width: 20%;"><h6>Location</h6></CellTable>
+              <CellTable style="width: 25%;"
+                ><h6 class="m-0 mb-10">Name</h6></CellTable
+              >
+              <CellTable style="width: 45%;"
+                ><h6 class="m-0 mb-10">Specialties</h6></CellTable
+              >
+              <CellTable style="width: 20%;"
+                ><h6 class="m-0 mb-10">Location</h6></CellTable
+              >
             </Row>
           </Head>
           <Body>
@@ -400,17 +406,23 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
                       </div></a
                     ></CellTable
                   >
-                  <CellTable style="width: 35%;"
+                  <CellTable style="width: 25%;"
                     ><a href={makeLink('/advisor', item)}
-                      ><p class="name text-h3">
+                      ><p class="name text-h4">
                         {item.name}
                       </p></a
                     ></CellTable
                   >
-                  <CellTable style="width: 35%;"
+                  <CellTable style="width: 45%;"
                     ><p>
                       {implodeString(
-                        [item.type1?.name, item.type2?.name, item.type3?.name],
+                        [
+                          item.experienceType1?.name,
+                          item.experienceType2?.name,
+                          item.experienceType3?.name,
+                          item.experienceType4?.name,
+                          item.experienceType5?.name,
+                        ],
                         ', ',
                       )}
                     </p></CellTable
@@ -444,24 +456,26 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
                               {#if item.avatar}
                                 <BlurImage {...item.avatar} />
                               {:else}
-                                <BlurImage  />
+                                <BlurImage />
                               {/if}
                             </div>
                           </div>
                         </Cell>
                         <Cell spanDevices={{ phone: 3, tablet: 6, desktop: 8 }}>
-                          <h3 class="mt-0 mb-15">
+                          <h4 class="mt-0 mb-15">
                             {item.name}
-                          </h3>
+                          </h4>
                           <p class="mt-0 mb-30">
                             {item.country?.name || ''}
                           </p>
                           <p class="m-0">
                             {implodeString(
                               [
-                                item.type1?.name,
-                                item.type2?.name,
-                                item.type3?.name,
+                                item.experienceType1?.name,
+                                item.experienceType2?.name,
+                                item.experienceType3?.name,
+                                item.experienceType4?.name,
+                                item.experienceType5?.name,
                               ],
                               ', ',
                             ).substr(0, 80)}
@@ -482,19 +496,37 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
 
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  {advisorTypes}
-  countries={sortByName(Object.values($countryStore.items))}
   on:close={onSearchSubmitMobile}
-  searchModel={{ type: type, country: country }}
+  searchModel={{ experiencetype, country }}
 />
 
 <style lang="scss" global>
+  @use '../../theme/mixins';
   .advisor-listing-page {
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/sticky.scss';
     @import './src/style/partial/form.scss';
+    --mdc-typography-headline6-text-transform: none;
+    --mdc-typography-body1-font-size: 16px;
+    --mdc-typography-body1-font-weight: 400;
+    --mdc-typography-body1-line-height: 29px;
+    @include mixins.mobile {
+      --mdc-typography-body1-font-size: 14px;
+      --mdc-typography-body1-font-weight: 400;
+      --mdc-typography-body1-line-height: 27px;
+
+      --mdc-typography-headline6-text-transform: none;
+
+      --mdc-typography-headline4-font-size: 20px;
+      --mdc-typography-headline4-font-weight: 400;
+      --mdc-typography-headline4-line-height: 24px;
+    }
+    .item-advisor .image-cover{
+      -webkit-filter: grayscale(1);
+      filter: grayscale(1);
+    }
     .header-title {
-      background-color: #F2F2F2;
+      background-color: #f2f2f2;
     }
     .is_sticky .hidden-on-sticky {
       display: none;
@@ -634,9 +666,7 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
         --mdc-layout-grid-gutter-desktop: 30px;
         --mdc-layout-grid-gutter-phone: 20px;
       }
-      .advisors-list .mdc-layout-grid .mdc-layout-grid__cell .item-advisor {
-        border-top: 1px solid rgba(0, 0, 0, 0.2);
-      }
+
       .advisors-list
         .mdc-layout-grid
         .mdc-layout-grid__cell:last-child
@@ -645,7 +675,7 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
       }
     }
   }
-  .display-inline{
+  .display-inline {
     display: inline-block;
   }
 </style>

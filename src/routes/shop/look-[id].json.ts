@@ -18,6 +18,7 @@ ${lookFieldsFragment}
 ${productFieldsFragment}
 ${uploadFileFieldsFragment}
 `;
+console.log(query);
 /**
  * @type {import('@sveltejs/kit').Get}
  */

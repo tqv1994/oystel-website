@@ -14,6 +14,7 @@
   import { createEventDispatcher } from 'svelte';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
+import { documentHelper } from '$lib/helpers';
 
   const dispatcher = createEventDispatcher();
   export let data: Experience | Destination;
@@ -29,34 +30,44 @@
     particlesToShow: 1,
     chevronPosition: 'inside',
   };
+
+  const onClickWhatToPack = () => {
+    documentHelper.onScrollToSectionSelector(".what-to-pack");
+  }
 </script>
 
 <LayoutGrid class="p-0">
   <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
     <div class="data-detail-image">
-      {#if data.gallery.length > 0}
+      
         <Carousel {...carouselConfig}>
-          {#each data.gallery as item}
-            <div class="image-cover" style="padding-top: 0; height: calc(90vh - 100px)">
-              <BlurImage {...item} />
+          {#if data.gallery.length > 0}
+            {#each data.gallery as item}
+              <div class="image-cover" style="padding-top: 0; height: calc(90vh)">
+                <BlurImage {...item} />
+              </div>
+            {/each}
+          {:else}
+            <div class="image-cover" style="padding-top: 0; height: calc(90vh)">
+              <BlurImage />
             </div>
-          {/each}
+          {/if}
         </Carousel>
-      {/if}
+      
     </div>
   </Cell>
   <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
     <div class="d-pt-25-vh m-pt-45">
       <p class="text-eyebrow m-m-0">{data?.country.name}</p>
-      <h1 class="m-mt-30 m-mb-15">{data?.name}</h1>
+      <h2 class="m-mt-30 m-mb-15">{data?.name}</h2>
       <p class="mb-30 short-description m-mt-0">
         {data.intro ? data.intro : ''}
       </p>
-      <Button variant="unelevated" class="mb-15"
+      <Button variant="unelevated" class="mb-15" href="/advisor"
         ><Label>Find My Advisor</Label></Button
       >
       <br />
-      <Button variant="outlined"><Label>What to Pack</Label></Button>
+      <Button variant="outlined" on:click={onClickWhatToPack}><Label>What to Pack</Label></Button>
     </div>
     <div class="action-buttons m-none">
       <IconButton>

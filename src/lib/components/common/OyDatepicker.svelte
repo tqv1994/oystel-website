@@ -75,7 +75,6 @@ import { dateTimeHelper } from '$lib/helpers/datetime';
         }else if(Date.parse(result.toDateString()) > Date.parse(maxDate.toDateString())){
             value = selected = convertDate(maxDate);
         }else{
-            console.log(selected);
             if(selected !== ''){
                 value = convertDate(selected);
             }else{

@@ -27,19 +27,10 @@
   import { Page } from '$lib/store/page';
   import Carousel from '$lib/components/Carousel.svelte';
   import BlurImage from '$lib/components/blur-image.svelte';
-import CuratedItem from '$lib/components/CuratedItem.svelte';
+  import CuratedItem from '$lib/components/CuratedItem.svelte';
+  import DropSlides from '$lib/components/DropSlides.svelte';
   export let data: Page;
-  let openSignupModal, openSigninModal;
-  let userModel = $authStore.user;
   let filterActive = 'All';
-  let configPage = {
-    header: {
-      page: 'shop',
-      transparent: true,
-      theme: 'light',
-      currentMenu: 'shop',
-    },
-  };
   const carouselConfig = {
     autoplayDuration: 8000,
     duration: 1500,
@@ -47,37 +38,23 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
     particlesToShow: 1,
     chevronPosition: 'inside',
   };
-  function callOpenSignupModal() {
-    if (!userModel) {
-      openSignupModal = true;
-      openSigninModal = false;
-    }
-    openSignupModal = true;
-    openSigninModal = false;
-  }
-  function callOpenSigninModal() {
-    if (!userModel) {
-      openSignupModal = false;
-      openSigninModal = true;
-    }
-  }
 </script>
 
 <div class="content curated-looks-listing-page">
   {#each data.sections as section}
     {#if section.__typename === 'ComponentBannersBanner'}
       <section
-        class="header-title full-width light d-pt-128 d-pb-20 t-pt-80 t-pb-20 m-pt-90 m-pb-15"
+        class="header-title full-width light d-pt-90 d-pb-20  t-pb-20 m-pt-70 m-pb-15"
       >
         <div class="content-wrap">
           <div class="container">
-            <LayoutGrid class="p-0 mb-15">
+            <LayoutGrid class="p-0">
               <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
                 <div class="content-left">
                   <div class="d-mb-55 m-mb-40">
-                    <span class="text-h3 m-0">{section.headline}</span>
+                    <span class="text-eyebrow m-0">{section.headline}</span>
                   </div>
-                  <h1 class="m-0 d-mb-15 m-mb-20">{section.name}</h1>
+                  <h2 class="m-0 d-mb-15 m-mb-20">{section.name}</h2>
                   <p class="mt-0 d-mb-30 t-mb-30 m-mb-0 short-description">
                     {section.description}
                   </p>
@@ -88,66 +65,61 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
                   <Carousel {...carouselConfig}>
                     {#each section.gallery as item}
                       <div class="slides">
-                        <BlurImage {...item} />
+                        {#if item !== null}
+                          <BlurImage {...item} />
+                        {:else}
+                          <BlurImage />
+                        {/if}
                       </div>
                     {/each}
                   </Carousel>
                 {:else}
                   <div
                     class="image-cover"
-                    style="padding-top: calc(90vh - 155px)"
+                    style="padding-top: calc(90vh - 87px)"
                   >
                     {#if section.gallery.length > 0}
-                    <BlurImage {...section.gallery[0]} />
+                      <BlurImage {...section.gallery[0]} />
+                    {:else}
+                      <BlurImage />
                     {/if}
                   </div>
                 {/if}
               </Cell>
             </LayoutGrid>
-            <div class="divider t-block m-none" />
           </div>
         </div>
       </section>
-    {:else if section.__typename === "ComponentGalleriesDropGallery" && section.name === "The Latest"}
-        <section id="latest-wrap">
-            <div class="container d-pl-160 d-pr-160 t-pl-80 t-pr-80 d-pb-80 t-pb-80">
-                <h2 class="mt-0 mb-50">{section.name}</h2>
-                <div class="latest-list">
-                    <LayoutGrid class="p-0">
-                        {#each section.drops as drop}
-                            <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
-                                <CuratedItem item={drop} heightThumbnail="calc(555/739 * 100%)" classItem="latest-item"/>
-                            </Cell>
-                        {/each}
-                    </LayoutGrid>
-                </div>
-            </div>
-            <div class="container">
-                <div class="divider" />
-            </div>
+    {:else if section.__typename === 'ComponentGalleriesDropGallery' && section.name === 'The Latest'}
+      <section id="latest-wrap">
+        <div class="container d-pl-100 d-pr-100 ">
+          <DropSlides title={section.name} drops={section.drops} />
+        </div>
       </section>
-    {:else if section.__typename === "ComponentGalleriesDropGallery" && section.name === null}
-    <section
-        class="products-list-wrap"
-    >
+    {:else if section.__typename === 'ComponentGalleriesDropGallery' && section.name === null}
+      <section class="products-list-wrap">
         <div class="container">
-        <div class="text-center d-mb-80 t-mb-80 m-mb-55 filter-wrap">
+          <div class="text-center d-mb-80 t-mb-80 m-mb-55 filter-wrap">
             <label class="d-mr-100 t-mr-100">Filter Curations</label>
             <Select bind:value={filterActive}>
-            <Option value="All"><h5>All</h5></Option>
+              <Option value="All"><h5>All</h5></Option>
             </Select>
-        </div>
-        <div class="products-list">
+          </div>
+          <div class="products-list">
             <LayoutGrid class="p-0">
-                {#each section.drops as drop}
-                    <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-                        <CuratedItem item={drop} heightThumbnail="calc(410/315 * 100%)" classItem="product-item"/>
-                    </Cell>
-                {/each}
+              {#each section.drops || [] as drop}
+                <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
+                  <CuratedItem
+                    item={drop}
+                    heightThumbnail="calc(410/315 * 100%)"
+                    classItem="product-item"
+                  />
+                </Cell>
+              {/each}
             </LayoutGrid>
+          </div>
         </div>
-        </div>
-    </section>
+      </section>
     {/if}
   {/each}
 </div>
@@ -160,7 +132,7 @@ import CuratedItem from '$lib/components/CuratedItem.svelte';
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/signup-section.scss';
     $desktop-width: 950px;
-    
+
     .header-title {
       background-color: #f0f7f8;
     }
