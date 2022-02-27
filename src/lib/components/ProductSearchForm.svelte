@@ -41,7 +41,6 @@
   let typeOptions: Category[] = [];
   productTypeStore.subscribe((store) => {
     typeOptions = sortByName(Object.values(store.items));
-    typeOptions.unshift({ id: '', name: 'All' });
   });
   let designerOptions: Category[] = [];
   productDesignerStore.subscribe((store) => {

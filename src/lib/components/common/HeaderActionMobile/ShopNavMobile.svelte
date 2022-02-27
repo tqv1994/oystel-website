@@ -1,15 +1,12 @@
 <script lang="ts">
-  import Button from '@smui/button';
-  import { Icon } from '@smui/common';
-  import { Svg } from '@smui/common/elements';
   import { createEventDispatcher, onMount } from 'svelte';
-  import { menus } from '$lib/const';
   import { routerHelper } from '$lib/helpers/router';
   import { Category } from '$lib/store/category';
   import { get } from 'svelte/store';
   import { productDesignerStore, productTypeStore } from '$lib/store/product';
 import Follow from '../Follow.svelte';
 import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
+import { sortByName } from '$lib/utils/sort';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
@@ -17,16 +14,8 @@ import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
     items?: Category[];
   };
   let menuActive: MenuItem | undefined = undefined;
-  let menus: MenuItem[] = [];
-  const productTypes = get(productTypeStore);
-  for (let k in productTypes.items) {
-    menus.push(productTypes.items[k]);
-  }
-  const productDesigners = get(productDesignerStore);
-  let designers: Category[] = [];
-  for (let k in productDesigners.items) {
-    designers.push(productDesigners.items[k]);
-  }
+  let menus: MenuItem[] = Object.values($productTypeStore.items);
+  const designers = sortByName(Object.values($productDesignerStore.items));
   menus.splice(1, 0, { id: '999', name: 'Designers', items: designers });
   let tabFilters = [
     'A',

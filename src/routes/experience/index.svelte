@@ -1,6 +1,5 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
   import Textfield from '@smui/textfield';
@@ -130,7 +129,7 @@
   let experienceTypes: Category[];
   experienceTypeStore.subscribe((store) => {
     experienceTypes = sortByName(Object.values(store.items));
-    experienceTypes.unshift({id: "", name: "All"});
+    experienceTypes.unshift({ id: '', name: 'All' });
   });
 
   // let experienceTypes: Category[];
@@ -141,7 +140,7 @@
   let countries: Country[];
   countryStore.subscribe((store) => {
     countries = sortByName(Object.values(store.items));
-    countries.unshift({id: "", name: "All"});
+    countries.unshift({ id: '', name: 'All' });
   });
 
   function go(params: SearchParams) {
@@ -328,7 +327,7 @@
             <Cell span="2">
               <div class="form-control">
                 <Dropdown
-                variant="outlined"
+                  variant="outlined"
                   label="Sort By"
                   items={experienceOrderings}
                   value={ordering}

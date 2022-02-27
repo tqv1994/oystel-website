@@ -79,10 +79,14 @@ export const documentHelper = {
     },
 
     onScrollToSectionSelector: function(selector: string){
-        const offsetTop = document.querySelector(selector).offsetTop;
-        scroll({
-            top: offsetTop - 87,
-            behavior: "smooth"
-        });
+        const object = document.querySelector(selector);
+        
+        if(object !== null){
+            const offsetTop = object.offsetTop;
+            scroll({
+                top: offsetTop - 87,
+                behavior: "smooth"
+            });
+        }
     }
 };

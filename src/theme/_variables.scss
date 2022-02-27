@@ -8,6 +8,7 @@
   --mdc-theme-on-secondary: #{colors.$black};
   --mdc-ripple-color: transparent;
   --desktop-width: #{sizes.$desktop-width};
+  --mdc-outlined-button-focus-state-layer-opacity: 0;
   
   font-family: Surt;
   font-weight: 400;
@@ -121,6 +122,12 @@
   --mdc-typography-photodetail-line-height: 20px;
   --mdc-typography-photodetail-letter-spacing: 0;
 
+  --mdc-typography-eyebrow-font-family: Surt;
+  --mdc-typography-eyebrow-font-size: 13px;
+  --mdc-typography-eyebrow-font-weight: 400;
+  --mdc-typography-eyebrow-line-height: 18px;
+  --mdc-typography-eyebrow-letter-spacing: 0.2px;
+
   /* Character styles mobile */
   @include mixins.mobile {
     --mdc-typography-headline1-font-size: 32px;
@@ -156,6 +163,9 @@
     --mdc-typography-button-font-size: 12px;
     --mdc-typography-button-letter-spacing: 0;
     --mdc-typography-button-line-height: 23px;
+
+    --mdc-typography-eyebrow-font-size: 11px
+    --mdc-typography-eyebrow-line-height: 16px;
   }
 
   /* Buttons */

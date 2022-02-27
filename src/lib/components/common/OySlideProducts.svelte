@@ -37,12 +37,13 @@ import Carousel from '../Carousel.svelte';
               <div class="item-image">
                 <div
                   class="thumbnail"
-                  on:pointerover={() => {
-                    featuredImage = item;
-                  }}
                   on:pointerleave={() => {
                     featuredImage = images[0];
                   }}
+                  on:pointerover={() => {
+                    featuredImage = item;
+                  }}
+                 
                 >
                   <div class="image-cover" style="padding-top: calc(115/93 * 100%)">
                     <BlurImage {...item} />
@@ -51,6 +52,11 @@ import Carousel from '../Carousel.svelte';
               </div>
           {/if}
         {/each}
+        {#if images.length <= 5}
+          {#each Array(5 - images.length) as _}
+            <div class="item-image"></div>
+          {/each}
+        {/if}
       </Carousel>
       {/if}
     </div>

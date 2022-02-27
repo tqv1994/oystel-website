@@ -9,7 +9,7 @@
 @use '@material/theme/index' as theme with
   (
     $primary: #000,
-    $secondary: #676778,
+    $secondary: #F2F2F2,
     $surface: #fff,
     $background: #fff,
     $error: color-palette.$red-900
@@ -208,9 +208,11 @@ p,
 button .text-eyebrow,
 .mdc-button .text-eyebrow,
 .text-eyebrow {
-  font-size: 11px !important;
-  letter-spacing: 0.2px !important;
-  line-height: 18px !important;
+  font-family: var(--mdc-typography-eyebrow-font-family) !important;
+  font-size: var(--mdc-typography-eyebrow-font-size) !important;
+  font-weight: var(--mdc-typography-eyebrow-font-weight) !important;
+  line-height:  var(--mdc-typography-eyebrow-line-height) !important;
+  letter-spacing: var(--mdc-typography-eyebrow-letter-spacing) !important;
 }
 .text-button2{
   @include typography.typography('button');
@@ -317,6 +319,8 @@ button.mdc-button, a.mdc-button {
     }
   }
 }
+
+
 
 section{
   padding-top: 50px;

@@ -115,9 +115,11 @@ import Follow from '../common/Follow.svelte';
   }
 
   function onMobileMainNavAction(event: CustomEvent<{ index: number }>): void {
-    const item = items[event.detail.index];
+    active = undefined;
+    let item = items[event.detail.index];
     if (item.children) {
       active = item;
+      activeSubItems = item.children;
     }
   }
 
@@ -335,7 +337,7 @@ import Follow from '../common/Follow.svelte';
       <Content>
         {#if active}
           <List>
-            <Item on:SMUI:action={() => (active = undefined)}>
+            <Item on:SMUI:action={() => onCloseSubTabActived()}>
               <Graphic class="material-icons mr-5">chevron_left</Graphic>
               <Text>Back</Text>
             </Item>

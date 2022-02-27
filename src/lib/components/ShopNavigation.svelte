@@ -1,31 +1,22 @@
 <script lang="ts">
-  import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import Button from '@smui/button';
   import Tab, { Label } from '@smui/tab';
   import TabBar from '@smui/tab-bar';
   import { clickOutside } from '$lib/components/events/clickOutside';
   import { productDesignerStore, productTypeStore } from '$lib/store/product';
-  import { get } from 'svelte/store';
   import { Category } from '$lib/store/category';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
-import { goto } from '$app/navigation';
-import { routerHelper } from '$lib/helpers';
-  const types = get(productTypeStore);
-  const designers = get(productDesignerStore);
+  import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
+  import { goto } from '$app/navigation';
+  import { routerHelper } from '$lib/helpers';
+  import { sortByName } from '$lib/utils/sort';
   let contentHeaderActionMobile: string = '';
   type MenuItem = Category & {
     items?: Category[];
   };
-  let tabs: MenuItem[] = [];
-  for (let k in types.items) {
-    tabs.push(types.items[k]);
-  }
+  let tabs: MenuItem[] = Object.values($productTypeStore.items);
 
-  let designerItems: Category[] = [];
-  for (let k in designers.items) {
-    designerItems.push(designers.items[k]);
-  }
+  const designerItems = sortByName(Object.values($productDesignerStore.items));
 
   let menuDesigner: MenuItem = {
     id: '999',
@@ -92,7 +83,9 @@ import { routerHelper } from '$lib/helpers';
           stacked={true}
           indicatorSpanOnlyContent={true}
           tabIndicator$transition="fade"
-          on:click={()=>{ if(tab.id !== "999") goto(makeLinkShopCategory(tab))}}
+          on:click={() => {
+            if (tab.id !== '999') goto(makeLinkShopCategory(tab));
+          }}
         >
           <Label>{tab.name}</Label>
         </Tab>
@@ -126,7 +119,11 @@ import { routerHelper } from '$lib/helpers';
             {#if getItemsSubMenu(activeFilter).length > 0}
               {#each getItemsSubMenu(activeFilter) as item}
                 <div class="menu-item col d-col-3">
-                  <a href={`#`} on:click={()=>{ routerHelper.redirect(makeLinkShopDesigner(item))}}
+                  <a
+                    href={`#`}
+                    on:click={() => {
+                      routerHelper.redirect(makeLinkShopDesigner(item));
+                    }}
                     ><span class="material-icons mr-5">favorite_border</span>
                     {item.name}</a
                   >
@@ -139,11 +136,14 @@ import { routerHelper } from '$lib/helpers';
     {/if}
   </div>
   <div class="shop-navigation d-none m-block">
-    <Button variant="outlined" on:click={()=>{contentHeaderActionMobile = 'shop-nav';}}><Label>Shop Menu</Label></Button>
+    <Button
+      variant="outlined"
+      on:click={() => {
+        contentHeaderActionMobile = 'shop-nav';
+      }}><Label>Shop Menu</Label></Button
+    >
   </div>
-  <HeaderActionMobile
-    bind:content={contentHeaderActionMobile}
-/>
+  <HeaderActionMobile bind:content={contentHeaderActionMobile} />
 {/if}
 
 <style lang="scss">
@@ -179,6 +179,7 @@ import { routerHelper } from '$lib/helpers';
       position: absolute;
       background-color: #{colors.$white};
       width: 100%;
+      box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
       .shop-navigation__content_header {
         display: flex;
         align-items: center;
@@ -219,12 +220,11 @@ import { routerHelper } from '$lib/helpers';
       }
     }
     // mobile
-    &.m-block{
+    &.m-block {
       background: #f2f2f2;
-      padding: 25px  var(--mdc-layout-grid-margin-phone);
-      :global(.mdc-button){
+      padding: 25px var(--mdc-layout-grid-margin-phone);
+      :global(.mdc-button) {
         width: 100%;
-        
       }
     }
   }
