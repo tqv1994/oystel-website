@@ -46,11 +46,11 @@ export type AdvisorBase = Exhibitable & {
 };
 
 export type Advisor = AdvisorBase & {
-  experienceType1?: Category;
-  experienceType2?: Category;
-  experienceType3?: Category;
-  experienceType4?: Category;
-  experienceType5?: Category;
+  experienceTypes1?: Category;
+  experienceTypes2?: Category;
+  experienceTypes3?: Category;
+  experienceTypes4?: Category;
+  experienceTypes5?: Category;
   destinationType1?: Category;
   destinationType2?: Category;
   destinationType3?: Category;

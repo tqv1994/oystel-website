@@ -422,8 +422,8 @@ import { experienceTypeStore } from "$lib/store/experience-type";
                           $experienceTypeStore.items[item.experienceTypes1]?.name,
                           $experienceTypeStore.items[item.experienceTypes2]?.name,
                           $experienceTypeStore.items[item.experienceTypes3]?.name,
-                          item.experienceType4?.name,
-                          item.experienceType5?.name,
+                          item.experienceTypes4?.name,
+                          item.experienceTypes5?.name,
                         ],
                         ', ',
                       )}
@@ -476,8 +476,8 @@ import { experienceTypeStore } from "$lib/store/experience-type";
                                 $experienceTypeStore.items[item.experienceTypes1]?.name,
                                 $experienceTypeStore.items[item.experienceTypes2]?.name,
                                 $experienceTypeStore.items[item.experienceTypes3]?.name,
-                                item.experienceType4?.name,
-                                item.experienceType5?.name,
+                                item.experienceTypes4?.name,
+                                item.experienceTypes5?.name,
                               ],
                               ', ',
                             ).substr(0, 80)}

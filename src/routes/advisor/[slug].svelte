@@ -212,11 +212,11 @@ import { goto } from '$app/navigation';
                   <h4 class="m-0">
                     {implodeString(
                       [
-                        advisor.experienceType1?.name,
-                        advisor.experienceType2?.name,
-                        advisor.experienceType3?.name,
-                        advisor.experienceType4?.name,
-                        advisor.experienceType5?.name,
+                        advisor.experienceTypes1?.name,
+                        advisor.experienceTypes2?.name,
+                        advisor.experienceTypes3?.name,
+                        advisor.experienceTypes4?.name,
+                        advisor.experienceTypes5?.name,
                       ],
                       ', ',
                     )}
