@@ -30,7 +30,7 @@
     }
     if(totalItems){
       // totalPage = totalItems >  > 0;
-      totalPage = totalItems === particlesToShow ? 1 : (Math.round(totalItems/particlesToShow) + (totalItems%particlesToShow == 0 ? 0 : 1) + particlesToShow);
+      totalPage = totalItems <= particlesToShow ? 1 : 1 + (totalItems - particlesToShow);
     }
   });
 
