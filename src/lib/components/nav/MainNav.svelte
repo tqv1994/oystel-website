@@ -36,6 +36,7 @@
   import Menu, { MenuComponentDev } from '@smui/menu';
   import { Separator } from '@smui/list';
 import Follow from '../common/Follow.svelte';
+import { makeQueryString, TYPE } from '$lib/store/search';
   export let items: MainNavItem[];
   export let active: MainNavItem | undefined = undefined;
 
@@ -101,15 +102,7 @@ import Follow from '../common/Follow.svelte';
   function activateNavItem(item: MainNavItem) {
     active = item;
     if (active.children?.length) {
-      activeSubItems = active.children.reduce((acc ,subItem)=>{
-        if(subItem.type1){
-          const indexExist = acc.findIndex((subAccItem)=>subAccItem.type1.id === subItem.type1.id);
-          if(indexExist < 0){
-            acc.push(subItem);
-          }
-        }
-        return acc;
-      }, []);
+      activeSubItems = active.children;
       activeSubItem = active.children[0];
       scrollY = window.scrollY;
     } else {
@@ -171,6 +164,18 @@ import Follow from '../common/Follow.svelte';
 
   function onWindowClick() {
     activeSubItems = undefined;
+  }
+
+  const openSubMenuMobile = (item) => {
+      if(item.__typename === "Experience"){
+         return `/experience/${makeQueryString({[TYPE]: item.type1.id})}`;
+      }else if(item.__typename == "Destination"){
+        return `/destination/${makeQueryString({[TYPE]: item.type1.id})}`;
+      }else if(item.__typename == "Advisor"){
+        return `/advisor/${makeQueryString({[TYPE]: item.type1.id})}`;
+      }else{
+        return item.url;
+      }
   }
 </script>
 
@@ -312,7 +317,7 @@ import Follow from '../common/Follow.svelte';
                   indicatorSpanOnlyContent
                   on:mouseenter={() => (activeSubItem = subTab)}
                 >
-                  <Label>{subTab.type1?.name || ''}</Label>
+                  <Label>{subTab.type1?.name || subTab.name}</Label>
                 </Tab>
               </TabBar>
             </main>
@@ -353,8 +358,8 @@ import Follow from '../common/Follow.svelte';
             </Item>
             {#if activeSubItems?.length}
               {#each activeSubItems as item}
-                <Item class="ml-25" href={makeLink(active.url, item)}>
-                  <Text>{item.name}</Text>
+                <Item class="ml-25" href={openSubMenuMobile(item)}>
+                  <Text>{item.type1?.name || item.name}</Text>
                 </Item>
               {/each}
             {/if}

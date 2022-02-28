@@ -75,10 +75,31 @@
     authStore.set({ user: session.user });
 
     mainMenu[0].children = session.metadata?.feature?.advisors;
-    mainMenu[1].children = session.metadata?.feature?.destinations;
-    mainMenu[2].children = session.metadata?.feature?.experiences;
+    mainMenu[1].children = session.metadata?.feature?.destinations
+      ? session.metadata?.feature?.destinations.reduce((acc, subItem) => {
+          if (subItem.type1) {
+            const indexExist = acc.findIndex(
+              (subAccItem) => subAccItem.type1.id === subItem.type1.id,
+            );
+            if (indexExist < -1) {
+              acc.push(subItem);
+            }
+          }
+          return acc;
+        }, [])
+      : [];
+    mainMenu[2].children = session.metadata?.feature?.experiences
+      ? session.metadata?.feature?.experiences.reduce((acc, subItem) => {
+          if (subItem.type1) {
+            const indexExist = acc.findIndex(
+              (subAccItem) => subAccItem.type1.id === subItem.type1.id,
+            );
+            acc.push(subItem);
+          }
+          return acc;
+        }, [])
+      : [];
     mainMenu[4].children = [
-      // {name: 'Limited Drops', url: '/shop/fashion-drops', description: 'Fashion Collection',gallery: [{url: '/img/slides/shop-slide-2.jpg'}]},
       {
         name: 'Curated Looks',
         url: '/shop/curated-looks-listing',
