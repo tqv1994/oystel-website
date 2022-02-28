@@ -37,6 +37,7 @@
   import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
   import { sortByName } from '$lib/utils/sort';
   import { destinationTypeStore } from '$lib/store/destination-type';
+  import { experienceTypeStore } from '$lib/store/experience-type';
   import { Language, languageStore } from '$lib/store/language';
   import { Category } from '$lib/store/category';
   import { makeLink } from '$lib/utils/link';
@@ -63,9 +64,9 @@
   export const load: Load = async ({ fetch, url }) => {
     url.searchParams.set(LIMIT, '20');
     const res = await fetch(`/advisor.json?${url.searchParams.toString()}`);
-    let advisors: { hasMore: boolean; items: Advisor[] } = {
+    let advisors: {hasMore: boolean, items: Advisor[]} = {
       hasMore: false,
-      items: [],
+      items: []
     };
     const destinationTypes = get(destinationTypeStore);
     const experienceTypes = get(experienceTypeStore);
@@ -95,9 +96,11 @@
           country: countries.items[item.country],
           avatar: item.avatar,
           gallery: item.gallery,
-          experienceType1: experienceTypes.items[item.experienceType1],
-          experienceType2: experienceTypes.items[item.experienceType2],
-          experienceType3: experienceTypes.items[item.experienceType3],
+          experienceTypes1: experienceTypes.items[item.experienceTypes1],
+          experienceTypes2: experienceTypes.items[item.experienceTypes2],
+          experienceTypes3: experienceTypes.items[item.experienceTypes3],
+          experienceTypes4: experienceTypes.items[item.experienceTypes4],
+          experienceTypes5: experienceTypes.items[item.experienceTypes5],
           destinationType1: destinationTypes.items[item.destinationType1],
           destinationType2: destinationTypes.items[item.destinationType2],
           destinationType3: destinationTypes.items[item.destinationType3],
@@ -111,34 +114,33 @@
       }
       advisors = {
         hasMore: searchData.hasMore,
-        items,
+        items
       };
     }
     return {
-      props: {
-        advisors,
-        query: url.searchParams.get(QUERY) || '',
-        experiencetype: url.searchParams.get(EXPERIENCE_TYPE) || '',
-        destinationtype: url.searchParams.get(DESTINATION_TYPE) || '',
-        type: url.searchParams.get(TYPE) || '',
-        language: languages.items[url.searchParams.get(LANGUAGE) || ''],
-        country: url.searchParams.get(COUNTRY) || '',
-        ordering:
-          orderings[url.searchParams.get(ORDERING) || ''] || ORDER_BY_NAME_ASC,
-      },
-    };
+        props: {
+          advisors,
+          query: url.searchParams.get(QUERY) || '',
+          experiencetype: url.searchParams.get(EXPERIENCE_TYPE) || '',
+          destinationtype: url.searchParams.get(DESTINATION_TYPE) || '',
+          type: url.searchParams.get(TYPE) || '',
+          language: languages.items[url.searchParams.get(LANGUAGE) || ''],
+          country: url.searchParams.get(COUNTRY) || '',
+          ordering:
+            orderings[url.searchParams.get(ORDERING) || ''] ||
+            ORDER_BY_NAME_ASC,
+        },
+      };
   };
 </script>
 
 <script lang="ts">
-  import { experienceTypeStore } from '$lib/store/experience-type';
-
   export let advisors: SearchResultGroup<Advisor> = {
     hasMore: true,
     items: [],
   };
   export let query: string = '';
-  export let experiencetype: string;
+  export let experiencetype: string ;
   export let destinationtype: string;
   export let type: string;
   export let language: Language | undefined;
@@ -417,12 +419,9 @@
                     ><p>
                       {implodeString(
                         [
-                          $experienceTypeStore.items[item.experienceTypes1]
-                            ?.name,
-                          $experienceTypeStore.items[item.experienceTypes2]
-                            ?.name,
-                          $experienceTypeStore.items[item.experienceTypes3]
-                            ?.name,
+                          item.experienceTypes1?.name,
+                          item.experienceTypes2?.name,
+                          item.experienceTypes3?.name,
                           item.experienceTypes4?.name,
                           item.experienceTypes5?.name,
                         ],
@@ -432,7 +431,7 @@
                   >
                   <CellTable style="width: 20%;"
                     ><p>
-                      {$countryStore.items[item.country]?.name || ''}
+                      {item.country?.name || ''}
                     </p></CellTable
                   >
                 </Row>
@@ -469,20 +468,14 @@
                             {item.name}
                           </h4>
                           <p class="mt-0 mb-30">
-                            {$countryStore.items[item.country]?.name || ''}
+                            {item.country?.name || ''}
                           </p>
                           <p class="m-0">
                             {implodeString(
                               [
-                                $experienceTypeStore.items[
-                                  item.experienceTypes1
-                                ]?.name,
-                                $experienceTypeStore.items[
-                                  item.experienceTypes2
-                                ]?.name,
-                                $experienceTypeStore.items[
-                                  item.experienceTypes3
-                                ]?.name,
+                                item.experienceTypes1?.name,
+                                item.experienceTypes2?.name,
+                                item.experienceTypes3?.name,
                                 item.experienceTypes4?.name,
                                 item.experienceTypes5?.name,
                               ],
@@ -530,7 +523,7 @@
       --mdc-typography-headline4-font-weight: 400;
       --mdc-typography-headline4-line-height: 24px;
     }
-    .item-advisor .image-cover {
+    .item-advisor .image-cover{
       -webkit-filter: grayscale(1);
       filter: grayscale(1);
     }
