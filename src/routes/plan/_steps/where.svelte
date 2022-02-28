@@ -50,10 +50,12 @@
     grid-row-gap: 0;
     :global(.mdc-form-field) {
       margin-bottom: 17px;
+      text-align: left;
     }
   }
   :global(.preferred) {
     margin-top: 2em;
+    height: 300px;
     @include mixins.mobile {
       min-height: 133px;
     }

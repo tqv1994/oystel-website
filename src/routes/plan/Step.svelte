@@ -26,6 +26,7 @@
     --mdc-typography-headline2-font-family: GTSupper;
     :global(.title) {
       margin: 0 auto;
+      width: 765px;
     }
     p {
       max-width: 461px;
