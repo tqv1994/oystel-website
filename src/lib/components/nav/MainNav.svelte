@@ -100,9 +100,16 @@ import Follow from '../common/Follow.svelte';
 
   function activateNavItem(item: MainNavItem) {
     active = item;
-    console.log('activated', active.children?.length);
     if (active.children?.length) {
-      activeSubItems = active.children;
+      activeSubItems = active.children.reduce((acc ,subItem)=>{
+        if(subItem.type1){
+          const indexExist = acc.findIndex((subAccItem)=>subAccItem.type1.id === subItem.type1.id);
+          if(indexExist < 0){
+            acc.push(subItem);
+          }
+        }
+        return acc;
+      }, []);
       activeSubItem = active.children[0];
       scrollY = window.scrollY;
     } else {
@@ -305,7 +312,7 @@ import Follow from '../common/Follow.svelte';
                   indicatorSpanOnlyContent
                   on:mouseenter={() => (activeSubItem = subTab)}
                 >
-                  <Label>{subTab.name}</Label>
+                  <Label>{subTab.type1?.name || ''}</Label>
                 </Tab>
               </TabBar>
             </main>
