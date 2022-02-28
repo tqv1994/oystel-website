@@ -25,7 +25,7 @@ export type Trip = Base & {
     budget: number;
     vaccinated: boolean;
     documents:Document[];
-    insurance:Insurance[];
+    insurance:Insurance;
     emergencyName: string;
     emergencyPhone: string;
     emergencyRole: string;

@@ -48,7 +48,6 @@ export const get: RequestHandler = async (event) => {
                 }
             }
         }
-        console.log(paramsInput);
         const res = await client.query<{ products: Product[] }>(query, {params: paramsInput}).toPromise();
         if (res.data?.products) {
             return {

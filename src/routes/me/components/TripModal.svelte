@@ -153,14 +153,18 @@ import { destinationStore } from '$lib/store/destination';
         column_2={8}
         label="Travel Insurance"
       >
-        {#if trip.insurances.length > 0}
+        <!-- {#if trip.insurances.length > 0}
           {#each trip.insurances as insurance}
             <svelte:component
               this={ButtonUnderline}
               label={insurance.policyId}
             />
           {/each}
-        {/if}
+        {/if} -->
+        <svelte:component
+          this={ButtonUnderline}
+          label={trip.insurance?.policyId}
+        />
       </svelte:component>
     </div>
   </svelte:component>

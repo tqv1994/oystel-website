@@ -97,7 +97,7 @@ import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
                     <div class="d-mt-90">
                       <p class="text-eyebrow ">{item.brand}</p>
                       <h6 class="mb-20 mt-20">{item.name}</h6>
-                      <p><Markdown source={item.description || ''} /></p>
+                      <p class="description"><Markdown source={item.description || ''} /></p>
                       <h3 class="mb-35 mt-20">${item.price}</h3>
                       <Button variant="outlined"
                         ><Label>Purchase Item</Label></Button
@@ -118,6 +118,9 @@ import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
   @use '../../../theme/mixins';
   @include mixins.mobile {
     .slide-item {
+      @include mixins.mobile{
+        margin-bottom: calc(45px * 2);
+      }
       // .thumbnail {
       //   margin: auto calc(100px - var(--mdc-layout-grid-margin-phone));
       // }
