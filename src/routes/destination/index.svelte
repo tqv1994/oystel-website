@@ -164,8 +164,9 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
   }
 
   function onTypeChange(event: CustomEvent<DropdownValue<Category>>) {
+    category = event.detail.value.id+"";
     console.log(category);
-    go({ [TYPE]: event.detail.value.id });
+    go({ [TYPE]: event.detail.value.id+"" });
   }
 
   function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
@@ -288,6 +289,7 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
             go({});
           }}
         >
+          {#if !stickyShow}
           <LayoutGrid class="p-0">
             <Cell span="6">
               <div class="form-control">
@@ -321,7 +323,7 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
               <div class="form-control">
                 <OyAutocomplete
                   getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  bind:value={country}
+                  value={country}
                   options={countries}
                   key={'id'}
                   label="By Country"
@@ -342,6 +344,7 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
               </div>
             </Cell>
           </LayoutGrid>
+          {/if}
         </form>
       </div>
       <div class="container m-block d-none">
@@ -373,60 +376,62 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
             go({});
           }}
         >
-          <LayoutGrid class="p-0">
-            <Cell span="6">
-              <div class="form-control">
-                <Textfield
-                  variant="outlined"
-                  bind:value={query}
-                  on:input={onQueryInput}
-                  label="Start with a search"
-                  withTrailingIcon={false}
-                >
-                  <Icon slot="trailingIcon"
-                    ><img src="/img/icons/icon-search.svg" /></Icon
+          {#if stickyShow}
+            <LayoutGrid class="p-0">
+              <Cell span="6">
+                <div class="form-control">
+                  <Textfield
+                    variant="outlined"
+                    bind:value={query}
+                    on:input={onQueryInput}
+                    label="Start with a search"
+                    withTrailingIcon={false}
                   >
-                </Textfield>
-              </div>
-            </Cell>
-            <Cell span="2">
-              <div class="form-control">
-                <OyAutocomplete
-                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  bind:value={category}
-                  options={destinationTypes}
-                  key={'id'}
-                  label="By Destination"
-                  variant="outlined"
-                  on:SMUIAutocomplete:change={onTypeChange}
-                />
-              </div>
-            </Cell>
-            <Cell span="2">
-              <div class="form-control">
-                <OyAutocomplete
-                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  bind:value={country}
-                  options={countries}
-                  key={'id'}
-                  label="By Country"
-                  variant="outlined"
-                  on:SMUIAutocomplete:change={onCountryChange}
-                />
-              </div>
-            </Cell>
-            <Cell span="2">
-              <div class="form-control">
-                <Dropdown
-                  variant="outlined"
-                  label="Sort By"
-                  items={orderingOptions}
-                  value={ordering}
-                  on:MDCSelect:change={onSortChange}
-                />
-              </div>
-            </Cell>
-          </LayoutGrid>
+                    <Icon slot="trailingIcon"
+                      ><img src="/img/icons/icon-search.svg" /></Icon
+                    >
+                  </Textfield>
+                </div>
+              </Cell>
+              <Cell span="2">
+                <div class="form-control">
+                  <OyAutocomplete
+                    getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                    bind:value={category}
+                    options={destinationTypes}
+                    key={'id'}
+                    label="By Destination"
+                    variant="outlined"
+                    on:SMUIAutocomplete:change={onTypeChange}
+                  />
+                </div>
+              </Cell>
+              <Cell span="2">
+                <div class="form-control">
+                  <OyAutocomplete
+                    getOptionLabel={(option) => (option ? `${option.name}` : '')}
+                    value={country}
+                    options={countries}
+                    key={'id'}
+                    label="By Country"
+                    variant="outlined"
+                    on:SMUIAutocomplete:change={onCountryChange}
+                  />
+                </div>
+              </Cell>
+              <Cell span="2">
+                <div class="form-control">
+                  <Dropdown
+                    variant="outlined"
+                    label="Sort By"
+                    items={orderingOptions}
+                    value={ordering}
+                    on:MDCSelect:change={onSortChange}
+                  />
+                </div>
+              </Cell>
+            </LayoutGrid>
+          {/if}
         </form>
       </div>
       <div class="container m-block d-none">

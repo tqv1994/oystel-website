@@ -282,12 +282,13 @@
             go({});
           }}
         >
+        {#if !stickyShow}
           <LayoutGrid class="p-0">
             <Cell span="6">
               <div class="form-control">
                 <Textfield
                   variant="outlined"
-                  bind:value={query}
+                  value={query}
                   on:input={onQueryInput}
                   label="Start with a search"
                   withTrailingIcon={false}
@@ -302,7 +303,7 @@
               <div class="form-control">
                 <OyAutocomplete
                   getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  bind:value={type}
+                  value={type}
                   options={experienceTypes}
                   key={'id'}
                   label="By Experience"
@@ -315,7 +316,7 @@
               <div class="form-control">
                 <OyAutocomplete
                   getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  bind:value={country}
+                  value={country}
                   options={countries}
                   key={'id'}
                   label="By Country"
@@ -336,6 +337,7 @@
               </div>
             </Cell>
           </LayoutGrid>
+        {/if}
         </form>
       </div>
       <div class="container m-block d-none">
@@ -367,6 +369,7 @@
             go({});
           }}
         >
+        {#if stickyShow}
           <LayoutGrid class="p-0">
             <Cell span="6">
               <div class="form-control">
@@ -420,6 +423,7 @@
               </div>
             </Cell>
           </LayoutGrid>
+        {/if}
         </form>
       </div>
       <div class="container m-block d-none">

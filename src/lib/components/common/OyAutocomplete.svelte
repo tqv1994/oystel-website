@@ -14,7 +14,12 @@
   let text = '';
   const dispatch = createEventDispatcher();
   onMount(() => {
-    valueInput = options.find((item) => (key ? item[key] : item) == value);
+    console.log(typeof value, value);
+    setTimeout(()=>{
+      if(options.length){
+        valueInput = options.find((item) => (key ? item[key] : item) == value);
+      }
+    },1000);
   });
 
   const onRemoveValue = () => {
