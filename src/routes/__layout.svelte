@@ -81,7 +81,7 @@
             const indexExist = acc.findIndex(
               (subAccItem) => subAccItem.type1.id === subItem.type1.id,
             );
-            if (indexExist < -1) {
+            if (indexExist < 0) {
               acc.push(subItem);
             }
           }
@@ -94,7 +94,9 @@
             const indexExist = acc.findIndex(
               (subAccItem) => subAccItem.type1.id === subItem.type1.id,
             );
-            acc.push(subItem);
+            if (indexExist < 0) {
+              acc.push(subItem);
+            }
           }
           return acc;
         }, [])
