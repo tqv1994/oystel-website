@@ -133,6 +133,8 @@
 </script>
 
 <script lang="ts">
+import { experienceTypeStore } from "$lib/store/experience-type";
+
   export let advisors: SearchResultGroup<Advisor> = {
     hasMore: true,
     items: [],
@@ -197,7 +199,7 @@
     contentHeaderActionMobile = '';
     go({
       [COUNTRY]: event.detail.country || '',
-      [EXPERIENCE_TYPE]: event.detail.type || '',
+      [EXPERIENCE_TYPE]: event.detail.experiencetype || '',
     });
   }
 
@@ -417,9 +419,9 @@
                     ><p>
                       {implodeString(
                         [
-                          item.experienceType1?.name,
-                          item.experienceType2?.name,
-                          item.experienceType3?.name,
+                          $experienceTypeStore.items[item.experienceType1]?.name,
+                          $experienceTypeStore.items[item.experienceType2]?.name,
+                          $experienceTypeStore.items[item.experienceType3]?.name,
                           item.experienceType4?.name,
                           item.experienceType5?.name,
                         ],
@@ -429,7 +431,7 @@
                   >
                   <CellTable style="width: 20%;"
                     ><p>
-                      {item.country?.name || ''}
+                      {$countryStore.items[item.country]?.name || ''}
                     </p></CellTable
                   >
                 </Row>

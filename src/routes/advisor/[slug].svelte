@@ -274,7 +274,7 @@ import { goto } from '$app/navigation';
                     spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}
                     class="d-mb-20 m-mb-25"
                   >
-                    <Item {...item} {item} pathPrefix="experience" />
+                    <Item {...item} {item} pathPrefix="/experience" />
                   </Cell>
                 {/each}
               {/if}
@@ -310,7 +310,7 @@ import { goto } from '$app/navigation';
             <div class="row">
               <div class="col m-col-12">
                 <p class="text-eyebrow">Planning Fee</p>
-                <h4 class="m-0">Minimum Fee of $60,000.</h4>
+                <h4 class="m-0"></h4>
               </div>
             </div>
           </section>

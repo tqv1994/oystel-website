@@ -37,7 +37,7 @@ import { TripInput } from '$lib/store/trip';
           <span slot="label"
             ><Textfield
               bind:value={tripInput.lodgingTypeOther}
-              label="Other Lodging Type.."
+              label="Other Lodging Type"
               type="text"
             /></span
           >

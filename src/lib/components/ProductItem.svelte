@@ -69,7 +69,7 @@ import { authStore } from '$lib/store/auth';
     </IconButton>
   </div>
   <!-- <a href="{pathPrefix}?c={d.country.id}"></a> -->
-  <a href={makeLink(pathPrefix, item)}>
+  <a  href="javascript:void(0);">
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, phone: 2 }}
         ><p class="text-eyebrow text-left m-0 mt-20 mb-0">

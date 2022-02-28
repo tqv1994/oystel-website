@@ -54,7 +54,6 @@
   value={valueSelect}
   on:select={handleSelect}
   on:clear={handleClear}
-  isSearchable={false}
 />
 </div>
 <style lang="scss">

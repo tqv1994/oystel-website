@@ -80,8 +80,8 @@
                     ><p class="text-eyebrow text-left m-0 mt-25">Fashion</p></Cell
                   >
                 </LayoutGrid>
-                <h3 class="text-h3 title m-mt-30 mb-15">{item.name}</h3>
-                <p class="short-text m-none m-0">
+                <h3 class="text-h3 title m-mt-25 mb-15">{item.name}</h3>
+                <p class="short-text m-0 mb-35">
                   {(item.description || '').substr(0, 80)}...
                 </p>
               </a>

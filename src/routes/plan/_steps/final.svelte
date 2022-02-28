@@ -15,7 +15,7 @@ import { TripInput } from '$lib/store/trip';
   tripInput.numberOfTripsInSixMonths ||= 0;
 </script>
 
-<Step title="One final question..." subtitle="">
+<Step title="One final question" subtitle="">
   <div class="row mt-20">
     <div class="d-col-6 m-col-12 text-left">
       <label class="mdc-typography--headline1 m-0"
