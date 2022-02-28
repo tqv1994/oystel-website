@@ -197,7 +197,7 @@
     contentHeaderActionMobile = '';
     go({
       [COUNTRY]: event.detail.country || '',
-      [EXPERIENCE_TYPE]: event.detail.type || '',
+      [EXPERIENCE_TYPE]: event.detail.experiencetype || '',
     });
   }
 
