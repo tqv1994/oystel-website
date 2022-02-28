@@ -10,6 +10,7 @@ import { Advisor, advisorFieldsFragment } from '$lib/store/advisor';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
 import { experienceFieldsFragment } from '$lib/store/experience';
 import { destinationFieldsFragment } from '$lib/store/destination';
+import { User, userFieldsFragment } from '$lib/store/auth';
 
 const query = `
 query($id: ID!) {
@@ -21,7 +22,10 @@ query($id: ID!) {
     destinations {
       ...destinationFields
     }
-    agency{
+  }
+  users(where:{advisorMe:{id: $id}}, limit: 1){
+    id
+    agencyMe{
       id
       affiliate_agencies{
         id
@@ -55,8 +59,11 @@ export const get: RequestHandler = async (event) => {
   const request = event.request;
   try {
     const client = createGraphClientFromRequest(event.request);
-    const res = await client.query<{advisor: Advisor}>(query, event.params).toPromise();
+    const res = await client.query<{advisor: Advisor, users: User[]}>(query, event.params).toPromise();
     if (res.data?.advisor) {
+      if(res.data?.users && res.data?.users.length > 0){
+        res.data.advisor.agency = res.data?.users[0].agencyMe;
+      }
       return {
         body: JSON.stringify(res.data.advisor),
       };
