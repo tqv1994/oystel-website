@@ -419,9 +419,9 @@ import { experienceTypeStore } from "$lib/store/experience-type";
                     ><p>
                       {implodeString(
                         [
-                          $experienceTypeStore.items[item.experienceType1]?.name,
-                          $experienceTypeStore.items[item.experienceType2]?.name,
-                          $experienceTypeStore.items[item.experienceType3]?.name,
+                          $experienceTypeStore.items[item.experienceTypes1]?.name,
+                          $experienceTypeStore.items[item.experienceTypes2]?.name,
+                          $experienceTypeStore.items[item.experienceTypes3]?.name,
                           item.experienceType4?.name,
                           item.experienceType5?.name,
                         ],
@@ -468,14 +468,14 @@ import { experienceTypeStore } from "$lib/store/experience-type";
                             {item.name}
                           </h4>
                           <p class="mt-0 mb-30">
-                            {item.country?.name || ''}
+                            {$countryStore.items[item.country]?.name || ''}
                           </p>
                           <p class="m-0">
                             {implodeString(
                               [
-                                item.experienceType1?.name,
-                                item.experienceType2?.name,
-                                item.experienceType3?.name,
+                                $experienceTypeStore.items[item.experienceTypes1]?.name,
+                                $experienceTypeStore.items[item.experienceTypes2]?.name,
+                                $experienceTypeStore.items[item.experienceTypes3]?.name,
                                 item.experienceType4?.name,
                                 item.experienceType5?.name,
                               ],
