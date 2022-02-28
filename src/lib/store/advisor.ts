@@ -146,6 +146,12 @@ fragment advisorFields on Advisor {
   experienceTypes3 {
     ...experienceTypeFields
   }
+  experienceTypes4 {
+    ...experienceTypeFields
+  }
+  experienceTypes5 {
+    ...experienceTypeFields
+  }
   website
   timezone
   joined_at
