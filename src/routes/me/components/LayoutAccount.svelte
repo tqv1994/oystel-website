@@ -134,6 +134,7 @@
   * :global(.mdc-drawer .mdc-deprecated-list-item) {
     padding-left: 0;
     margin-left: 0;
+    width:max-content;
   }
 
   * :global(.mdc-drawer) {

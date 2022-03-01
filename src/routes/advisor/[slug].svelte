@@ -49,8 +49,8 @@
   import { Category } from '$lib/store/category';
   import Carousel from '$lib/components/Carousel.svelte';
   import Item from '$lib/components/Item.svelte';
-import { Country } from '$lib/store/country';
-import { goto } from '$app/navigation';
+  import { Country } from '$lib/store/country';
+  import { goto } from '$app/navigation';
 
   export let id: string;
   export let destinationCountries: Country[] = [];
