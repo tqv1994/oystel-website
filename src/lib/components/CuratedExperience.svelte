@@ -139,7 +139,7 @@ import SliderItems from './SliderItems.svelte';
     
       .experiences--item.featured {
         .title {
-          height: 48px;
+          height: 64px;
           font-size: 32px;
           overflow: hidden;
           @include mixins.mobile {
