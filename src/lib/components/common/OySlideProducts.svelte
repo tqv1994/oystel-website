@@ -13,7 +13,7 @@ import Carousel from '../Carousel.svelte';
   const carouselConfig = {
     autoplayDuration: 8000,
     duration: 1500,
-    infinite: true,
+    infinite: false,
     particlesToShow: 4,
     chevronPosition: 'outside',
   };
@@ -31,7 +31,7 @@ import Carousel from '../Carousel.svelte';
     </div>
     <div class="slide-items">
       {#if images.length > 0}
-      <Carousel {...carouselConfig}>
+      <Carousel {...carouselConfig} totalItems={images.length - 1 < 4 ? 4 : (images.length - 1)}>
         {#each images as item, i}
           {#if i > 0}
               <div class="item-image">
@@ -70,9 +70,9 @@ import Carousel from '../Carousel.svelte';
       padding-top: 25px;
     }
     .item-image{
-      padding: 0 20px;
+      padding: 0 10px;
       @include mixins.mobile{
-        padding: 0 25px;
+        padding: 0 12.5px;
       }
     }
     :global(.arrow-outside){

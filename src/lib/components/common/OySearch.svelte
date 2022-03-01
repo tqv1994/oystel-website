@@ -158,7 +158,7 @@
         border-color: transparent;
       }
       :global(.mdc-text-field.mdc-text-field--focused) {
-        :global(.mdc-floating-label) {
+        :global(.mdc-notched-outline__notch){
           display: none;
         }
       }

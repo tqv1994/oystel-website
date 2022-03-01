@@ -79,11 +79,15 @@ import OySelectList from './OySelectList.svelte';
         --itemIsActiveColor: #000;
         --multiItemActiveColor: #000;
         --background: transparent;
+        --listBorderRadius: 0;
+        --itemFirstBorderRadius: 0;
         :global(.multiSelectItem_label){
             font-size: var(--inputFontSize);
         }
         :global(.multiSelect){
-            height:  var(--height);
+        }
+        :global(.multiSelect input){
+          height: calc(var(--height) - 2px);
         }
         :global(.selectedItem), :global(.listItem .item){
           font-size: var(--mdc-typography-subtitle1-font-size);
