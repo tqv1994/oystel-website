@@ -98,4 +98,10 @@ import { TripInput } from '$lib/store/trip';
   :global(.preferred) {
     margin-top: 2em;
   }
+  div {
+    --mdc-shape-small: 0;
+  }
+  div :global(.mdc-text-field:not(.mdc-text-field--outlined):not(.has-padding-left) .mdc-floating-label){
+    left: 0;
+  }
 </style>
