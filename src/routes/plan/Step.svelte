@@ -20,6 +20,7 @@
 </div>
 
 <style lang="scss">
+  @use '../../theme/mixins';
   .root {
     min-height: 100vh;
     text-align: center;
@@ -31,6 +32,18 @@
     p {
       max-width: 461px;
       margin: 0 auto;
+    }
+    @include mixins.mobile {
+      :global(.title) {
+        text-align: left;
+        width:auto;
+        margin: 0 auto;
+      }
+      p {
+        text-align: left;
+        width:auto;
+        margin: 0 auto;
+      }
     }
   }
   .content {
