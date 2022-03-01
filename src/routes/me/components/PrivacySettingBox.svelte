@@ -6,7 +6,7 @@ import Title from "./Title.svelte";
   export { classNames as class };
 </script>
 
-<section class={`${classNames}`}>
+<section class={`${classNames} p-0`}>
   <div class="section--title mb-25">
     <svelte:component this={Title} class="large">{title}</svelte:component>
     <div class="section--title-actions m-none">
