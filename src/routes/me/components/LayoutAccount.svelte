@@ -71,9 +71,9 @@
 
 {#if me}
   <div class="container">
-    <section class="pb-40">
+    <section class="pb-40 pt-100">
       <div class="section-body">
-        <LayoutGrid class="pl-0 pr-0 pt-150">
+        <LayoutGrid class="pl-0 pr-0">
           <Cell
             spanDevices={{ desktop: 3, phone: 4, tablet: 8 }}
             class="m-none"

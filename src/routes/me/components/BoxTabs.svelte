@@ -3,7 +3,7 @@
   export { classNames as class };
 </script>
 
-<section class={`${classNames || ''}`}>
+<section class={`${classNames || ''} p-0`}>
   <slot name="tabs" />
   <slot name="content" />
 </section>

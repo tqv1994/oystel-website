@@ -6,7 +6,7 @@
   export { classNames as class };
 </script>
 
-<section class={`${classNames}`}>
+<section class={`${classNames} pt-30 pb-30`}>
   <svelte:component this={BoxContent} {title} bind:is_edit>
     <slot />
   </svelte:component>

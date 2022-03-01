@@ -13,7 +13,7 @@
       </div>
     {/each}
   {:else}
-    <p class="d-col-12 m-col-12">There is no Trip...</p>
+    <p class="d-col-12 m-col-12">There is no Trip.</p>
   {/if}
 </div>
 

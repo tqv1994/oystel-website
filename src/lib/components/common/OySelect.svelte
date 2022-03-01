@@ -1,6 +1,8 @@
 <script lang="ts">
   import Select from 'svelte-select';
   import { onMount, createEventDispatcher } from 'svelte';
+import OySelectMultiSelection from './OySelectMultiSelection.svelte';
+import OySelectList from './OySelectList.svelte';
   export let items: any[];
   export let value: string | string[];
   export let optionIdentifier: string;
@@ -54,6 +56,10 @@
   value={valueSelect}
   on:select={handleSelect}
   on:clear={handleClear}
+  List={OySelectList}
+  MultiSelection={OySelectMultiSelection}
+  
+
 />
 </div>
 <style lang="scss">
@@ -78,6 +84,9 @@
         }
         :global(.multiSelect){
             height:  var(--height);
+        }
+        :global(.selectedItem), :global(.listItem .item){
+          font-size: var(--mdc-typography-subtitle1-font-size);
         }
     }
 </style>
