@@ -44,6 +44,7 @@
   import { implodeString } from '$lib/utils/string';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
   import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+import OySelect from '$lib/components/common/OySelect.svelte';
 
   type SearchResultItem = AdvisorBase & {
     country: string;
@@ -314,13 +315,13 @@
               <div class="form-control text-left">
                 <label class="text-h5">Speciality</label>
                 <div class="display-inline">
-                  <OyAutocomplete
-                    getOptionLabel={(option) =>
-                      option ? `${option.name}` : ''}
-                    bind:value={experiencetype}
-                    options={experienceTypes}
-                    key={'id'}
-                    on:SMUIAutocomplete:change={onTypeChange}
+                  <OySelect
+                    items={experienceTypes}
+                    optionIdentifier="id"
+                    labelIdentifier="name"
+                    on:select={onTypeChange}
+                    on:clear={onTypeChange}
+                    value={type}
                   />
                 </div>
               </div>

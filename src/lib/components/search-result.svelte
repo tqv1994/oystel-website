@@ -81,7 +81,6 @@
   /* Section title */
   .section-title .title {
     position: relative;
-    overflow: hidden;
   }
   .section-title .title:after {
     content: '';

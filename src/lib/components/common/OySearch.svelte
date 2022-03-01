@@ -172,6 +172,18 @@
         ul {
           padding-left: 0;
           list-style: none;
+          max-height: 150px;
+          overflow-y: scroll;
+          &::-webkit-scrollbar-track {
+            background-color: #d3d3d3;
+          }
+          &::-webkit-scrollbar {
+            width: 5px;
+            background-color: #d3d3d3;
+          }
+          &::-webkit-scrollbar-thumb {
+            background-color: #000;
+          }
           a {
             padding-left: 70px;
             font-size: 14px;
@@ -188,18 +200,6 @@
               background-color: #DEDEDE;
             }
           }
-        }
-        max-height: 200px;
-        overflow-y: scroll;
-        &::-webkit-scrollbar-track {
-          background-color: #d3d3d3;
-        }
-        &::-webkit-scrollbar {
-          width: 5px;
-          background-color: #d3d3d3;
-        }
-        &::-webkit-scrollbar-thumb {
-          background-color: #000;
         }
       }
     }
