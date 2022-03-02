@@ -135,6 +135,9 @@
     --mdc-typography-headline1-font-size: 32px;
     border: 1px solid #000;
     padding: 20px 20px 30px;
+    @include mixins.mobile{
+      padding: 20px 10px 30px;
+    }
     margin-bottom: 30px;
     .form-header {
       min-height: 30px;
@@ -147,6 +150,9 @@
       right: 40px;
       top: 50%;
       transform: translateY(-50%);
+      @include mixins.mobile{
+        right: 0;
+      }
     }
     :global(.mdc-text-field),
     :global(.mdc-select) {

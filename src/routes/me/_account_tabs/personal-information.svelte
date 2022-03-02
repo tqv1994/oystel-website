@@ -40,7 +40,7 @@
           <LayoutGrid class="p-0 d-none m-block mb-20">
             <Cell spanDevices={{ phone: 2, tablet: 4 }}>
               
-                <div class="thumbnail user-profile-image dark">
+                <div class="thumbnail user-profile-image dark mt-20">
                   <div class="image-cover" style="padding-top: 100%">
                     {#if me.avatar}
                       <BlurImage {...me.avatar} />

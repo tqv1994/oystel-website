@@ -41,7 +41,7 @@
       position: absolute;
       right: 40px;
       @include mixins.mobile{
-        right: 10px;
+        right: 0;
       }
       top: 50%;
       transform: translateY(-50%);
