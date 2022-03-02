@@ -2,8 +2,8 @@
   import { Svg } from '@smui/common/elements';
   import { onMount } from 'svelte';
 
-  const WIDTH = 130;
-  const HEIGHT = 17.217;
+  const WIDTH = 167.19;
+  const HEIGHT = 22.14;
   const ASPEC_RATIO = WIDTH / HEIGHT;
 
   let className: string = '';

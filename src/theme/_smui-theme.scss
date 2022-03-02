@@ -256,7 +256,7 @@ select,
 button.mdc-button, a.mdc-button {
   --mdc-theme-primary: #{colors.$black};
   @include button.outline-color(#000);
-  @include button.outline-width(1px, 45px);
+  @include button.outline-width(1px, 40px);
   @include mixins.mobile {
     @include button.outline-width(1px, 20px);
   }
@@ -265,7 +265,7 @@ button.mdc-button, a.mdc-button {
     @include typography.typography('button');
     line-height: normal;
   }
-  min-width: 193px;
+  min-width: 171px;
   overflow: hidden;
   @include mixins.mobile {
     &.mdc-button {

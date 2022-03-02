@@ -101,9 +101,9 @@ import SliderItems from './SliderItems.svelte';
             <HeartFilledIcon size="sm" />
           </IconButton>
           <div class="caption text-left">
-            <p class="mt-0 text-eyebrow pl-25 pr-25">{name}</p>
+            <p class="m-0 text-eyebrow pl-25 pr-25">{name}</p>
             <a class="" href={makeLink('/experience', hero)}>
-              <h3 class="pl-25 pr-25 mt-20 title">
+              <h3 class="pl-25 pr-25 m-mt-20 d-mt-35 title">
                 {hero.name}
               </h3>
             </a>
@@ -139,7 +139,7 @@ import SliderItems from './SliderItems.svelte';
     
       .experiences--item.featured {
         .title {
-          height: 64px;
+          height: 30px;
           font-size: 32px;
           overflow: hidden;
           @include mixins.mobile {

@@ -159,12 +159,16 @@
     padding-top: 10px;
   }
   :global(.sc-carousel-dot__dot) {
-    --sc-dot-size: 8px;
+    --sc-dot-size: 11px;
     opacity: 1;
-    --sc-color-rgb-light: #fff;
-    border: 1px solid #000;
+    --sc-color-rgb-light: transparent;
+    border: 1px solid #fff;
+  }
+  :global(.sc-carousel-dots__dot-container){
+    
   }
   :global(.sc-carousel-dot__dot_active) {
-    background-color: #000 !important;
+    --sc-active-dot-size: 11px;
+    background-color: #fff !important;
   }
 </style>

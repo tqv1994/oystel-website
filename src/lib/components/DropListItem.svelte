@@ -38,7 +38,7 @@
     --mdc-outlined-button-hover-state-layer-color: transparent;
     .mdc-button:not(:disabled){
         min-width: auto;
-        width: 193px;
+        width: 171px;
         max-width: 100%;
         @include button.outline-width(0,0);
         .mdc-button__label {
