@@ -235,12 +235,8 @@
 />
 {#if experience}
   <div class="content experience-detail d-pb-100">
-    <section class="header-title d-pt-100 d-pb-25 m-pt-90 m-pb-60 full-width">
-      <div class="content-wrap">
-        <div class="container">
-          <DetailSlide data={experience} on:like={likeExperience} />
-        </div>
-      </div>
+    <section class="header-title d-pt-100 d-pb-25 m-pt-60 m-pb-60 full-width">
+        <DetailSlide data={experience} on:like={likeExperience} />
     </section>
     <section
       class={`m-none header-title d-pt-100 d-pb-25 m-pt-90 m-pb-60 full-width  is_sticky fixed ${

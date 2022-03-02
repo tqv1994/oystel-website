@@ -241,12 +241,8 @@
 
 {#if destination}
   <div class="content destination-detail d-pb-50 m-pb-40">
-    <section class="header-title d-pt-100 d-pb-25 m-pt-90 m-pb-25 full-width">
-      <div class="content-wrap">
-        <div class="container">
-          <DetailSlide data={destination} on:like={likeDestination} />
-        </div>
-      </div>
+    <section class="header-title d-pt-100 d-pb-25 m-pt-60 m-pb-25 full-width">
+        <DetailSlide data={destination} on:like={likeDestination} />
     </section>
     {#if tabs && activeTab}
       <section class="d-pt-90 d-pb-65 m-pt-40 m-pb-40" id="advisors-section">

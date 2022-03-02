@@ -88,12 +88,26 @@
                     {#if section.gallery.length > 0}
                       {#each section.gallery as item}
                         <div class="slides">
-                          <BlurImage {...item} />
+                          <div class="thumbnail">
+                            <div class="image-cover m-none" style="padding-top: 90vh">
+                              <BlurImage {...item} />
+                            </div>
+                            <div class="image-cover d-none m-block" style="padding-top: 100%">
+                              <BlurImage {...item} />
+                            </div>
+                          </div>
                         </div>
                       {/each}
                     {:else}
                       <div class="slides">
-                        <BlurImage />
+                        <div class="thumbnail">
+                          <div class="image-cover m-none" style="padding-top: 90vh">
+                            <BlurImage />
+                          </div>
+                          <div class="image-cover d-none m-block" style="padding-top: 100%">
+                            <BlurImage />
+                          </div>
+                        </div>
                       </div>
                     {/if}
                   </Carousel>
@@ -175,11 +189,15 @@
       display: none;
     }
 
-    .shop-slides .carousel,
-    .shop-slides .slides,
-    .shop-slides .slides div {
-      height: 90vh;
-    }
+    // .shop-slides .carousel,
+    // .shop-slides .slides,
+    // .shop-slides .slides div {
+    //   height: 90vh;
+    //   @include mixins.mobile{
+    //     height: 0;
+    //     padding-top: 100%;
+    //   }
+    // }
     .shop-slides .slide-item {
       width: 100%;
       height: 100%;
