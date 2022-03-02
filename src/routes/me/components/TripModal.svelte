@@ -90,7 +90,7 @@ import { destinationStore } from '$lib/store/destination';
           <span class="status">{ENUM_TRIP_STATE_LABEL[trip.state]}</span>
         </div>
         <div class="d-col-6 m-col-12 d-none m-block">
-          <span class="status">{trip.state}</span>
+          <span class="status">{ENUM_TRIP_STATE_LABEL[trip.state]}</span>
         </div>
       </div>
       <svelte:component
