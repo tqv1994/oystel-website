@@ -103,7 +103,7 @@ import SliderItems from './SliderItems.svelte';
           <div class="caption text-left">
             <p class="m-0 text-eyebrow pl-25 pr-25">{name}</p>
             <a class="" href={makeLink('/experience', hero)}>
-              <h3 class="pl-25 pr-25 m-mt-20 d-mt-35 title">
+              <h3 class="pl-25 pr-25 m-mt-20 d-mt-35 d-mb-30 m-mb-20 title">
                 {hero.name}
               </h3>
             </a>
