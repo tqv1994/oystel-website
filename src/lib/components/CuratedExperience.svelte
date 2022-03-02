@@ -21,6 +21,7 @@
   export let prominent: boolean = false;
   export let vertical: boolean = false;
   export let columns: number = 4;
+  export let subtitle: string  = "Featured Experience";
   let me: User | undefined = $authStore.user;
   export let index: number;
   let hero: Experience | undefined;
@@ -113,9 +114,9 @@
             <HeartFilledIcon size="sm" />
           </IconButton>
           <div class="caption text-left">
-            <p class="m-0 text-eyebrow pl-25 pr-25">Featured Experience</p>
+            <p class="m-0 text-eyebrow pl-25 pr-25">{subtitle}</p>
             <a class="" href={makeLink('/experience', hero)}>
-              <h3 class="pl-25 pr-25 m-mt-10 d-mt-25 d-mb-30 m-mb-20 title">
+              <h3 class="pl-25 pr-25 m-mt-10 d-mt-20 d-mb-30 m-mb-20 title">
                 {hero.name}
               </h3>
             </a>

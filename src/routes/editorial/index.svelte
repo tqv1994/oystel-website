@@ -32,11 +32,10 @@
 </script>
 
 <script lang="ts">
-  import Carousel from '$lib/components/Carousel.svelte';
   import CuratedExperience from '$lib/components/CuratedExperience.svelte';
   import WhatToWear from '$lib/components/WhatToWear.svelte';
   import ListItem from '$lib/components/ListItem.svelte';
-import DropSlides from '$lib/components/DropSlides.svelte';
+  import DropSlides from '$lib/components/DropSlides.svelte';
 
   export let data: EditorialPageData;
 
@@ -104,7 +103,7 @@ import DropSlides from '$lib/components/DropSlides.svelte';
           <p class="text-eyebrow m-0">{section.headline}</p>
           <h2 class="mt-20 d-mb-40 m-mb-15">{section.name}</h2>
         </div>
-        <CuratedExperience {...section} on:likeItem={likeExperience} {index} />
+        <CuratedExperience {...section} on:likeItem={likeExperience} subtitle="Featured Editorial" {index} />
       </section>
     {:else if section.__typename === 'ComponentBannersBanner'}
       <WhatToWear {...section} />
