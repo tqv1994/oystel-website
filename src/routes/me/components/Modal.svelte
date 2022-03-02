@@ -12,7 +12,7 @@
   <Dialog bind:open fullscreen surface$style={style}>
     {#if title || title == ''}
       <Header>
-        <svelte:component this={Title}>{title || ''}</svelte:component>
+        <svelte:component this={Title} class="d-mt-25 m-mt-20">{title || ''}</svelte:component>
         <IconButton action="close" class="material-icons">close</IconButton>
       </Header>
     {/if}
@@ -26,6 +26,9 @@
     --mdc-typography-body1-font-size: 14px;
     @include mixins.mobile {
       --mdc-typography-body1-font-size: 12px;
+    }
+    :global(.mdc-dialog__header button){
+      top: -5px;
     }
     :global(.mdc-dialog__title) {
       text-transform: uppercase;

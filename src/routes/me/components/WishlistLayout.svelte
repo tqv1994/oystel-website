@@ -23,8 +23,8 @@
 
 {#if data.length > 0}
   <div class="row header mb-30">
-    <div class="d-col-6 m-col-6">{data.length} Items</div>
-    <div class="d-col-6 m-col-6 text-right">
+    <div class="d-col-6 m-col-5">{data.length} Items</div>
+    <div class="d-col-6 m-col-7 text-right">
       <Select bind:value={filter} label="" class="text-left" on:change={handleFilter}>
         <Option value="">All</Option>
         <Option value="Product">Product</Option>

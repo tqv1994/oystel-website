@@ -81,9 +81,8 @@
           class="menu-item"
         >
           <a href={page.url}>
-            <Title class="mb-10 large">{page.title}</Title>
-            <div class="divider" />
-            <Text class="d-mt-30 m-mt-20 large">{page.description}</Text>
+            <Title class="large">{page.title}</Title>
+            <Text class="d-mt-20 m-mt-10 large">{page.description}</Text>
           </a>
         </Cell>
         {/each}
