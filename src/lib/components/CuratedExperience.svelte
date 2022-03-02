@@ -157,7 +157,7 @@
       font-size: 32px;
       overflow: hidden;
       @include mixins.mobile {
-        height: 26px;
+        height: 25px;
         font-size: 20px;
       }
     }
