@@ -83,7 +83,14 @@ import SliderItems from './SliderItems.svelte';
       <div class="experiences--item featured">
         <div class="thumbnail dark">
           <a href={makeLink('/experience', hero)}>
-            <div class="image-cover" style="padding-top: calc(568/529 * 100%)">
+            <div class="image-cover m-none" style="padding-top: calc(568/529 * 100%)">
+              {#if hero.gallery.length > 0 || hero.gallery[0] != null}
+                <BlurImage {...hero.gallery[0]} />
+              {:else}
+                <BlurImage/>
+              {/if}
+            </div>
+            <div class="image-cover d-none m-block" style="padding-top: calc(425/328 * 100%)">
               {#if hero.gallery.length > 0 || hero.gallery[0] != null}
                 <BlurImage {...hero.gallery[0]} />
               {:else}

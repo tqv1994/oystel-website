@@ -200,7 +200,8 @@ import { makeQueryString, TYPE } from '$lib/store/search';
     <Row class="top-app-bar__main-row">
       <Section class="logo">
         <Title component={A} href="/">
-          <OysteoLogo width={130} height={17.217} />
+          <OysteoLogo width={167.19} height={22.14} class="m-none" />
+          <OysteoLogo width={130} height={17.22} class="d-none m-block" />
         </Title>
       </Section>
       <Section class="desktop nav">
