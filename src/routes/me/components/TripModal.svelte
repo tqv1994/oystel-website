@@ -97,6 +97,7 @@ import { destinationStore } from '$lib/store/destination';
         this={Field}
         column_1={4}
         column_2={8}
+        class="m-mb--10 d-mb--15"
         label="{(trip.numberOfAdults || 0) + (trip.numberOfChildren || 0)} Guests"
       >
         {trip.travellers
@@ -108,6 +109,7 @@ import { destinationStore } from '$lib/store/destination';
           this={Field}
           column_1={4}
           column_2={8}
+          class="m-mb--10 d-mb--15"
           label="View Itinerary"
         >
           <div class="text-right">
@@ -119,6 +121,7 @@ import { destinationStore } from '$lib/store/destination';
         this={Field}
         column_1={4}
         column_2={8}
+        class="m-mb--10 d-mb--15"
         label="View Travel Documents"
       >
         {#if trip.documents.length > 0}
@@ -141,6 +144,7 @@ import { destinationStore } from '$lib/store/destination';
           column_1={4}
           column_2={8}
           label="Get Invoice"
+          class="m-mb--10 d-mb--15"
         >
           <div class="text-right">
             <svelte:component this={NextIcon} width={10} height={19} />
@@ -151,6 +155,7 @@ import { destinationStore } from '$lib/store/destination';
         this={Field}
         column_1={4}
         column_2={8}
+        class="m-mb--10 d-mb--15"
         label="Travel Insurance"
       >
         <!-- {#if trip.insurances.length > 0}

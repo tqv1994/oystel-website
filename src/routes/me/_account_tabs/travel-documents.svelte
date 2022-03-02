@@ -81,19 +81,35 @@
   </DataTable>
 
   <div class="d-none m-block">
-    {#each me.travellerMe.identifications || [] as item}
+    {#each getAllIdentifications(me.travellerMe) || [] as item}
+    {#each item.items || [] as identication}
       <div class="row header">
         <div class="m-col-6">
           <svelte:component this={Text}
-            >{ENUM_IDENTIFICATION_TYPE_LABEL[item.type] || ''}</svelte:component
+            >{ENUM_IDENTIFICATION_TYPE_LABEL[identication.type] ||
+              ''}</svelte:component
           >
+          <svelte:component
+                this={ButtonUnderline}
+                label="Edit"
+                on:click={() => {
+                  handleFormEditOpen(identication);
+                }}
+              />
         </div>
         <div class="m-col-6">
           <svelte:component this={Text}
-            >{`${me.travellerMe.forename} ${me.travellerMe.surname}`}</svelte:component
+            >{`${identication.traveller?.forename || ''} ${
+              identication.traveller?.surname
+            }`}</svelte:component
           >
+          <svelte:component
+                this={ButtonUnderline}
+                label="View Document"
+              />
         </div>
       </div>
+      {/each}
     {/each}
   </div>
   <div class="action-button mt-25">

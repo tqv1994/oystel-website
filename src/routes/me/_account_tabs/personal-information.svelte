@@ -35,6 +35,8 @@
           title={`${me.travellerMe?.forename || ''} ${
             me.travellerMe?.surname || ''
           }`}
+          headlineTitle="h2"
+          class="d-mt-25"
           bind:is_edit={isInfoEdit}
         >
           <LayoutGrid class="p-0 d-none m-block mb-20">
@@ -52,11 +54,11 @@
              
             </Cell>
             <Cell spanDevices={{ phone: 2, tablet: 4 }}>
-              <h3 class="mdc-typography--headline1 mb-15">
+              <h2 class="mdc-typography--headline1 mb-15">
                 {`${me.travellerMe?.forename || ''}  ${
                   me.travellerMe?.surname || ''
                 }`}
-              </h3>
+              </h2>
               <svelte:component
                 this={ButtonUnderline}
                 label="Edit"

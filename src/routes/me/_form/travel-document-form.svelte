@@ -187,7 +187,7 @@
   };
 </script>
 
-<form on:submit|preventDefault={handleSubmitForm}>
+<form on:submit|preventDefault={handleSubmitForm} class="form pt-20">
   <svelte:component
     this={Field}
     label="Traveler Name*"

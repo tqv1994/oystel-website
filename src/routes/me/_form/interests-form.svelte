@@ -84,6 +84,9 @@
   }
   .options-1 {
     grid-template-columns: 1fr 1fr 1fr;
+    @include mixins.mobile{
+      grid-template-columns: 1fr 1fr;
+    }
     grid-template-rows: 1fr;
   }
   .options-2 {

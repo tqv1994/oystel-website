@@ -8,11 +8,14 @@
   function handleEditClick() {
     is_edit = true;
   }
+  export let headlineTitle: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' = 'h3';
+  let className: string | undefined = '';
+  export {className as class};
 </script>
 
-<div class="section-content">
+<div class="section-content {className}">
   <div class="section-title mb-45">
-    <span class="text-h1">{title}</span>
+    <span class="text-{headlineTitle}">{title}</span>
     <svelte:component this={ButtonUnderline} class="btn-edit" label="Edit" on:click={handleEditClick} />
   </div>
   <slot/>
@@ -51,5 +54,10 @@
   }
   .btn-edit {
     text-decoration: underline;
+  }
+  @include mixins.desktop{
+    h2{
+      font-size: 40px;
+    }
   }
 </style>

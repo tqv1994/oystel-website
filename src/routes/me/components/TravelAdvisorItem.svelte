@@ -35,15 +35,15 @@
         <p class="m-0">{item.email2 || ''}</p>
       </div>
     </div>
-    <svelte:component this={Field} label="Last Trip date"
+    <svelte:component this={Field} label="Last Trip date" class="m-mb--10"
       ><svelte:component this={Text}>{getLastTripDate(item)}</svelte:component
       ></svelte:component
     >
-    <svelte:component this={Field} label="Number of Open trips"
+    <svelte:component this={Field} label="Number of Open trips" class="m-mb--10"
       ><svelte:component this={Text}>{numberOfOpenTrips(item)}</svelte:component
       ></svelte:component
     >
-    <svelte:component this={Field} label="Number of Past trips"
+    <svelte:component this={Field} label="Number of Past trips" class="m-mb--10"
       ><svelte:component this={Text}>{numberOfPastTrips(item)}</svelte:component
       ></svelte:component
     >

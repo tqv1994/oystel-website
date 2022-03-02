@@ -256,7 +256,7 @@
   }
 </script>
 
-<form on:submit|preventDefault={handleSubmitForm}>
+<form on:submit|preventDefault={handleSubmitForm} class="form pt-20">
   <svelte:component this={Field} label="Forename*" column_1={4} column_2={8}
     ><div class="row">
       <div class="d-col-4 m-col-6 d-mb-0 m-mb-15">
