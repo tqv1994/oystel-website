@@ -9,6 +9,7 @@ import OySelectList from './OySelectList.svelte';
   export let labelIdentifier: string;
   export let placeholder: string = '';
   export let isMulti: boolean = false;
+  export let variant: 'standard' | '' = '';
   let valueSelect: any | any[];
   const dispatch = createEventDispatcher();
   onMount(()=>{
@@ -46,7 +47,7 @@ import OySelectList from './OySelectList.svelte';
       }
   }
 </script>
-<div class="oy-select">
+<div class={`oy-select ${variant === '' ? '' : `oy-select--${variant}`}`}>
 <Select
   {items}
   {optionIdentifier}
@@ -91,6 +92,14 @@ import OySelectList from './OySelectList.svelte';
         }
         :global(.selectedItem), :global(.listItem .item){
           font-size: var(--mdc-typography-subtitle1-font-size);
+        }
+        &.oy-select--standard{
+          :global(.selectContainer){
+            border-top:0;
+            border-right: 0;
+            border-left: 0;
+            border-bottom:  var(--border);
+          }
         }
     }
 </style>

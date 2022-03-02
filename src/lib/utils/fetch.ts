@@ -1,5 +1,5 @@
 export function parseId(slug: string): string {
-  const match = slug.match(/(?<=^.+-)\w+$/); // Look for a - (hyphen) followed by a \w
+  const match = slug.match(/(?<=)\w+$/); // Look for a - (hyphen) followed by a \w
   return match ? match[0] : slug;
 }
 

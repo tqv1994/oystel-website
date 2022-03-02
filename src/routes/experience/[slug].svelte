@@ -19,6 +19,7 @@
   import Item from '$lib/components/Item.svelte';
 
   export const load: Load = async ({ fetch, session, params }) => {
+    console.log('test',params);
     const id = parseId(params.slug);
 
     const res = await fetch(`/experience/${id}.json`);

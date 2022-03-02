@@ -7,6 +7,7 @@
   import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
 import { sortByName } from '$lib/utils/sort';
 import { experienceTypeStore } from '$lib/store/experience-type';
+import OySelect from '../OySelect.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
@@ -18,7 +19,6 @@ import { experienceTypeStore } from '$lib/store/experience-type';
   let countryData: Country | undefined;
   let { country, experiencetype } = searchModel;
   const experienceTypes = sortByName(Object.values($experienceTypeStore.items));
-  experienceTypes.unshift({ id: '', name: 'All' });
   // let experienceTypes: Category[];
   // experienceTypeStore.subscribe(
   //   (store) => (experienceTypes = sortByName(Object.values(store.items))),
@@ -27,9 +27,9 @@ import { experienceTypeStore } from '$lib/store/experience-type';
   let locations: Country[];
   countryStore.subscribe((store) => {
     locations = sortByName(Object.values(store.items));
-    locations.unshift({ id: '', name: 'All' });
   });
   function onSearchSubmit() {
+    console.log('experiencetype',experiencetype);
     setTimeout(() => {
       dispatch('close', { country, experiencetype });
     }, 0);
@@ -40,11 +40,11 @@ import { experienceTypeStore } from '$lib/store/experience-type';
   });
 
   const onAdvisorTypeChange = (event: CustomEvent<DropdownValue<Category>>) => {
-    experiencetype = event.detail.value.id;
+    experiencetype = event.detail.value?.id || null;
   };
 
   const onCountryChange = (event: CustomEvent<DropdownValue<Country>>) => {
-    country = event.detail.value.id;
+    country = event.detail.value?.id || null;
   };
 </script>
 
@@ -55,19 +55,25 @@ import { experienceTypeStore } from '$lib/store/experience-type';
     on:submit|preventDefault={onSearchSubmit}
   >
     <div class="form-control mb-40">
-      <Dropdown
-        label="By Speciality"
+      <OySelect
         items={experienceTypes}
-        bind:value={experienceTypeData}
-        on:MDCSelect:change={onAdvisorTypeChange}
+        optionIdentifier="id"
+        labelIdentifier="name"
+        placeholder="By Speciality"
+        on:select={onAdvisorTypeChange}
+        on:clear={onAdvisorTypeChange}
+        value={experiencetype}
       />
     </div>
     <div class="form-control mb-40">
-      <Dropdown
-        label="By Location"
+      <OySelect
         items={locations}
-        bind:value={countryData}
-        on:MDCSelect:change={onCountryChange}
+        optionIdentifier="id"
+        labelIdentifier="name"
+        placeholder="By Location"
+        on:select={onCountryChange}
+        on:clear={onCountryChange}
+        value={country}
       />
     </div>
     <div class="form-control btn-submit-wrap">
