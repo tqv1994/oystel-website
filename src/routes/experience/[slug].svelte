@@ -20,7 +20,7 @@
 
   export const load: Load = async ({ fetch, session, params }) => {
     console.log('test',params);
-    const id = parseId(params.slug);
+    const id = 1;// parseId(params.slug);
 
     const res = await fetch(`/experience/${id}.json`);
     if (res.ok) {
