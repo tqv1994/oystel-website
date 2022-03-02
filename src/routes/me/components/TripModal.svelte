@@ -8,7 +8,7 @@
 
   import Modal from './Modal.svelte';
   import NextIcon from '$lib/icons/NextIcon.svelte';
-  import { Trip } from '$lib/store/trip';
+  import { ENUM_TRIP_STATE_LABEL, Trip } from '$lib/store/trip';
   import Carousel from '$lib/components/Carousel.svelte';
   import { dateTimeHelper } from '$lib/helpers/datetime';
 import { destinationStore } from '$lib/store/destination';
@@ -87,7 +87,7 @@ import { destinationStore } from '$lib/store/destination';
           </p>
         </div>
         <div class="d-col-6 m-col-12 text-right m-none">
-          <span class="status">{trip.state}</span>
+          <span class="status">{ENUM_TRIP_STATE_LABEL[trip.state]}</span>
         </div>
         <div class="d-col-6 m-col-12 d-none m-block">
           <span class="status">{trip.state}</span>
