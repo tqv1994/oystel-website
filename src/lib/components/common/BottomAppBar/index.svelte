@@ -84,6 +84,7 @@
 </div>
 <style lang="scss">
   #bottom-app-bar {
+    --mdc-text-button-with-icon-icon-size: 21px;
     z-index: 20;
     position: fixed;
     bottom: 0;
