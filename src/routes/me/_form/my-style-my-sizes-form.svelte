@@ -81,10 +81,10 @@
     </svelte:component>
     <svelte:component this={Field} label="WEIGHT" column_1={3} column_2={9}>
       <div class="row">
-        <div class="d-col-8 m-col-8">
+        <div class="d-col-8 m-col-6">
           <Textfield bind:value={selected.weight} label="" type="number" input$min={1} />
         </div>
-        <div class="d-col-4 m-col-4">
+        <div class="d-col-4 m-col-6">
           <Select bind:value={selected.weightUnit} label="">
             {#each data.weightUnit as item}
               <Option value={item}>{item}</Option>
@@ -95,10 +95,10 @@
     </svelte:component>
     <svelte:component this={Field} label="HEIGHT" column_1={3} column_2={9}>
       <div class="row">
-        <div class="d-col-8 m-col-8">
+        <div class="d-col-8 m-col-6">
           <Textfield bind:value={selected.height} label="" type="number" input$min={1} />
         </div>
-        <div class="d-col-4 m-col-4">
+        <div class="d-col-4 m-col-6">
           <Select bind:value={selected.heightUnit} label="">
             {#each data.heightUnit as item}
               <Option value={item}>{item}</Option>

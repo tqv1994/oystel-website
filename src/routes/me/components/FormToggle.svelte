@@ -27,6 +27,9 @@
     --mdc-typography-headline1-font-size: 32px;
     margin-top: 18px;
     padding: 20px 30px;
+    @include mixins.mobile{
+      padding: 20px 10px;
+    }
     border: 1px solid #000;
     .form-header {
       min-height: 30px;
@@ -37,6 +40,9 @@
       text-decoration: underline;
       position: absolute;
       right: 40px;
+      @include mixins.mobile{
+        right: 10px;
+      }
       top: 50%;
       transform: translateY(-50%);
     }

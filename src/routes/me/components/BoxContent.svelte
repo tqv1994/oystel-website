@@ -28,6 +28,9 @@
     right: 40px;
     top: 50%;
     transform: translateY(-50%);
+    @include mixins.mobile{
+      right: 0;
+    }
   }
   * {
     --mdc-theme-primary: #000;

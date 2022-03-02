@@ -105,6 +105,7 @@
 {/if}
 
 <style lang="scss">
+  @use '../../../theme/mixins';
   * :global(.mdc-drawer) {
     background-color: transparent;
   }
@@ -122,6 +123,9 @@
       position: absolute;
       right: 40px;
       top: 25px;
+      @include mixins.mobile{
+        right: 0;
+      }
     }
   }
 

@@ -44,7 +44,7 @@
     </div>
     <div class="content">
       <div class="row">
-        <div class="d-col-6 m-col-8">
+        <div class="d-col-6 m-col-6">
           <p class="m-0">
             {dateTimeHelper.formatDate(trip.depart_at, DATE_FORMAT)
               ? dateTimeHelper.formatDate(trip.depart_at, DATE_FORMAT)
@@ -54,7 +54,7 @@
               : ''}
           </p>
         </div>
-        <div class="d-col-6 m-col-4 text-right">
+        <div class="d-col-6 m-col-6 text-right">
           <span class="status">{ENUM_TRIP_STATE_LABEL[trip.state]}</span>
         </div>
       </div>

@@ -35,12 +35,15 @@
   @include mixins.mobile{
     :global(.form){
       :global(.label.mdc-layout-grid__cell--span-2), :global(.label.mdc-layout-grid__cell--span-4-tablet),
-      :global(.label.mdc-layout-grid__cell--span-2-phone){
+      :global(.value.mdc-layout-grid__cell--span-4-tablet), :global(.label.mdc-layout-grid__cell--span-2){
         grid-column-end: span 8;
       }
       :global(.mdc-layout-grid__inner){
         margin-bottom: 10px;
       }
+      --mdc-layout-grid-gutter-tablet: 5px;
+      --mdc-layout-grid-gutter-phone: 5px;
     }
+    
   }
 </style>
