@@ -138,6 +138,7 @@
     infinite: true,
     particlesToShow: 1,
     chevronPosition: 'inside',
+    autoplay: true
   };
 </script>
 

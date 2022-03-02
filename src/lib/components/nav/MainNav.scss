@@ -371,6 +371,11 @@ nav{
         bottom: calc(100vh - 75%);
       }
     }
+    &.mobile{
+      .mdc-deprecated-list{
+        max-height: 300px;
+        overflow-y: scroll;
+      }
+    }
   }
-  
 }

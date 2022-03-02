@@ -19,6 +19,7 @@
 </div>
 
 <style lang="scss">
+  @use '../../../theme/mixins';
   a.text-input {
     text-decoration: underline;
   }
@@ -38,6 +39,9 @@
     --mdc-typography-heading1-font-size: 32px;
     --mdc-typography-body1-font-size: 14px;
     padding: 0 25px;
+    @include mixins.mobile{
+      padding: 0;
+    }
     .section-title {
       position: relative;
     }

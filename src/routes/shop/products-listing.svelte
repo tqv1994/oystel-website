@@ -7,6 +7,7 @@ import type { Load } from "@sveltejs/kit";
         if (res.ok) {
             const products: Product[] = await res.json();
             let params = stringHelper.queryURLParamToJSON(url.searchParams.toString());
+            console.log(params);
             return {
                 props: {
                     products,

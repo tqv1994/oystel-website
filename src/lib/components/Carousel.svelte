@@ -10,6 +10,7 @@
   export let chevronPosition = 'inside';
   export let itemsShowMobile: number | undefined = undefined;
   export let initialPageIndex: number = 0;
+  export let autoplay: boolean = false;
   let itemsShowDesktop: number = particlesToShow;
   export let totalItems: number = 0;
   let totalPage: number = 0;
@@ -70,7 +71,7 @@
 <svelte:component
   this={Carousel}
   bind:this={carouselObject}
-  autoplay
+  {autoplay}
   {autoplayDuration}
   {duration}
   {infinite}

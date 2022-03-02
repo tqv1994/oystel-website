@@ -10,12 +10,12 @@
 
 <div class={`${classNames} pb-30`}>
   <LayoutGrid class="p-0">
-    <Cell class="label" spanDevices={{ desktop: column_1, phone: 1, tablet: 2 }}
+    <Cell class="label" spanDevices={{ desktop: column_1, phone: 2, tablet: 4 }}
       ><svelte:component this={Text} class="mt-0 mb-0 font-weight-bold"
         >{label}</svelte:component
       ></Cell
     >
-    <Cell class="value" spanDevices={{ desktop: column_2, phone: 3, tablet: 6 }}
+    <Cell class="value" spanDevices={{ desktop: column_2, phone: 2, tablet: 4 }}
       ><slot /></Cell
     >
   </LayoutGrid>
@@ -34,8 +34,8 @@
   }
   @include mixins.mobile{
     :global(.form){
-      :global(.label.mdc-layout-grid__cell--span-2), :global(.label.mdc-layout-grid__cell--span-2-tablet),
-      :global(.value.mdc-layout-grid__cell--span-6-tablet){
+      :global(.label.mdc-layout-grid__cell--span-2), :global(.label.mdc-layout-grid__cell--span-4-tablet),
+      :global(.label.mdc-layout-grid__cell--span-2-phone){
         grid-column-end: span 8;
       }
       :global(.mdc-layout-grid__inner){
