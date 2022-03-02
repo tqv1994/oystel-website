@@ -14,7 +14,7 @@
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
   import { contains } from '$lib/utils/array';
   import { authStore, User } from '$lib/store/auth';
-import SliderItems from './SliderItems.svelte';
+  import SliderItems from './SliderItems.svelte';
 
   export let experiences: Experience[];
   export let name: string | undefined = undefined;
@@ -27,7 +27,6 @@ import SliderItems from './SliderItems.svelte';
   let nonHeros: Experience[] | undefined;
   $: if (prominent && experiences.length) {
     experiences = storeHelper.getItems([...experiences], 7);
-    console.log(experiences);
     if (me) {
       experiences = experiences.map((item: Experience) => {
         item.liked = contains(me.experienceLikes || [], 'id', item.id);
@@ -45,13 +44,13 @@ import SliderItems from './SliderItems.svelte';
     if (document.documentElement.clientWidth > 949) {
       documentHelper.handleEqualHeightItems([
         `.experiences.experiences-${index} .experiences--item.featured`,
-        `.experiences.experiences-${index} .experiences--list`
+        `.experiences.experiences-${index} .experiences--list`,
       ]);
     }
   }
   const dispatcher = createEventDispatcher();
   const onLike = (event: CustomEvent, experience: Experience | undefined) => {
-    if($authStore.user){
+    if ($authStore.user) {
       if (experience) {
         hero.liked = !experience.liked;
         dispatcher('likeItem', { data: experience });
@@ -59,7 +58,7 @@ import SliderItems from './SliderItems.svelte';
         const item = event.detail.item;
         dispatcher('likeItem', { data: item });
       }
-    }else{
+    } else {
       window.openSignInModal();
     }
   };
@@ -83,18 +82,24 @@ import SliderItems from './SliderItems.svelte';
       <div class="experiences--item featured">
         <div class="thumbnail dark">
           <a href={makeLink('/experience', hero)}>
-            <div class="image-cover m-none" style="padding-top: calc(568/529 * 100%)">
+            <div
+              class="image-cover m-none"
+              style="padding-top: calc(568/529 * 100%)"
+            >
               {#if hero.gallery.length > 0 || hero.gallery[0] != null}
                 <BlurImage {...hero.gallery[0]} />
               {:else}
-                <BlurImage/>
+                <BlurImage />
               {/if}
             </div>
-            <div class="image-cover d-none m-block" style="padding-top: calc(425/328 * 100%)">
+            <div
+              class="image-cover d-none m-block"
+              style="padding-top: calc(425/328 * 100%)"
+            >
               {#if hero.gallery.length > 0 || hero.gallery[0] != null}
                 <BlurImage {...hero.gallery[0]} />
               {:else}
-                <BlurImage/>
+                <BlurImage />
               {/if}
             </div>
           </a>
@@ -108,9 +113,9 @@ import SliderItems from './SliderItems.svelte';
             <HeartFilledIcon size="sm" />
           </IconButton>
           <div class="caption text-left">
-            <p class="m-0 text-eyebrow pl-25 pr-25">{name}</p>
+            <p class="m-0 text-eyebrow pl-25 pr-25">Featured Experience</p>
             <a class="" href={makeLink('/experience', hero)}>
-              <h3 class="pl-25 pr-25 m-mt-20 d-mt-35 d-mb-30 m-mb-20 title">
+              <h3 class="pl-25 pr-25 m-mt-10 d-mt-25 d-mb-30 m-mb-20 title">
                 {hero.name}
               </h3>
             </a>
@@ -137,39 +142,40 @@ import SliderItems from './SliderItems.svelte';
           </div>
         </SliderItems>
       {/if}
-      </div>
+    </div>
   </Cell>
 </LayoutGrid>
+
 <style lang="scss">
-   @use '../../style/include/grid';
-   @use '../../theme/mixins';
-    
-      .experiences--item.featured {
-        .title {
-          height: 30px;
-          font-size: 32px;
-          overflow: hidden;
-          @include mixins.mobile {
-            height: 26px;
-            font-size: 20px;
-          }
-        }
-        :global(.thumbnail .btn-favorite) {
-          top: 0;
-          right: -2px;
-        }
+  @use '../../style/include/grid';
+  @use '../../theme/mixins';
+
+  .experiences--item.featured {
+    .title {
+      height: 30px;
+      font-size: 32px;
+      overflow: hidden;
+      @include mixins.mobile {
+        height: 26px;
+        font-size: 20px;
       }
-   .row{
-    .col:nth-child(odd){
-      padding-right: calc(15px /2);
     }
-    .col:nth-child(even){
-      padding-left: calc(15px /2);
+    :global(.thumbnail .btn-favorite) {
+      top: 0;
+      right: -2px;
     }
-    .col{
-      @include mixins.mobile{
+  }
+  .row {
+    .col:nth-child(odd) {
+      padding-right: calc(15px / 2);
+    }
+    .col:nth-child(even) {
+      padding-left: calc(15px / 2);
+    }
+    .col {
+      @include mixins.mobile {
         margin-bottom: 15px;
       }
     }
-   }
+  }
 </style>
