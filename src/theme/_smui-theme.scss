@@ -52,14 +52,21 @@
 
 @font-face {
   font-family: Surt;
+  //src: url('/fonts/at-surt-light.woff');
   src: url('./fonts/surt-light/Surt-LightExtended.woff') format('woff');
   font-weight: 300;
 }
 
 @font-face {
   font-family: Surt;
-  src: url('./fonts/surt-normal-ultra-bold/SurtNormal-UltraBold.woff');
+  src: url('./fonts/surt-semi-bold/Surt-SemiBoldExtended.woff');
   font-weight: 700;
+}
+
+@font-face {
+  font-family: Surt;
+  src: url('./fonts/surt-normal-ultra-bold/SurtNormal-UltraBold.woff');
+  font-weight: 800;
 }
 
 @font-face {

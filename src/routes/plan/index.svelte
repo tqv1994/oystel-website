@@ -286,12 +286,16 @@
   @use '../../theme/mixins';
   div {
     @import '../../style/partial/form.scss';
-    .mdc-dialog__header {
-      @include mixins.mobile {
-        .mdc-dialog__title {
-          top: 15px;
-        }
+    .mdc-dialog.mdc-dialog--fullscreen .mdc-dialog__surface .mdc-dialog__header {
+      @media screen and (max-width : 599px) {
+        display: inline-flex;
+        align-items: center;
+        height: 65px;
+        flex: 1 1 auto;
       }
+    }
+    .mdc-dialog--fullscreen .mdc-dialog__close {
+      top: 8px;
     }
     .mdc-dialog {
       --mdc-dialog-z-index: 10;
