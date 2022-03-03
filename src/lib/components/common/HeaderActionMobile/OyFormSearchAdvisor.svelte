@@ -7,18 +7,18 @@
   import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
 import { sortByName } from '$lib/utils/sort';
 import { experienceTypeStore } from '$lib/store/experience-type';
+import OySelect from '../OySelect.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
   export let searchModel: {
     experiencetype: string;
-    country: string;
+    countries: string[];
   };
   let experienceTypeData: Category | undefined;
   let countryData: Country | undefined;
-  let { country, experiencetype } = searchModel;
+  let { countries, experiencetype } = searchModel;
   const experienceTypes = sortByName(Object.values($experienceTypeStore.items));
-  experienceTypes.unshift({ id: '', name: 'All' });
   // let experienceTypes: Category[];
   // experienceTypeStore.subscribe(
   //   (store) => (experienceTypes = sortByName(Object.values(store.items))),
@@ -27,24 +27,24 @@ import { experienceTypeStore } from '$lib/store/experience-type';
   let locations: Country[];
   countryStore.subscribe((store) => {
     locations = sortByName(Object.values(store.items));
-    locations.unshift({ id: '', name: 'All' });
   });
   function onSearchSubmit() {
+    console.log('experiencetype',experiencetype);
     setTimeout(() => {
-      dispatch('close', { country, experiencetype });
+      dispatch('close', { countries, experiencetype });
     }, 0);
   }
-  onMount(()=>{
-    experienceTypeData = experienceTypes.find((item)=>item.id+"" === experiencetype+"");
-    countryData = locations.find((item)=>item.id+"" === country+"");
-  });
 
   const onAdvisorTypeChange = (event: CustomEvent<DropdownValue<Category>>) => {
-    experiencetype = event.detail.value.id;
+    experiencetype = event.detail.value?.id || null;
   };
 
   const onCountryChange = (event: CustomEvent<DropdownValue<Country>>) => {
-    country = event.detail.value.id;
+    if (event.detail.value) {
+      countries = event.detail.value.map((item: Category) => item.id);
+    } else {
+      countries = null
+    }
   };
 </script>
 
@@ -55,19 +55,26 @@ import { experienceTypeStore } from '$lib/store/experience-type';
     on:submit|preventDefault={onSearchSubmit}
   >
     <div class="form-control mb-40">
-      <Dropdown
-        label="By Speciality"
+      <OySelect
         items={experienceTypes}
-        bind:value={experienceTypeData}
-        on:MDCSelect:change={onAdvisorTypeChange}
+        optionIdentifier="id"
+        labelIdentifier="name"
+        placeholder="By Speciality"
+        on:select={onAdvisorTypeChange}
+        on:clear={onAdvisorTypeChange}
+        value={experiencetype}
       />
     </div>
     <div class="form-control mb-40">
-      <Dropdown
-        label="By Location"
-        items={locations}
-        bind:value={countryData}
-        on:MDCSelect:change={onCountryChange}
+      <OySelect
+          items={locations}
+          optionIdentifier="id"
+          labelIdentifier="name"
+          on:select={onCountryChange}
+          on:clear={onCountryChange}
+          placeholder="Location"
+          value={countries}
+          isMulti={true}
       />
     </div>
     <div class="form-control btn-submit-wrap">

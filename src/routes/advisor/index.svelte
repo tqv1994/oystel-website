@@ -43,7 +43,7 @@
   import { makeLink } from '$lib/utils/link';
   import { implodeString } from '$lib/utils/string';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-  import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+  import OySelect from '$lib/components/common/OySelect.svelte';
 
   type SearchResultItem = AdvisorBase & {
     country: string;
@@ -69,7 +69,7 @@
       items: []
     };
     const destinationTypes = get(destinationTypeStore);
-    const experienceTypes = get(experienceTypeStore);
+    const experienceTypeOptions = get(experienceTypeStore);
     const countries = get(countryStore);
     const advisorTypes = get(advisorTypeStore);
     const languages = get(languageStore);
@@ -96,11 +96,11 @@
           country: countries.items[item.country],
           avatar: item.avatar,
           gallery: item.gallery,
-          experienceTypes1: experienceTypes.items[item.experienceTypes1],
-          experienceTypes2: experienceTypes.items[item.experienceTypes2],
-          experienceTypes3: experienceTypes.items[item.experienceTypes3],
-          experienceTypes4: experienceTypes.items[item.experienceTypes4],
-          experienceTypes5: experienceTypes.items[item.experienceTypes5],
+          experienceTypes1: experienceTypeOptions.items[item.experienceTypes1],
+          experienceTypes2: experienceTypeOptions.items[item.experienceTypes2],
+          experienceTypes3: experienceTypeOptions.items[item.experienceTypes3],
+          experienceTypes4: experienceTypeOptions.items[item.experienceTypes4],
+          experienceTypes5: experienceTypeOptions.items[item.experienceTypes5],
           destinationType1: destinationTypes.items[item.destinationType1],
           destinationType2: destinationTypes.items[item.destinationType2],
           destinationType3: destinationTypes.items[item.destinationType3],
@@ -125,7 +125,7 @@
           destinationtype: url.searchParams.get(DESTINATION_TYPE) || '',
           type: url.searchParams.get(TYPE) || '',
           language: languages.items[url.searchParams.get(LANGUAGE) || ''],
-          country: url.searchParams.get(COUNTRY) || '',
+          countries: (url.searchParams.get(COUNTRY) || '').split(","),
           ordering:
             orderings[url.searchParams.get(ORDERING) || ''] ||
             ORDER_BY_NAME_ASC,
@@ -140,26 +140,23 @@
     items: [],
   };
   export let query: string = '';
-  export let experiencetype: string ;
+  export let experiencetype: string;
   export let destinationtype: string;
   export let type: string;
   export let language: Language | undefined;
-  export let country: string;
+  export let countries: string[];
   export let ordering: Ordering;
   let contentHeaderActionMobile: string = '';
-  console.log(experiencetype);
 
-  const experienceTypes = sortByName(Object.values($experienceTypeStore.items));
-  experienceTypes.unshift({ id: '', name: 'All' });
+  const experienceTypeOptions = sortByName(Object.values($experienceTypeStore.items));
   // let experienceTypes: Category[];
   // experienceTypeStore.subscribe(
   //   (store) => (experienceTypes = sortByName(Object.values(store.items))),
   // );
 
-  let countries: Country[];
+  let countryOptions: Country[];
   countryStore.subscribe((store) => {
-    countries = sortByName(Object.values(store.items));
-    countries.unshift({ id: '', name: 'All' });
+    countryOptions = sortByName(Object.values(store.items));
   });
 
   function go(params: SearchParams) {
@@ -169,7 +166,7 @@
       [DESTINATION_TYPE]: destinationtype,
       [EXPERIENCE_TYPE]: experiencetype,
       [LANGUAGE]: language?.id,
-      [COUNTRY]: country,
+      [COUNTRY]: countries,
       [ORDERING]: ordering.key,
       ...params,
     });
@@ -184,11 +181,17 @@
   }
 
   function onTypeChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ [EXPERIENCE_TYPE]: event.detail.value.id });
+    go({ [EXPERIENCE_TYPE]: event.detail.value?.id || null });
   }
 
   function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
-    go({ [COUNTRY]: event.detail.value.id });
+    if (event.detail.value) {
+      go({
+        [COUNTRY]: event.detail.value.map((item: Category) => item.id),
+      });
+    } else {
+      go({ [COUNTRY]: null });
+    }
   }
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
@@ -198,8 +201,8 @@
   function onSearchSubmitMobile(event: CustomEvent) {
     contentHeaderActionMobile = '';
     go({
-      [COUNTRY]: event.detail.country || '',
-      [EXPERIENCE_TYPE]: event.detail.experiencetype || '',
+      [COUNTRY]: event.detail.countries || null,
+      [EXPERIENCE_TYPE]: event.detail.experiencetype || null,
     });
   }
 
@@ -310,30 +313,33 @@
             spanDevices={{ desktop: 8 }}
             class="form-inline d-desktop text-right"
           >
-            <div>
+            <div class="form-wrap-right">
               <div class="form-control text-left">
                 <label class="text-h5">Speciality</label>
                 <div class="display-inline">
-                  <OyAutocomplete
-                    getOptionLabel={(option) =>
-                      option ? `${option.name}` : ''}
-                    bind:value={experiencetype}
-                    options={experienceTypes}
-                    key={'id'}
-                    on:SMUIAutocomplete:change={onTypeChange}
+                  <OySelect
+                    items={experienceTypeOptions}
+                    optionIdentifier="id"
+                    labelIdentifier="name"
+                    on:select={onTypeChange}
+                    on:clear={onTypeChange}
+                    value={experiencetype}
+                    variant="standard"
                   />
                 </div>
               </div>
               <div class="form-control text-left">
                 <label class="text-h5">Location</label>
                 <div class="display-inline">
-                  <OyAutocomplete
-                    getOptionLabel={(option) =>
-                      option ? `${option.name}` : ''}
-                    bind:value={country}
-                    options={countries}
-                    key={'id'}
-                    on:SMUIAutocomplete:change={onCountryChange}
+                  <OySelect
+                    items={countryOptions}
+                    optionIdentifier="id"
+                    labelIdentifier="name"
+                    on:select={onCountryChange}
+                    on:clear={onCountryChange}
+                    value={countries}
+                    variant="standard"
+                    isMulti={true}
                   />
                 </div>
               </div>
@@ -345,12 +351,15 @@
           >
             <div>
               <div class="form-control text-left">
-                <OyAutocomplete
-                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  bind:value={experiencetype}
-                  options={experienceTypes}
-                  key={'id'}
-                  on:SMUIAutocomplete:change={onTypeChange}
+                <OySelect
+                  items={experienceTypeOptions}
+                  optionIdentifier="id"
+                  labelIdentifier="name"
+                  on:select={onTypeChange}
+                  on:clear={onTypeChange}
+                  placeholder="Speciality"
+                  value={experiencetype}
+                  variant="standard"
                 />
               </div>
             </div>
@@ -361,12 +370,16 @@
           >
             <div>
               <div class="form-control text-left">
-                <OyAutocomplete
-                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  bind:value={country}
-                  options={countries}
-                  key={'id'}
-                  on:SMUIAutocomplete:change={onCountryChange}
+                <OySelect
+                    items={countryOptions}
+                    optionIdentifier="id"
+                    labelIdentifier="name"
+                    on:select={onCountryChange}
+                    on:clear={onCountryChange}
+                    placeholder="Location"
+                    value={countries}
+                    variant="standard"
+                    isMulti={true}
                 />
               </div>
             </div>
@@ -499,7 +512,7 @@
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
   on:close={onSearchSubmitMobile}
-  searchModel={{ experiencetype, country }}
+  searchModel={{ experiencetype, countries }}
 />
 
 <style lang="scss" global>
@@ -582,11 +595,22 @@
       .mdc-text-field img {
         filter: brightness(0.1);
       }
+      .form-wrap-right{
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
       .form-inline .form-control {
-        display: inline-block;
+        height: 35px;
         margin-right: 30px;
         &:last-child {
           margin-right: 0;
+        }
+        .oy-select{
+          width: 200px;
+          .multiSelectItem{
+            width: 90px;
+          }
         }
       }
       label {

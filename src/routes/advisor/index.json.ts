@@ -43,16 +43,27 @@ async function search<T extends Identifiable>(
   const filter: Array<string | Array<string>> = [];
   if (params[EXPERIENCE_TYPE]) {
     filter.push([
-      `experienceType1 = ${params[EXPERIENCE_TYPE]}`,
-      `experienceType2 = ${params[EXPERIENCE_TYPE]}`,
-      `experienceType3 = ${params[EXPERIENCE_TYPE]}`,
+      `experienceTypes1 = ${params[EXPERIENCE_TYPE]}`,
+      `experienceTypes2 = ${params[EXPERIENCE_TYPE]}`,
+      `experienceTypes3 = ${params[EXPERIENCE_TYPE]}`,
     ]);
   }
   if (params[COUNTRY]) {
-    filter.push(`country = ${params[COUNTRY]}`);
+    const filterCountries = (params[COUNTRY] || '').split(',').reduce((acc: string, item: string)=>{
+      if(item !== ''){
+        if(acc == ''){
+          acc += `country = ${item}`;
+        }else{
+          acc += ` OR country = ${item}`;
+        }
+      }
+      return acc;
+    },'');
+    filter.push(`(${filterCountries})`);
   }
   const limit = params[LIMIT] || 30;
   const o = params[ORDERING];
+  console.log(filter);
   const ordering = (o && orderings[o]) || ORDER_BY_NAME_ASC;
   const res = await index.search<T>(params[QUERY], {
     filter,

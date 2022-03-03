@@ -19,7 +19,7 @@
 </script>
 <div class={`oy-multiSelect-wrap ${isShowAll ? 'show-all' : ''}`} use:clickOutside
 on:click_outside={handleClickOutside}>
-    {#if value.length > 2 && isShowAll === false}
+    {#if value.length > 1 && isShowAll === false}
         <div
             class="multiSelectItem"
             on:click={(event) =>{isShowAll = true}}>

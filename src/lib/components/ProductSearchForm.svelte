@@ -85,12 +85,10 @@
   }
 
   function onDesignerChange(event: CustomEvent<DropdownValue<Category>>) {
-    console.log('event value pd', event.detail);
     go({ [PRODUCT_DESIGNER]: event.detail.value?.id || null });
   }
 
   function onColourChange(event: CustomEvent<DropdownValue<Category>>) {
-    console.log('event value', event.detail);
     if (event.detail.value) {
       go({
         [PRODUCT_COLOUR]: event.detail.value.map((item: Category) => item.id),
