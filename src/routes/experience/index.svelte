@@ -39,6 +39,7 @@
     SearchParams,
     TYPE,
     SearchResultGroup,
+DESTINATION_TYPE,
   } from '$lib/store/search';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
   import { destinationStore } from '$lib/store/destination';
@@ -67,6 +68,7 @@
       const experiences: ExperienceGroups = {};
       const countries = get(countryStore);
       const types = get(experienceTypeStore);
+      const destinations = get(destinationTypeStore);
       for (const k in searchData) {
         const items: Experience[] = [];
         for (const item of searchData[k].items) {
@@ -108,6 +110,7 @@
           ordering:
             orderings[url.searchParams.get(ORDERING) || '']?.key ||
             ORDER_BY_NAME_ASC.key,
+          destination: url.searchParams.get(DESTINATION_TYPE) || ''
         },
       };
     } else {
@@ -120,24 +123,19 @@
 
 <script lang="ts">
 import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
+import { destinationTypeStore } from '$lib/store/destination-type';
 
   export let experiences: ExperienceGroups = {};
   export let query: string = '';
   export let type: string;
   export let countries: string[];
   export let ordering: string;
+  export let destination: string;
   let contentHeaderActionMobile: string = '';
   let stickyShow: boolean = false;
 
-  let experienceTypes: Category[];
-  experienceTypeStore.subscribe((store) => {
-    experienceTypes = sortByName(Object.values(store.items));
-  });
-
-  // let experienceTypes: Category[];
-  // experienceTypeStore.subscribe(
-  //   (store) => (experienceTypes = sortByName(Object.values(store.items))),
-  // );
+  const experienceTypes = sortByName(Object.values($experienceTypeStore.items));
+  const destinationTypes = sortByName(Object.values($destinationTypeStore.items));
 
   let countryOptions: Country[];
   countryStore.subscribe((store) => {
@@ -150,6 +148,7 @@ import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
       [TYPE]: type,
       [COUNTRY]: countries,
       [ORDERING]: ordering?.key,
+      [DESTINATION_TYPE]: destination,
       ...params,
     });
   }
@@ -166,6 +165,13 @@ import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
     if(type !== event.detail.value?.id){
       type = event.detail.value?.id || '';
       go({ [TYPE]: type });
+    }
+  }
+
+  function onDestinationChange(event: CustomEvent<DropdownValue<Category>>) {
+    if(destination !== event.detail.value?.id){
+      destination = event.detail.value?.id || '';
+      go({ [DESTINATION_TYPE]: destination });
     }
   }
 
@@ -194,7 +200,10 @@ import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
   }
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
-    go({ [ORDERING]: event.detail.value.key });
+    if(ordering !== event.detail.value?.key){
+      ordering = event.detail.value?.key || '';
+      go({ [ORDERING]: event.detail.value.key });
+    }
   }
 
   function onSearchSubmitMobile(event: CustomEvent) {
@@ -203,6 +212,7 @@ import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
       [COUNTRY]: event.detail.countries || '',
       [TYPE]: event.detail.experience_type || '',
       [ORDERING]: event.detail.ordering || '',
+      [DESTINATION_TYPE]: event.detail.destination_type || ''
     });
   }
 
@@ -308,7 +318,7 @@ import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
         >
         {#if !stickyShow}
           <LayoutGrid class="p-0">
-            <Cell span="6">
+            <Cell span="4">
               <div class="form-control">
                 <Textfield
                   variant="outlined"
@@ -329,10 +339,23 @@ import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
                 items={experienceTypes}
                 optionIdentifier="id"
                 labelIdentifier="name"
-                placeholder="By Experience"
+                placeholder="By Experience Type"
                 on:select={onTypeChange}
                 on:clear={onTypeChange}
                 value={type}
+              />
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <OySelect
+                items={destinationTypes}
+                optionIdentifier="id"
+                labelIdentifier="name"
+                placeholder="By Destination"
+                on:select={onDestinationChange}
+                on:clear={onDestinationChange}
+                value={destination}
               />
               </div>
             </Cell>
@@ -399,7 +422,7 @@ import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
         >
         {#if stickyShow}
           <LayoutGrid class="p-0">
-            <Cell span="6">
+            <Cell span="4">
               <div class="form-control">
                 <Textfield
                   variant="outlined"
@@ -425,6 +448,19 @@ import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
                     placeholder="By Experience"
                     value={type}
                   />
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <OySelect
+                items={destinationTypes}
+                optionIdentifier="id"
+                labelIdentifier="name"
+                placeholder="By Destination"
+                on:select={onDestinationChange}
+                on:clear={onDestinationChange}
+                value={destination}
+              />
               </div>
             </Cell>
             <Cell span="2">
@@ -488,9 +524,9 @@ import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
 </div>
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  searchModel={{ experience_type: type, ordering, countries }}
-  bind:experience_types={experienceTypes}
-  destination_types={sortByName(Object.values($destinationStore.items))}
+  searchModel={{ experience_type: type, ordering, countries, destination_type: destination }}
+  experience_types={experienceTypes}
+  destination_types={destinationTypes}
   orderings={experienceOrderings}
   on:close={onSearchSubmitMobile}
 />

@@ -29,6 +29,7 @@
   import BlurImage from '$lib/components/blur-image.svelte';
   import CuratedItem from '$lib/components/CuratedItem.svelte';
   import DropSlides from '$lib/components/DropSlides.svelte';
+import OyDeviceDetector from '$lib/components/common/OyDeviceDetector.svelte';
   export let data: Page;
   let filterActive = 'All';
   const carouselConfig = {
@@ -65,15 +66,35 @@
                   <Carousel {...carouselConfig}>
                     {#each section.gallery as item}
                       <div class="slides">
-                        {#if item !== null}
-                          <BlurImage {...item} />
-                        {:else}
-                          <BlurImage />
-                        {/if}
+                        <OyDeviceDetector showInDesktop={true}>
+                          <div
+                          class="image-cover"
+                          style="padding-top: calc(90vh - 87px)"
+                        >
+                          {#if item !== null}
+                            <BlurImage {...item} />
+                          {:else}
+                            <BlurImage />
+                          {/if}
+                        </div>
+                        </OyDeviceDetector>
+                        <OyDeviceDetector showInMobile={true}>
+                          <div
+                            class="image-cover"
+                            style="padding-top: 100%"
+                          >
+                            {#if item !== null}
+                              <BlurImage {...item} />
+                            {:else}
+                              <BlurImage />
+                            {/if}
+                        </div>
+                        </OyDeviceDetector>
                       </div>
                     {/each}
                   </Carousel>
                 {:else}
+                  <OyDeviceDetector showInDesktop={true}>
                   <div
                     class="image-cover"
                     style="padding-top: calc(90vh - 87px)"
@@ -84,6 +105,19 @@
                       <BlurImage />
                     {/if}
                   </div>
+                  </OyDeviceDetector>
+                  <OyDeviceDetector showInMobile={true}>
+                    <div
+                    class="image-cover"
+                    style="padding-top: 100%"
+                  >
+                    {#if section.gallery.length > 0}
+                      <BlurImage {...section.gallery[0]} />
+                    {:else}
+                      <BlurImage />
+                    {/if}
+                  </div>
+                  </OyDeviceDetector>
                 {/if}
               </Cell>
             </LayoutGrid>

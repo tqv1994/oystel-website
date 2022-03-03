@@ -21,8 +21,8 @@ import { sortByName } from '$lib/utils/sort';
     ordering: string;
   };
   let { experience_type, destination_type, countries, ordering } = searchModel;
-  export let destination_types: Destination[];
-  export let experience_types: Experience[];
+  export let destination_types: Category[];
+  export let experience_types: Category[];
   const countryOptions = sortByName(Object.values($countryStore.items));
   export let orderings: Nameable[] = [];
   function onSearchSubmit() {

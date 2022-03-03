@@ -1,8 +1,8 @@
 <script lang="ts">
     let innerWidth: number;
     let isMobile: boolean = false;
-    export let showInMobile: boolean = true;
-    export let showInDesktop: boolean = true;
+    export let showInMobile: boolean = false;
+    export let showInDesktop: boolean = false;
     $: if(innerWidth > 959){
         isMobile = false;
     }else{

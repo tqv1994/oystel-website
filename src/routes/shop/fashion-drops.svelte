@@ -38,29 +38,9 @@
 import ProductList from '$lib/components/ProductList.svelte';
 import Section from '@smui/top-app-bar/src/Section.svelte';
 import ProductItem from '$lib/components/ProductItem.svelte';
+import OyDeviceDetector from '$lib/components/common/OyDeviceDetector.svelte';
 
   export let data: Page;
-  console.log(data);
-
-  let imageSlidesProduct = [
-    '/img/shop/slide-1.jpg',
-    '/img/shop/slide-2.jpg',
-    '/img/shop/slide-3.jpg',
-    '/img/shop/slide-4.jpg',
-    '/img/shop/slide-5.jpg',
-    '/img/shop/slide-2.jpg',
-    '/img/shop/slide-3.jpg',
-    '/img/shop/slide-4.jpg',
-    '/img/shop/slide-5.jpg',
-  ];
-  let configPage = {
-    header: {
-      page: 'shop',
-      transparent: true,
-      theme: 'dark',
-      currentMenu: 'shop',
-    },
-  };
   const carouselConfig = {
     autoplayDuration: 8000,
     duration: 1500,
@@ -87,16 +67,27 @@ import ProductItem from '$lib/components/ProductItem.svelte';
                   <Carousel {...carouselConfig}>
                     {#each section.drop.gallery as item}
                       <div class="slides">
-                        <div
-                          class="image-cover"
-                          style="padding-top: 90vh"
-                        >
-                          <BlurImage {...item} />
-                        </div>
+                        <OyDeviceDetector showInDesktop={true}>
+                          <div
+                            class="image-cover"
+                            style="padding-top: 90vh"
+                          >
+                            <BlurImage {...item} />
+                          </div>
+                        </OyDeviceDetector>
+                        <OyDeviceDetector showInMobile={true}>
+                          <div
+                            class="image-cover"
+                            style="padding-top: 100%"
+                          >
+                            <BlurImage {...item} />
+                          </div>
+                        </OyDeviceDetector>
                       </div>
                     {/each}
                   </Carousel>
                 {:else if section.drop.gallery && section.drop.gallery.length == 1}
+                  <OyDeviceDetector showInDesktop={true}>
                   <div
                     class="image-cover"
                     style="padding-top: 90vh"
@@ -107,13 +98,36 @@ import ProductItem from '$lib/components/ProductItem.svelte';
                         <BlurImage />
                     {/if}
                   </div>
+                  </OyDeviceDetector>
+                  <OyDeviceDetector showInMobile={true}>
+                    <div
+                    class="image-cover"
+                    style="padding-top: 100%"
+                  >
+                    {#if section.drop.gallery.length > 0 }
+                      <BlurImage {...section.drop.gallery[0]} />
+                    {:else}
+                        <BlurImage />
+                    {/if}
+                  </div>
+                  </OyDeviceDetector>
                 {:else}
+                <OyDeviceDetector showInDesktop={true}>
                   <div
                     class="image-cover"
                     style="padding-top: calc(90vh - 87px)"
                   >
                     <BlurImage />
                   </div>
+                </OyDeviceDetector>
+                <OyDeviceDetector showInMobile={true}>
+                  <div
+                    class="image-cover"
+                    style="padding-top: 100%"
+                  >
+                    <BlurImage />
+                  </div>
+                </OyDeviceDetector>
                 {/if}
               </Cell>
               <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
