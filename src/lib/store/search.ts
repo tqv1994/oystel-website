@@ -163,7 +163,17 @@ export function createSearchHandler<T extends Identifiable>(
       ]);
     }
     if (params[COUNTRY]) {
-      filter.push(`country = ${params[COUNTRY]}`);
+      const filterCountries = (params[COUNTRY] || '').split(',').reduce((acc: string, item: string)=>{
+        if(item !== ''){
+          if(acc == ''){
+            acc += `country = ${item}`;
+          }else{
+            acc += ` OR country = ${item}`;
+          }
+        }
+        return acc;
+      },'');
+      filter.push(`(${filterCountries})`);
     }
     const limit = params[LIMIT] || 20;
     const o = params[ORDERING];

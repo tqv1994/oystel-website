@@ -4,10 +4,12 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { Destination } from '$lib/store/destination';
   import { Experience } from '$lib/store/experience';
-  import { Country } from '$lib/store/country';
+  import { Country, countryStore } from '$lib/store/country';
   import { Category } from '$lib/store/category';
   import { Nameable } from '$lib/store/types';
   import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
+import OySelect from '../OySelect.svelte';
+import { sortByName } from '$lib/utils/sort';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
@@ -15,53 +17,62 @@
   export let searchModel: {
     experience_type: string;
     destination_type: string;
-    country: string;
-    ordering: Nameable | undefined;
+    countries: string[];
+    ordering: string;
   };
-  let { experience_type, destination_type, country, ordering } = searchModel;
-  let experience: Experience | undefined;
-  let destination: Destination | undefined;
-  let countryData: Country | undefined;
+  let { experience_type, destination_type, countries, ordering } = searchModel;
   export let destination_types: Destination[];
   export let experience_types: Experience[];
-  export let countries: Country[];
+  const countryOptions = sortByName(Object.values($countryStore.items));
   export let orderings: Nameable[] = [];
   function onSearchSubmit() {
     setTimeout(() => {
       dispatch('close', {
         destination_type,
         experience_type,
-        country,
+        countries,
         ordering,
       });
     }, 0);
   }
 
-  onMount(() => {
-    destination = destination_types.find(
-      (item) => item.id + '' === destination_type,
-    );
-    experience = experience_types.find(
-      (item) => item.id + '' === experience_type,
-    );
-    countryData = countries.find((item) => item.id + '' === country);
-  });
 
   const onExperienceTypeChange = (
     event: CustomEvent<DropdownValue<Category>>,
   ) => {
-    experience_type = event.detail.value.id;
+    experience_type = event.detail.value?.id  || '';
   };
 
   const onDestinationTypeChange = (
     event: CustomEvent<DropdownValue<Category>>,
   ) => {
-    destination_type = event.detail.value.id;
+    destination_type = event.detail.value?.id || '';
   };
 
-  const onCountryChange = (event: CustomEvent<DropdownValue<Country>>) => {
-    country = event.detail.value.id;
-  };
+  function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
+    if (event.detail.value) {
+      const isEqual = event.detail.value.reduce((acc : boolean, item: Country)=>{
+          if(acc){
+            const indexExist = countries.findIndex((idCountry)=> idCountry == item.id);
+            if(indexExist >= 0){
+              acc = true;
+            }else{
+              acc = false;
+            }
+          }
+          return acc;
+        }, true);
+      if(!isEqual){
+        countries = event.detail.value.map((item: Country)=>item.id);
+      }
+    } else {
+      countries = null;
+    }
+  }
+
+  function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
+    ordering = event.detail.value?.key || '';
+  }
 </script>
 
 <div id="form-search-experience-wrap" class="mt-40">
@@ -70,41 +81,54 @@
     action="/"
     on:submit|preventDefault={onSearchSubmit}
   >
-    {#if experience_types.length > 0 && experience_types[0].id === "" }
+    {#if experience_types.length > 0}
       <div class="form-control mb-40">
-        <Dropdown
-          label="By Experience Type"
+        <OySelect
           items={experience_types}
-          bind:value={experience}
-          on:MDCSelect:change={onExperienceTypeChange}
+          optionIdentifier="id"
+          labelIdentifier="name"
+          placeholder="By Experience Type"
+          on:select={onExperienceTypeChange}
+          on:clear={onExperienceTypeChange}
+          value={experience_type}
         />
       </div>
     {/if}
-    {#if destination_types.length > 0 && destination_types[0].id === "" }
+    {#if destination_types.length > 0}
       <div class="form-control mb-40">
-        <Dropdown
-          label="By Destination Type"
+        <OySelect
           items={destination_types}
-          bind:value={destination}
-          on:MDCSelect:change={onDestinationTypeChange}
+          optionIdentifier="id"
+          labelIdentifier="name"
+          placeholder="By Destination Type"
+          on:select={onDestinationTypeChange}
+          on:clear={onDestinationTypeChange}
+          value={destination_type}
         />
       </div>
     {/if}
     <div class="form-control mb-40">
-      <Dropdown
-        label="By Country"
-        items={countries}
-        bind:value={countryData}
-        on:MDCSelect:change={onCountryChange}
+      <OySelect
+        items={countryOptions}
+        optionIdentifier="id"
+        labelIdentifier="name"
+        placeholder="By Country"
+        on:select={onCountryChange}
+        on:clear={onCountryChange}
+        value={countries}
+        isMulti={true}
       />
     </div>
     <div class="form-control mb-80">
-      <Dropdown
-        label="Sort By"
-        blankItem="All"
-        items={orderings}
-        bind:value={ordering}
-      />
+      <OySelect
+          items={orderings}
+          optionIdentifier="value"
+          labelIdentifier="name"
+          placeholder="Order By"
+          on:select={onSortChange}
+          on:clear={onSortChange}
+          value={ordering}
+        />
     </div>
     <div class="form-control btn-submit-wrap">
       <Button variant="outlined" style="width: 100%;" type="submit"

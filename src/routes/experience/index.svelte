@@ -45,6 +45,7 @@
   import { authStore } from '$lib/store/auth';
   import { ExperienceLikeData } from './like.json';
   import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+  import OySelect from '$lib/components/common/OySelect.svelte';
 
   const experienceOrderings: Nameable[] = [
     ORDER_BY_NAME_ASC,
@@ -103,10 +104,10 @@
           experiences,
           query: url.searchParams.get(QUERY) || '',
           type: url.searchParams.get(TYPE) || '',
-          country: url.searchParams.get(COUNTRY) || '',
+          countries: (url.searchParams.get(COUNTRY) || '').split(","),
           ordering:
-            orderings[url.searchParams.get(ORDERING) || ''] ||
-            ORDER_BY_NAME_ASC,
+            orderings[url.searchParams.get(ORDERING) || '']?.value ||
+            ORDER_BY_NAME_ASC.value,
         },
       };
     } else {
@@ -118,18 +119,19 @@
 </script>
 
 <script lang="ts">
+import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
+
   export let experiences: ExperienceGroups = {};
   export let query: string = '';
   export let type: string;
-  export let country: string;
-  export let ordering: Ordering;
+  export let countries: string[];
+  export let ordering: string;
   let contentHeaderActionMobile: string = '';
   let stickyShow: boolean = false;
 
   let experienceTypes: Category[];
   experienceTypeStore.subscribe((store) => {
     experienceTypes = sortByName(Object.values(store.items));
-    experienceTypes.unshift({ id: '', name: 'All' });
   });
 
   // let experienceTypes: Category[];
@@ -137,17 +139,16 @@
   //   (store) => (experienceTypes = sortByName(Object.values(store.items))),
   // );
 
-  let countries: Country[];
+  let countryOptions: Country[];
   countryStore.subscribe((store) => {
-    countries = sortByName(Object.values(store.items));
-    countries.unshift({ id: '', name: 'All' });
+    countryOptions = sortByName(Object.values(store.items));
   });
 
   function go(params: SearchParams) {
     search({
       [QUERY]: query,
       [TYPE]: type,
-      [COUNTRY]: country,
+      [COUNTRY]: countries,
       [ORDERING]: ordering?.key,
       ...params,
     });
@@ -162,11 +163,34 @@
   }
 
   function onTypeChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ [TYPE]: event.detail.value?.id });
+    if(type !== event.detail.value?.id){
+      type = event.detail.value?.id || '';
+      go({ [TYPE]: type });
+    }
   }
 
   function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
-    go({ [COUNTRY]: event.detail.value?.id });
+    if (event.detail.value) {
+      const isEqual = event.detail.value.reduce((acc : boolean, item: Country)=>{
+          if(acc){
+            const indexExist = countries.findIndex((idCountry)=> idCountry == item.id);
+            if(indexExist >= 0){
+              acc = true;
+            }else{
+              acc = false;
+            }
+          }
+          return acc;
+        }, true);
+      if(!isEqual){
+        go({
+          [COUNTRY]: event.detail.value.map((item: Country)=>item.id),
+        });
+      }
+      
+    } else {
+      go({ [COUNTRY]: null });
+    }
   }
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
@@ -176,9 +200,9 @@
   function onSearchSubmitMobile(event: CustomEvent) {
     contentHeaderActionMobile = '';
     go({
-      [COUNTRY]: event.detail.country || '',
+      [COUNTRY]: event.detail.countries || '',
       [TYPE]: event.detail.experience_type || '',
-      [ORDERING]: event.detail.ordering?.key || '',
+      [ORDERING]: event.detail.ordering || '',
     });
   }
 
@@ -301,38 +325,41 @@
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <OyAutocomplete
-                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  value={type}
-                  options={experienceTypes}
-                  key={'id'}
-                  label="By Experience"
-                  variant="outlined"
-                  on:SMUIAutocomplete:change={onTypeChange}
+                <OySelect
+                items={experienceTypes}
+                optionIdentifier="id"
+                labelIdentifier="name"
+                placeholder="By Experience"
+                on:select={onTypeChange}
+                on:clear={onTypeChange}
+                value={type}
+              />
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <OySelect
+                  items={countryOptions}
+                  optionIdentifier="id"
+                  labelIdentifier="name"
+                  placeholder="By Country"
+                  on:select={onCountryChange}
+                  on:clear={onCountryChange}
+                  value={countries}
+                  isMulti={true}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <OyAutocomplete
-                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  value={country}
-                  options={countries}
-                  key={'id'}
-                  label="By Country"
-                  variant="outlined"
-                  on:SMUIAutocomplete:change={onCountryChange}
-                />
-              </div>
-            </Cell>
-            <Cell span="2">
-              <div class="form-control">
-                <Dropdown
-                  variant="outlined"
-                  label="Sort By"
+                <OySelect
                   items={experienceOrderings}
+                  optionIdentifier="value"
+                  labelIdentifier="name"
+                  placeholder="Sort By"
+                  on:select={onSortChange}
+                  on:clear={onSortChange}
                   value={ordering}
-                  on:MDCSelect:change={onSortChange}
                 />
               </div>
             </Cell>
@@ -355,7 +382,8 @@
       </div>
     </div>
   </section>
-  <section
+  <OyDeviceDetector showInDesktop={true} showInMobile={false} >
+    <section
     class={`header-title d-pt-150 d-pb-60 m-pt-80 m-pb-25 full-width is_sticky fixed ${
       stickyShow ? 'show' : ''
     }`}
@@ -388,37 +416,41 @@
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <OyAutocomplete
-                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  bind:value={type}
-                  options={experienceTypes}
-                  key={'id'}
-                  label="By Experience"
-                  variant="outlined"
-                  on:SMUIAutocomplete:change={onTypeChange}
+                <OySelect
+                    items={experienceTypes}
+                    optionIdentifier="id"
+                    labelIdentifier="name"
+                    on:select={onTypeChange}
+                    on:clear={onTypeChange}
+                    placeholder="By Experience"
+                    value={type}
+                  />
+              </div>
+            </Cell>
+            <Cell span="2">
+              <div class="form-control">
+                <OySelect
+                  items={countryOptions}
+                  optionIdentifier="id"
+                  labelIdentifier="name"
+                  placeholder="By Country"
+                  on:select={onCountryChange}
+                  on:clear={onCountryChange}
+                  value={countries}
+                  isMulti={true}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <OyAutocomplete
-                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  bind:value={country}
-                  options={countries}
-                  key={'id'}
-                  label="By Country"
-                  variant="outlined"
-                  on:SMUIAutocomplete:change={onCountryChange}
-                />
-              </div>
-            </Cell>
-            <Cell span="2">
-              <div class="form-control">
-                <Dropdown
-                  label="Sort By"
+                <OySelect
                   items={experienceOrderings}
+                  optionIdentifier="value"
+                  labelIdentifier="name"
+                  placeholder="Sort By"
+                  on:select={onSortChange}
+                  on:clear={onSortChange}
                   value={ordering}
-                  on:MDCSelect:change={onSortChange}
                 />
               </div>
             </Cell>
@@ -441,6 +473,7 @@
       </div>
     </div>
   </section>
+  </OyDeviceDetector>
   {#if experienceTypes.length > 0}
     <section>
       <SearchResult
@@ -455,10 +488,9 @@
 </div>
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  searchModel={{ experience_type: type, ordering, country }}
+  searchModel={{ experience_type: type, ordering, countries }}
   bind:experience_types={experienceTypes}
   destination_types={sortByName(Object.values($destinationStore.items))}
-  bind:countries
   orderings={experienceOrderings}
   on:close={onSearchSubmitMobile}
 />

@@ -286,6 +286,13 @@
   @use '../../theme/mixins';
   div {
     @import '../../style/partial/form.scss';
+    .mdc-dialog__header {
+      @include mixins.mobile {
+        .mdc-dialog__title {
+          top: 15px;
+        }
+      }
+    }
     .mdc-dialog {
       --mdc-dialog-z-index: 10;
       --mdc-checkbox-checked-color: #{colors.$black};

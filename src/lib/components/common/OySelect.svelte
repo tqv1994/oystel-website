@@ -18,7 +18,7 @@ import OySelectList from './OySelectList.svelte';
               value = [value];
           }
           valueSelect = (value || []).reduce((acc: any[], id: string)=>{
-            const exist = items.find(item=>item.id == id.toString());
+            const exist = items.find(item=>item[optionIdentifier] == id.toString());
             if(exist){
                 acc.push(exist);
             }
@@ -28,7 +28,7 @@ import OySelectList from './OySelectList.svelte';
             valueSelect = undefined;
           }
       }else{
-        const exist = items.find(item=>item.id === value.toString());
+        const exist = items.find(item=>item[optionIdentifier] === value.toString());
         if(exist){
             valueSelect = exist;
         }else{
