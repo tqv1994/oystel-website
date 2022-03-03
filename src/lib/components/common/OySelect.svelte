@@ -86,6 +86,7 @@ import OySelectList from './OySelectList.svelte';
             font-size: var(--inputFontSize);
         }
         :global(.multiSelect){
+          height: var(--height);
         }
         :global(.multiSelect input){
           height: calc(var(--height) - 2px);

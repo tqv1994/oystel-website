@@ -122,7 +122,7 @@ import { sortByName } from '$lib/utils/sort';
     <div class="form-control mb-80">
       <OySelect
           items={orderings}
-          optionIdentifier="value"
+          optionIdentifier="key"
           labelIdentifier="name"
           placeholder="Order By"
           on:select={onSortChange}

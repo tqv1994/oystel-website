@@ -44,7 +44,8 @@
   import { authStore } from '$lib/store/auth';
   import { DestinationLikeData } from './like.json';
   import { contains } from '$lib/utils/array';
-import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+  import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+  import OySelect from '$lib/components/common/OySelect.svelte';
 
   const orderingOptions: Nameable[] = [
     ORDER_BY_NAME_ASC,
@@ -104,10 +105,10 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
           destinations,
           query: url.searchParams.get(QUERY) || '',
           category: url.searchParams.get(TYPE) || '',
-          country: url.searchParams.get(COUNTRY) || '',
+          countries: (url.searchParams.get(COUNTRY) || '').split(','),
           ordering:
-            orderings[url.searchParams.get(ORDERING) || ''] ||
-            ORDER_BY_NAME_ASC,
+            orderings[url.searchParams.get(ORDERING) || '']?.key ||
+            ORDER_BY_NAME_ASC.key,
         },
       };
     }
@@ -118,19 +119,19 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
 </script>
 
 <script lang="ts">
+  import OyDeviceDetector from '$lib/components/common/OyDeviceDetector.svelte';
+
   export let destinations: DestinationGroups = {};
   export let query: string = '';
-  export let category: string;
-  export let country: string;
-  export let ordering: Ordering;
+  export let category: string = '';
+  export let countries: string[];
+  export let ordering: string;
   let stickyShow: boolean = false;
   let contentHeaderActionMobile: string = '';
 
-  let destinationTypes: Category[];
+  let destinationTypeOptions: Category[];
   destinationTypeStore.subscribe((store) => {
-    destinationTypes = sortByName(Object.values(store.items));
-    const hasAll = destinationTypes.findIndex((item)=>item.id == "");
-    destinationTypes.unshift({id: "", name: "All"});
+    destinationTypeOptions = sortByName(Object.values(store.items));
   });
 
   // let experienceTypes: Category[];
@@ -138,19 +139,17 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
   //   (store) => (experienceTypes = sortByName(Object.values(store.items))),
   // );
 
-  let countries: Country[];
+  let countryOptions: Country[];
   countryStore.subscribe((store) => {
-    countries = sortByName(Object.values(store.items));
-    const hasAll = countries.findIndex((item)=>item.id === "");
-    countries.unshift({id: "", name: "All"});
+    countryOptions = sortByName(Object.values(store.items));
   });
 
   function go(params: SearchParams) {
     search({
       q: query,
       t: category,
-      c: country,
-      o: ordering.key,
+      c: countries,
+      o: ordering,
       ...params,
     });
   }
@@ -164,23 +163,51 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
   }
 
   function onTypeChange(event: CustomEvent<DropdownValue<Category>>) {
-    category = event.detail.value.id+"";
-    console.log(category);
-    go({ [TYPE]: event.detail.value.id+"" });
+    if (category !== event.detail.value?.id) {
+      category = event.detail.value?.id || '';
+      go({ [TYPE]: category });
+    }
   }
 
   function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
-    go({ [COUNTRY]: event.detail.value.id });
+    if (event.detail.value) {
+      const isEqual = event.detail.value.reduce(
+        (acc: boolean, item: Country) => {
+          if (acc) {
+            const indexExist = countries.findIndex(
+              (idCountry) => idCountry == item.id,
+            );
+            if (indexExist >= 0) {
+              acc = true;
+            } else {
+              acc = false;
+            }
+          }
+          return acc;
+        },
+        true,
+      );
+      if (!isEqual) {
+        go({
+          [COUNTRY]: event.detail.value.map((item: Country) => item.id),
+        });
+      }
+    } else {
+      go({ [COUNTRY]: null });
+    }
   }
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
-    go({ [ORDERING]: event.detail.value.key });
+    if (ordering !== event.detail.value?.key) {
+      ordering = event.detail.value?.key || '';
+      go({ [ORDERING]: ordering });
+    }
   }
 
   function onSearchSubmitMobile(event: CustomEvent) {
     contentHeaderActionMobile = '';
     go({
-      [COUNTRY]: event.detail.country || '',
+      [COUNTRY]: event.detail.countries || '',
       [TYPE]: event.detail.destination_type || '',
       [ORDERING]: event.detail.ordering?.key || '',
     });
@@ -290,93 +317,6 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
           }}
         >
           {#if !stickyShow}
-          <LayoutGrid class="p-0">
-            <Cell span="6">
-              <div class="form-control">
-                <Textfield
-                  variant="outlined"
-                  bind:value={query}
-                  on:input={onQueryInput}
-                  label="Start with a search"
-                  withTrailingIcon={false}
-                >
-                  <Icon slot="trailingIcon"
-                    ><img src="/img/icons/icon-search.svg" /></Icon
-                  >
-                </Textfield>
-              </div>
-            </Cell>
-            <Cell span="2">
-              <div class="form-control">
-                <OyAutocomplete
-                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  bind:value={category}
-                  options={destinationTypes}
-                  key={'id'}
-                  label="By Destination"
-                  variant="outlined"
-                  on:SMUIAutocomplete:change={onTypeChange}
-                />
-              </div>
-            </Cell>
-            <Cell span="2">
-              <div class="form-control">
-                <OyAutocomplete
-                  getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                  value={country}
-                  options={countries}
-                  key={'id'}
-                  label="By Country"
-                  variant="outlined"
-                  on:SMUIAutocomplete:change={onCountryChange}
-                />
-              </div>
-            </Cell>
-            <Cell span="2">
-              <div class="form-control">
-                <Dropdown
-                  variant="outlined"
-                  label="Sort By"
-                  items={orderingOptions}
-                  value={ordering}
-                  on:MDCSelect:change={onSortChange}
-                />
-              </div>
-            </Cell>
-          </LayoutGrid>
-          {/if}
-        </form>
-      </div>
-      <div class="container m-block d-none">
-        <LayoutGrid class="p-0">
-          <Cell span="12">
-            <Button
-              style="width: 100%"
-              variant="outlined"
-              on:click={() => {
-                contentHeaderActionMobile = 'experience-search';
-              }}><Label>Filter Your Results</Label></Button
-            >
-          </Cell>
-        </LayoutGrid>
-      </div>
-    </div>
-  </section>
-  <section
-    class={`header-title d-pt-150 d-pb-95 m-pt-80 m-pb-25 full-width fixed is_sticky ${
-      stickyShow ? 'show' : ''
-    }`}
-  >
-    <div class="content-wrap">
-      <div class="container m-none">
-        <form
-          class="search-form-experiences"
-          method="GET"
-          on:submit|preventDefault={() => {
-            go({});
-          }}
-        >
-          {#if stickyShow}
             <LayoutGrid class="p-0">
               <Cell span="6">
                 <div class="form-control">
@@ -395,38 +335,41 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
               </Cell>
               <Cell span="2">
                 <div class="form-control">
-                  <OyAutocomplete
-                    getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                    bind:value={category}
-                    options={destinationTypes}
-                    key={'id'}
-                    label="By Destination"
-                    variant="outlined"
-                    on:SMUIAutocomplete:change={onTypeChange}
+                  <OySelect
+                    items={destinationTypeOptions}
+                    optionIdentifier="id"
+                    labelIdentifier="name"
+                    placeholder="By Destination"
+                    on:select={onTypeChange}
+                    on:clear={onTypeChange}
+                    value={category}
                   />
                 </div>
               </Cell>
               <Cell span="2">
                 <div class="form-control">
-                  <OyAutocomplete
-                    getOptionLabel={(option) => (option ? `${option.name}` : '')}
-                    value={country}
-                    options={countries}
-                    key={'id'}
-                    label="By Country"
-                    variant="outlined"
-                    on:SMUIAutocomplete:change={onCountryChange}
+                  <OySelect
+                    items={countryOptions}
+                    optionIdentifier="id"
+                    labelIdentifier="name"
+                    placeholder="By Country"
+                    on:select={onCountryChange}
+                    on:clear={onCountryChange}
+                    value={countries}
+                    isMulti={true}
                   />
                 </div>
               </Cell>
               <Cell span="2">
                 <div class="form-control">
-                  <Dropdown
-                    variant="outlined"
-                    label="Sort By"
+                  <OySelect
                     items={orderingOptions}
+                    optionIdentifier="key"
+                    labelIdentifier="name"
+                    placeholder="Order By"
+                    on:select={onSortChange}
+                    on:clear={onSortChange}
                     value={ordering}
-                    on:MDCSelect:change={onSortChange}
                   />
                 </div>
               </Cell>
@@ -449,11 +392,105 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
       </div>
     </div>
   </section>
-  {#if destinationTypes.length > 0}
+  <OyDeviceDetector showInDesktop={true} showInMobile={false}>
+    <section
+      class={`header-title d-pt-150 d-pb-95 m-pt-80 m-pb-25 full-width fixed is_sticky ${
+        stickyShow ? 'show' : ''
+      }`}
+    >
+      <div class="content-wrap">
+        <div class="container m-none">
+          <form
+            class="search-form-experiences"
+            method="GET"
+            on:submit|preventDefault={() => {
+              go({});
+            }}
+          >
+            {#if stickyShow}
+              <LayoutGrid class="p-0">
+                <Cell span="6">
+                  <div class="form-control">
+                    <Textfield
+                      variant="outlined"
+                      bind:value={query}
+                      on:input={onQueryInput}
+                      label="Start with a search"
+                      withTrailingIcon={false}
+                    >
+                      <Icon slot="trailingIcon"
+                        ><img src="/img/icons/icon-search.svg" /></Icon
+                      >
+                    </Textfield>
+                  </div>
+                </Cell>
+                <Cell span="2">
+                  <div class="form-control">
+                    <OySelect
+                      items={destinationTypeOptions}
+                      optionIdentifier="id"
+                      labelIdentifier="name"
+                      placeholder="By Destination"
+                      on:select={onTypeChange}
+                      on:clear={onTypeChange}
+                      value={category}
+                    />
+                  </div>
+                </Cell>
+                <Cell span="2">
+                  <div class="form-control">
+                    <OySelect
+                      items={countryOptions}
+                      optionIdentifier="id"
+                      labelIdentifier="name"
+                      placeholder="By Country"
+                      on:select={onCountryChange}
+                      on:clear={onCountryChange}
+                      value={countries}
+                      isMulti={true}
+                    />
+                  </div>
+                </Cell>
+                <Cell span="2">
+                  <div class="form-control">
+                    <div class="form-control">
+                      <OySelect
+                        items={orderingOptions}
+                        optionIdentifier="key"
+                        labelIdentifier="name"
+                        placeholder="Order By"
+                        on:select={onSortChange}
+                        on:clear={onSortChange}
+                        value={ordering}
+                      />
+                    </div>
+                  </div></Cell
+                >
+              </LayoutGrid>
+            {/if}
+          </form>
+        </div>
+        <div class="container m-block d-none">
+          <LayoutGrid class="p-0">
+            <Cell span="12">
+              <Button
+                style="width: 100%"
+                variant="outlined"
+                on:click={() => {
+                  contentHeaderActionMobile = 'experience-search';
+                }}><Label>Filter Your Results</Label></Button
+              >
+            </Cell>
+          </LayoutGrid>
+        </div>
+      </div>
+    </section>
+  </OyDeviceDetector>
+  {#if destinationTypeOptions.length > 0}
     <section>
       <SearchResult
         pathPrefix="/destination"
-        categories={destinationTypes}
+        categories={destinationTypeOptions}
         bind:groups={destinations}
         showHeadings={!category}
         on:likeItem={likeDestination}
@@ -463,10 +500,8 @@ import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
 </div>
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  searchModel={{ destination_type: category, ordering, country }}
-  bind:destination_types={destinationTypes}
-  experience_types={sortByName(Object.values($experienceTypeStore.items))}
-  bind:countries
+  searchModel={{ destination_type: category, ordering, countries }}
+  destination_types={destinationTypeOptions}
   orderings={orderingOptions}
   on:close={onSearchSubmitMobile}
 />

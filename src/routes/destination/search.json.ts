@@ -55,7 +55,17 @@ async function search<T extends Identifiable>(
     filter.push(`type3 = ${params[DESTINATION_TYPE]}`);
   }
   if (params[COUNTRY]) {
-    filter.push(`country = ${params[COUNTRY]}`);
+    const filterCountries = (params[COUNTRY] || '').split(',').reduce((acc: string, item: string)=>{
+      if(item !== ''){
+        if(acc == ''){
+          acc += `country = ${item}`;
+        }else{
+          acc += ` OR country = ${item}`;
+        }
+      }
+      return acc;
+    },'');
+    filter.push(`(${filterCountries})`);
   }
   const limit = params[LIMIT] || 10;
   const o = params[ORDERING];

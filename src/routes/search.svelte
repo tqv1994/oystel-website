@@ -47,6 +47,7 @@
   import { ExperienceLikeData } from './experience/like.json';
   import { DestinationLikeData } from './destination/like.json';
   import Item from '$lib/components/Item.svelte';
+  import OySelect from '$lib/components/common/OySelect.svelte';
   const Orderings: Nameable[] = [
     ORDER_BY_NAME_ASC,
     ORDER_BY_NAME_DESC,
@@ -125,17 +126,12 @@
         searchResultExperience,
         searchResultDestination,
         query: url.searchParams.get(QUERY) || '',
-        experience_type:
-          get(experienceTypeStore).items[
-            url.searchParams.get(EXPERIENCE_TYPE) || ''
-          ],
-        destination_type:
-          get(destinationTypeStore).items[
-            url.searchParams.get(DESTINATION_TYPE) || ''
-          ],
-        country: get(countryStore).items[url.searchParams.get(COUNTRY) || ''],
+        experience_type: url.searchParams.get(EXPERIENCE_TYPE) || '',
+        destination_type: url.searchParams.get(DESTINATION_TYPE) || '',
+        countries: (url.searchParams.get(COUNTRY) || '').split(','),
         ordering:
-          orderings[url.searchParams.get(ORDERING) || ''] || ORDER_BY_NAME_ASC,
+          orderings[url.searchParams.get(ORDERING) || '']?.key ||
+          ORDER_BY_NAME_ASC.key,
       },
     };
   };
@@ -143,26 +139,11 @@
 
 <script type="ts">
   export let query: string = '';
-  export let destination_type: Category | undefined;
-  export let experience_type: Category | undefined;
-  export let country: Country | undefined;
-  export let ordering: Ordering;
-  let searchModel: any = {
-    query: query,
-    destination_type: destination_type,
-    experience_type: experience_type,
-    country: country,
-    ordering: ordering,
-  };
+  export let destination_type: string;
+  export let experience_type: string;
+  export let countries: string[];
+  export let ordering: string;
   let contentHeaderActionMobile = '';
-  let configPage = {
-    header: {
-      page: 'search',
-      transparent: true,
-      theme: 'light',
-      currentMenu: '',
-    },
-  };
   export let searchResultDestination: Destination[];
   export let searchResultExperience: Experience[];
   let experienceTypes: Category[];
@@ -175,18 +156,18 @@
     (store) => (destinationTypes = sortByName(Object.values(store.items))),
   );
 
-  let countries: Country[];
+  let countryOptions: Country[];
   countryStore.subscribe((store) => {
-    countries = sortByName(Object.values(store.items));
+    countryOptions = sortByName(Object.values(store.items));
   });
 
   function go(params: SearchParams) {
     search({
       q: query,
-      x: experience_type?.id,
-      d: destination_type?.id,
-      c: country?.id,
-      o: ordering.key,
+      x: experience_type || '',
+      d: destination_type || '',
+      c: countries || '',
+      o: ordering || '',
       ...params,
     });
   }
@@ -200,30 +181,57 @@
   }
 
   function onExperienceTypeChange(event: CustomEvent<DropdownValue<Category>>) {
-    goSlow({ x: event.detail.value.id });
+    experience_type = event.detail.value?.id || '';
+    goSlow({ x: experience_type });
   }
 
   function onDestinationTypeChange(
     event: CustomEvent<DropdownValue<Category>>,
   ) {
-    goSlow({ d: event.detail.value.id });
+    destination_type = event.detail.value?.id || '';
+    goSlow({ d: destination_type });
   }
 
   function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
-    goSlow({ c: event.detail.value.id });
+    if (event.detail.value) {
+      const isEqual = event.detail.value.reduce(
+        (acc: boolean, item: Country) => {
+          if (acc) {
+            const indexExist = countries.findIndex(
+              (idCountry) => idCountry == item.id,
+            );
+            if (indexExist >= 0) {
+              acc = true;
+            } else {
+              acc = false;
+            }
+          }
+          return acc;
+        },
+        true,
+      );
+      if (!isEqual) {
+        goSlow({
+          [COUNTRY]: event.detail.value.map((item: Country) => item.id),
+        });
+      }
+    } else {
+      goSlow({ [COUNTRY]: null });
+    }
   }
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
-    goSlow({ o: event.detail.value.key });
+    ordering = event.detail.value?.key || '';
+    goSlow({ o: ordering });
   }
 
   function onSearchSubmitMobile(event: CustomEvent) {
     contentHeaderActionMobile = '';
-    go({
-      c: event.detail.country?.id || '',
-      t: event.detail.experience_type?.id || '',
-      x: event.detail.destination_type?.id || '',
-      o: event.detail.ordering?.key || '',
+    goSlow({
+      c: event.detail.countries || '',
+      d: event.detail.destination_type || '',
+      x: event.detail.experience_type || '',
+      o: event.detail.ordering || '',
     });
   }
 
@@ -384,45 +392,54 @@
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
-                  label="By Experience Type"
-                  blankItem="All"
+                <OySelect
                   items={experienceTypes}
+                  optionIdentifier="id"
+                  labelIdentifier="name"
+                  placeholder="By Experience Type"
+                  on:select={onExperienceTypeChange}
+                  on:clear={onExperienceTypeChange}
                   value={experience_type}
-                  on:MDCSelect:change={onExperienceTypeChange}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
-                  label="By Destination Type"
-                  blankItem="All"
+                <OySelect
                   items={destinationTypes}
+                  optionIdentifier="id"
+                  labelIdentifier="name"
+                  placeholder="By Destination Type"
+                  on:select={onDestinationTypeChange}
+                  on:clear={onDestinationTypeChange}
                   value={destination_type}
-                  on:MDCSelect:change={onDestinationTypeChange}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
-                  label="By Country"
-                  blankItem="All"
-                  items={countries}
-                  value={country}
-                  on:MDCSelect:change={onCountryChange}
+                <OySelect
+                  items={countryOptions}
+                  optionIdentifier="id"
+                  labelIdentifier="name"
+                  placeholder="By Country"
+                  on:select={onCountryChange}
+                  on:clear={onCountryChange}
+                  value={countries}
+                  isMulti={true}
                 />
               </div>
             </Cell>
             <Cell span="2">
               <div class="form-control">
-                <Dropdown
-                  label="Short By"
-                  blankItem="All"
+                <OySelect
                   items={Orderings}
+                  optionIdentifier="key"
+                  labelIdentifier="name"
+                  placeholder="Sort By"
+                  on:select={onSortChange}
+                  on:clear={onSortChange}
                   value={ordering}
-                  on:MDCSelect:change={onSortChange}
                 />
               </div>
             </Cell>
@@ -475,10 +492,9 @@
 </div>
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  searchModel={{ experience_type, destination_type, ordering, country }}
-  bind:experience_types={experienceTypes}
-  bind:destination_types={destinationTypes}
-  bind:countries
+  searchModel={{ experience_type, destination_type, ordering, countries }}
+  experience_types={experienceTypes}
+  destination_types={destinationTypes}
   orderings={Orderings}
   on:close={onSearchSubmitMobile}
 />

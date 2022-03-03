@@ -119,6 +119,9 @@ on:click_outside={handleClickOutside}>
         height: calc(var(--height, 35px) - 2px);
         &.show-all{
             height: auto;
+            background-color: #fff;
+            padding: 5px;
+            box-shadow: var(--listShadow, 0 2px 3px 0 rgba(44, 62, 80, 0.24));
         }
     }
 </style>

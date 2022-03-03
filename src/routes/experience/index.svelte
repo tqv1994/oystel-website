@@ -106,8 +106,8 @@
           type: url.searchParams.get(TYPE) || '',
           countries: (url.searchParams.get(COUNTRY) || '').split(","),
           ordering:
-            orderings[url.searchParams.get(ORDERING) || '']?.value ||
-            ORDER_BY_NAME_ASC.value,
+            orderings[url.searchParams.get(ORDERING) || '']?.key ||
+            ORDER_BY_NAME_ASC.key,
         },
       };
     } else {
@@ -354,7 +354,7 @@ import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
               <div class="form-control">
                 <OySelect
                   items={experienceOrderings}
-                  optionIdentifier="value"
+                  optionIdentifier="key"
                   labelIdentifier="name"
                   placeholder="Sort By"
                   on:select={onSortChange}
@@ -445,7 +445,7 @@ import OyDeviceDetector from "$lib/components/common/OyDeviceDetector.svelte";
               <div class="form-control">
                 <OySelect
                   items={experienceOrderings}
-                  optionIdentifier="value"
+                  optionIdentifier="key"
                   labelIdentifier="name"
                   placeholder="Sort By"
                   on:select={onSortChange}
