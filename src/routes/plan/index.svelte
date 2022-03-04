@@ -290,10 +290,9 @@
       @media screen and (max-width : 599px) {
         display: inline-flex;
         align-items: center;
-        height: 65px;
         flex: 1 1 auto;
         padding-top: 9px;
-        position: relative;
+        margin-top: 1em;
       }
     }
     .mdc-dialog__header .mdc-dialog__title {
@@ -321,6 +320,7 @@
       height: 100vh;
       border-radius: 0;
       padding-bottom: 40px;
+      position: relative;
     }
     .mdc-dialog__content {
       justify-content: stretch;
