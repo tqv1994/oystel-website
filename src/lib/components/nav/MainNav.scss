@@ -226,6 +226,10 @@
 .feature-bar__row {
   flex-basis: sizes.$contentMaxWidth;
   display: flex;
+  .mdc-tab.mdc-tab.mdc-tab--active{
+    --mdc-typography-button-font-weight: 800;
+  }
+  
 }
 .desktop.feature-bar {
   --mdc-theme-primary: #{colors.$slightlyBlue};
@@ -290,6 +294,9 @@
     @include tab-indicator.underline-color(colors.$black);
     @include tab-indicator.underline-height(0.2em);
     height: 84%;
+    &.mdc-tab-indicator--active{
+      display: none;
+    }
   }
   .all {
     padding: 1.5em 2.5em 2em;

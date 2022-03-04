@@ -42,7 +42,7 @@ import Carousel from './Carousel.svelte';
                 <div class="d-col-6 text-right featured-drop__actions d-block m-none pt-10">
                     {#if button_1}
                         <Button
-                            class="mr-10"
+                            class="mr-10 btn-active"
                             variant="unelevated"
                             href={button_1.url}
                             ><Label>{button_1.name}</Label></Button
@@ -108,6 +108,7 @@ import Carousel from './Carousel.svelte';
                         {#if button_1}
                             <div class="col m-col-6 pr-5 pl-5">
                                 <Button
+                                    class="btn-active"
                                     variant="unelevated"
                                     href={button_1.url}
                                     ><Label>{button_1.name}</Label></Button
@@ -169,6 +170,10 @@ import Carousel from './Carousel.svelte';
                     min-width: 100%;
                 }
             }
+        }
+        :global(.btn-active){
+            --mdc-typography-button-font-family: GTSupperTextBook;
+            --mdc-typography-button-font-size: 15px;
         }
     }
     .gallery{
