@@ -292,10 +292,20 @@
         align-items: center;
         height: 65px;
         flex: 1 1 auto;
+        padding-top: 9px;
+        position: relative;
+      }
+    }
+    .mdc-dialog__header .mdc-dialog__title {
+      @media screen and (max-width : 599px) {
+        display: flex;
+        align-items: center;
+        top: 5px;
       }
     }
     .mdc-dialog--fullscreen .mdc-dialog__close {
-      top: 8px;
+      display: flex;
+      align-items: center;
     }
     .mdc-dialog {
       --mdc-dialog-z-index: 10;
