@@ -10,7 +10,8 @@
   import type { Load } from '@sveltejs/kit';
   import { Advisor, AdvisorBase } from '$lib/store/advisor';
   import { stringHelper } from '$lib/helpers';
-
+  import { deRegisterAdvisorService } from '$lib/services/user.service';
+  import TravelAdvisorItem from './components/TravelAdvisorItem.svelte';
   export const load: Load = async ({ fetch, url }) => {
     let advisors: Advisor[] = [];
     let me: User | undefined;
@@ -58,6 +59,35 @@
     [],
   );
 
+  const reloadItems = () => {
+    currentAdvisors = advisors.reduce((acc: Advisor[], item: Advisor) => {
+      if (item.accept == true) {
+        acc.push(item);
+      }
+      return acc;
+    }, []);
+    pastAdvisors = advisors.reduce((acc: Advisor[], item: Advisor) => {
+      if (item.accept == false) {
+        acc.push(item);
+      }
+      return acc;
+    }, []);
+  };
+  const onDeRegister = async (event: CustomEvent<Advisor>) => {
+    window.openLoading();
+    if (event.detail.id && me) {
+      try {
+        const user = await deRegisterAdvisorService(event.detail.id, me);
+        advisors = advisors.filter((item)=>item.id !== event.detail.id);
+        user.myAdvisors = advisors;
+        authStore.set({ user });
+        reloadItems();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    window.closeLoading();
+  };
   let active = 'Current';
 </script>
 
@@ -83,17 +113,32 @@
         </div>
         <div slot="content" class="mt-35">
           {#if active == 'Current'}
-            <svelte:component
-              this={TravelAdvisorsTemplate}
-              items={currentAdvisors}
-            />
+            <svelte:component this={TravelAdvisorsTemplate}>
+              {#each currentAdvisors || [] as item}
+                <div class="d-col-6 m-col-12">
+                  <svelte:component
+                    this={TravelAdvisorItem}
+                    {item}
+                    isPast={false}
+                    on:deRegister={onDeRegister}
+                  />
+                </div>
+              {/each}
+            </svelte:component>
           {/if}
           {#if active == 'Past'}
-            <svelte:component
-              this={TravelAdvisorsTemplate}
-              items={pastAdvisors}
-              isPast={true}
-            />
+            <svelte:component this={TravelAdvisorsTemplate}>
+              {#each pastAdvisors || [] as item}
+                <div class="d-col-6 m-col-12">
+                  <svelte:component
+                    this={TravelAdvisorItem}
+                    {item}
+                    isPast={true}
+                    on:deRegister={onDeRegister}
+                  />
+                </div>
+              {/each}
+            </svelte:component>
           {/if}
         </div>
       </svelte:component>

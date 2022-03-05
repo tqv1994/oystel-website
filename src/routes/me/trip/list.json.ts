@@ -23,6 +23,7 @@ import { roomStyleFieldsFragment, roomStyleTypeFieldsFragment } from '$lib/store
 import { roomPreferenceFieldsFragment } from '$lib/store/roomPreference';
 import { currencyFieldsFragment } from '$lib/store/currency';
 import { travelingWithYouFieldsFragment } from '$lib/store/travelingWithYous';
+import { stringHelper } from '$lib/helpers';
 
 type TripQueryResult = {
   trips: Trip[];
@@ -38,8 +39,8 @@ export const get: RequestHandler = async (event) => {
   }
   try {
     const client = createGraphClientFromRequest(event.request);
-    const query = `query ($id: ID!){
-      trips(where:{lead_traveller : $id}){
+    const query = `query ($params: JSON){
+      trips(where:$params){
         ...tripFields
       }
     }
@@ -69,7 +70,7 @@ export const get: RequestHandler = async (event) => {
     ${currencyFieldsFragment}
     ${travelingWithYouFieldsFragment}
     `;
-    const res = await client.query<TripQueryResult>(query, {id: event.locals.user?.travellerMe?.id}).toPromise();
+    const res = await client.query<TripQueryResult>(query, {params: {...stringHelper.queryURLParamToJSON(event.url.searchParams.toString()),lead_traveller: event.locals.user?.travellerMe?.id}}).toPromise();
     if (res.data) {
       return new Response(JSON.stringify(res.data));
     }

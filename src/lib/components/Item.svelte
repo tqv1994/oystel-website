@@ -14,9 +14,9 @@
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import { UploadFile } from '$lib/store/upload-file';
   import { Country } from '$lib/store/country';
-import { Category } from '$lib/store/category';
-import { Product } from '$lib/store/product';
-import { authStore } from '$lib/store/auth';
+  import { Category } from '$lib/store/category';
+  import { Product } from '$lib/store/product';
+  import { authStore } from '$lib/store/auth';
   export let item: Experience | Destination | Product | Searchable;
   export let pathPrefix: string;
   export let key: number | null = null;
@@ -32,7 +32,7 @@ import { authStore } from '$lib/store/auth';
   export let introShow: boolean = false;
   let dispathcher = createEventDispatcher();
   function callLikeItem() {
-    if($authStore.user){
+    if ($authStore.user) {
       setTimeout(() => {
         if (group_id && key) {
           dispathcher('likeItem', { group_id, key });
@@ -41,25 +41,24 @@ import { authStore } from '$lib/store/auth';
         }
         liked = !liked;
       }, 0);
-    }else{
+    } else {
       window.openSignInModal();
     }
-    
   }
 </script>
 
 <div class="item">
   <div class="thumbnail">
-      <a href={makeLink(pathPrefix, item)}>
-        <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
-          <BlurImage/>
-          {#if gallery && gallery.length > 0 && gallery[0] !== null}
-            <BlurImage {...gallery[0]} />
-          {:else}
-            <BlurImage/>
-          {/if}
-        </div>
-      </a>
+    <a href={makeLink(pathPrefix, item)}>
+      <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
+        <BlurImage />
+        {#if gallery && gallery.length > 0 && gallery[0] !== null}
+          <BlurImage {...gallery[0]} />
+        {:else}
+          <BlurImage />
+        {/if}
+      </div>
+    </a>
     <IconButton
       class="btn-favorite {liked ? 'liked' : ''}"
       on:click={callLikeItem}
@@ -96,7 +95,7 @@ import { authStore } from '$lib/store/auth';
     .title {
       height: 32px;
       overflow: hidden;
-      @include mixins.mobile{
+      @include mixins.mobile {
         height: 43px;
       }
     }

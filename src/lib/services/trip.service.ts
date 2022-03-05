@@ -2,7 +2,7 @@ import { Trip, TripInput } from "$lib/store/trip"
 
 export const updateTripService = async (id: string|number,input: TripInput): Promise<Trip> =>{
     return new Promise(async(resolve, reject)=>{
-        const res = await fetch(`/trip/update-${id}.json`, {
+        const res = await fetch(`/me/trip/update-${id}.json`, {
             method: 'PUT',
             headers: {
             'Content-Type': 'application/json',
@@ -51,15 +51,15 @@ export const getTripsService = async (params?: TripInput): Promise<Trip[]> => {
         paramsString = `?${paramsString}`;
     }
     return new Promise(async(resolve, reject)=>{
-        const res = await fetch(`/trip.json${paramsString}`, {
+        const res = await fetch(`/me/trip/list.json${paramsString}`, {
             method: 'GET',
             headers: {
             'Content-Type': 'application/json',
             },
         });
         if(res.ok){
-            const data: Trip[] = await res.json();
-            resolve(data);
+            const data: {trips:Trip[]} = await res.json();
+            resolve(data.trips);
         }else{
             const error = await res.json();
             reject(error);

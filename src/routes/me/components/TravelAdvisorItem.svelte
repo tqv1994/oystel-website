@@ -13,19 +13,28 @@
     numberOfOpenTrips,
     numberOfPastTrips,
   } from '$lib/store/advisor';
-
+  import { createEventDispatcher } from 'svelte';
+  let dispathcher = createEventDispatcher();
   export let item: Advisor;
   export let isPast: boolean = true;
   let open: boolean = false;
+  const onDeRegister = () =>{
+    dispathcher("deRegister",item);
+    open = false;
+  }
 </script>
-
+{#if item}
 <div class="box">
   <div class="box--content">
     <div class="row pb-30">
       <div class="d-col-4 m-col-4">
         <div class="thumbnail pt-15 pr-15 pb-15">
           <div class="image-cover">
-            <BlurImage {...item.avatar} />
+            {#if item.avatar}
+              <BlurImage {...item.avatar} />
+            {:else}
+              <BlurImage />
+            {/if}
           </div>
         </div>
       </div>
@@ -96,8 +105,9 @@
             ><Label class="text-button2">Cancel Request</Label></Button
           >
         </div>
-        <div class="d-col-6 m-col-12">
+        <div class="d-col-6 m-col-12" >
           <Button variant="unelevated"
+            on:pointerdown={onDeRegister}
             ><Label class="text-button2">Confirm</Label></Button
           >
         </div>
@@ -105,7 +115,7 @@
     </div>
   </svelte:component>
 </div>
-
+{/if}
 <style lang="scss">
   @use '../../../style/include/grid';
   @use '../../../theme/mixins';
