@@ -78,6 +78,7 @@
     .sc-carousel-dots__container {
         position: absolute;
         bottom: 45px;
+        column-gap: 20px;
         --sc-color-rgb-light: #fff;
         @include mixins.desktop {
             display: none;

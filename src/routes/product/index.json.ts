@@ -3,17 +3,27 @@ import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
 import { stringHelper } from '$lib/helpers';
-import { Product, productFieldsFragment} from '$lib/store/product';
+import { Product, productFieldsFragment, productTypeFieldsFragment} from '$lib/store/product';
 import { PRODUCT_COLOUR, PRODUCT_DESIGNER, PRODUCT_PATTERN, QUERY, TYPE, VACATION_STYLE } from '$lib/store/search';
 
 const query = `
 query($params: JSON) {
   products(where: $params) {
     ...productFields
+    type1 {
+        ...productTypeFields
+    }
+    type2 {
+        ...productTypeFields
+    }
+    type3 {
+        ...productTypeFields
+    }
   }
 }
 
 ${productFieldsFragment}
+${productTypeFieldsFragment}
 ${uploadFileFieldsFragment}
 `;
 /**
@@ -21,13 +31,16 @@ ${uploadFileFieldsFragment}
  */
 export const get: RequestHandler = async (event) => {
   const request = event.request;
+  const params = stringHelper.queryURLParamToJSON(event.url.searchParams.toString());
     try {
         const client = createGraphClientFromRequest(event.request);
         let paramsInput: any = {};
-        const params = stringHelper.queryURLParamToJSON(event.url.searchParams.toString());
+        console.log('params',params);
         for(let i in params){
             if(i === TYPE){
-
+                // paramsInput['type1'] = params[TYPE];
+                // paramsInput['type2'] = params[TYPE];
+                // paramsInput['type3'] = params[TYPE];
             }
             else if(i === QUERY){
                 paramsInput['name'] = params[QUERY];
@@ -50,8 +63,28 @@ export const get: RequestHandler = async (event) => {
         }
         const res = await client.query<{ products: Product[] }>(query, {params: paramsInput}).toPromise();
         if (res.data?.products) {
+            let results: Product[] = [];
+            if(params[TYPE]){
+                const productsOfType1 = res.data.products.filter((item)=>item.type1?.id === params[TYPE]+"");
+                const productsOfType2 = res.data.products.filter((item)=>item.type2?.id === params[TYPE]+"");
+                const productsOfType3 = res.data.products.filter((item)=>item.type3?.id === params[TYPE]+"");
+                results = productsOfType1.concat(productsOfType2,productsOfType3).reduce((acc : Product[], item: Product)=>{
+                    if(acc.length === 0){
+                        acc.push(item);
+                    }else{
+                        const index = acc.findIndex((itemAcc)=>itemAcc.id === item.id);
+                        if(index < 0){
+                            acc.push(item);
+                        }
+                    }
+                    return acc;
+                },[]);
+
+            }else{
+                results = res.data.products;
+            }
             return {
-                body: JSON.stringify(res.data.products),
+                body: JSON.stringify(results),
             };
         }
         if (res.error) {

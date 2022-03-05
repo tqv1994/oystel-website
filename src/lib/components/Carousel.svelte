@@ -158,6 +158,7 @@
       display: none !important;
     }
     padding-top: 10px;
+    column-gap: 15px;
   }
   :global(.sc-carousel-dot__dot) {
     --sc-dot-size: 11px;
