@@ -29,7 +29,6 @@ import { likeExperienceService } from '$lib/services/experience.service';
   let nonHeros: Experience[] | undefined;
   $: if (prominent && experiences.length) {
     experiences = storeHelper.getItems([...experiences], 7);
-
     hero = experiences[0];
     if (experiences.length > 1) {
       nonHeros = experiences.slice(1);
@@ -66,19 +65,6 @@ import { likeExperienceService } from '$lib/services/experience.service';
       window.openSignInModal();
     }
   };
-
-  const likeExperience = async() => {
-    if(hero && me){
-      try{
-        const userUpdated = await likeExperienceService(hero.id.replace('experience-',''), me.experienceLikes || []);
-        me.experienceLikes = userUpdated.experienceLikes;
-        authStore.set({user: me});
-      }catch(error){
-        console.error(error);
-      }
-    }
-    
-  }
 </script>
 
 <svelte:window
@@ -122,9 +108,7 @@ import { likeExperienceService } from '$lib/services/experience.service';
           </a>
           <IconButton
             class="btn-favorite {hero.liked ? 'liked' : ''}"
-            on:click={(e) => {
-              likeExperience()
-            }}
+            on:click={onLike}
           >
             <HeartIcon size="sm" />
             <HeartFilledIcon size="sm" />
@@ -152,7 +136,6 @@ import { likeExperienceService } from '$lib/services/experience.service';
                   {...experience}
                   item={experience}
                   pathPrefix="/experience"
-                  on:likeItem={(e) => onLike(e, undefined)}
                 />
               </div>
             {/each}
