@@ -129,6 +129,13 @@
       @include mixins.mobile {
         display: flex;
       }
+      :global(.sc-carousel-dot__dot){
+        border-color: #000;
+        opacity: 1;
+      }
+      :global(.sc-carousel-dot__dot_active) {
+          background-color: #000 !important;
+      }
     }
   }
 

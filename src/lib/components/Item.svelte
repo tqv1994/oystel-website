@@ -17,12 +17,14 @@
   import { Category } from '$lib/store/category';
   import { Product } from '$lib/store/product';
   import { authStore } from '$lib/store/auth';
+import { likeExperienceService } from '$lib/services/experience.service';
+import { likeDestinationService } from '$lib/services/destination.service';
   export let item: Experience | Destination | Product | Searchable;
   export let pathPrefix: string;
   export let key: number | null = null;
   export let group_id: number | string | null = null;
   export let gallery: UploadFile[] | undefined = undefined;
-  export let liked: boolean = false;
+  let liked: boolean = false;
   export let id: string;
   export let name: string;
   export let intro: string;
@@ -30,17 +32,49 @@
   export let country: Country | undefined = undefined;
   export let type: Category | undefined = undefined;
   export let introShow: boolean = false;
-  let dispathcher = createEventDispatcher();
-  function callLikeItem() {
-    if ($authStore.user) {
-      setTimeout(() => {
-        if (group_id && key) {
-          dispathcher('likeItem', { group_id, key });
-        } else {
-          dispathcher('likeItem', { item });
+  let me = $authStore.user;
+  $: if(me){
+    if(pathPrefix.startsWith('/experience')){
+      const indexExist = (me.experienceLikes || []).findIndex(itemExperience=>item.id.replace('experience-','') === itemExperience.id);
+      if(indexExist < 0){
+        liked = false;
+      }else{
+        liked = true;
+      }
+    }else if (pathPrefix.startsWith('/destination')){
+      const indexExist = (me.destinationLikes || []).findIndex(itemDestination=>item.id.replace('destination-','') === itemDestination.id);
+      if(indexExist < 0){
+        liked = false;
+      }else{
+        liked = true;
+      }
+    }else{
+      liked = false;
+    }
+  }else{
+    liked = false;
+  }
+
+  async function callLikeItem(){
+    if (me) {
+      if(pathPrefix.startsWith('/experience')){
+        try{
+          const userUpdated = await likeExperienceService(item.id.replace('experience-',''), me.experienceLikes || []);
+          me.experienceLikes = userUpdated.experienceLikes;
+          authStore.set({user: me});
+        }catch(error){
+          console.error(error);
         }
-        liked = !liked;
-      }, 0);
+      }
+      if(pathPrefix.startsWith('/destination')){
+        try{
+          const userUpdated = await likeDestinationService(item.id.replace('destination-',''), me.destinationLikes || []);
+          me.destinationLikes = userUpdated.destinationLikes;
+          authStore.set({user: me});
+        }catch(error){
+          console.error(error);
+        }
+      }
     } else {
       window.openSignInModal();
     }

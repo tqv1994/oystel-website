@@ -77,11 +77,15 @@
     window.openLoading();
     if (event.detail.id && me) {
       try {
-        const user = await deRegisterAdvisorService(event.detail.id, me);
-        advisors = advisors.filter((item)=>item.id !== event.detail.id);
-        user.myAdvisors = advisors;
-        authStore.set({ user });
-        reloadItems();
+        const res = await deRegisterAdvisorService(event.detail.id, me);
+        if(!res){
+          window.pushToast("Some of this advisor's trips are confirmed so you can't de-register");
+        }else{
+          advisors = advisors.filter((item)=>item.id !== event.detail.id);
+          me.myAdvisors = advisors;
+          authStore.set({ user: me });
+          reloadItems();
+        }
       } catch (error) {
         console.error(error);
       }

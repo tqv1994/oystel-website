@@ -1,3 +1,4 @@
+import { stringHelper } from "$lib/helpers";
 import { Trip, TripInput } from "$lib/store/trip"
 
 export const updateTripService = async (id: string|number,input: TripInput): Promise<Trip> =>{
@@ -47,7 +48,7 @@ export const createTripService = async (input: TripInput): Promise<Trip> =>{
 export const getTripsService = async (params?: TripInput): Promise<Trip[]> => {
     let paramsString = '';
     if(params){
-        paramsString = Object.keys(params).map(key => key + '=' + params[key]).join('&');
+        paramsString = stringHelper.objectToQueryString(params);
         paramsString = `?${paramsString}`;
     }
     return new Promise(async(resolve, reject)=>{

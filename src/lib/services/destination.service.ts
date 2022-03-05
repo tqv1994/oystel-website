@@ -1,22 +1,21 @@
 import { User } from "$lib/store/auth";
 import { Destination } from "$lib/store/destination";
-import { Product } from "$lib/store/product";
 
-export const likeProductService = async(id: string, productsLiked: Product[]): Promise<User> => {
-    let productIds: string[] = productsLiked.map((item)=>item.id);
-    const indexExist = productIds.findIndex((item)=>item === id);
+export const likeDestinationService = async(id: string, destinationsLiked: Destination[]): Promise<User> => {
+    let destinationIds: string[] = destinationsLiked.map((item)=>item.id);
+    const indexExist = destinationIds.findIndex((item)=>item === id);
     if(indexExist < 0){
-        productIds.push(id);
+        destinationIds.push(id);
     }else{
-        productIds.splice(indexExist,1);
+        destinationIds.splice(indexExist,1);
     }
     return new Promise (async(resolve, reject)=>{
-        const res = await fetch(`/product/like.json`, {
+        const res = await fetch(`/destination/like.json`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(productIds),
+            body: JSON.stringify(destinationIds),
         });
         if(res.ok){
             const data:  {updateUser:{

@@ -72,7 +72,7 @@
   async function likeExperience() {
     let liked: boolean;
     if (!$authStore.user) {
-      window.pushToast('Please login to use this feature');
+      window.openSignInModal();
       return;
     }
     let experienceLikedIds: string[] = (
@@ -106,102 +106,6 @@
       console.error(error);
     }
   }
-
-  async function likeDestination(event: CustomEvent) {
-    let liked: boolean;
-    if (!$authStore.user) {
-      window.pushToast('Please login to use this feature');
-      return;
-    }
-    let destination = event.detail.item;
-    let destinationLikedIds: string[] = (
-      $authStore.user?.destinationLikes || []
-    ).map((item: Destination) => item.id);
-    let indexLikeExist = destinationLikedIds.findIndex(
-      (id: string) => id == destination.id,
-    );
-    if (indexLikeExist < 0) {
-      destinationLikedIds.push(destination.id);
-      liked = true;
-    } else {
-      destinationLikedIds.splice(indexLikeExist, 1);
-      liked = false;
-    }
-    const res = await fetch(`/destination/like.json`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(destinationLikedIds),
-    });
-
-    if (res.ok) {
-      const data: DestinationLikeData = await res.json();
-      $authStore.user.destinationLikes = data.updateUser.user.destinationLikes;
-      authStore.set({ user: $authStore.user });
-      destination.liked = liked;
-      experience.destinations = experience.destinations.map(
-        (item: Destination) => {
-          if (item.id == destination.id) {
-            item = destination;
-          }
-          return item;
-        },
-      );
-    } else {
-      const error = await res.json();
-      console.error(error);
-    }
-  }
-
-  async function likeProduct(event: CustomEvent) {
-    let liked: boolean;
-    const product = event.detail.product;
-    if (!$authStore.user) {
-      window.pushToast('Please login to use this feature');
-      return;
-    }
-    if (!product) {
-      return;
-    }
-    let productLikedIds: string[] = ($authStore.user?.productLikes || []).map(
-      (item: Product) => item.id,
-    );
-    let indexLikeExist = productLikedIds.findIndex(
-      (id: string) => id == product.id,
-    );
-    if (indexLikeExist < 0) {
-      productLikedIds.push(product.id);
-      liked = true;
-    } else {
-      productLikedIds.splice(indexLikeExist, 1);
-      liked = false;
-    }
-    const res = await fetch(`/product/like.json`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(productLikedIds),
-    });
-
-    if (res.ok) {
-      const data: ProductLikeData = await res.json();
-      $authStore.user.productLikes = data.updateUser.user.productLikes;
-      authStore.set({ user: $authStore.user });
-      product.liked = liked;
-      experience.pack = experience.pack.map((item: Product) => {
-        if (item.id == product.id) {
-          item = product;
-        }
-        return item;
-      });
-    } else {
-      const error = await res.json();
-      console.error(error);
-    }
-  }
-
   const onResize = (event: Event) => {
     if (window.scrollY < 100) {
       stickyShow = false;
@@ -265,7 +169,6 @@
                       {...item}
                       pathPrefix="/destination"
                       bind:item
-                      on:likeItem={likeDestination}
                       introShow={true}
                     />
                   </Cell>
@@ -283,7 +186,6 @@
       <ProductShow
         title="What to Pack"
         items={experience.pack}
-        on:likeItem={likeProduct}
       />
     {/if}
   </div>

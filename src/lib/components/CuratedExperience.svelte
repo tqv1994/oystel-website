@@ -15,6 +15,7 @@
   import { contains } from '$lib/utils/array';
   import { authStore, User } from '$lib/store/auth';
   import SliderItems from './SliderItems.svelte';
+import { likeExperienceService } from '$lib/services/experience.service';
 
   export let experiences: Experience[];
   export let name: string | undefined = undefined;
@@ -28,16 +29,18 @@
   let nonHeros: Experience[] | undefined;
   $: if (prominent && experiences.length) {
     experiences = storeHelper.getItems([...experiences], 7);
-    if (me) {
-      experiences = experiences.map((item: Experience) => {
-        item.liked = contains(me.experienceLikes || [], 'id', item.id);
-        return item;
-      });
-    }
 
     hero = experiences[0];
     if (experiences.length > 1) {
       nonHeros = experiences.slice(1);
+    }
+    if(hero && me){
+      const indexExist = (me.experienceLikes || []).findIndex(itemExperience=>hero.id.replace('experience-','') === itemExperience.id);
+      if(indexExist < 0){
+        hero.liked = false;
+      }else{
+        hero.liked = true;
+      }
     }
   }
 
@@ -63,6 +66,19 @@
       window.openSignInModal();
     }
   };
+
+  const likeExperience = async() => {
+    if(hero && me){
+      try{
+        const userUpdated = await likeExperienceService(hero.id.replace('experience-',''), me.experienceLikes || []);
+        me.experienceLikes = userUpdated.experienceLikes;
+        authStore.set({user: me});
+      }catch(error){
+        console.error(error);
+      }
+    }
+    
+  }
 </script>
 
 <svelte:window
@@ -107,7 +123,7 @@
           <IconButton
             class="btn-favorite {hero.liked ? 'liked' : ''}"
             on:click={(e) => {
-              onLike(e, hero);
+              likeExperience()
             }}
           >
             <HeartIcon size="sm" />

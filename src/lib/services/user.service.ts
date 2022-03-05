@@ -25,19 +25,25 @@ export const updateUserService = async (input: UserInput): Promise<User> => {
     });
 }
 
-export const deRegisterAdvisorService = async (idAdvisor: string, me: User): Promise<User> => {
+export const deRegisterAdvisorService = async (idAdvisor: string, me: User): Promise<boolean> => {
     return new Promise(async (resolve, reject) => {
         let userInput = convertUserToInput(me);
         let myAdvisors = userInput.myAdvisors.filter((id) => id !== idAdvisor);
         try {
-            const user = await updateUserService(new UserInput({ myAdvisors }));
-            const trips = await getTripsService({ advisor: idAdvisor, lead_traveller: me.travellerMe.id, state_neq: ENUM_TRIP_STATE.completed});
-            if (trips && trips.length > 0) {
-                for (const trip of trips) {
-                    await updateTripService(trip.id, { state: ENUM_TRIP_STATE.completed });
+            const trips = await getTripsService({ advisor: idAdvisor, lead_traveller: me.travellerMe.id+"", state_ne: ENUM_TRIP_STATE.completed});
+            const tripsHaveStateConfirmed = (trips || []).filter((item)=>item.state === ENUM_TRIP_STATE.confirmed);
+            if((trips || []).length > 0 && tripsHaveStateConfirmed.length > 0){ // Can't unsubscribe when there is a trip with the status of confirmed
+                resolve(false);
+            }else{
+                const user = await updateUserService(new UserInput({ myAdvisors }));
+                if (trips && trips.length > 0) {
+                    for (const trip of trips) {
+                        await updateTripService(trip.id, { state: ENUM_TRIP_STATE.completed });
+                    }
                 }
+                resolve(true);
             }
-            resolve(user);
+            
         } catch (error) {
             reject(error);
         }

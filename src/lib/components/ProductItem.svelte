@@ -13,13 +13,14 @@
   import { Country } from '$lib/store/country';
   import { Category } from '$lib/store/category';
   import { Product } from '$lib/store/product';
-import { authStore } from '$lib/store/auth';
+  import { authStore } from '$lib/store/auth';
+  import { likeProductService } from '$lib/services/product.service';
   export let item: Product;
   export let pathPrefix: string;
   export let key: number | null = null;
   export let group_id: number | string | null = null;
   export let gallery: UploadFile[] | undefined = undefined;
-  export let liked: boolean = false;
+  let liked: boolean = false;
   export let id: string;
   export let name: string;
   export let intro: string;
@@ -28,29 +29,38 @@ import { authStore } from '$lib/store/auth';
   export let type: Category | undefined = undefined;
   export let introShow: boolean = false;
   export let brand: string | undefined = undefined;
-  
-
-  let dispathcher = createEventDispatcher();
-  function callLikeItem() {
-    if($authStore.user){
-      setTimeout(() => {
-        if (group_id && key) {
-          dispathcher('likeItem', { group_id, key });
-        } else {
-          dispathcher('likeItem', { item });
-        }
-        liked = !liked;
-      }, 0);
+  let me = $authStore.user;
+  $: if(me){
+    const indexExist = (me.productLikes || []).findIndex(itemProduct=>item.id.replace('product-','') === itemProduct.id);
+    if(indexExist < 0){
+      liked = false;
     }else{
+      liked = true;
+    }
+  }else{
+    liked = false;
+  }
+  async function callLikeItem() {
+    if (me) {
+      try {
+        const userUpdated = await likeProductService(
+          item.id.replace('product-', ''),
+          me.productLikes || [],
+        );
+        me.productLikes = userUpdated.productLikes;
+        authStore.set({ user: me });
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
       window.openSignInModal();
     }
-    
   }
 </script>
 
 <div class="item" on:click on:pointerdown>
   <div class="thumbnail">
-    <a href="javascript:void(0);" >
+    <a href="javascript:void(0);">
       <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
         <BlurImage />
         {#if gallery && gallery.length > 0 && gallery[0] !== null}
@@ -69,7 +79,7 @@ import { authStore } from '$lib/store/auth';
     </IconButton>
   </div>
   <!-- <a href="{pathPrefix}?c={d.country.id}"></a> -->
-  <a  href="javascript:void(0);">
+  <a href="javascript:void(0);">
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, phone: 2 }}
         ><p class="text-eyebrow text-left m-0 mt-20 mb-0">
@@ -90,8 +100,8 @@ import { authStore } from '$lib/store/auth';
     :global(.mdc-layout-grid) {
       --mdc-layout-grid-gutter-desktop: 0;
     }
-    :global(.mdc-icon-button){
-        filter:brightness(0%);
+    :global(.mdc-icon-button) {
+      filter: brightness(0%);
     }
     .divider::after {
       background-color: rgba(0, 0, 0, 0.2);

@@ -15,6 +15,7 @@ import Markdown from '../Markdown.svelte';
 import { authStore } from '$lib/store/auth';
 import HeartIcon from '$lib/icons/HeartIcon.svelte';
 import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
+import ProductSliderItemModal from './ProductSliderItemModal.svelte';
   export let open = false;
   export let products: Product[];
   export let active: number;
@@ -74,37 +75,7 @@ import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
           <Carousel {...carouselConfig} initialPageIndex={active}>
             {#each products as item}
               <div class="slide-content slide-item">
-                <LayoutGrid class="p-0">
-                  <Cell spanDevices={{ desktop: 1 }} class="m-none" />
-                  <Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}>
-                    <div class="thumbnail">
-                      <div
-                        class="image-cover"
-                        style="padding-top: calc(406 / 301 * 100%)"
-                      >
-                        <BlurImage {...item.gallery[0]} />
-                      </div>
-                      <IconButton
-                        class="btn-favorite {item.liked ? 'liked' : ''}"
-                        on:click={() => callLikeItem(item)}
-                      >
-                        <HeartIcon size="sm" />
-                        <HeartFilledIcon size="sm" />
-                      </IconButton>
-                    </div>
-                  </Cell>
-                  <Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}>
-                    <div class="d-mt-90">
-                      <p class="text-eyebrow ">{item.brand}</p>
-                      <h6 class="mb-20 mt-20">{item.name}</h6>
-                      <p class="description"><Markdown source={item.description || ''} /></p>
-                      <h3 class="mb-35 mt-20">${item.price}</h3>
-                      <Button variant="outlined"
-                        ><Label>Purchase Item</Label></Button
-                      >
-                    </div>
-                  </Cell>
-                </LayoutGrid>
+                <ProductSliderItemModal {item} />
               </div>
             {/each}
           </Carousel>
