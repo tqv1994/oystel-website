@@ -3,22 +3,11 @@ import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { countryFieldsFragment } from '$lib/store/country';
 import { advisorTypeFieldsFragment } from '$lib/store/advisor-type';
-import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
-import { experienceTypeFieldsFragment } from '$lib/store/experience-type';
 import { languageFieldsFragment } from '$lib/store/language';
-import { Advisor, advisorPrivateFieldsFragment } from '$lib/store/advisor';
+import { Advisor,  } from '$lib/store/advisor';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
-import { experienceFieldsFragment } from '$lib/store/experience';
-import { destinationFieldsFragment } from '$lib/store/destination';
-import { tripFieldsFragment } from '$lib/store/trip';
-import { subTravellerFieldsFragment, travellerFieldsFragment } from '$lib/store/traveller';
-import { docmentFieldsFragment } from '$lib/store/document';
-import { insuranceFieldsFragment } from '$lib/store/insurance';
-import { visaFieldsFragment } from '$lib/store/visa';
-import { identificationFieldsFragment } from '$lib/store/identification';
 import { addressFieldsFragment } from '$lib/store/address';
 import { affiliateAgencyFieldsFragment, affiliateBenefitProgramFieldsFragment, affiliateNetworkFieldsFragment } from '$lib/store/affiliate';
-import { subUserFieldsFragment, userFieldsFragment } from '$lib/store/auth';
 import { stringHelper } from '$lib/helpers';
 
 const query = `
@@ -33,7 +22,7 @@ fragment advisorFields on Advisor {
     avatar {
       ...uploadFileFields
     }
-    description
+    biography
     accept
     planningFee
     instagram

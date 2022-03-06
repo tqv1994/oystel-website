@@ -231,7 +231,7 @@
             <h2 class="mt-0">Biography</h2>
             <div class="row">
               <div class="d-col-10 m-col-10 m-0">
-                <Markdown source={advisor.description || ''} />
+                <Markdown source={advisor.biography || ''} />
               </div>
             </div>
           </section>
