@@ -14,7 +14,7 @@ import { UploadFile } from './upload-file';
 
 export type AdvisorBase = Exhibitable & {
   avatar: UploadFile;
-  description?: string;
+  biography?: string;
   accept?: boolean;
   planningFee?: boolean;
   instagram?: string;
@@ -114,7 +114,7 @@ export const advisorFieldsFragment = `
 fragment advisorFields on Advisor {
   id
   name
-  description
+  biography
   avatar {
     ...uploadFileFields
   }
@@ -184,7 +184,7 @@ export const advisorFieldDeps = [];
 export const advisorPrivateFieldsFragment = `
 fragment advisorFields on Advisor {
   id
-  description
+  biography
   accept
   planningFee
   instagram

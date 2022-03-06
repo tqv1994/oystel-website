@@ -24,6 +24,7 @@ export type DestinationBase = Exhibitable & {
   accommodations: Accommodation[];
   restaurants: Restaurant[];
   attractions: Attraction[];
+  num_views: number;
 };
 
 export type Destination = DestinationBase & Nationalizable & Categorizable & {
@@ -62,6 +63,7 @@ fragment destinationFields on Destination {
   type3 {
     ...destinationTypeFields
   }
+  num_views
 }
 `;
 

@@ -25,6 +25,15 @@
     if (res.ok) {
       const data: Destination = await res.json();
       if (data) {
+        await fetch(`/destination/update-${id}.json`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                num_views: (data.num_views || 0) + 1
+            }),
+        });
         data.liked = contains(session.user?.destinationLikes || [], 'id', id);
         data.pack = data.pack.map((item: Product) => {
           item.liked = contains(

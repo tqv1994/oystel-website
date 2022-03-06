@@ -25,6 +25,7 @@ export type ExperienceBase = Exhibitable & {
   destinations: Destination[];
   looks: Look[];
   pack: Product[];
+  num_views: number;
 };
 
 export type Experience = ExperienceBase & Nationalizable & Categorizable &{
@@ -69,6 +70,7 @@ fragment experienceFields on Experience {
   type3 {
     ...experienceTypeFields
   }
+  num_views
 }
 `;
 
@@ -84,3 +86,21 @@ fragment experienceGalleryFields on ComponentGalleriesExperienceGallery {
   }
 }
 `;
+
+export class ExperienceInput {
+  num_views: number
+
+  constructor(values: Object = {}) {
+      Object.assign(this, values);
+  }
+}
+
+export const convertExperienceToInput = (experience: Experience): ExperienceInput => {
+  let result: ExperienceInput;
+  const data: any = { ...experience };
+  delete data.id;
+  delete data.updated_at
+  delete data.__typename;
+  result = new ExperienceInput(data);
+  return result;
+}
