@@ -312,6 +312,7 @@ import { makeQueryString, TYPE } from '$lib/store/search';
                 on:MDCTabBar:activated={onSubTabActivated}
                 on:keydown={onSubTabKeyDown}
                 bind:active={activeSubItem}
+                class="pt-20"
               >
                 <Tab
                   tab={subTab}
@@ -328,14 +329,16 @@ import { makeQueryString, TYPE } from '$lib/store/search';
           </Section>
           {#if activeSubItem}
             <Section class="intro">
-              <p class="text-eyebrow m-0">Most popular</p>
-              <H4 class="mb-30 mt-30">{activeSubItem.name}</H4>
-              <Button
-                variant="outlined"
-                href={activeSubItem.id
-                  ? makeLink(active?.url || '/', activeSubItem)
-                  : activeSubItem.url}>Explore now</Button
-              >
+              <div class="intro__wrap">
+                <p class="text-eyebrow m-0">Most popular</p>
+                <H4 class="mb-30 mt-20">{activeSubItem.name}</H4>
+                <Button
+                  variant="outlined"
+                  href={activeSubItem.id
+                    ? makeLink(active?.url || '/', activeSubItem)
+                    : activeSubItem.url}>Explore now</Button
+                >
+              </div>
             </Section>
             <Section class="hero">
               <BlurImage {...activeSubItem.gallery[0]} />

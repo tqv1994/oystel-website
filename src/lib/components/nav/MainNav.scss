@@ -262,7 +262,9 @@
     flex: 2;
     justify-content: center;
     background-color: var(--mdc-theme-secondary);
-    padding: 2.5em;
+    .intro__wrap{
+      padding: 2.5em;
+    }
   }
   .hero {
     flex: 3;
