@@ -6,9 +6,6 @@
   import { Destination } from '$lib/store/destination';
   import { makeLink } from '$lib/utils/link';
   import IconButton from '@smui/icon-button';
-  import { Icon } from '@smui/common';
-  import { Svg } from '@smui/common/elements';
-  import { createEventDispatcher } from 'svelte';
   import { Searchable } from '$lib/store/types';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
@@ -17,8 +14,8 @@
   import { Category } from '$lib/store/category';
   import { Product } from '$lib/store/product';
   import { authStore } from '$lib/store/auth';
-import { likeExperienceService } from '$lib/services/experience.service';
-import { likeDestinationService } from '$lib/services/destination.service';
+  import { likeExperienceService } from '$lib/services/experience.service';
+  import { likeDestinationService } from '$lib/services/destination.service';
   export let item: Experience | Destination | Product | Searchable;
   export let pathPrefix: string;
   export let key: number | null = null;
@@ -33,45 +30,57 @@ import { likeDestinationService } from '$lib/services/destination.service';
   export let type: Category | undefined = undefined;
   export let introShow: boolean = false;
   let me = $authStore.user;
-  $: if(me){
-    if(pathPrefix.startsWith('/experience')){
-      const indexExist = (me.experienceLikes || []).findIndex(itemExperience=>item.id.replace('experience-','') === itemExperience.id);
-      if(indexExist < 0){
+  $: if (me) {
+    if (pathPrefix.startsWith('/experience')) {
+      const indexExist = (me.experienceLikes || []).findIndex(
+        (itemExperience) =>
+          item.id.replace('experience-', '') === itemExperience.id,
+      );
+      if (indexExist < 0) {
         liked = false;
-      }else{
+      } else {
         liked = true;
       }
-    }else if (pathPrefix.startsWith('/destination')){
-      const indexExist = (me.destinationLikes || []).findIndex(itemDestination=>item.id.replace('destination-','') === itemDestination.id);
-      if(indexExist < 0){
+    } else if (pathPrefix.startsWith('/destination')) {
+      const indexExist = (me.destinationLikes || []).findIndex(
+        (itemDestination) =>
+          item.id.replace('destination-', '') === itemDestination.id,
+      );
+      if (indexExist < 0) {
         liked = false;
-      }else{
+      } else {
         liked = true;
       }
-    }else{
+    } else {
       liked = false;
     }
-  }else{
+  } else {
     liked = false;
   }
 
-  async function callLikeItem(){
+  async function callLikeItem() {
     if (me) {
-      if(pathPrefix.startsWith('/experience')){
-        try{
-          const userUpdated = await likeExperienceService(item.id.replace('experience-',''), me.experienceLikes || []);
+      if (pathPrefix.startsWith('/experience')) {
+        try {
+          const userUpdated = await likeExperienceService(
+            item.id.replace('experience-', ''),
+            me.experienceLikes || [],
+          );
           me.experienceLikes = userUpdated.experienceLikes;
-          authStore.set({user: me});
-        }catch(error){
+          authStore.set({ user: me });
+        } catch (error) {
           console.error(error);
         }
       }
-      if(pathPrefix.startsWith('/destination')){
-        try{
-          const userUpdated = await likeDestinationService(item.id.replace('destination-',''), me.destinationLikes || []);
+      if (pathPrefix.startsWith('/destination')) {
+        try {
+          const userUpdated = await likeDestinationService(
+            item.id.replace('destination-', ''),
+            me.destinationLikes || [],
+          );
           me.destinationLikes = userUpdated.destinationLikes;
-          authStore.set({user: me});
-        }catch(error){
+          authStore.set({ user: me });
+        } catch (error) {
           console.error(error);
         }
       }

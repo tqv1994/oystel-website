@@ -4,7 +4,7 @@
   import Textfield from '@smui/textfield';
   import Select from '@smui/select';
   import { Option } from '@smui/select';
-import { TripInput } from '$lib/store/trip';
+  import { TripInput } from '$lib/store/trip';
 
   let flights: string = '';
   export let tripInput: TripInput = new TripInput();
@@ -13,14 +13,20 @@ import { TripInput } from '$lib/store/trip';
   tripInput.travelAnotherWay ||= '';
 </script>
 
-<Step title="Your travel" subtitle="">
+<Step title="Your travel" subtitle="" class="your-travel-step-content">
   <div class="row mt-20">
     <div class="d-col-7 m-col-12 text-left">
       <label class="mdc-typography--headline1 m-0">Do you need Flights?</label>
     </div>
     <div class="d-col-5 m-col-12">
-      <Select label="Select" bind:value={needFlights} on:SMUI:select:value={(e)=>{ tripInput.needFlights = e.detail == 'yes' ? true : false}}>
-        <Option value={'yes'} >No</Option>
+      <Select
+        label="Select"
+        bind:value={needFlights}
+        on:SMUI:select:value={(e) => {
+          tripInput.needFlights = e.detail == 'yes' ? true : false;
+        }}
+      >
+        <Option value={'yes'}>No</Option>
         <Option value={'no'}>Yes</Option>
       </Select>
     </div>
@@ -32,7 +38,7 @@ import { TripInput } from '$lib/store/trip';
       >
     </div>
     <div class="d-col-5 m-col-12">
-      <Textfield bind:value={tripInput.travelByFlight}/>
+      <Textfield bind:value={tripInput.travelByFlight} />
     </div>
   </div>
   <div class="row">
@@ -42,7 +48,7 @@ import { TripInput } from '$lib/store/trip';
       >
     </div>
     <div class="d-col-5 m-col-12">
-      <Textfield bind:value={tripInput.travelAnotherWay}/>
+      <Textfield bind:value={tripInput.travelAnotherWay} />
     </div>
   </div>
 </Step>
@@ -50,10 +56,10 @@ import { TripInput } from '$lib/store/trip';
 <style lang="scss">
   @use '../../../style/include/grid';
   @use '../../../theme/mixins';
-  label{
+  label {
     --mdc-typography-headline1-font-size: 30px;
     --mdc-typography-headline1-font-weight: 300;
-    @include mixins.mobile{
+    @include mixins.mobile {
       --mdc-typography-headline1-font-size: 20px;
     }
   }
@@ -66,11 +72,16 @@ import { TripInput } from '$lib/store/trip';
   }
   .row {
     margin-bottom: 20px;
-    @include mixins.mobile{
+    @include mixins.mobile {
       --mdc-layout-grid-gutter-mobile: 0;
     }
     :global(.mdc-select) {
       width: 100%;
+    }
+  }
+  :global(.root.your-travel-step-content) {
+    :global(.content.content) {
+      max-width: 50em;
     }
   }
 </style>

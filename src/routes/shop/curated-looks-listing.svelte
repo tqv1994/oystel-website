@@ -29,7 +29,7 @@
   import BlurImage from '$lib/components/blur-image.svelte';
   import CuratedItem from '$lib/components/CuratedItem.svelte';
   import DropSlides from '$lib/components/DropSlides.svelte';
-import OyDeviceDetector from '$lib/components/common/OyDeviceDetector.svelte';
+  import OyDeviceDetector from '$lib/components/common/OyDeviceDetector.svelte';
   export let data: Page;
   let filterActive = 'All';
   const carouselConfig = {
@@ -179,7 +179,6 @@ import OyDeviceDetector from '$lib/components/common/OyDeviceDetector.svelte';
     }
     .header-title .content-left {
       padding-top: 315px;
-      padding-bottom: 70px;
     }
     .header-title .short-description {
       @include mixins.desktop {

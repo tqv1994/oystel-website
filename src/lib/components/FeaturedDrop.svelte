@@ -14,11 +14,12 @@ import Carousel from './Carousel.svelte';
   export let button_1: Action;
   export let button_2: Action;
   const carouselConfig = {
-    autoplayDuration: 8000,
+    autoplayDuration: 5000,
     duration: 1500,
     infinite: true,
     particlesToShow: 1,
-    chevronPosition: 'outside'
+    chevronPosition: 'outside',
+    autoplay: true
   };
   onMount(()=>{
     let galleryItems = document.querySelectorAll('.gallery-images .gallery-images__item');
@@ -65,7 +66,7 @@ import Carousel from './Carousel.svelte';
                             {#each drop.gallery as item}
                                 <div class="thumbnail">
                                     <div class="image-cover" style="padding-top: 473px">
-                                        {#if item === null}
+                                        {#if item !== null}
                                             <BlurImage {...item} />
                                         {:else}
                                             <BlurImage />
@@ -137,7 +138,7 @@ import Carousel from './Carousel.svelte';
                             <Button
                                 class="hover-affect-drop"
                                 variant="outlined"
-                                href={makeLink('/drops', drop)}
+                                href="/shop/fashion-drops"
                                 ><Label>SHOP THE DROP</Label></Button
                             >
                         </div>

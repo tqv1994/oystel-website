@@ -8,7 +8,6 @@
   export let classItem: string = '';
 </script>
 
-<a href={makeLink('drop', item)}>
   <div class={`${classItem}`}>
     <div class="thumbnail d-mb-20 m-mb-20">
       <div class="image-cover" style={`padding-top: ${heightThumbnail}`}>
@@ -27,4 +26,3 @@
       {(item.description || '').substr(0, 80)}...
     </p>
   </div>
-</a>

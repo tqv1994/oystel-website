@@ -123,6 +123,7 @@
                 bind:items={section.destinations}
                 desktopColumns={3}
                 mobileColumns={2}
+                pathPrefix="/destination"
               />
             </div>
             <!-- <div class="pagination-wrap d-mt-120 m-mt-100">

@@ -11,7 +11,6 @@
 </script>
 
 <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-  <a href={makeLink('drop', item)}>
     <div class="item-featured-drop">
       <div class="thumbnail dark d-mb-60 m-mb-30">
         <div class="image-cover" style="padding-top: calc(410/311 * 100%)">
@@ -30,7 +29,6 @@
         ><Label>Plan Your Trip</Label></Button
       >
     </div>
-  </a>
 </Cell>
 <style lang="scss" global>
   @use "@material/button";

@@ -2,12 +2,10 @@
   import { documentHelper, storeHelper } from '$lib/helpers';
   import { Experience } from '$lib/store/experience';
   import { makeLink } from '$lib/utils/link';
-  import { Icon } from '@smui/common';
   import IconButton from '@smui/icon-button';
   import { Cell } from '@smui/layout-grid';
   import LayoutGrid from '@smui/layout-grid';
   import BlurImage from './blur-image.svelte';
-  import { Svg } from '@smui/common/elements';
   import Item from './Item.svelte';
   import { createEventDispatcher } from 'svelte';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
@@ -15,14 +13,13 @@
   import { contains } from '$lib/utils/array';
   import { authStore, User } from '$lib/store/auth';
   import SliderItems from './SliderItems.svelte';
-import { likeExperienceService } from '$lib/services/experience.service';
 
   export let experiences: Experience[];
   export let name: string | undefined = undefined;
   export let prominent: boolean = false;
   export let vertical: boolean = false;
   export let columns: number = 4;
-  export let subtitle: string  = "Featured Experience";
+  export let subtitle: string = 'Featured Experience';
   let me: User | undefined = $authStore.user;
   export let index: number;
   let hero: Experience | undefined;
@@ -33,11 +30,14 @@ import { likeExperienceService } from '$lib/services/experience.service';
     if (experiences.length > 1) {
       nonHeros = experiences.slice(1);
     }
-    if(hero && me){
-      const indexExist = (me.experienceLikes || []).findIndex(itemExperience=>hero.id.replace('experience-','') === itemExperience.id);
-      if(indexExist < 0){
+    if (hero && me) {
+      const indexExist = (me.experienceLikes || []).findIndex(
+        (itemExperience) =>
+          hero.id.replace('experience-', '') === itemExperience.id,
+      );
+      if (indexExist < 0) {
         hero.liked = false;
-      }else{
+      } else {
         hero.liked = true;
       }
     }
