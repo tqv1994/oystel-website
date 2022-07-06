@@ -1,32 +1,28 @@
 <script lang="ts">
   import Textfield from '@smui/textfield';
   import Field from '../components/Field.svelte';
-  import { User } from '$lib/store/auth';
   import Button from '@smui/button';
   import FormToggle from '../components/FormToggle.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import { updateTravellerData } from '../../traveller/update-me.json';
-  export let me: User;
-  let medicalCondition: string = me.travellerMe?.medicalCondition;
+  import { updateTravellerMeStore, type Traveller } from '$lib/store/traveller';
+  import { ppatch } from '$lib/utils/fetch';
+  export let travellerMe: Traveller;
+  let medicalCondition: string = travellerMe.medicalCondition;
 
-  export let is_edit: boolean = true;
+  export let is_edit = true;
 
   async function handleSubmitForm() {
     window.openLoading();
-    const res = await fetch(`/traveller/update-me.json`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        medicalCondition
-      }),
-    });
-    if (res.ok) {
-      const data: updateTravellerData = await res.json();
-      me.travellerMe = data.updateTraveller.traveller;
-      is_edit = false;
-    } else {
+    try {
+      const res = await ppatch('travellers/me', {
+        medicalCondition,
+      });
+      if (res.ok) {
+        travellerMe = await res.json();
+        updateTravellerMeStore(travellerMe);
+        is_edit = false;
+      }
+    } catch (error) {
       window.pushToast('An error occurred');
     }
     window.closeLoading();
@@ -34,19 +30,14 @@
 </script>
 
 <form on:submit|preventDefault={handleSubmitForm}>
-  <svelte:component this={FormToggle} title="" bind:is_edit>
-    <svelte:component
-      this={Field}
-      label="Medical Conditions"
-      column_1={4}
-      column_2={6}
-    >
-      <Textfield bind:value={medicalCondition}  type="text" textarea />
-    </svelte:component>
+  <FormToggle title="" bind:is_edit>
+    <Field label="Medical Conditions" column_1={4} column_2={6}>
+      <Textfield bind:value={medicalCondition} type="text" textarea />
+    </Field>
     <div class="text-right">
       <Button variant="unelevated" type="submit">Save Changes</Button>
     </div>
-  </svelte:component>
+  </FormToggle>
 </form>
 <OyNotification />
 

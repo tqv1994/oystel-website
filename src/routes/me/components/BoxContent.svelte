@@ -2,23 +2,23 @@
   import { createEventDispatcher } from 'svelte';
   import ButtonUnderline from './ButtonUnderline.svelte';
 
-  export let title: string = '';
-  export let is_edit: boolean = false;
+  export let title = '';
+  export let is_edit = false;
   let dispathcher = createEventDispatcher();
   function handleEditClick() {
     is_edit = true;
   }
   export let headlineTitle: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' = 'h3';
   let className: string | undefined = '';
-  export {className as class};
+  export { className as class };
 </script>
 
 <div class="section-content {className}">
   <div class="section-title mb-45">
     <span class="text-{headlineTitle}">{title}</span>
-    <svelte:component this={ButtonUnderline} class="btn-edit" label="Edit" on:click={handleEditClick} />
+    <ButtonUnderline class="btn-edit" label="Edit" on:click={handleEditClick} />
   </div>
-  <slot/>
+  <slot />
 </div>
 
 <style lang="scss">
@@ -26,12 +26,12 @@
   a.text-input {
     text-decoration: underline;
   }
-  div :global(.btn-edit){
+  div :global(.btn-edit) {
     position: absolute;
-    right: 40px;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
-    @include mixins.mobile{
+    @include mixins.mobile {
       right: 0;
     }
   }
@@ -45,7 +45,7 @@
     --mdc-typography-heading1-font-size: 32px;
     --mdc-typography-body1-font-size: 14px;
     padding: 0 25px;
-    @include mixins.mobile{
+    @include mixins.mobile {
       padding: 0;
     }
     .section-title {
@@ -55,8 +55,8 @@
   .btn-edit {
     text-decoration: underline;
   }
-  @include mixins.desktop{
-    h2{
+  @include mixins.desktop {
+    h2 {
       font-size: 40px;
     }
   }

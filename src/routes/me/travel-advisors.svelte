@@ -1,5 +1,6 @@
 <script lang="ts" context="module">
-  import { authStore, User } from '$lib/store/auth';
+  import { session } from '$app/stores';
+  import type { User } from '$lib/store/auth';
   import LayoutAccount from './components/LayoutAccount.svelte';
   import Tab, { Label } from '@smui/tab';
   import TabBar from '@smui/tab-bar';
@@ -8,27 +9,37 @@
   import ButtonBack from './components/ButtonBack.svelte';
   import TravelAdvisorsTemplate from './components/TravelAdvisorsTemplate.svelte';
   import type { Load } from '@sveltejs/kit';
-  import { Advisor, AdvisorBase } from '$lib/store/advisor';
-  import { stringHelper } from '$lib/helpers';
-  import { deRegisterAdvisorService } from '$lib/services/user.service';
+  import type { Advisor, AdvisorBase } from '$lib/store/advisor';
   import TravelAdvisorItem from './components/TravelAdvisorItem.svelte';
+  import { get } from 'svelte/store';
+  import { ENUM_TRIP_STATE, type Trip } from '$lib/store/trip';
+  import { ppatch } from '$lib/utils/fetch';
   export const load: Load = async ({ fetch, url }) => {
     let advisors: Advisor[] = [];
-    let me: User | undefined;
-    authStore.subscribe(async ({ user }) => {
-      me = user;
-    });
-    if (me?.myAdvisors && me?.myAdvisors.length > 0) {
-      const advisorIds = me.myAdvisors.map((item) => item.id);
-      const res = await fetch(
-        `/advisor/list.json?${stringHelper.objectToQueryString({
-          id: advisorIds,
-        })}`,
-      );
+    try {
+      const res = await fetch(`/p/trips`);
       if (res.ok) {
-        advisors = await res.json();
+        const trips = await res.json();
+        advisors = trips.reduce((acc: Advisor[], trip: Trip)=>{
+          if(trip.advisor){
+            const index = acc.findIndex((item)=>item.id.toString() === trip.advisor.id.toString());
+            if(index < 0){
+              const advisor = {...trip.advisor};
+              advisor.trips = [trip];
+              acc.push(advisor);
+            }else{
+              acc[index].trips?.push(trip);
+            }
+          }
+          return acc;
+        },[]);
+      } else {
+        console.error(await res.json());
       }
+    } catch (error) {
+      console.error(error);
     }
+
     return {
       props: {
         advisors,
@@ -38,53 +49,56 @@
 </script>
 
 <script lang="ts">
-  let me: User | undefined = $authStore.user;
+  let me: User | undefined = $session.user;
   export let advisors: Advisor[] = [];
-  let currentAdvisors: Advisor[] = advisors.reduce(
-    (acc: Advisor[], item: Advisor) => {
-      if (item.accept == true) {
-        acc.push(item);
-      }
-      return acc;
-    },
-    [],
-  );
-  let pastAdvisors: Advisor[] = advisors.reduce(
-    (acc: Advisor[], item: Advisor) => {
-      if (item.accept == false) {
-        acc.push(item);
-      }
-      return acc;
-    },
-    [],
-  );
+  let currentAdvisors: Advisor[];
+  let pastAdvisors: Advisor[];
 
-  const reloadItems = () => {
-    currentAdvisors = advisors.reduce((acc: Advisor[], item: Advisor) => {
-      if (item.accept == true) {
-        acc.push(item);
-      }
-      return acc;
-    }, []);
-    pastAdvisors = advisors.reduce((acc: Advisor[], item: Advisor) => {
+  $: if (advisors) {
+    currentAdvisors = (advisors || []).reduce(
+      (acc: Advisor[], item: Advisor) => {
+        if (item.accept == true) {
+          acc.push(item);
+        }
+        return acc;
+      },
+      [],
+    );
+    pastAdvisors = (advisors || []).reduce((acc: Advisor[], item: Advisor) => {
       if (item.accept == false) {
         acc.push(item);
       }
       return acc;
     }, []);
-  };
+  }
+
   const onDeRegister = async (event: CustomEvent<Advisor>) => {
     window.openLoading();
     if (event.detail.id && me) {
+      const advisor = (advisors || []).find(
+        (item) => item.id.toString() === event.detail.id.toString(),
+      );
       try {
-        const res = await deRegisterAdvisorService(event.detail.id, me);
-        if(!res){
-          window.pushToast("Some of this advisor's trips are confirmed so you can't de-register");
-        }else{
-          advisors = advisors.filter((item)=>item.id !== event.detail.id);
-          me.myAdvisors = advisors;
-          authStore.set({ user: me });
-          reloadItems();
+        const tripsHaveStateConfirmed = (advisor?.trips || []).filter(
+          (item) => item.state === ENUM_TRIP_STATE.confirmed,
+        );
+        if (tripsHaveStateConfirmed && tripsHaveStateConfirmed.length > 0) {
+          // Can't unsubscribe when there is a trip with the status of confirmed
+          window.pushToast(
+            "Some of this advisor's trips are confirmed so you can't de-register",
+          );
+        } else {
+          const myAdvisors = advisors.filter(
+            (item) => item.id.toString() !== event.detail.id.toString(),
+          );
+          const res = await ppatch(`auth/me`, {
+            myAdvisors,
+          });
+          if (res.ok) {
+            advisors = myAdvisors;
+          } else {
+            window.pushToast('An error occurred');
+          }
         }
       } catch (error) {
         console.error(error);
@@ -98,8 +112,8 @@
 <div class="content travel-advisors-content">
   <LayoutAccount currentPage="travel-advisors">
     {#if me}
-      <svelte:component this={ButtonBack} label="Travel Advisors" link="/me" />
-      <svelte:component this={BoxTabs}>
+      <ButtonBack label="Travel Advisors" link="/me" />
+      <BoxTabs>
         <div slot="tabs">
           <div class="d-block m-none">
             <TabBar tabs={['Current', 'Past']} let:tab bind:active>
@@ -117,35 +131,33 @@
         </div>
         <div slot="content" class="mt-35">
           {#if active == 'Current'}
-            <svelte:component this={TravelAdvisorsTemplate}>
+            <TravelAdvisorsTemplate>
               {#each currentAdvisors || [] as item}
                 <div class="d-col-6 m-col-12">
-                  <svelte:component
-                    this={TravelAdvisorItem}
+                  <TravelAdvisorItem
                     {item}
                     isPast={false}
                     on:deRegister={onDeRegister}
                   />
                 </div>
               {/each}
-            </svelte:component>
+            </TravelAdvisorsTemplate>
           {/if}
           {#if active == 'Past'}
-            <svelte:component this={TravelAdvisorsTemplate}>
+            <TravelAdvisorsTemplate>
               {#each pastAdvisors || [] as item}
                 <div class="d-col-6 m-col-12">
-                  <svelte:component
-                    this={TravelAdvisorItem}
+                  <TravelAdvisorItem
                     {item}
                     isPast={true}
                     on:deRegister={onDeRegister}
                   />
                 </div>
               {/each}
-            </svelte:component>
+            </TravelAdvisorsTemplate>
           {/if}
         </div>
-      </svelte:component>
+      </BoxTabs>
     {/if}
   </LayoutAccount>
 </div>

@@ -17,72 +17,90 @@
   import Experiences from './_steps/experiences.svelte';
   import TailorYourExperience from './_steps/tailor-your-experience.svelte';
   import Accommodations from './_steps/accommodations.svelte';
-  import { Category } from '$lib/store/category';
-  import { destinationTypeStore } from '$lib/store/destination-type';
-  import { sortByName } from '$lib/utils/sort';
   import type { Load } from '@sveltejs/kit';
-  import { authStore, User } from '$lib/store/auth';
-  import { insertToStore } from '$lib/store/types';
-  import { experienceTypeStore } from '$lib/store/experience-type';
-  import { Locals } from '$lib/store/locals';
+  import { session } from '$app/stores';
+  import type { User } from '$lib/store/auth';
   import PlanTemplate from './PlanTemplate.svelte';
   import { goto } from '$app/navigation';
-  import { UploadFile } from '$lib/store/upload-file';
+  import type { UploadFile } from '$lib/store/upload-file';
   import { H2 } from '@smui/common/elements';
+  export type MetaDataTripQuery = {
+    roomStyles: RoomStyle[];
+    roomPreferences: Kind[];
+    lodgingTypes: Kind[];
+    currencies: Currency[];
+    travelGroupTypes: Kind[];
+    experiences: Experience[];
+    experienceTypes: Kind[];
+    destinationTypes: Kind[];
+    countries: Country[];
+  };
 
-  export const load: Load<{ session: Locals }> = async ({
-    session,
-    url,
-    fetch,
-  }) => {
-    let me: User | undefined;
-    authStore.set({ user: session.user });
-    me = session.user;
-    console.log(me?.travellerMe);
-    if (typeof me === 'undefined' || !me.travellerMe) {
-      return {
-        status: 302,
-        redirect: '/',
-      };
+  export const load: Load = async ({ session, url, fetch }) => {
+    if (!session.user) {
+      return redirect('/');
     }
+    const advisorId = url.searchParams.get('advisor') || undefined;
+    if (advisorId) {
+      const advisor = await trySearchGetOne<Advisor>(
+        fetch,
+        'advisor',
+        advisorId,
+      );
+      if (!advisor) {
+        return redirect('/advisor');
+      }
+    }
+    let destinationTypes = await getCollection(fetch, 'destination-type');
+    let experienceTypes = await getCollection(fetch, 'experience-type');
+    let roomStyles = await getCollection(fetch, 'room-style');
+    let lodgingTypes = await getCollection(fetch, 'lodging-type');
+    let roomPreferences = await getCollection(fetch, 'room-preference');
+    let currencies = await getCollection(fetch, 'currencies');
+    let travelGroupTypes = await getCollection(fetch, 'travel-group-type');
+    let countries = await getCollection(fetch, 'country');
 
-    insertToStore(
-      destinationTypeStore,
-      session.metadata?.destinationTypes,
-      false,
-    );
-    insertToStore(
-      experienceTypeStore,
-      session.metadata?.experienceTypes,
-      false,
-    );
     return {
       props: {
         key: url.pathname,
-        metadataTrip: await fetch('/me/trip/metadata.json').then((r) =>
-          r.json(),
-        ),
+        advisorId,
+        metadataTrip: {
+          roomStyles,
+          lodgingTypes,
+          roomPreferences,
+          currencies,
+          travelGroupTypes,
+          experienceTypes,
+          destinationTypes,
+          countries,
+        },
       },
     };
   };
 </script>
 
 <script lang="ts">
-  import { MetaDataTripQuery } from '../me/trip/metadata.json';
-  import { TripInput } from '$lib/store/trip';
-  import { createTripService } from '$lib/services/trip.service';
+  import { ENUM_TRIP_STATE, TripInput } from '$lib/store/trip';
   import Loading from '$lib/components/Loading.svelte';
+  import Carousel from '$lib/components/Carousel.svelte';
+  import { getCollection } from '$lib/store/collection';
+  import { ppost } from '$lib/utils/fetch';
+  import type { Currency } from '$lib/store/currency';
+  import type { Experience } from '$lib/store/experience';
+  import type { Kind } from '$lib/store/category';
+  import type { Country } from '$lib/store/country';
+  import { redirect } from '$lib/helpers/redirect.svelte';
+  import { trySearchGetOne } from '$lib/store/search';
+  import type { Advisor } from '$lib/store/advisor';
   export let metadataTrip: MetaDataTripQuery;
-  let destinationTypes: Category[];
-  destinationTypeStore.subscribe((store) => {
-    destinationTypes = sortByName(Object.values(store.items));
-  });
-  let open: boolean = false;
-  let progress: number = 0.1;
-  let Carousel: any; // for saving Carousel component class
-  let carousel: any; // for calling methods of the carousel instance
-  let step: number = 0;
-  let totalSteps: number = 10;
+  export let advisorId: string | undefined;
+  const messageErrorStep3 =
+    'We are sorry, the minimum budget requirement has not been met to speak to one of our specialist luxury advisors';
+  let open = false;
+  let progress = 0.1;
+  let step = 0;
+  let totalSteps = 10;
+  let carousel: Carousel;
   let image1: UploadFile = {
     id: '',
     url: '/img/plan/plan-1.png',
@@ -102,22 +120,63 @@
     published_at: '',
   };
   let tripInput: TripInput = new TripInput();
-  onMount(async () => {
-    const module = await import('svelte-carousel');
-    Carousel = module?.default;
-  });
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
     if (totalSteps > step + 1) {
+      if (step === 2) {
+        if (!checkBudget()) {
+          await ppost('trips', { ...tripInput });
+          window.pushToast(messageErrorStep3);
+          return;
+        }
+      }
       step += 1;
-      carousel.goToNext();
+      carousel.onRightClick();
     }
   };
+
+  function checkBudget() {
+    const numberOfRooms = Math.ceil(
+      (tripInput.numberOfAdults + tripInput.numberOfChildren) / 2,
+    );
+    const totalBudget =
+      tripInput.numberOfNights * numberOfRooms * tripInput.nightlyBudget;
+    const currency = (metadataTrip.currencies || []).find(
+      (item) => item.id.toString() === (tripInput.currency || '').toString(),
+    );
+    if (currency) {
+      if (currency.name === 'US Dollar') {
+        if (tripInput.nightlyBudget < 500) {
+          return false;
+        }
+        if (tripInput.budget - totalBudget < 6000) {
+          return false;
+        }
+      } else if (currency.name === 'British Pound') {
+        if (tripInput.nightlyBudget < 400) {
+          return false;
+        }
+        if (tripInput.budget - totalBudget < 5000) {
+          return false;
+        }
+      } else if (currency.name === 'Euro') {
+        if (tripInput.nightlyBudget < 450) {
+          return false;
+        }
+        if (tripInput.budget - totalBudget < 5500) {
+          return false;
+        }
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
 
   const handlePrevClick = () => {
     if (step > 0) {
       step -= 1;
-      carousel.goToPrev();
+      carousel.onRightClick();
     } else {
       open = false;
     }
@@ -133,27 +192,32 @@
 
   const onSubmitForm = async (isSaveAndClose: boolean) => {
     window.openLoading();
-    await createTripService({
+    let formData = {
       ...tripInput,
-      lead_traveller: $authStore.user?.travellerMe.id + '',
-    }).then(() => {
+      lead_traveller: $session.travellerMe?.id,
+      state: ENUM_TRIP_STATE.new_enquiry,
+      sendThanksMail: isSaveAndClose ? false : true,
+      advisor: advisorId,
+    };
+    const res = await ppost('trips', formData);
+    if (res.ok) {
       if (isSaveAndClose) {
         open = false;
         tripInput = new TripInput();
         step = 0;
-        carousel.goTo(0, { animated: false });
+        carousel.onGo(0);
       } else {
         goto('/plan/success');
       }
-    });
+    }
     window.closeLoading();
   };
 </script>
 
-<div>
+<div class="plan-your-trip-modal">
   <PlanTemplate {image1} {image2} {image3}>
-    <H2>Let’s start planning your holiday.</H2>
-    <p>
+    <H2 class="plan-your-trip-h2">Let’s start planning your holiday.</H2>
+    <p class="plan-your-trip-p">
       To help our expert travel advisors tailor a holiday just for you, we need
       some information to get started.
     </p>
@@ -178,20 +242,19 @@
     aria-labelledby="Holiday planning wizard"
     aria-describedby="Tell us what you would like for your holiday"
   >
-    <Header>
+    <Header class="plan-your-trip-modal-header">
+      <div class="m-none">{' '}</div>
       <Title><OysteoLogo width={130} height={17.217} /></Title>
       <IconButton action="close" class="material-icons">close</IconButton>
     </Header>
     <Content>
-      <svelte:component
-        this={Carousel}
+      <Carousel
         bind:this={carousel}
-        infinite={false}
+        loop={false}
         dots={false}
-        swiping={false}
-        arrows={false}
-        initialPageIndex={step}
-        on:pageChange={(event) => (progress = (event.detail + 1) / 10)}
+        draggable={false}
+        controls={false}
+        on:change={(event) => (progress = step / 10)}
       >
         <div class="content-item" />
         <div class="content-item" />
@@ -203,49 +266,45 @@
         <div class="content-item" />
         <div class="content-item" />
         <div class="content-item" />
-      </svelte:component>
+      </Carousel>
       <div class="content-form">
         {#if step === 0}
           <svelte:component this={When} bind:tripInput />
         {:else if step === 1}
-          <svelte:component
-            this={Who}
-            travelingWithYous={metadataTrip?.travelingWithYous || []}
+          <Who
+            travelGroupTypes={metadataTrip?.travelGroupTypes || []}
             bind:tripInput
           />
         {:else if step === 2}
-          <svelte:component
-            this={Budget}
-            currencies={metadataTrip.currencies || []}
-            bind:tripInput
-          />
+          <Budget currencies={metadataTrip.currencies || []} bind:tripInput />
         {:else if step === 3}
-          <svelte:component this={Where} bind:tripInput {destinationTypes} />
+          <Where
+            bind:tripInput
+            destinationTypes={metadataTrip.destinationTypes}
+            countries={metadataTrip.countries}
+          />
         {:else if step === 4}
-          <svelte:component
-            this={Accommodations}
+          <Accommodations
             bind:tripInput
             lodgingTypes={metadataTrip.lodgingTypes || []}
             roomPreferences={metadataTrip.roomPreferences || []}
           />
         {:else if step === 5}
-          <svelte:component
-            this={RoomStyle}
+          <RoomStyle
             roomStyles={metadataTrip.roomStyles || []}
             bind:tripInput
           />
         {:else if step === 6}
-          <svelte:component this={TailorYourExperience} bind:tripInput />
-        {:else if step === 7}
-          <svelte:component
-            this={Experiences}
+          <Experiences
             bind:tripInput
-            experiences={metadataTrip.experiences || []}
+            experienceTypes={metadataTrip.experienceTypes || []}
           />
+        {:else if step === 7}
+          <TailorYourExperience bind:tripInput />
         {:else if step === 8}
-          <svelte:component this={YourTravel} bind:tripInput />
+          <YourTravel bind:tripInput />
         {:else if step === 9}
-          <svelte:component this={Final} bind:tripInput />
+          <Final bind:tripInput />
         {/if}
       </div>
     </Content>
@@ -276,7 +335,7 @@
       </div>
     </div>
 
-    <LinearProgress {progress} />
+    <LinearProgress progress={(step + 1) / 10} />
   </Dialog>
   <Loading />
 </div>
@@ -284,22 +343,43 @@
 <style type="text/scss" global>
   @use '../../theme/colors';
   @use '../../theme/mixins';
-  div {
+  div.plan-your-trip-modal {
     @import '../../style/partial/form.scss';
-    .mdc-dialog.mdc-dialog--fullscreen .mdc-dialog__surface .mdc-dialog__header {
-      @media screen and (max-width : 599px) {
+    .plan-your-trip-h2 {
+      margin-bottom: 20px;
+      @include mixins.mobile {
+        padding-top: 32px;
+      }
+    }
+    .plan-your-trip-p {
+      margin-bottom: 64px;
+      @include mixins.mobile {
+        margin-bottom: 32px;
+      }
+    }
+    .plan-your-trip-modal-header {
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .mdc-dialog.mdc-dialog--fullscreen
+      .mdc-dialog__surface
+      .mdc-dialog__header {
+      @media screen and (max-width: 599px) {
         display: inline-flex;
         align-items: center;
+        justify-content: space-between;
+        flex-direction: row-reverse;
         flex: 1 1 auto;
-        padding-top: 9px;
-        margin-top: 1em;
+        padding: 0;
       }
     }
     .mdc-dialog__header .mdc-dialog__title {
-      @media screen and (max-width : 599px) {
+      @media screen and (max-width: 599px) {
         display: flex;
         align-items: center;
         top: 5px;
+        margin-left: 0 !important;
+        padding-left: 24px;
       }
     }
     .mdc-dialog--fullscreen .mdc-dialog__close {
@@ -317,7 +397,7 @@
       max-width: 100vw;
       width: 100vw;
       max-height: 100vh;
-      height: 100vh;
+      height: 100%;
       border-radius: 0;
       padding-bottom: 40px;
       position: relative;
@@ -342,9 +422,13 @@
         grid-template-columns: 1fr 1fr;
         grid-row-gap: 1em;
         grid-column-gap: 15px;
+
+        .mdc-button {
+          min-width: auto;
+          padding: 0;
+        }
       }
       @media (max-width: 399px) {
-        grid-template-columns: 1fr;
       }
     }
     .mdc-button.mdc-button--outlined:hover {
@@ -354,6 +438,8 @@
     .font-size-h6 {
       font-size: 16px;
     }
+    .content-form {
+      padding-top: 3em;
+    }
   }
-  
 </style>

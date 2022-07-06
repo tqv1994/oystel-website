@@ -1,96 +1,71 @@
 <script lang="ts">
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import { createEventDispatcher, onMount } from 'svelte';
-  import { Category } from '$lib/store/category';
-  import {
-    productColourStore,
-    productDesignerStore,
-    productPattnerStore,
-    productTypeStore,
-vacationStyleStore,
-  } from '$lib/store/product';
-  import { sortByName } from '$lib/utils/sort';
-  import OyAutocomplete from '../OyAutocomplete.svelte';
+  import { createEventDispatcher, tick } from 'svelte';
+  import type { Kind } from '$lib/store/category';
   import Textfield from '@smui/textfield';
   import Icon from '@smui/textfield/icon';
   import OySelect from '../OySelect.svelte';
-  import { DropdownValue } from '$lib/components/Dropdown.svelte';
+  import type { DropdownValue } from '$lib/components/Dropdown.svelte';
+  import type { SearchParams } from '$lib/components/ProductSearchForm.svelte';
+  import SearchIcon from '$lib/icons/SearchIcon.svelte';
 
+  export let productTypes: Kind[];
+  export let productDesigners: Kind[];
+  export let productColours: Kind[];
+  export let productPatterns: Kind[];
+  export let vacationStyles: Kind[];
+  export let searchModel: SearchParams;
+  let {
+    query = '',
+    typeId,
+    designerId,
+    patternIds,
+    colourIds,
+    vacationStyleId,
+  } = searchModel;
   const dispatch = createEventDispatcher();
-  export let searchModel: {
-    query: string;
-    type: string;
-    designer: string;
-    patterns: string[];
-    colours: string[];
-    vacationStyle: string;
-  };
-  let { type, designer, patterns, colours, query, vacationStyle } = searchModel;
-  function onSearchSubmit() {
-    setTimeout(() => {
-      dispatch('close', {
-        query,
-        type,
-        designer,
-        patterns,
-        colours,
-        vacationStyle
-      });
-    }, 0);
+  async function onSearchSubmit() {
+    tick();
+    dispatch('close', {
+      typeId,
+      designerId,
+      patternIds,
+      vacationStyleId,
+      colourIds,
+    });
   }
 
-  let typeOptions: Category[] = [];
-  productTypeStore.subscribe((store) => {
-    typeOptions = sortByName(Object.values(store.items));
-  });
-  let designerOptions: Category[] = [];
-  productDesignerStore.subscribe((store) => {
-    designerOptions = sortByName(Object.values(store.items));
-  });
-  let colourOptions: Category[] = [];
-  productColourStore.subscribe((store) => {
-    colourOptions = sortByName(Object.values(store.items));
-  });
-  let patternOptions: Category[] = [];
-  productPattnerStore.subscribe((store) => {
-    patternOptions = sortByName(Object.values(store.items));
-  });
-  let vacationStyleOptions: Category[] = [];
-  vacationStyleStore.subscribe((store) => {
-    vacationStyleOptions = sortByName(Object.values(store.items));
-  });
-
-  function onTypeChange(event: CustomEvent<DropdownValue<Category>>) {
-    type = event.detail.value?.id;
+  function onTypeChange(event: CustomEvent<DropdownValue<Kind>>) {
+    typeId = event.detail.value?.id;
   }
 
-  function onDesignerChange(event: CustomEvent<DropdownValue<Category>>) {
-    designer = event.detail.value?.id;
+  function onDesignerChange(event: CustomEvent<DropdownValue<Kind>>) {
+    designerId = event.detail.value?.id;
   }
 
-  function onColourChange(event: CustomEvent<DropdownValue<Category>>) {
-    if(Array.isArray(event.detail.value)){
-      colours = (event.detail.value || []).map((item: Category)=>item?.id);
-    }else{
-      colours = null
+  function onColourChange(event: CustomEvent<DropdownValue<Kind>>) {
+    if (Array.isArray(event.detail.value)) {
+      colourIds = (event.detail.value || []).map((item: Kind) => item?.id);
+    } else {
+      colourIds = undefined;
     }
   }
 
-  function onPatternChange(event: CustomEvent<DropdownValue<Category>>) {
-    if(Array.isArray(event.detail.value)){
-      patterns = (event.detail.value || []).map((item: Category)=>item?.id);
-    }else{
-      patterns = null
+  function onPatternChange(event: CustomEvent<DropdownValue<Kind>>) {
+    if (Array.isArray(event.detail.value)) {
+      patternIds = (event.detail.value || []).map((item: Kind) => item?.id);
+    } else {
+      patternIds = undefined;
     }
   }
 
-  function onVacationStyleChange(event: CustomEvent<DropdownValue<Category>>) {
-    vacationStyle = event.detail.value?.id;
+  function onVacationStyleChange(event: CustomEvent<DropdownValue<Kind>>) {
+    vacationStyleId = event.detail.value?.id;
   }
 </script>
 
-<div id="form-search-experience-wrap" class="mt-40">
+<div id="form-search-experience-wrap">
   <form
     class="search-form-experiences"
     action="/"
@@ -103,24 +78,55 @@ vacationStyleStore,
         label="Start with a search"
         withTrailingIcon={false}
       >
-        <Icon slot="trailingIcon"><img src="/img/icons/icon-search.svg" /></Icon
-        >
+        <Icon slot="trailingIcon"><SearchIcon /></Icon>
       </Textfield>
     </div>
     <div class="form-control mb-40">
-      <OySelect items={typeOptions} optionIdentifier="id" labelIdentifier="name" placeholder="Category" on:select={onTypeChange} on:clear={onTypeChange} value={type} />
+      <OySelect
+        items={productTypes}
+        placeholder="Category"
+        on:select={onTypeChange}
+        on:clear={onTypeChange}
+        value={typeId}
+      />
     </div>
     <div class="form-control mb-40">
-      <OySelect items={designerOptions} optionIdentifier="id" labelIdentifier="name" placeholder="Designer" on:select={onDesignerChange} on:clear={onDesignerChange} value={designer} />
+      <OySelect
+        items={productDesigners}
+        placeholder="Designer"
+        on:select={onDesignerChange}
+        on:clear={onDesignerChange}
+        value={designerId}
+      />
     </div>
     <div class="form-control mb-40">
-      <OySelect items={colourOptions} optionIdentifier="id" labelIdentifier="name" placeholder="Colours" on:select={onColourChange} on:clear={onColourChange} value={colours} isMulti={true} />
+      <OySelect
+        items={productColours}
+        placeholder="Colours"
+        on:select={onColourChange}
+        on:clear={onColourChange}
+        value={colourIds}
+        isMulti={true}
+      />
     </div>
     <div class="form-control mb-40">
-      <OySelect items={patternOptions} optionIdentifier="id" labelIdentifier="name" placeholder="Patterns" on:select={onPatternChange} on:clear={onPatternChange} value={patterns} isMulti={true} />
+      <OySelect
+        items={productPatterns}
+        placeholder="Patterns"
+        on:select={onPatternChange}
+        on:clear={onPatternChange}
+        value={patternIds}
+        isMulti={true}
+      />
     </div>
     <div class="form-control mb-40">
-      <OySelect items={vacationStyleOptions} optionIdentifier="id" labelIdentifier="name" placeholder="Vacation Style" on:select={onVacationStyleChange} on:clear={onVacationStyleChange} value={vacationStyle} />
+      <OySelect
+        items={vacationStyles}
+        placeholder="Vacation Style"
+        on:select={onVacationStyleChange}
+        on:clear={onVacationStyleChange}
+        value={vacationStyleId}
+      />
     </div>
     <div class="form-control btn-submit-wrap">
       <Button variant="unelevated" style="width: 100%;" type="submit"
@@ -131,6 +137,7 @@ vacationStyleStore,
 </div>
 
 <style lang="scss">
+  @use '../../../../theme/mixins';
   :global(.page-destinations ~ #header-action-mobile),
   :global(.page-destinations-search ~ #header-action-mobile) {
     #form-search-experience-wrap {
@@ -143,6 +150,13 @@ vacationStyleStore,
       }
     }
   }
+  :global(.product-listing-page) {
+    #form-search-experience-wrap {
+      @include mixins.mobile {
+        margin-top: 32px !important;
+      }
+    }
+  }
   .search-form-experiences :global(.mdc-select),
   .search-form-experiences :global(.mdc-text-field) {
     width: 100%;
@@ -150,6 +164,13 @@ vacationStyleStore,
   .search-form-experiences
     :global(.mdc-select.mdc-select--outlined .mdc-select__anchor) {
     height: 35px;
+  }
+
+  .search-form-experiences {
+    :global(.mdc-text-field__icon) {
+      padding: 0;
+      margin-top: 4px;
+    }
   }
 
   .search-form-experiences :global(.mdc-text-field--outlined) {

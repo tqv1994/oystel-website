@@ -7,49 +7,63 @@
 @use '../../../theme/mixins';
 @use '../../../theme/sizes';
 
-.top-app-bar--root {
+.feature-bar--holder,
+.mdc-top-app-bar--fixed {
   position: fixed;
-  z-index: 6;
+  z-index: 99;
   top: 0;
-  .plan.mdc-button{
-    &:hover{
+}
+.mdc-top-app-bar--fixed {
+  z-index: 100;
+}
+
+.content-wrap {
+  .plan.mdc-button {
+    &:hover {
       background-color: #{colors.$white};
       --mdc-theme-on-primary: #{colors.$black};
       color: var(--mdc-theme-on-primary) !important;
     }
   }
-  &.bg-header-scroll-slightly_blue, &.light{
-    .plan:hover{
+  &.bg-header-scroll-slightly_blue,
+  &.light {
+    .plan:hover {
       background: #{colors.$black};
       --mdc-theme-on-primary: #{colors.$white};
-      *{
+      * {
         color: var(--mdc-theme-on-primary) !important;
       }
     }
   }
-  &.drawer-open{
-      height: 100%;
-      width: 100%;
+  &.drawer-open {
+    height: 100%;
+    width: 100%;
+    background: var(--mdc-theme-secondary);
+    --mdc-theme-primary: var(--mdc-theme-secondary);
+    .top-app-bar__main-row {
+      background: var(--mdc-theme-secondary);
+    }
+    .mdc-top-app-bar--fixed-scrolled {
       background: var(--mdc-theme-secondary);
       --mdc-theme-primary: var(--mdc-theme-secondary);
-      .top-app-bar__main-row {
-        background: var(--mdc-theme-secondary);
-      }
-      .mdc-top-app-bar--fixed-scrolled{
-        background: var(--mdc-theme-secondary);
-        --mdc-theme-primary: var(--mdc-theme-secondary);
-      }
-      .mdc-top-app-bar:not(.mdc-top-app-bar--prominent) .top-app-bar__main-row{
-        --mdc-theme-primary: var(--mdc-theme-secondary);
-      }
+    }
+    .mdc-top-app-bar:not(.mdc-top-app-bar--prominent) .top-app-bar__main-row {
+      --mdc-theme-primary: var(--mdc-theme-secondary);
+    }
   }
-  header.mdc-top-app-bar{
-    .mdc-tab.mdc-tab{
+  header.mdc-top-app-bar {
+    .mdc-tab.mdc-tab {
       font-family: var(--mdc-typography-navlink-font-family);
       font-size: var(--mdc-typography-navlink-font-size);
       font-weight: var(--mdc-typography-navlink-font-weight);
       line-height: var(--mdc-typography-navlink-line-height);
       letter-spacing: var(--mdc-typography-navlink-letter-spacing);
+      padding-right: 27px;
+      padding-left: 27px;
+
+      &--active {
+        font-weight: 800;
+      }
     }
   }
 }
@@ -61,7 +75,7 @@
   max-width: #{sizes.$contentMaxWidth};
   margin: 0 auto;
 }
-.mdc-top-app-bar:not(.mdc-top-app-bar--prominent){
+.mdc-top-app-bar:not(.mdc-top-app-bar--prominent) {
   .top-app-bar__main-row {
     --mdc-theme-primary: #{colors.$black};
     --mdc-theme-on-primary: #{colors.$white};
@@ -69,17 +83,17 @@
 }
 .mdc-top-app-bar--fixed-scrolled {
   box-shadow: none;
-  &::not(.mdc-top-app-bar--prominent){
+  &::not(.mdc-top-app-bar--prominent) {
     .top-app-bar__main-row {
       --mdc-theme-primary: #{colors.$black};
       --mdc-theme-on-primary: #{colors.$white};
     }
   }
 }
-.bg-header-scroll-slightly_blue .mdc-top-app-bar--fixed-scrolled:not(.showing-top-app-bar){
+.bg-header-scroll-slightly_blue
+  .mdc-top-app-bar--fixed-scrolled:not(.showing-top-app-bar) {
   .top-app-bar__main-row {
-    
-    svg{
+    svg {
       filter: brightness(0.1);
     }
     @include button.outline-color(colors.$white);
@@ -101,19 +115,21 @@
     }
   }
 }
-.mdc-top-app-bar__row{
-  height: 87px;
-  @include mixins.mobile{
-    height: 65px;
+.mdc-top-app-bar__row {
+  height: 88px;
+  @include mixins.mobile {
+    height: 64px;
   }
 }
-.mdc-top-app-bar--prominent-fixed-adjust,.mdc-top-app-bar--fixed-adjust{
-  @include mixins.desktop{
+.mdc-top-app-bar--prominent-fixed-adjust,
+.mdc-top-app-bar--fixed-adjust {
+  @include mixins.desktop {
     padding-top: 87px;
   }
 }
-.mdc-top-app-bar--prominent-fixed-adjust, .mdc-top-app-bar--prominent{
-  @include mixins.desktop{
+.mdc-top-app-bar--prominent-fixed-adjust,
+.mdc-top-app-bar--prominent {
+  @include mixins.desktop {
     height: 87px;
   }
 }
@@ -141,8 +157,8 @@
   .logo {
     flex-grow: 0;
     flex-shrink: 0;
-    padding-left: calc(8% + 45px);
-    @include mixins.mobile{
+    padding-left: 64px;
+    @include mixins.mobile {
       padding-left: 24px;
     }
   }
@@ -166,8 +182,7 @@
     @include tab.active-states-color(colors.$black);
   }
   .mdc-tab-indicator {
-    @include tab-indicator.underline-color(colors.$white);
-    @include tab-indicator.underline-height(0.2em);
+    display: none;
   }
   .mdc-button.plan {
     @include button.ink-color(colors.$white);
@@ -178,11 +193,11 @@
     display: none;
   }
 }
-.header-transparent{
-  .mdc-top-app-bar{
+.header-transparent {
+  .mdc-top-app-bar {
     background-color: transparent;
   }
-  .top-app-bar__main-row{
+  .top-app-bar__main-row {
     background: linear-gradient(
       180deg,
       rgb(0, 0, 0) 0%,
@@ -194,7 +209,7 @@
   }
 }
 @include mixins.light {
-  .top-app-bar__main-row{
+  .top-app-bar__main-row {
     .mdc-tab {
       @include tab.ink-color(colors.$black);
       @include tab.active-states-color(colors.$white);
@@ -208,7 +223,6 @@
     }
   }
 }
-
 
 .feature-bar--holder {
   width: 100%;
@@ -226,17 +240,15 @@
 .feature-bar__row {
   flex-basis: sizes.$contentMaxWidth;
   display: flex;
-  .mdc-tab.mdc-tab.mdc-tab--active{
+  .mdc-tab.mdc-tab.mdc-tab--active {
     --mdc-typography-button-font-weight: 800;
   }
-  
 }
 .desktop.feature-bar {
   --mdc-theme-primary: #{colors.$slightlyBlue};
   --mdc-theme-on-primary: #{colors.$black};
   color: var(--mdc-theme-on-primary);
-  height: calc(100vh - 128px);
-  max-height: 520px;
+  height: 465px;
   background-color: var(--mdc-theme-surface);
   box-shadow: 0px 8px 10px -5px rgb(0 0 0 / 20%),
     0px 16px 24px 2px rgb(0 0 0 / 14%), 0px 6px 30px 5px rgb(0 0 0 / 12%);
@@ -257,12 +269,13 @@
   .nav__main {
     max-height: 100%;
     min-height: 0;
+    flex: 1;
   }
   .intro {
     flex: 2;
     justify-content: center;
     background-color: var(--mdc-theme-secondary);
-    .intro__wrap{
+    .intro__wrap {
       padding: 2.5em;
     }
   }
@@ -286,8 +299,9 @@
     align-items: stretch;
   }
   .mdc-tab {
-    @include tab.height(4em);
+    height: 48px;
     @include tab.horizontal-padding(2.5em);
+    padding-left: 64px;
     @include tab.ink-color(colors.$black);
     @include tab.active-states-color(colors.$slightlyBlue);
     justify-content: flex-start;
@@ -296,7 +310,7 @@
     @include tab-indicator.underline-color(colors.$black);
     @include tab-indicator.underline-height(0.2em);
     height: 84%;
-    &.mdc-tab-indicator--active{
+    &.mdc-tab-indicator--active {
       display: none;
     }
   }
@@ -322,9 +336,11 @@
   }
 }
 
-.header-transparent.drawer-open, .drawer-open {
+.header-transparent.drawer-open,
+.drawer-open {
   .mdc-top-app-bar {
-    &, .top-app-bar__main-row{
+    &,
+    .top-app-bar__main-row {
       --mdc-theme-on-primary: #{colors.$black};
     }
   }
@@ -342,6 +358,7 @@
     .desktop.actions {
       flex-grow: 0;
       flex-shrink: 0;
+      padding-right: 64px;
     }
     .mobile.actions {
       display: none;
@@ -361,29 +378,37 @@
   }
 }
 
-header.mdc-top-app-bar.showing-top-app-bar .top-app-bar__main-row{
-  @include mixins.desktop{
+header.mdc-top-app-bar.showing-top-app-bar .top-app-bar__main-row {
+  @include mixins.desktop {
     background-color: #{colors.$black} !important;
     --mdc-theme-on-primary: #{colors.$white};
   }
 }
 
-nav{
+nav {
   .mdc-drawer {
-    .mdc-deprecated-list-item.mdc-deprecated-list-item{
+    .mdc-deprecated-list-item.mdc-deprecated-list-item {
       text-transform: none;
+      margin-left: 0;
+      padding-left: 24px;
+      font-size: 14px;
+      margin-bottom: 12px;
     }
-    .mdc-drawer__content{
+    .mdc-deprecated-list-item__graphic {
+      width: 16px;
+      padding-right: 8px;
+    }
+    .mdc-drawer__content {
       position: relative;
-      .follow-wrap{
+      .follow-wrap {
         left: var(--mdc-layout-grid-margin-phone);
         bottom: calc(100vh - 75%);
       }
     }
-    &.mobile{
-      .mdc-deprecated-list{
-        max-height: 300px;
-        overflow-y: scroll;
+    &.mobile {
+      .mdc-deprecated-list {
+        padding-top: 32px;
+        flex: 1;
       }
     }
   }

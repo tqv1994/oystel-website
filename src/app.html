@@ -1,169 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="description" content="Oysteo: Travel the world in luxury" />
 
-    <!-- Twitter Card data -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@su93rheroes" />
-    <meta name="twitter:creator" content="@su93rheroes" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="description" content="Oysteo: Travel the world in luxury" />
 
-    <!-- Open Graph data -->
-    <meta property="og:title" content="Oysteo: Travel the world in luxury" />
-    <meta property="og:url" content="https://oysteo.com/" />
-    <meta property="og:image" content="https://oysteo.com/header.png" />
-    <meta
-      property="og:description"
-      content="Oysteo: Travel the world in luxury"
-    />
-    <meta property="og:type" content="website" />
+  <!-- Twitter Card data -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@su93rheroes" />
+  <meta name="twitter:creator" content="@su93rheroes" />
 
-    <!-- Icons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
+  <!-- Open Graph data -->
+  <meta property="og:title" content="Oysteo: Travel the world in luxury" />
+  <meta property="og:url" content="https://oysteo.com/" />
+  <meta property="og:image" content="https://oysteo.com/header.png" />
+  <meta property="og:description" content="Oysteo: Travel the world in luxury" />
+  <meta property="og:type" content="website" />
 
-    <meta name="msapplication-TileColor" content="#ffffff" />
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
-    <meta name="theme-color" content="#ffffff" />
+  <!-- Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/site.webmanifest" />
 
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    />
+  <meta name="msapplication-TileColor" content="#ffffff" />
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
+  <meta name="theme-color" content="#ffffff" />
 
-    <!-- SMUI Styles -->
-    <link rel="stylesheet" href="/smui.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 
-    <!-- Site Styles -->
-    <!-- <link rel="stylesheet" href="site.css" media="(prefers-color-scheme: light)" />
+  <!-- SMUI Styles -->
+  <link rel="stylesheet" href="/smui.css" />
+
+  <!-- Site Styles -->
+  <!-- <link rel="stylesheet" href="site.css" media="(prefers-color-scheme: light)" />
     <link rel="stylesheet" href="site-dark.css" media="screen and (prefers-color-scheme: dark)" /> -->
 
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        background-color: #000;
-      }
-      body,
-      #svelte {
-        min-height: 100%;
-        background-color: #fff;
-      }
-    </style>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #000;
+    }
 
-    %svelte.head%
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"
-    />
-  </head>
-  <body>
-    <div id="svelte">%svelte.body%</div>
-    <script type="text/javascript">
-      function createDragScroll(element, typeElement = 'class') {
-        if (typeElement == 'query-selector') {
-          var ele = document.querySelector(element);
-        } else {
-          var ele = document.getElementsByClassName(element);
-          if (ele.length > 0) {
-            ele = ele[0];
-          }
+    body,
+    #svelte {
+      min-height: 100%;
+      background-color: #fff;
+    }
+  </style>
+
+  %sveltekit.head%
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+  <!-- Facebook Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '799535934342631');
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" src="https://www.facebook.com/tr?id=799535934342631&ev=PageView
+  &noscript=1" />
+  </noscript>
+  <!-- End Facebook Pixel Code -->
+</head>
+
+<body>
+  <div id="svelte">%sveltekit.body%</div>
+  <script type="text/javascript">
+    function createDragScroll(element, typeElement = 'class') {
+      if (typeElement == 'query-selector') {
+        var ele = document.querySelector(element);
+      } else {
+        var ele = document.getElementsByClassName(element);
+        if (ele.length > 0) {
+          ele = ele[0];
         }
+      }
 
-        if (typeof ele != 'undefined') {
+      if (typeof ele != 'undefined') {
+        ele.style.cursor = 'grab';
+
+        let pos = { top: 0, left: 0, x: 0, y: 0 };
+
+        const mouseDownHandler = function (e) {
+          ele.style.cursor = 'grabbing';
+          ele.style.userSelect = 'none';
+
+          pos = {
+            left: ele.scrollLeft,
+            top: ele.scrollTop,
+            // Get the current mouse position
+            x: e.clientX,
+            y: e.clientY,
+          };
+
+          document.addEventListener('mousemove', mouseMoveHandler);
+          document.addEventListener('mouseup', mouseUpHandler);
+        };
+
+        const mouseMoveHandler = function (e) {
+          // How far the mouse has been moved
+          const dx = e.clientX - pos.x;
+          const dy = e.clientY - pos.y;
+
+          // Scroll the element
+          ele.scrollTop = pos.top - dy;
+          ele.scrollLeft = pos.left - dx;
+        };
+
+        const mouseUpHandler = function () {
           ele.style.cursor = 'grab';
+          ele.style.removeProperty('user-select');
 
-          let pos = { top: 0, left: 0, x: 0, y: 0 };
+          document.removeEventListener('mousemove', mouseMoveHandler);
+          document.removeEventListener('mouseup', mouseUpHandler);
+        };
 
-          const mouseDownHandler = function (e) {
-            ele.style.cursor = 'grabbing';
-            ele.style.userSelect = 'none';
-
-            pos = {
-              left: ele.scrollLeft,
-              top: ele.scrollTop,
-              // Get the current mouse position
-              x: e.clientX,
-              y: e.clientY,
-            };
-
-            document.addEventListener('mousemove', mouseMoveHandler);
-            document.addEventListener('mouseup', mouseUpHandler);
-          };
-
-          const mouseMoveHandler = function (e) {
-            // How far the mouse has been moved
-            const dx = e.clientX - pos.x;
-            const dy = e.clientY - pos.y;
-
-            // Scroll the element
-            ele.scrollTop = pos.top - dy;
-            ele.scrollLeft = pos.left - dx;
-          };
-
-          const mouseUpHandler = function () {
-            ele.style.cursor = 'grab';
-            ele.style.removeProperty('user-select');
-
-            document.removeEventListener('mousemove', mouseMoveHandler);
-            document.removeEventListener('mouseup', mouseUpHandler);
-          };
-
-          // Attach the handler
-          ele.addEventListener('mousedown', mouseDownHandler);
-        }
+        // Attach the handler
+        ele.addEventListener('mousedown', mouseDownHandler);
       }
+    }
       // createDragScroll('list-tags');
       // createDragScroll('query-selector');
       // createDragScroll('list-experiences');
-    </script>
-    <!--Begin Comm100 Live Chat Code-->
-    <div id="comm100-button-0ba46bf3-89ad-4626-8475-2b97a49efbe5"></div>
-    <script type="text/javascript">
-      if (window.location.hostname !== 'localhost') {
-        var Comm100API = Comm100API || {};
-        (function (t) {
-          function e(e) {
-            var a = document.createElement('script'),
-              c = document.getElementsByTagName('script')[0];
-            (a.type = 'text/javascript'),
-              (a.async = !0),
-              (a.src = e + t.site_id),
-              c.parentNode.insertBefore(a, c);
-          }
-          (t.chat_buttons = t.chat_buttons || []),
-            t.chat_buttons.push({
-              code_plan: '0ba46bf3-89ad-4626-8475-2b97a49efbe5',
-              div_id: 'comm100-button-0ba46bf3-89ad-4626-8475-2b97a49efbe5',
-            }),
-            (t.site_id = 10101206),
-            (t.main_code_plan = '0ba46bf3-89ad-4626-8475-2b97a49efbe5'),
-            e('https://vue.comm100.com/livechat.ashx?siteId='),
-            setTimeout(function () {
-              t.loaded ||
-                e('https://standby.comm100vue.com/livechat.ashx?siteId=');
-            }, 5e3);
-        })(Comm100API || {});
-      }
-    </script>
-    <style>
-      #comm100-button-0ba46bf3-89ad-4626-8475-2b97a49efbe5 iframe{
-        width: 110px !important;
-        height: 110px !important;
-        bottom: 25px !important;
-        z-index: 9 !important;
-      }
-      @media screen and (max-width: 959px) {
-        #comm100-button-0ba46bf3-89ad-4626-8475-2b97a49efbe5 iframe{
-          bottom: 100px !important;
+  </script>
+  <!--Begin Comm100 Live Chat Code-->
+  <div id="comm100-button-0ba46bf3-89ad-4626-8475-2b97a49efbe5"></div>
+  <script type="text/javascript">
+    if (window.location.hostname !== 'localhost') {
+      var Comm100API = Comm100API || {};
+      (function (t) {
+        function e(e) {
+          var a = document.createElement('script'),
+            c = document.getElementsByTagName('script')[0];
+          (a.type = 'text/javascript'),
+            (a.async = !0),
+            (a.src = e + t.site_id),
+            c.parentNode.insertBefore(a, c);
         }
+        (t.chat_buttons = t.chat_buttons || []),
+          t.chat_buttons.push({
+            code_plan: '0ba46bf3-89ad-4626-8475-2b97a49efbe5',
+            div_id: 'comm100-button-0ba46bf3-89ad-4626-8475-2b97a49efbe5',
+          }),
+          (t.site_id = 10101206),
+          (t.main_code_plan = '0ba46bf3-89ad-4626-8475-2b97a49efbe5'),
+          e('https://vue.comm100.com/livechat.ashx?siteId='),
+          setTimeout(function () {
+            t.loaded ||
+              e('https://standby.comm100vue.com/livechat.ashx?siteId=');
+          }, 5e3);
+      })(Comm100API || {});
+    }
+  </script>
+  <style>
+    #comm100-button-0ba46bf3-89ad-4626-8475-2b97a49efbe5 iframe {
+      width: 110px !important;
+      height: 110px !important;
+      bottom: 25px !important;
+      z-index: 9 !important;
+    }
+
+    @media screen and (max-width: 959px) {
+      #comm100-button-0ba46bf3-89ad-4626-8475-2b97a49efbe5 iframe {
+        bottom: 100px !important;
       }
-    </style>
-    <!--End Comm100 Live Chat Code-->
-  </body>
+    }
+  </style>
+  <!--End Comm100 Live Chat Code-->
+</body>
+
 </html>

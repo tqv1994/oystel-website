@@ -1,33 +1,20 @@
 <script lang="ts">
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  import BlurImage from '$lib/components/blur-image.svelte';
-  import { Exhibitable } from '$lib/store/types';
+  import type { Exhibitable } from '$lib/store/types';
+  import Item from './Item.svelte';
+  import type { Kind } from '$lib/store/category';
 
   export let urlPrefix: string;
   export let items: Exhibitable[];
+  export let cities: Kind[] = [];
+  export let introShow: boolean;
 </script>
 
 <LayoutGrid class="p-0 ">
   {#each items || [] as item}
     <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-      <a href={`${urlPrefix}/${item.id}`}>
-        <div class="item-advisor">
-          <div class="thumbnail">
-            <div
-              class="image-cover"
-              style="padding-top: calc( 410 / 315 * 100% );"
-            >
-              {#if item.gallery}
-                <BlurImage {...item.gallery[0]} />
-              {/if}
-            </div>
-          </div>
-          <h4 class="text-h3 mt-30 title">
-            {item.name}
-          </h4>
-        </div>
-      </a>
+      <Item {item} pathPrefix={urlPrefix} {cities} {introShow}/>
     </Cell>
   {/each}
 </LayoutGrid>

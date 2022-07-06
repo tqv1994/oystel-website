@@ -1,15 +1,22 @@
 <script lang="ts">
-  import { Trip } from '$lib/store/trip';
+  import { ENUM_TRIP_STATE, type Trip } from '$lib/store/trip';
+  import { ppatch } from '$lib/utils/fetch';
+  import { createEventDispatcher } from 'svelte';
   import TripItem from '../components/TripItem.svelte';
+  import type { TripWithImage } from '../trips.svelte';
+  const dispatch = createEventDispatcher();
+  export let trips: TripWithImage[];
 
-  export let trips: Trip[];
+  function handleRemoveTrip(event: CustomEvent<Trip>) {
+    dispatch('delete', event.detail);
+  }
 </script>
 
-<div class="row mt-40">
+<div class="row">
   {#if trips.length > 0}
     {#each trips as trip}
       <div class="d-col-6 m-col-12">
-        <svelte:component this={TripItem} {trip} />
+        <TripItem {trip} on:delete={handleRemoveTrip} />
       </div>
     {/each}
   {:else}
@@ -20,4 +27,11 @@
 <style lang="scss">
   @use '../../../style/include/_grid.scss';
   @use '../../../theme/mixins';
+
+  .row {
+    margin-top: 64px;
+    @include mixins.mobile {
+      margin-top: 32px;
+    }
+  }
 </style>

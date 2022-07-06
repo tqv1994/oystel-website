@@ -1,8 +1,8 @@
 import { writable } from 'svelte/store';
-import { Category } from './category';
-import {  CollectionStore } from './types';
+import type { Kind } from './category';
+import type { CollectionStore } from './types';
 
-export const salutationTypeStore = writable<CollectionStore<Category>>({
+export const salutationTypeStore = writable<CollectionStore<Kind>>({
   items: {},
 });
 

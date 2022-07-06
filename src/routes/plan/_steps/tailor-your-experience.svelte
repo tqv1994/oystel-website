@@ -2,10 +2,10 @@
   import Step from '../Step.svelte';
   import FormField from '@smui/form-field';
   import Checkbox from '@smui/checkbox';
-  import { Category } from '$lib/store/category';
+  import type { Kind } from '$lib/store/category';
   import Textfield from '@smui/textfield';
   import { TripInput } from '$lib/store/trip';
-  let note: string = '';
+  let note = '';
   export let tripInput: TripInput = new TripInput();
   tripInput.description = tripInput.description || '';
 </script>
@@ -31,11 +31,11 @@
 </Step>
 
 <style lang="scss">
-  .form-control{
-      :global(.mdc-text-field){
-          padding: 15px;
-          min-height: 254px;
-          width: 100%;
-      }
+  .form-control {
+    :global(.mdc-text-field) {
+      padding: 15px;
+      min-height: 254px;
+      width: 100%;
+    }
   }
 </style>

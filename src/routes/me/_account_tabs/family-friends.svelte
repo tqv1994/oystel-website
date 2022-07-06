@@ -1,94 +1,99 @@
 <script lang="ts">
-  import { authStore, User } from '$lib/store/auth';
-  import { Traveller } from '$lib/store/traveller';
+  import {
+    RELATIVES,
+    RELATIVE_LABELS,
+    type Traveller,
+  } from '$lib/store/traveller';
   import Button, { Label } from '@smui/button';
   import FamilyFriendItem from '../components/FamilyFriendItem.svelte';
   import Modal from '../components/Modal.svelte';
   import FamilyFriendForm from '../_form/family-friend-form.svelte';
-  export let me: User;
+  import type { Kind } from '$lib/store/category';
+  import { session } from '$app/stores';
+  export let travellerMe: Traveller;
   let travellerSelected: Traveller | null;
   let relationshipSelected: string;
-  let openForm: boolean = false;
-
+  let openForm = false;
+  export let salutationTypes: Kind[];
   function handleOpenForm(traveller: Traveller | null, relationship: string) {
     travellerSelected = traveller;
     relationshipSelected = relationship;
-    setTimeout(()=>{
+    setTimeout(() => {
       openForm = true;
-    },0);
+    }, 0);
   }
 
-  function afterSubmit(event: CustomEvent){
-    if($authStore.user){
-      me = $authStore.user;
+  function afterSubmit(event: CustomEvent) {
+    if ($session.travellerMe) {
+      travellerMe = $session.travellerMe;
       openForm = false;
     }
   }
 </script>
 
 <div class="row">
-  {#each me.travellerMe.parents || [] as item}
+  {#each travellerMe.parents || [] as item}
     <div class="d-col-4 m-col-12">
       <FamilyFriendItem
         traveller={item}
-        relationship="Parent"
+        relationship={RELATIVE_LABELS.parents}
         on:click={() => {
-          handleOpenForm(item, 'Parent');
+          handleOpenForm(item, RELATIVES.parents);
         }}
       />
     </div>
   {/each}
-  {#each me.travellerMe.spouse || [] as item}
+  {#each travellerMe.spouse || [] as item}
     <div class="d-col-4 m-col-12">
       <FamilyFriendItem
         traveller={item}
-        relationship="Spouse"
+        relationship={RELATIVE_LABELS.spouse}
         on:click={() => {
-          handleOpenForm(item, 'Spouse');
+          handleOpenForm(item, RELATIVES.spouse);
         }}
       />
     </div>
   {/each}
-  {#if me.travellerMe.children}
+  {#if travellerMe.children}
     <div class="d-col-4 m-col-12">
       <FamilyFriendItem
-        traveller={me.travellerMe.children}
-        relationship="Children"
+        traveller={travellerMe.children}
+        relationship={RELATIVE_LABELS.children}
         on:click={() => {
-          handleOpenForm(me.travellerMe.children, 'Children');
+          handleOpenForm(travellerMe.children, RELATIVES.children);
         }}
       />
     </div>
   {/if}
-  {#each me.travellerMe.relatives || [] as item}
+  {#each travellerMe.relatives || [] as item}
     <div class="d-col-4 m-col-12">
       <FamilyFriendItem
         traveller={item}
-        relationship="Relative"
+        relationship={RELATIVE_LABELS.relatives}
         on:click={() => {
-          handleOpenForm(item, 'Relative');
+          handleOpenForm(item, RELATIVES.relatives);
         }}
       />
     </div>
   {/each}
-  {#each me.travellerMe.partners || [] as item}
+  {#each travellerMe.partners || [] as item}
     <div class="d-col-4 m-col-12">
       <FamilyFriendItem
         traveller={item}
-        relationship="Partner"
+        relationship={RELATIVE_LABELS.partners}
         on:click={() => {
-          handleOpenForm(item, 'Partner');
+          handleOpenForm(item, RELATIVES.partners);
         }}
       />
     </div>
   {/each}
-  {#each me.travellerMe.otherRelations || [] as item}
+  {#each travellerMe.otherRelations || [] as item}
     <div class="d-col-4 m-col-12">
       <FamilyFriendItem
         traveller={item}
-        relationship="Other"
+        relationship={RELATIVE_LABELS.otherRelations}
         on:click={() => {
-          handleOpenForm(item, 'Other Relative');
+          handleOpenForm(item, RELATIVES.otherRelations);
         }}
       />
     </div>
@@ -105,18 +110,17 @@
   </div>
 </div>
 {#if openForm == true}
-  <svelte:component
-    this={Modal}
+  <Modal
     title={`${travellerSelected == null ? 'Add' : 'Edit'} Friends & Family`}
     bind:open={openForm}
   >
-    <svelte:component
-      this={FamilyFriendForm}
+    <FamilyFriendForm
       bind:traveller={travellerSelected}
       relationship={relationshipSelected}
       on:afterSubmit={afterSubmit}
+      {salutationTypes}
     />
-  </svelte:component>
+  </Modal>
 {/if}
 
 <style lang="scss">

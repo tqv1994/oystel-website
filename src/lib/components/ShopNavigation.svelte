@@ -3,28 +3,40 @@
   import Tab, { Label } from '@smui/tab';
   import TabBar from '@smui/tab-bar';
   import { clickOutside } from '$lib/components/events/clickOutside';
-  import { productDesignerStore, productTypeStore } from '$lib/store/product';
-  import { Category } from '$lib/store/category';
+  import type { Kind } from '$lib/store/category';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
   import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
   import { goto } from '$app/navigation';
-  import { routerHelper } from '$lib/helpers';
-  import { sortByName } from '$lib/utils/sort';
-  let contentHeaderActionMobile: string = '';
-  type MenuItem = Category & {
-    items?: Category[];
+  import { onMount } from 'svelte';
+  let contentHeaderActionMobile = '';
+  export let productDesigners: Kind[];
+  export let productTypes: Kind[];
+  type MenuItem = Kind & {
+    items?: Kind[];
   };
-  let tabs: MenuItem[] = Object.values($productTypeStore.items);
+  let tabs: MenuItem[] | undefined;
 
-  const designerItems = sortByName(Object.values($productDesignerStore.items));
+  let designerItems: Kind[] | undefined; // = sortByName(Object.values($productDesignerStore));
 
-  let menuDesigner: MenuItem = {
-    id: '999',
-    name: 'Designers',
-    items: designerItems,
-  };
+  let menuDesigner: MenuItem;
 
-  tabs.splice(1, 0, menuDesigner);
+  onMount(() => {
+    designerItems = undefined;
+    tabs = undefined;
+    designerItems = productDesigners;
+    tabs = productTypes || [];
+    menuDesigner = {
+      id: '999',
+      name: 'Designers',
+      items: designerItems,
+    };
+    const indexDesigner = tabs.findIndex(
+      (item) => item.id.toString() === menuDesigner.id.toString(),
+    );
+    if (indexDesigner < 0) {
+      tabs.splice(1, 0, menuDesigner);
+    }
+  });
 
   let tabFilters = [
     'A',
@@ -74,10 +86,10 @@
   };
 </script>
 
-{#if tabs.length > 0}
+{#if tabs && tabs.length > 0}
   <div class="shop-navigation m-none">
     <div class="shop-navigation__menus">
-      <TabBar {tabs} let:tab key={(tab) => tab.id} bind:active>
+      <TabBar {tabs} let:tab bind:active>
         <Tab
           {tab}
           stacked={true}
@@ -116,13 +128,13 @@
         <div class="shop-navigation__content_sub_menus">
           <h3>{activeFilter}</h3>
           <div class="row">
-            {#if getItemsSubMenu(activeFilter).length > 0}
+            {#if (getItemsSubMenu(activeFilter).length || []) > 0}
               {#each getItemsSubMenu(activeFilter) as item}
                 <div class="menu-item col d-col-3">
                   <a
                     href={`#`}
                     on:click={() => {
-                      routerHelper.redirect(makeLinkShopDesigner(item));
+                      goto(makeLinkShopDesigner(item));
                     }}
                     ><span class="material-icons mr-5">favorite_border</span>
                     {item.name}</a
@@ -143,7 +155,11 @@
       }}><Label>Shop Menu</Label></Button
     >
   </div>
-  <HeaderActionMobile bind:content={contentHeaderActionMobile} />
+  <HeaderActionMobile
+    {productDesigners}
+    {productTypes}
+    bind:content={contentHeaderActionMobile}
+  />
 {/if}
 
 <style lang="scss">
@@ -152,8 +168,20 @@
   @use '../../style/include/grid';
   .shop-navigation {
     // desktop
-    margin-top: 87px;
     position: relative;
+    @include mixins.mobile {
+      padding-bottom: 24px !important;
+      :global(.mdc-button--outlined) {
+        height: 40px;
+      }
+    }
+    :global(.mdc-tab--stacked) {
+      height: 68px;
+    }
+    :global(.mdc-tab__text-label) {
+      color: black;
+    }
+
     .shop-navigation__menus {
       background-color: #f2f2f2;
       padding-left: 100px;
@@ -222,9 +250,34 @@
     // mobile
     &.m-block {
       background: #f2f2f2;
-      padding: 25px var(--mdc-layout-grid-margin-phone);
+      padding: 24px var(--mdc-layout-grid-margin-phone) 4px
+        var(--mdc-layout-grid-margin-phone);
       :global(.mdc-button) {
         width: 100%;
+      }
+    }
+  }
+
+  @include mixins.mobile {
+    :global(#header-action-mobile.shop-nav) {
+      :global(.nav-wrapper) {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      :global(.nav-main-content) {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        :global(#menu-wrap) {
+          flex: 1;
+        }
+
+        :global(.follow-wrap) {
+          padding-left: 0;
+        }
       }
     }
   }

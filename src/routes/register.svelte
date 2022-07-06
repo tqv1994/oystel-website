@@ -9,7 +9,7 @@
     createUserWithEmailAndPassword,
     inMemoryPersistence,
   } from 'firebase/auth';
-  import { authStore } from '$lib/store/auth';
+  import { session } from '$app/stores';
   import { goto } from '$app/navigation';
 
   let email = 'tester@test.net';
@@ -33,7 +33,7 @@
         });
         if (res.ok) {
           const user = await res.json();
-          authStore.set({ user });
+          session.set({ user });
           return goto('/me').then(auth.signOut);
         }
         console.error('Error authenticating', res);
@@ -45,7 +45,7 @@
 </script>
 
 <h1>Register with your email and password</h1>
-<form action="/api/register" on:submit|preventDefault={onSubmit}>
+<form action="/auth.json" on:submit|preventDefault={onSubmit}>
   <Textfield
     variant="filled"
     bind:value={email}
@@ -66,7 +66,7 @@
   >
     <Icon class="material-icons" slot="leadingIcon">password</Icon>
   </Textfield>
-  <Button variant={email && password ? 'raised' : 'outline'} type="submit">
+  <Button variant={email && password ? 'raised' : 'outlined'} type="submit">
     <Label>Register</Label>
   </Button>
 </form>

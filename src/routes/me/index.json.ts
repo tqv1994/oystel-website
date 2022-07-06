@@ -1,4 +1,4 @@
-import { RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { extractSetCookieHeader } from '$lib/utils/session';
 import { cmsUrlPrefix } from '$lib/env';
 import { makeErrorResponse } from '$lib/utils/fetch';
@@ -9,7 +9,7 @@ import { makeErrorResponse } from '$lib/utils/fetch';
 export const post: RequestHandler = async (event) => {
   try {
     const reqBody = await event.request.json();
-    const res = await fetch(`${cmsUrlPrefix}/users/me`, {
+    const res = await fetch(`${cmsUrlPrefix}/auth`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + reqBody.token,

@@ -1,14 +1,14 @@
 <script lang="ts">
-import Title from "./Title.svelte";
+  import Title from './Title.svelte';
 
-  export let title: string = '';
-  let classNames: string = '';
+  export let title = '';
+  let classNames = '';
   export { classNames as class };
 </script>
 
 <section class={`${classNames} p-0`}>
   <div class="section--title mb-25">
-    <svelte:component this={Title} class="large">{title}</svelte:component>
+    <Title class="large">{title}</Title>
     <div class="section--title-actions m-none">
       <slot name="actions" />
     </div>
@@ -17,7 +17,7 @@ import Title from "./Title.svelte";
     <slot name="content" />
 
     <div class="section---content-actions m-block d-none">
-        <slot name="actions" />
+      <slot name="actions" />
     </div>
   </div>
 </section>
@@ -38,11 +38,11 @@ import Title from "./Title.svelte";
     .section--content {
       @include mixins.desktop {
         :global(p) {
-          width: 80%;
+          width: 100%;
         }
       }
-      .section---content-actions{
-          margin-top: 30px;
+      .section---content-actions {
+        margin-top: 30px;
       }
     }
   }

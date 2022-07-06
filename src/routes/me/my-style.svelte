@@ -1,6 +1,5 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import { authStore, User } from '$lib/store/auth';
   import LayoutAccount from './components/LayoutAccount.svelte';
   import Box from './components/Box.svelte';
   import ButtonBack from './components/ButtonBack.svelte';
@@ -11,8 +10,12 @@
   import { goto } from '$app/navigation';
   import AlertBox from './components/AlertBox.svelte';
   import ButtonUnderline from './components/ButtonUnderline.svelte';
-import { sortByName } from '$lib/utils/sort';
-import { productColourStore, productPattnerStore } from '$lib/store/product';
+  import { getCollection } from '$lib/store/collection';
+  import type { Kind } from '$lib/store/category';
+  import { updateTravellerMeStore } from '$lib/store/traveller';
+  import { get } from 'svelte/store';
+  import { ppatch } from '$lib/utils/fetch';
+  import { session } from '$app/stores';
 
   export type MySizeSelected = {
     topSize: string;
@@ -40,48 +43,50 @@ import { productColourStore, productPattnerStore } from '$lib/store/product';
     heightUnit: string[];
   };
 
-  export const load: Load = async ({ fetch }) => {
-    let me: User | undefined;
-    authStore.subscribe(({ user }) => (me = user));
-    if (me?.travellerMe) {
+  export const load: Load = async ({ fetch, session }) => {
+    const productColours = await getCollection(fetch, 'product-colours');
+    const productPatterns = await getCollection(fetch, 'product-patterns');
+
+    const travellerMe = session.travellerMe;
+    if (travellerMe) {
       let mySizeSelected = {
-        topSize: me.travellerMe.topSize,
-        dressSize: me.travellerMe.dressSize,
-        jeanPantSize: me.travellerMe.jeanPantSize,
-        braSize: me.travellerMe.braSize,
-        shoeSize: me.travellerMe.shoeSize,
-        weightUnit: me.travellerMe.weightUnit,
-        weight: me.travellerMe.weight,
-        heightUnit: me.travellerMe.heightUnit,
-        height: me.travellerMe.height,
-        gender: me.travellerMe.gender,
-        bodyStyle: me.travellerMe.bodyStyle,
+        topSize: travellerMe.topSize,
+        dressSize: travellerMe.dressSize,
+        jeanPantSize: travellerMe.jeanPantSize,
+        braSize: travellerMe.braSize,
+        shoeSize: travellerMe.shoeSize,
+        weightUnit: travellerMe.weightUnit,
+        weight: travellerMe.weight,
+        heightUnit: travellerMe.heightUnit,
+        height: travellerMe.height,
+        gender: travellerMe.gender,
+        bodyStyle: travellerMe.bodyStyle,
       };
       return {
         props: {
-          me,
           mySizeSelected,
-          myStylePreferenceSelected: me.travellerMe.stylePreferences
-            ? me.travellerMe.stylePreferences.split(',')
+          myStylePreferenceSelected: travellerMe.stylePreferences
+            ? travellerMe.stylePreferences.split(',')
             : [],
+          productColours,
+          productPatterns,
         },
       };
     }
     return {
-      props: { me },
+      props: {},
     };
   };
 </script>
 
 <script lang="ts">
-  let mySizesEdit: boolean = false;
-  let stylePreferencesEdit: boolean = false;
+  let mySizesEdit = false;
+  let stylePreferencesEdit = false;
 
-  export let me: User | undefined;
   export let mySizeSelected: MySizeSelected;
   export let myStylePreferenceSelected: string[];
-  const productColours = sortByName(Object.values($productColourStore.items));
-  const productPatterns = sortByName(Object.values($productPattnerStore.items));
+  export let productColours: Kind[];
+  export let productPatterns: Kind[];
 
   let tmpStylePreferenceSelected: string[] = [
     ...(myStylePreferenceSelected || []),
@@ -110,7 +115,7 @@ import { productColourStore, productPattnerStore } from '$lib/store/product';
   const myStylePreferenceData = [
     {
       name: 'COLOURS',
-      preferences: productColours.map((item)=>item.name),
+      preferences: productColours.map((item) => item.name),
     },
     {
       name: 'FIT',
@@ -118,7 +123,7 @@ import { productColourStore, productPattnerStore } from '$lib/store/product';
     },
     {
       name: 'PATTERNS',
-      preferences: productPatterns.map((item)=>item.name),
+      preferences: productPatterns.map((item) => item.name),
     },
   ];
 
@@ -149,25 +154,15 @@ import { productColourStore, productPattnerStore } from '$lib/store/product';
       for (const [key, value] of Object.entries(mySizeSelected)) {
         mySizeSelected[key] = handleDisplayMySize(value);
       }
-      const res = await fetch('/me/my-style/update-my-size.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...mySizeSelected,
-          gender: mySizeSelected.gender || 'Others',
-          weight: mySizeSelected.weight || null,
-          height: mySizeSelected.height || null,
-        }),
+      const res = await ppatch('travellers/me', {
+        ...mySizeSelected,
+        gender: mySizeSelected.gender || 'Others',
+        weight: mySizeSelected.weight || null,
+        height: mySizeSelected.height || null,
       });
       if (res.ok) {
         mySizesEdit = false;
-        let data: any = { ...me?.travellerMe };
-        for (const [key, value] of Object.entries(mySizeSelected)) {
-          data[key] = value;
-        }
-        me.travellerMe = data;
+        updateTravellerMeStore(await res.json());
         tmpMySizeSelected = { ...mySizeSelected };
       }
     } catch (error) {
@@ -180,15 +175,11 @@ import { productColourStore, productPattnerStore } from '$lib/store/product';
     window.openLoading();
     try {
       const dataSubmit = [...myStylePreferenceSelected];
-      const res = await fetch('/me/my-style/update-preference.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataSubmit.join(',')),
+      const res = await ppatch('travellers/me', {
+        stylePreferences: dataSubmit.join(','),
       });
       if (res.ok) {
-        me.travellerMe.stylePreferences = dataSubmit.join(',');
+        updateTravellerMeStore(await res.json());
         stylePreferencesEdit = false;
         tmpStylePreferenceSelected = [...myStylePreferenceSelected];
       }
@@ -201,119 +192,63 @@ import { productColourStore, productPattnerStore } from '$lib/store/product';
 
 <div class="content my-style-content">
   <LayoutAccount currentPage="my-style">
-    <svelte:component this={ButtonBack} label="My Style" link="/me" />
-    {#if !me.travellerMe}
-      <svelte:component this={AlertBox}>
-        Before doing this. Please tell us your first and last name. <svelte:component
-          this={ButtonUnderline}
+    <ButtonBack label="My Style" link="/me" />
+    {#if !$session.travellerMe}
+      <AlertBox>
+        Before doing this. Please tell us your first and last name. <ButtonUnderline
           on:click={() => {
             goto('/me/my-account');
           }}
           label="Update them here"
         />
-      </svelte:component>
+      </AlertBox>
     {/if}
-    {#if me.travellerMe}
+    {#if $session.travellerMe}
       {#if !mySizesEdit}
-        <svelte:component
-          this={Box}
-          title="My Sizes"
-          bind:is_edit={mySizesEdit}
-        >
-          <svelte:component
-            this={Field}
-            label="DRESS SIZE"
-            column_1={4}
-            column_2={8}
-            ><svelte:component this={Text}
-              >{handleDisplayMySize(
-                tmpMySizeSelected.dressSize,
-              )}</svelte:component
-            ></svelte:component
+        <Box title="My Sizes" bind:is_edit={mySizesEdit}>
+          <Field label="Gender" column_1={4} column_2={8}
+            ><Text>{mySizeSelected.gender || ''}</Text
+            ></Field
           >
-          <svelte:component
-            this={Field}
-            label="JEAN / PANT SIZE"
-            column_1={4}
-            column_2={8}
-            ><svelte:component this={Text}
-              >{handleDisplayMySize(
-                tmpMySizeSelected.jeanPantSize,
-              )}</svelte:component
-            ></svelte:component
+          <Field label="DRESS SIZE" column_1={4} column_2={8}
+            ><Text>{handleDisplayMySize(tmpMySizeSelected.dressSize)}</Text
+            ></Field
           >
-          <svelte:component
-            this={Field}
-            label="TOP SIZE"
-            column_1={4}
-            column_2={8}
-            ><svelte:component this={Text}
-              >{handleDisplayMySize(
-                tmpMySizeSelected.topSize,
-              )}</svelte:component
-            ></svelte:component
+          <Field label="JEAN / PANT SIZE" column_1={4} column_2={8}
+            ><Text>{handleDisplayMySize(tmpMySizeSelected.jeanPantSize)}</Text
+            ></Field
           >
-          <svelte:component
-            this={Field}
-            label="BRA SIZE"
-            column_1={4}
-            column_2={8}
-            ><svelte:component this={Text}
-              >{handleDisplayMySize(
-                tmpMySizeSelected.braSize,
-              )}</svelte:component
-            ></svelte:component
+          <Field label="TOP SIZE" column_1={4} column_2={8}
+            ><Text>{handleDisplayMySize(tmpMySizeSelected.topSize)}</Text
+            ></Field
           >
-          <svelte:component
-            this={Field}
-            label="Shoe Size"
-            column_1={4}
-            column_2={8}
-            ><svelte:component this={Text}
-              >{handleDisplayMySize(
-                tmpMySizeSelected.shoeSize,
-              )}</svelte:component
-            ></svelte:component
+          <Field label="BRA SIZE" column_1={4} column_2={8}
+            ><Text>{handleDisplayMySize(tmpMySizeSelected.braSize)}</Text
+            ></Field
           >
-          <svelte:component
-            this={Field}
-            label="Weight"
-            column_1={4}
-            column_2={8}
-            ><svelte:component this={Text}
+          <Field label="Shoe Size" column_1={4} column_2={8}
+            ><Text>{handleDisplayMySize(tmpMySizeSelected.shoeSize)}</Text
+            ></Field
+          >
+          <Field label="Weight" column_1={4} column_2={8}
+            ><Text
               >{handleDisplayMySize(tmpMySizeSelected.weight)}
-              {handleDisplayMySize(
-                tmpMySizeSelected.weightUnit,
-              )}</svelte:component
-            ></svelte:component
+              {handleDisplayMySize(tmpMySizeSelected.weightUnit)}</Text
+            ></Field
           >
-          <svelte:component
-            this={Field}
-            label="Height"
-            column_1={4}
-            column_2={8}
-            ><svelte:component this={Text}
+          <Field label="Height" column_1={4} column_2={8}
+            ><Text
               >{handleDisplayMySize(tmpMySizeSelected.height)}
-              {handleDisplayMySize(
-                tmpMySizeSelected.heightUnit,
-              )}</svelte:component
-            ></svelte:component
+              {handleDisplayMySize(tmpMySizeSelected.heightUnit)}</Text
+            ></Field
           >
-          <svelte:component
-            this={Field}
-            label="Body Style"
-            column_1={4}
-            column_2={8}
-            ><svelte:component this={Text}
-              >{handleDisplayMySize(
-                tmpMySizeSelected.bodyStyle,
-              )}</svelte:component
-            ></svelte:component
+          <Field label="Body Style" column_1={4} column_2={8}
+            ><Text>{handleDisplayMySize(tmpMySizeSelected.bodyStyle)}</Text
+            ></Field
           >
-        </svelte:component>
+        </Box>
       {:else}
-        <svelte:component
-          this={MyStyleMySizesForm}
+        <MyStyleMySizesForm
           data={mySizeData}
           bind:selected={mySizeSelected}
           bind:is_edit={mySizesEdit}
@@ -339,8 +274,7 @@ import { productColourStore, productPattnerStore } from '$lib/store/product';
           {/each}
         </Box>
       {:else}
-        <svelte:component
-          this={MyStylePreference}
+        <MyStylePreference
           data={myStylePreferenceData}
           selected={myStylePreferenceSelected}
           bind:is_edit={stylePreferencesEdit}

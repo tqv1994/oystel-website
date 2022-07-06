@@ -129,7 +129,7 @@
               type="button"
               variant="outlined"
               class="hover-affect"
-              on:click={routerHelper.redirect(active.link)}
+              on:click={goto(active.link)}
             >
               <Label class="text-button2">Explore Now</Label>
             </Button>

@@ -1,23 +1,23 @@
 @use '../../theme/colors';
-.mdc-button--outlined:not(:disabled):hover{
-    background-color: var(--mdc-theme-primary);
-    --mdc-outlined-button-label-text-color: #{colors.$white};
+.mdc-button--outlined:not(:disabled):hover {
+  background-color: var(--mdc-theme-primary);
+  --mdc-outlined-button-label-text-color: #{colors.$white};
 }
-.mdc-button--unelevated:not(:disabled):hover{
-    border: 1px solid #{colors.$black};
-    --mdc-filled-button-container-color: transparent;
-    --mdc-filled-button-label-text-color: #{colors.$black};
+.mdc-button--unelevated:not(:disabled):hover {
+  border: 1px solid #{colors.$black};
+  --mdc-filled-button-container-color: transparent;
+  --mdc-filled-button-label-text-color: #{colors.$black};
 }
 
-.btn-group{
-    .mdc-button{
-        margin-left: 0.5em;
-        margin-right: 0.5em;
-        &:first-child{
-            margin-left: 0;
-        }
-        &:last-child{
-            margin-right: 0;
-        }
+.btn-group {
+  .mdc-button {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    &:first-child {
+      margin-left: 0;
     }
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }

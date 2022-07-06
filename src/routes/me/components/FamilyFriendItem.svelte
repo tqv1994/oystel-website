@@ -1,21 +1,27 @@
 <script lang="ts">
-import ButtonUnderline from "./ButtonUnderline.svelte";
-import Title from "./Title.svelte";
-import Text from "./Text.svelte";
-import { Traveller } from "$lib/store/traveller";
-import { dateTimeHelper } from "$lib/helpers/datetime";
-export let traveller: Traveller;
-export let relationship: string;
+  import ButtonUnderline from './ButtonUnderline.svelte';
+  import Title from './Title.svelte';
+  import Text from './Text.svelte';
+  import type { Traveller } from '$lib/store/traveller';
+  import { dateTimeHelper } from '$lib/helpers/datetime';
+  export let traveller: Traveller;
+  export let relationship: string;
 </script>
+
 <div class="box" on:click>
-    <div class="title mb-20">
-        <svelte:component this={Title} class="name">{`${traveller?.forename || ""} ${traveller?.surname || ""}`}</svelte:component>
-        <svelte:component this={Text} class="relationship">{relationship}</svelte:component>
-        <svelte:component this={ButtonUnderline} label="Edit"/>
-    </div>
-    <div class="content">
-        <svelte:component this={Text}>Date of Birth: {dateTimeHelper.formatDate(traveller.birthday) || ""}</svelte:component>
-    </div>
+  <div class="title mb-20">
+    <Title class="name"
+      >{`${traveller?.forename || ''} ${traveller?.surname || ''}`}</Title
+    >
+    <Text class="relationship">{relationship}</Text>
+    <ButtonUnderline label="Edit" />
+  </div>
+  <div class="content">
+    <Text
+      >Date of Birth: {dateTimeHelper.formatDate(traveller.birthday) ||
+        ''}</Text
+    >
+  </div>
 </div>
 
 <style lang="scss">
@@ -25,7 +31,7 @@ export let relationship: string;
     --mdc-typography-headline1-font-size: 22px;
     position: relative;
     :global(.name) {
-      display: inline;
+      display: block;
     }
     :global(.relationship) {
       display: inline;

@@ -1,15 +1,14 @@
-import { writable } from "svelte/store";
-import { Base, CollectionStore, Nameable } from "./types"
-export type InterestType = Base & Nameable & {
+import { writable } from 'svelte/store';
+import type { Kind } from './category';
+
+export type InterestType = Kind & {
   interests: Interest[];
-}
-export type Interest = Base & Nameable & {
+};
+export type Interest = Kind & {
   type: Interest;
 };
 
-export const interestTypeStore = writable<CollectionStore<InterestType>>({
-  items: {},
-});
+export const interestTypeStore = writable<Kind[]>([]);
 
 export const interestFieldsFragment = `
 fragment interestFields on Interest {

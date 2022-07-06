@@ -2,20 +2,17 @@
   import Step from '../Step.svelte';
   import FormField from '@smui/form-field';
   import Checkbox from '@smui/checkbox';
-  import { Category } from '$lib/store/category';
   import Textfield from '@smui/textfield';
-import { RoomPreference } from '$lib/store/roomPreference';
-import { LodgingType } from '$lib/store/lodgingType';
-import { TripInput } from '$lib/store/trip';
+  import { TripInput } from '$lib/store/trip';
+  import type { Kind } from '$lib/store/category';
 
   let selected: string[] = [];
-  let preferred: string = '';
-  let otherVal: string = '';
-  export let roomPreferences: RoomPreference[];
-  export let lodgingTypes: LodgingType[];
+  let preferred = '';
+  let otherVal = '';
+  export let roomPreferences: Kind[];
+  export let lodgingTypes: Kind[];
   export let tripInput: TripInput = new TripInput();
-  
-  console.log('data',lodgingTypes);
+
   tripInput.lodgingTypeOther = tripInput.lodgingTypeOther || '';
   tripInput.lodgingTypes = tripInput.lodgingTypes || [];
   tripInput.roomPreferences = tripInput.roomPreferences || [];
@@ -27,17 +24,23 @@ import { TripInput } from '$lib/store/trip';
       <h3 class="mdc-typography--headline1 text-left mt-0 m-mb-15">Lodging</h3>
       <div class="options options-1">
         {#each lodgingTypes || [] as lodgingType}
-        <FormField>
-          <Checkbox bind:group={tripInput.lodgingTypes} value={lodgingType.id} />
-          <span slot="label">{lodgingType.name}</span>
-        </FormField>
+          <FormField>
+            <Checkbox
+              bind:group={tripInput.lodgingTypes}
+              value={lodgingType.id}
+            />
+            <span slot="label">{lodgingType.name}</span>
+          </FormField>
         {/each}
         <FormField>
-          <Checkbox checked={tripInput.lodgingTypeOther ? true : false} value={'Other'} />
+          <Checkbox
+            checked={tripInput.lodgingTypeOther ? true : false}
+            value={'Other'}
+          />
           <span slot="label"
             ><Textfield
               bind:value={tripInput.lodgingTypeOther}
-              label="Other Lodging Type"
+              label="Other"
               type="text"
             /></span
           >
@@ -45,13 +48,18 @@ import { TripInput } from '$lib/store/trip';
       </div>
     </div>
     <div class="d-col-8 m-col-12">
-      <h3 class="mdc-typography--headline1 text-left mt-0 m-mb-15">Room Preferences</h3>
+      <h3 class="mdc-typography--headline1 text-left mt-0 m-mb-15">
+        Room Preferences
+      </h3>
       <div class="options-2 options">
         {#each roomPreferences || [] as roomPreference}
-        <FormField>
-          <Checkbox bind:group={tripInput.roomPreferences} value={roomPreference.id} />
-          <span slot="label">{roomPreference.name}</span>
-        </FormField>
+          <FormField>
+            <Checkbox
+              bind:group={tripInput.roomPreferences}
+              value={roomPreference.id}
+            />
+            <span slot="label">{roomPreference.name}</span>
+          </FormField>
         {/each}
       </div>
     </div>
@@ -63,14 +71,14 @@ import { TripInput } from '$lib/store/trip';
   @use '../../../theme/mixins';
   * {
     --mdc-typography-headline1-font-size: 30px;
-    @include mixins.mobile{
+    @include mixins.mobile {
       --mdc-typography-headline1-font-size: 20px;
     }
   }
-  label{
+  label {
     --mdc-typography-headline1-font-size: 30px;
     --mdc-typography-headline1-font-weight: 300;
-    @include mixins.mobile{
+    @include mixins.mobile {
       --mdc-typography-headline1-font-size: 20px;
     }
   }
@@ -101,7 +109,9 @@ import { TripInput } from '$lib/store/trip';
   div {
     --mdc-shape-small: 0;
   }
-  div :global(.mdc-text-field:not(.mdc-text-field--outlined):not(.has-padding-left) .mdc-floating-label){
+  div
+    :global(.mdc-text-field:not(.mdc-text-field--outlined):not(.has-padding-left)
+      .mdc-floating-label) {
     left: 0;
   }
 </style>

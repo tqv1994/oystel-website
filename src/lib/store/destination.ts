@@ -1,19 +1,18 @@
-import { Accommodation } from '$lib/store/accommodation';
-import { Experience } from '$lib/store/experience';
-import { Look } from '$lib/store/look';
-import {
+import type { Accommodation } from '$lib/store/accommodation';
+import type { Experience } from '$lib/store/experience';
+import type { Look } from '$lib/store/look';
+import type {
   Categorizable,
   Exhibitable,
   Nationalizable,
 } from '$lib/store/types';
-import { Attraction } from '$lib/store/attraction';
-import { Restaurant } from '$lib/store/restaurant';
+import type { Attraction } from '$lib/store/attraction';
+import type { Restaurant } from '$lib/store/restaurant';
 import { writable } from 'svelte/store';
-import { CollectionStore } from '$lib/store/types';
-import { Product } from './product';
-import { UploadFile } from './upload-file';
-import { SearchResultItemWithCountryId, SearchResultItemWithTypeIDs } from './search';
-import { GalleryComponentBase } from './component';
+import type { CollectionStore } from '$lib/store/types';
+import type { Product } from './product';
+import type { UploadFile } from './upload-file';
+import type { GalleryComponentBase } from './component';
 
 export type DestinationBase = Exhibitable & {
   intro: string;
@@ -25,15 +24,17 @@ export type DestinationBase = Exhibitable & {
   restaurants: Restaurant[];
   attractions: Attraction[];
   num_views: number;
+  location: string;
 };
 
-export type Destination = DestinationBase & Nationalizable & Categorizable & {
-  liked: boolean;
-};
-
-export type DestinationSearchResultItem = DestinationBase & SearchResultItemWithTypeIDs & SearchResultItemWithCountryId;
+export type Destination = DestinationBase &
+  Nationalizable &
+  Categorizable & {
+    liked: boolean;
+  };
 
 export type DestinationGallery = GalleryComponentBase & {
+  __component: 'galleries.destination-gallery';
   destinations: Destination[];
 };
 

@@ -3,16 +3,16 @@
   import IconButton from '@smui/icon-button';
   import Title from './Title.svelte';
 
-  export let open: boolean = false;
+  export let open = false;
   export let title: string | undefined;
-  export let style: string = 'width: 850px; max-width: calc(100vw - 32px);';
+  export let style = 'width: 935px; max-width: calc(100vw - 32px);';
 </script>
 
 <div>
   <Dialog bind:open fullscreen surface$style={style}>
     {#if title || title == ''}
       <Header>
-        <svelte:component this={Title} class="d-mt-25 m-mt-20">{title || ''}</svelte:component>
+        <Title class="d-mt-25 m-mt-20">{title || ''}</Title>
         <IconButton action="close" class="material-icons">close</IconButton>
       </Header>
     {/if}
@@ -27,7 +27,7 @@
     @include mixins.mobile {
       --mdc-typography-body1-font-size: 12px;
     }
-    :global(.mdc-dialog__header button){
+    :global(.mdc-dialog__header button) {
       top: -5px;
     }
     :global(.mdc-dialog__title) {

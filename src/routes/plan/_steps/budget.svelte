@@ -3,8 +3,9 @@
   import Step from '../Step.svelte';
   import Select from '@smui/select';
   import { Option } from '@smui/select';
-import { Currency } from '$lib/store/currency';
-import { TripInput } from '$lib/store/trip';
+  import type { Currency } from '$lib/store/currency';
+  import { TripInput } from '$lib/store/trip';
+  import { onMount } from 'svelte';
 
   const options = [
     'Solo',
@@ -17,9 +18,24 @@ import { TripInput } from '$lib/store/trip';
   ];
   export let currencies: Currency[] = [];
   export let tripInput: TripInput = new TripInput();
+  let autofocusRef: any = null;
   tripInput.budget = tripInput.budget || 0;
   //tripInput.numberOfRoom = tripInput.numberOfRoom || 1;
-  tripInput.numberOfNights = tripInput.budget || 0;
+  tripInput.nightlyBudget = tripInput.nightlyBudget || 0;
+  onMount(() => {
+    let currency = currencies.find(
+      (item) => item.id.toString() === (tripInput.currency || '').toString(),
+    );
+    if (!currency) {
+      currency = currencies.find((item) => item.name === 'US Dollar');
+      if (currency) {
+        tripInput.currency = currency.id;
+        tripInput.budget = 35000;
+        tripInput.nightlyBudget = 600;
+      }
+    }
+    autofocusRef.focus();
+  });
 </script>
 
 <Step
@@ -34,7 +50,7 @@ import { TripInput } from '$lib/store/trip';
     </div>
     <div class="d-col-6 m-col-12">
       <Select id="budget-currency" noLabel bind:value={tripInput.currency}>
-        {#each currencies as currency }
+        {#each currencies as currency}
           <Option value={currency.id}>{currency.name}</Option>
         {/each}
       </Select>
@@ -51,8 +67,9 @@ import { TripInput } from '$lib/store/trip';
         id="budget-budget"
         bind:value={tripInput.budget}
         input$min={1}
-        label="E.g. 123.45"
+        label="E.g 30000"
         type="number"
+        bind:this={autofocusRef}
       />
     </div>
   </div>
@@ -65,9 +82,9 @@ import { TripInput } from '$lib/store/trip';
     <div class="d-col-6 m-col-12">
       <Textfield
         id="budget-accommodation"
-        bind:value={tripInput.numberOfNights}
+        bind:value={tripInput.nightlyBudget}
         input$min={1}
-        label="E.g. 1.250"
+        label="E.g 1250"
         type="number"
       />
       <!--<Select id="budget-accommodation" noLabel bind:value={tripInput.numberOfRoom}>
@@ -85,7 +102,7 @@ import { TripInput } from '$lib/store/trip';
   @use '../../../theme/mixins';
   * {
     --mdc-typography-headline1-font-size: 30px;
-    @include mixins.mobile{
+    @include mixins.mobile {
       --mdc-typography-headline1-font-size: 20px;
     }
   }
@@ -93,11 +110,12 @@ import { TripInput } from '$lib/store/trip';
     align-items: center;
     text-align: left;
     margin-bottom: 20px;
-    @include mixins.mobile{
+    @include mixins.mobile {
       --mdc-layout-grid-gutter-mobile: 0;
     }
   }
-  :global(.mdc-text-field), :global(.mdc-select) {
+  :global(.mdc-text-field),
+  :global(.mdc-select) {
     width: 100%;
   }
   // .row {

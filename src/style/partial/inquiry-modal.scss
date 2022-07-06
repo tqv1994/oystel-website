@@ -1,54 +1,54 @@
-@use "../../theme/colors";
-@use "../../theme/sizes";
-@use "../../theme/variables" as v;
+@use '../../theme/colors';
+@use '../../theme/sizes';
+@use '../../theme/variables' as v;
 @use '../../theme/mixins';
 #inquiry-modal.mdc-dialog {
-    &.mdc-dialog--open {
-        animation-name: fadeInUp;
-        animation-duration: 2s;
+  &.mdc-dialog--open {
+    animation-name: fadeInUp;
+    animation-duration: 2s;
+  }
+  &.closing {
+    animation-name: fadeOutDown;
+    animation-duration: 2s;
+  }
+  &.mdc-dialog--closing {
+    display: none;
+  }
+  --mdc-layout-grid-gutter-desktop: 100px;
+  .mdc-dialog__container {
+    align-items: flex-end;
+  }
+  .mdc-dialog__scrim {
+    background-color: transparent;
+  }
+  .mdc-dialog__surface {
+    width: var(--wrap-width);
+    max-width: var(--wrap-width);
+    background-color: colors.$blue;
+    @include mixins.mobile {
+      height: auto;
     }
-    &.closing {
-        animation-name: fadeOutDown;
-        animation-duration: 2s;
+    .mdc-dialog__content {
+      max-width: sizes.$contentMaxWidth;
+      margin: auto;
+      width: 100%;
+      padding-top: 80px;
+      padding-bottom: 90px;
+      @include mixins.mobile {
+        padding-bottom: 150px;
+      }
+      position: relative;
+      .mdc-layout-grid {
+        padding: 0;
+      }
     }
-    &.mdc-dialog--closing {
-        display: none;
+    .close-modal {
+      position: absolute;
+      right: 48px;
+      top: 20px;
+      @include mixins.mobile {
+        right: 30px;
+      }
     }
-    --mdc-layout-grid-gutter-desktop: 100px;
-    .mdc-dialog__container {
-        align-items: flex-end;
-    }
-    .mdc-dialog__scrim {
-        background-color: transparent;
-    }
-    .mdc-dialog__surface {
-        width: var(--wrap-width);
-        max-width: var(--wrap-width);
-        background-color: colors.$blue;
-        @include mixins.mobile {
-            height: auto;
-        }
-        .mdc-dialog__content {
-            max-width: sizes.$contentMaxWidth;
-            margin: auto;
-            width: 100%;
-            padding-top: 80px;
-            padding-bottom: 90px;
-            @include mixins.mobile {
-                padding-bottom: 150px;
-            }
-            position: relative;
-            .mdc-layout-grid {
-                padding: 0;
-            }
-        }
-        .close-modal {
-            position: absolute;
-            right: 48px;
-            top: 20px;
-            @include mixins.mobile {
-                right: 30px;
-            }
-        }
-    }
+  }
 }

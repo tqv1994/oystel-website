@@ -1,46 +1,52 @@
 <script lang="ts">
   import { documentHelper, storeHelper } from '$lib/helpers';
-  import { Experience } from '$lib/store/experience';
+  import type { Experience } from '$lib/store/experience';
   import { makeLink } from '$lib/utils/link';
   import IconButton from '@smui/icon-button';
   import { Cell } from '@smui/layout-grid';
   import LayoutGrid from '@smui/layout-grid';
   import BlurImage from './blur-image.svelte';
   import Item from './Item.svelte';
-  import { createEventDispatcher } from 'svelte';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
-  import { contains } from '$lib/utils/array';
-  import { authStore, User } from '$lib/store/auth';
-  import SliderItems from './SliderItems.svelte';
+  import Masonry from './Masonry.svelte';
+  import { updateTravellerMeStore } from '$lib/store/traveller';
+  import { ppatch } from '$lib/utils/fetch';
+  import { session } from '$app/stores';
+  import { actionLike } from './LikeAction.svelte';
+  import type { Kind } from '$lib/store/category';
+  import FeaturedImage from './FeaturedImage.svelte';
 
   export let experiences: Experience[];
   export let name: string | undefined = undefined;
-  export let prominent: boolean = false;
-  export let vertical: boolean = false;
-  export let columns: number = 4;
-  export let subtitle: string = 'Featured Experience';
-  let me: User | undefined = $authStore.user;
+  export let prominent = false;
+  export let vertical = false;
+  export let columns = 4;
+  export let subtitle = 'Featured Experience';
   export let index: number;
+  export let cities: Kind[] = [];
   let hero: Experience | undefined;
   let nonHeros: Experience[] | undefined;
+  let aspectRatioCount = 0;
+  let useSquareAspectRatio = true;
   $: if (prominent && experiences.length) {
-    experiences = storeHelper.getItems([...experiences], 7);
     hero = experiences[0];
     if (experiences.length > 1) {
       nonHeros = experiences.slice(1);
     }
-    if (hero && me) {
-      const indexExist = (me.experienceLikes || []).findIndex(
-        (itemExperience) =>
-          hero.id.replace('experience-', '') === itemExperience.id,
-      );
-      if (indexExist < 0) {
-        hero.liked = false;
-      } else {
-        hero.liked = true;
+    session.subscribe((s) => {
+      if (s.user && s.travellerMe && hero) {
+        const indexExist = (s.travellerMe.experienceLikes || []).findIndex(
+          (itemExperience) =>
+            hero.id.toString() === itemExperience.id.toString(),
+        );
+        if (indexExist < 0) {
+          hero.liked = false;
+        } else {
+          hero.liked = true;
+        }
       }
-    }
+    });
   }
 
   function runScript() {
@@ -51,19 +57,48 @@
       ]);
     }
   }
-  const dispatcher = createEventDispatcher();
   const onLike = (event: CustomEvent, experience: Experience | undefined) => {
-    if ($authStore.user) {
-      if (experience) {
-        hero.liked = !experience.liked;
-        dispatcher('likeItem', { data: experience });
-      } else {
-        const item = event.detail.item;
-        dispatcher('likeItem', { data: item });
+    return actionLike(async () => {
+      try {
+        const res = await ppatch('travellers/me', {
+          experienceLikes: processItemLikeIds(
+            hero.id.toString(),
+            $session.travellerMe?.experienceLikes || [],
+          ),
+        });
+        if (res.ok) {
+          updateTravellerMeStore(await res.json());
+        } else {
+          window.pushToast('An error occurred');
+        }
+      } catch (error) {
+        console.error(error);
       }
+    }, $session);
+  };
+  const assignAspectRatio = (index) => {
+    if (index > 0) {
+      if (aspectRatioCount === 2) {
+        useSquareAspectRatio = !useSquareAspectRatio;
+        aspectRatioCount = 0;
+      }
+      aspectRatioCount++;
     } else {
-      window.openSignInModal();
+      useSquareAspectRatio = !useSquareAspectRatio;
+      return 'square';
     }
+    return useSquareAspectRatio ? 'square' : 'portrait';
+  };
+
+  const processItemLikeIds = (id: string, items: Experience[]) => {
+    const itemIds: string[] = items.map((item) => item.id.toString());
+    const indexExist = itemIds.findIndex((item) => item === id);
+    if (indexExist < 0) {
+      itemIds.push(id);
+    } else {
+      itemIds.splice(indexExist, 1);
+    }
+    return itemIds;
   };
 </script>
 
@@ -79,70 +114,54 @@
   }}
 />
 
-<LayoutGrid>
+<LayoutGrid class="pl-0 pr-0">
   <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
     {#if hero}
-      <div class="experiences--item featured">
+      <div class="experiences--item featured sticky-section">
         <div class="thumbnail dark">
-          <a href={makeLink('/experience', hero)}>
-            <div
-              class="image-cover m-none"
-              style="padding-top: calc(568/529 * 100%)"
+          <a href={makeLink('/experiences', hero)}>
+            <FeaturedImage
+              image={(hero.gallery || []).length > 0 ? hero.gallery[0] : undefined}
+              class="m-none"
+              size="medium"
+              alt={hero?.name || ''}
+            />
+            <FeaturedImage
+              image={(hero.gallery || []).length > 0 ? hero.gallery[0] : undefined}
+              class="m-block d-none"
+              size="medium"
+              alt={hero?.name || ''}
+            />
+            <IconButton
+              class="btn-favorite {hero.liked ? 'liked' : ''}"
+              on:click={onLike}
             >
-              {#if hero.gallery.length > 0 || hero.gallery[0] != null}
-                <BlurImage {...hero.gallery[0]} />
-              {:else}
-                <BlurImage />
-              {/if}
-            </div>
-            <div
-              class="image-cover d-none m-block"
-              style="padding-top: calc(425/328 * 100%)"
-            >
-              {#if hero.gallery.length > 0 || hero.gallery[0] != null}
-                <BlurImage {...hero.gallery[0]} />
-              {:else}
-                <BlurImage />
-              {/if}
+              <HeartIcon size="sm" />
+              <HeartFilledIcon size="sm" />
+            </IconButton>
+            <div class="caption text-left">
+              <p class="m-0 text-eyebrow pl-25 pr-25">{subtitle}</p>
+              <a class="" href={makeLink('/experiences', hero)}>
+                <h3 class="pl-25 pr-25 m-mt-10 d-mt-20 d-mb-30 m-mb-20 title">
+                  {hero.name}
+                </h3>
+              </a>
             </div>
           </a>
-          <IconButton
-            class="btn-favorite {hero.liked ? 'liked' : ''}"
-            on:click={onLike}
-          >
-            <HeartIcon size="sm" />
-            <HeartFilledIcon size="sm" />
-          </IconButton>
-          <div class="caption text-left">
-            <p class="m-0 text-eyebrow pl-25 pr-25">{subtitle}</p>
-            <a class="" href={makeLink('/experience', hero)}>
-              <h3 class="pl-25 pr-25 m-mt-10 d-mt-20 d-mb-30 m-mb-20 title">
-                {hero.name}
-              </h3>
-            </a>
-          </div>
         </div>
       </div>
     {/if}
   </Cell>
   <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
-    <div class="experiences--list m-p-0">
-      {#if nonHeros?.length}
-        <SliderItems>
-          <div class="row">
-            {#each nonHeros as experience}
-              <div class="col d-col-6 m-col-6">
-                <Item
-                  {...experience}
-                  item={experience}
-                  pathPrefix="/experience"
-                />
-              </div>
-            {/each}
+    {#if nonHeros?.length}
+      <Masonry gridGap="0" colWidth="50%" items={nonHeros}>
+        {#each nonHeros as experience, i}
+          <div class="curated-item item-{assignAspectRatio(i)}">
+            <Item item={experience} pathPrefix="/experiences" {cities} />
           </div>
-        </SliderItems>
-      {/if}
-    </div>
+        {/each}
+      </Masonry>
+    {/if}
   </Cell>
 </LayoutGrid>
 
@@ -151,6 +170,21 @@
   @use '../../theme/mixins';
 
   .experiences--item.featured {
+    @include mixins.desktop {
+      position: sticky;
+      top: 104px;
+      left: 0;
+    }
+    .image-cover {
+      padding-top: calc(100vh - 88px - 32px);
+      @media screen and (min-width: 1921px) {
+        padding-top: 65vh;
+      }
+      @media screen and (min-width: 2561px) {
+        padding-top: 50vh;
+      }
+    }
+
     .title {
       height: 30px;
       font-size: 32px;
@@ -165,16 +199,24 @@
       right: -2px;
     }
   }
-  .row {
-    .col:nth-child(odd) {
-      padding-right: calc(15px / 2);
+
+  .experiences--list {
+    .row {
+      align-items: flex-end;
     }
-    .col:nth-child(even) {
-      padding-left: calc(15px / 2);
+  }
+
+  .curated-item {
+    padding-bottom: 16px;
+    &:nth-child(even) {
+      padding-left: 8px;
     }
-    .col {
-      @include mixins.mobile {
-        margin-bottom: 15px;
+    &:nth-child(odd) {
+      padding-right: 8px;
+    }
+    &.item-square {
+      :global(.image-cover) {
+        padding-top: 90% !important;
       }
     }
   }

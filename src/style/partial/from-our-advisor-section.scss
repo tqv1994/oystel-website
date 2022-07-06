@@ -1,35 +1,35 @@
-@use "../../theme/colors";
-@use "../../theme/sizes";
-@use "../../theme/variables" as v;
+@use '../../theme/colors';
+@use '../../theme/sizes';
+@use '../../theme/variables' as v;
 @use '../../theme/mixins';
 #from-advisors {
-    //@include mixins.desktop{
-    //  --mdc-layout-grid-margin-desktop: 0;
-    //}
-    .item-experience {
-        .divider {
-            &::after {
-                background-color: #ccc;
-            }
-        }
-        .title {
-            height: 45px;
-            @include mixins.mobile {
-                height: 38px;
-            }
-            overflow: hidden;
-        }
+  //@include mixins.desktop{
+  //  --mdc-layout-grid-margin-desktop: 0;
+  //}
+  .item-experience {
+    .divider {
+      &::after {
+        background-color: #ccc;
+      }
     }
+    .title {
+      height: 45px;
+      @include mixins.mobile {
+        height: 38px;
+      }
+      overflow: hidden;
+    }
+  }
 }
 
 .page-home {
-    #from-advisors {
-        @include mixins.mobile {
-            button .text-eyebrow,
-            .mdc-button .text-eyebrow,
-            .text-eyebrow {
-                font-size: 11px !important;
-            }
-        }
+  #from-advisors {
+    @include mixins.mobile {
+      button .text-eyebrow,
+      .mdc-button .text-eyebrow,
+      .text-eyebrow {
+        font-size: 11px !important;
+      }
     }
+  }
 }

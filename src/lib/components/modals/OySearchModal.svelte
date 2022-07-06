@@ -6,8 +6,8 @@
   import { Icon } from '@smui/common';
   import OySearch from '$lib/components/common/OySearch.svelte';
 
-  export let openSearch: boolean = false;
-  let searchLabel: string = 'What are you searching for?';
+  export let openSearch = false;
+  let searchLabel = 'What are you searching for?';
   function handleOpenSearch() {
     openSearch = true;
   }
@@ -22,7 +22,11 @@
     use:clickOutside
     on:click_outside={handleCloseSearch}
   >
-    <OySearch openSearchComplete={openSearch} label={searchLabel} on:close={handleCloseSearch}/>
+    <OySearch
+      openSearchComplete={openSearch}
+      label={searchLabel}
+      on:close={handleCloseSearch}
+    />
   </div>
   <div class="backdrop" />
 {/if}
@@ -32,7 +36,7 @@
     position: absolute;
     top: calc(117px + 25px);
     z-index: 1;
-    :global(.search-form .mdc-text-field){
+    :global(.search-form .mdc-text-field) {
       width: 315px;
     }
   }

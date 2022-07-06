@@ -1,42 +1,22 @@
 import { writable } from 'svelte/store';
-import { Category } from './category';
-import { GalleryComponentBase } from './component';
-import { CollectionStore, Exhibitable, Identifiable } from './types';
+import type { GalleryComponentBase } from './component';
+import type { CollectionStore, Exhibitable, Identifiable } from './types';
 
 export const productStore = writable<CollectionStore<Product>>({
   items: {},
 });
 
-export type Product = Identifiable & Exhibitable & {
-  brand: string;
-  price: string;
-  intro: string;
-  available: boolean;
-}
+export type Product = Identifiable &
+  Exhibitable & {
+    brand: string;
+    price: string;
+    intro: string;
+    available: boolean;
+  };
 
 export type ProductGallery = GalleryComponentBase & {
   products: Product[];
 };
-
-export const productDesignerStore = writable<CollectionStore<Category>>({
-  items: {},
-});
-
-export const productTypeStore = writable<CollectionStore<Category>>({
-  items: {},
-});
-
-export const productColourStore = writable<CollectionStore<Category>>({
-  items: {},
-});
-
-export const productPattnerStore = writable<CollectionStore<Category>>({
-  items: {},
-});
-
-export const vacationStyleStore = writable<CollectionStore<Category>>({
-  items: {},
-});
 
 export const productFieldsFragment = `
 fragment productFields on Product {

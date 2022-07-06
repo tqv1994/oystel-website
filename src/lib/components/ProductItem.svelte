@@ -2,73 +2,88 @@
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import { makeLink } from '$lib/utils/link';
   import IconButton from '@smui/icon-button';
-  import { Icon } from '@smui/common';
-  import { Svg } from '@smui/common/elements';
-  import { createEventDispatcher } from 'svelte';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
-  import { UploadFile } from '$lib/store/upload-file';
-  import { Country } from '$lib/store/country';
-  import { Category } from '$lib/store/category';
-  import { Product } from '$lib/store/product';
-  import { authStore } from '$lib/store/auth';
-  import { likeProductService } from '$lib/services/product.service';
+  import type { UploadFile } from '$lib/store/upload-file';
+  import type { Country } from '$lib/store/country';
+  import type { Kind } from '$lib/store/category';
+  import type { Product } from '$lib/store/product';
+  import { ppatch } from '$lib/utils/fetch';
+  import { updateTravellerMeStore, type Traveller } from '$lib/store/traveller';
+  import { session } from '$app/stores';
+  import type { User } from '$lib/store/auth';
+  import { actionLike } from './LikeAction.svelte';
+  import { getShortText } from '$lib/utils/string';
+  import FeaturedImage from './FeaturedImage.svelte';
   export let item: Product;
   export let pathPrefix: string;
   export let key: number | null = null;
   export let group_id: number | string | null = null;
   export let gallery: UploadFile[] | undefined = undefined;
-  let liked: boolean = false;
+  let liked = false;
   export let id: string;
   export let name: string;
   export let intro: string;
   export let description: string | undefined = undefined;
   export let country: Country | undefined = undefined;
-  export let type: Category | undefined = undefined;
-  export let introShow: boolean = false;
+  export let type: Kind | undefined = undefined;
+  export let introShow = false;
   export let brand: string | undefined = undefined;
-  let me = $authStore.user;
-  $: if(me){
-    const indexExist = (me.productLikes || []).findIndex(itemProduct=>item.id.replace('product-','') === itemProduct.id);
-    if(indexExist < 0){
-      liked = false;
-    }else{
-      liked = true;
+  session.subscribe((s) => {
+    if (s.user && s.travellerMe) {
+      const travellerMe = s.travellerMe;
+      const indexExist = (travellerMe.productLikes || []).findIndex(
+        (itemProduct) => item.id.toString() === itemProduct.id.toString(),
+      );
+      if (indexExist < 0) {
+        liked = false;
+      } else {
+        liked = true;
+      }
     }
-  }else{
-    liked = false;
-  }
+  });
   async function callLikeItem() {
-    if (me) {
+    return actionLike(async () => {
       try {
-        const userUpdated = await likeProductService(
-          item.id.replace('product-', ''),
-          me.productLikes || [],
-        );
-        me.productLikes = userUpdated.productLikes;
-        authStore.set({ user: me });
+        const res = await ppatch('travellers/me', {
+          productLikes: processItemLikeIds(
+            item.id.toString(),
+            $session.travellerMe?.productLikes || [],
+          ),
+        });
+        if (res.ok) {
+          updateTravellerMeStore(await res.json());
+        } else {
+          window.pushToast('An error occurred');
+        }
       } catch (error) {
         console.error(error);
       }
-    } else {
-      window.openSignInModal();
-    }
+    }, $session);
   }
+
+  const processItemLikeIds = (id: string, items: Product[]) => {
+    const itemIds: string[] = items.map((item) => item.id.toString());
+    const indexExist = itemIds.findIndex((item) => item === id);
+    if (indexExist < 0) {
+      itemIds.push(id);
+    } else {
+      itemIds.splice(indexExist, 1);
+    }
+    return itemIds;
+  };
 </script>
 
 <div class="item" on:click on:pointerdown>
   <div class="thumbnail">
     <a href="javascript:void(0);">
-      <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
-        <BlurImage />
-        {#if gallery && gallery.length > 0 && gallery[0] !== null}
-          <BlurImage {...gallery[0]} />
-        {:else}
-          <BlurImage />
-        {/if}
-      </div>
+      <FeaturedImage
+        image={gallery && gallery.length > 0 && gallery[0] ? gallery[0] : undefined}
+        style="padding-top: calc(410 / 315 * 100%)"
+        alt={item?.name || ''}
+        size="small"
+      />
     </a>
     <IconButton
       class="btn-favorite {liked ? 'liked' : ''}"
@@ -81,15 +96,15 @@
   <!-- <a href="{pathPrefix}?c={d.country.id}"></a> -->
   <a href="javascript:void(0);">
     <LayoutGrid class="p-0">
-      <Cell spanDevices={{ desktop: 6, phone: 2 }}
+      <Cell spanDevices={{ desktop: 6, phone: 6 }}
         ><p class="text-eyebrow text-left m-0 mt-20 mb-0">
           {brand || ''}
         </p></Cell
       >
     </LayoutGrid>
-    <h3 class="text-body1 mt-15 mb-15">{name}</h3>
+    <h3 class="text-body1 mt-15 mb-15">{name || ''}</h3>
     {#if introShow}
-      <p class="short-text m-none m-0">{(intro || '').substring(0, 80)}</p>
+      <p class="short-text m-none m-0">{getShortText(description || '')}</p>
     {/if}
   </a>
 </div>
@@ -118,6 +133,11 @@
     }
     .divider {
       width: 20%;
+    }
+    h3.text-body1 {
+      @include mixins.mobile {
+        line-height: 24px;
+      }
     }
   }
 </style>

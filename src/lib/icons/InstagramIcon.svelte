@@ -1,0 +1,32 @@
+<script lang="ts">
+  import { Icon } from '@smui/common';
+  import { Svg } from '@smui/common/elements';
+  export let width = 16;
+  export let height = 16;
+</script>
+
+<Icon component={Svg} {width} {height} viewBox="0 0 16 16">
+  <path
+    id="Path_297"
+    data-name="Path 297"
+    d="M11.234,0H4.766A4.772,4.772,0,0,0,0,4.766v6.467A4.772,4.772,0,0,0,4.766,16h6.467A4.772,4.772,0,0,0,16,11.233V4.766A4.772,4.772,0,0,0,11.234,0ZM14.39,11.233a3.157,3.157,0,0,1-3.157,3.157H4.766A3.157,3.157,0,0,1,1.61,11.233V4.766A3.157,3.157,0,0,1,4.766,1.61h6.467A3.157,3.157,0,0,1,14.39,4.766v6.467Z"
+    fill="#fff"
+  />
+  <path
+    id="Path_298"
+    data-name="Path 298"
+    d="M136.164,133a3.164,3.164,0,1,0,3.165,3.164A3.168,3.168,0,0,0,136.164,133Zm0,5.1a1.934,1.934,0,1,1,1.934-1.934A1.934,1.934,0,0,1,136.164,138.1Z"
+    transform="translate(-128.165 -128.165)"
+    fill="#fff"
+  />
+  <ellipse
+    id="Ellipse_25"
+    data-name="Ellipse 25"
+    cx="1.242"
+    cy="1.242"
+    rx="1.242"
+    ry="1.242"
+    transform="translate(10.757 2.798)"
+    fill="#fff"
+  />
+</Icon>

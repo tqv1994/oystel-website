@@ -3,22 +3,28 @@
 
   import BottomAppBar from '$lib/components/common/BottomAppBar/index.svelte';
   import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-  import { authStore } from '$lib/store/auth';
-  
-  let content: string = '';
-  let userModel = $authStore.user;
+  import { session } from '$app/stores';
+
+  let content = '';
+  let userModel = $session.user;
   const itemClick = (event: CustomEvent) => {
     let data = event.detail;
     if (data.content) {
       content = event.detail.content;
     } else if (data.link !== '') {
-      if (userModel && data.link.includes('/me')) {
+      if (userModel) {
+        if(data.link !== "/me" && !$session.travellerMe){
+          window.pushToast('Please update the information before doing this');
+          goto('/me/my-account');
+          return;
+        }
         goto(data.link);
       } else {
-        window.pushToast('Please login to use this feature');
+        window.openSignInModal();
       }
     }
   };
 </script>
+
 <BottomAppBar on:itemClick={itemClick} />
 <HeaderActionMobile bind:content />

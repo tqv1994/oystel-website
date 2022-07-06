@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Action } from '$lib/store/action';
-  import { UploadFile } from '$lib/store/upload-file';
+  import type { Action } from '$lib/store/action';
+  import type { UploadFile } from '$lib/store/upload-file';
 
   import Button from '@smui/button';
   import { Cell } from '@smui/layout-grid';
@@ -8,6 +8,8 @@
   import { Label } from '@smui/list';
   import BlurImage from './blur-image.svelte';
   import Carousel from './Carousel.svelte';
+import FeaturedImage from './FeaturedImage.svelte';
+import CarouselImages from './CarouselImages.svelte';
 
   export let name: string | undefined = undefined;
   export let headline: string | undefined = undefined;
@@ -15,16 +17,6 @@
   export let actions: Action[] | undefined = undefined;
   export let gallery: UploadFile[] | undefined = undefined;
   export let background: UploadFile[] | undefined = undefined;
-
-  const carouselConfig = {
-    autoplayDuration: 8000,
-    duration: 1500,
-    infinite: true,
-    particlesToShow: 1,
-    chevronPosition: 'inside',
-  };
-
-  
 </script>
 
 <LayoutGrid>
@@ -35,17 +27,7 @@
     >
       {#if gallery.length > 1}
         <div class="thumbnail dark multi-images-affect">
-          <Carousel {...carouselConfig}>
-            {#each gallery as item}
-              <div
-                class="image-cover"
-                style="padding-top: calc(610 / 420 * 100%)"
-              >
-                <BlurImage {...item} />
-              </div>
-            {/each}
-            
-          </Carousel>
+          <CarouselImages {gallery} styleItem="padding-top: calc(610 / 420 * 100%)" />
           <div class="caption" style="bottom:0">
             <span class="">Channel Resort ‘21</span>
           </div>
@@ -53,7 +35,12 @@
       {:else}
         <div class="thumbnail dark multi-images-affect">
           <div class="image-cover" style="padding-top: calc(610 / 420 * 100%)">
-            <BlurImage {...gallery[0]} />
+            <FeaturedImage
+              image={(gallery || []).length > 0 ? gallery[0] : undefined}
+              size="small"
+              style="padding-top: calc(410 / 315 * 100%)"
+              alt={name || ''}
+            />
           </div>
           <div class="caption">
             <span class="">Channel Resort ‘21</span>

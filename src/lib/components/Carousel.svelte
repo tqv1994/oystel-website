@@ -1,47 +1,42 @@
 <script lang="ts">
-  import IconButton from '@smui/icon-button';
-
   import { onMount } from 'svelte';
+  import { Icon } from '@smui/button';
+  import Carousel from '@beyonk/svelte-carousel';
 
-  export let autoplayDuration = 8000;
+  export let easing = 'linear';
+  export let perPage = 1;
+  export let autoplay = 8000;
   export let duration = 1500;
-  export let infinite = true;
-  export let particlesToShow = 1;
+  export let draggable = false;
+  export let dots = false;
+  export let loop = false;
+  export let useCustomArrow = false;
+  export let useCustomArrowAddChevron = false;
+  export let customArrowLeftText: string | undefined = undefined;
+  export let customArrowRightText: string | undefined = undefined;
   export let chevronPosition = 'inside';
   export let itemsShowMobile: number | undefined = undefined;
-  export let initialPageIndex: number = 0;
-  export let autoplay: boolean = false;
-  let itemsShowDesktop: number = particlesToShow;
-  export let totalItems: number = 0;
-  let totalPage: number = 0;
-  
+  export let startIndex = 0;
+  export let controls = true;
+  let itemsShowDesktop: number = perPage;
+  export let totalItems = 0;
+  let totalPage = 0;
 
-  let Carousel: Carousel; // for saving Carousel component class
-  let carouselObject: Carousel;
-  let currentPageIndex: number = 0;
+  let carousel: Carousel;
+  let currentPageIndex = 0;
   onMount(async () => {
-    const module = await import('svelte-carousel');
-    Carousel = module.default;
     if (!checkIsDesktop()) {
       if (itemsShowMobile) {
-        particlesToShow = itemsShowMobile;
+        perPage = itemsShowMobile;
       }
     } else {
-      particlesToShow = itemsShowDesktop;
+      perPage = itemsShowDesktop;
     }
-    if(totalItems){
+    if (totalItems) {
       // totalPage = totalItems >  > 0;
-      totalPage = totalItems <= particlesToShow ? 1 : 1 + (totalItems - particlesToShow);
+      totalPage = totalItems <= perPage ? 1 : 1 + (totalItems - perPage);
     }
   });
-
-  const handleNextClick = (carousel: Carousel) => {
-    carousel.goToNext();
-  };
-
-  const handlePrevClick = (carousel: Carousel) => {
-    carousel.goToPrev();
-  };
 
   const checkIsDesktop = () => {
     const width =
@@ -57,64 +52,101 @@
   const onResize = () => {
     if (!checkIsDesktop()) {
       if (itemsShowMobile) {
-        particlesToShow = itemsShowMobile;
+        perPage = itemsShowMobile;
       }
     } else {
-      particlesToShow = itemsShowDesktop;
+      perPage = itemsShowDesktop;
     }
   };
 
+  function onChange(
+    event: CustomEvent<{ currentSlide: number; slideCount: number }>,
+  ) {
+    currentPageIndex = event.detail.currentSlide;
+  }
+
+  export function onLeftClick() {
+    carousel.left();
+  }
+
+  export function onRightClick() {
+    carousel.right();
+  }
+
+  export function onGo(index: number) {
+    carousel.go(index);
+  }
 </script>
 
 <svelte:window on:resize={onResize} />
 
-<svelte:component
-  this={Carousel}
-  bind:this={carouselObject}
+<Carousel
+  bind:this={carousel}
+  on:change
+  {easing}
   {autoplay}
-  {autoplayDuration}
   {duration}
-  {infinite}
-  bind:particlesToShow
-  bind:initialPageIndex
-  let:showPrevPage
-  let:showNextPage
-  swiping={false}
-  on:pageChange={
-    event => currentPageIndex = event.detail
-  }
+  {draggable}
+  {dots}
+  {loop}
+  {controls}
+  {useCustomArrow}
+  {useCustomArrowAddChevron}
+  {customArrowLeftText}
+  {customArrowRightText}
+  bind:perPage
+  bind:startIndex
+  on:change={onChange}
 >
-  <aside class={`arrow-${chevronPosition} ${totalPage > 0 && currentPageIndex === 0  ? "disabled" : ""} left`} slot="prev">
-    <IconButton
-      class={`material-icons`}
-      on:click={() => showPrevPage(carouselObject)}
-    >
-      chevron_left
-    </IconButton>
-  </aside>
-  <aside class={`arrow-${chevronPosition} right ${totalPage > 0 && currentPageIndex+1 === totalPage  ? "disabled" : ""}`} slot="next">
-    <IconButton
-      class={`material-icons`}
-      on:click={() => showNextPage(carouselObject)}
-    >
-      chevron_right
-    </IconButton>
-  </aside>
+  <span
+    class={`arrow-${chevronPosition} ${
+      totalPage > 0 && currentPageIndex === 0 ? 'disabled' : ''
+    } left`}
+    slot="left-control"
+  >
+    {#if useCustomArrow}
+      {#if useCustomArrowAddChevron}
+        <span class="custom-button-chevron -left"
+          ><Icon class="material-icons">chevron_left</Icon></span
+        >
+      {/if}
+      {customArrowLeftText}
+    {:else}
+      <Icon class={`material-icons`}>chevron_left</Icon>
+    {/if}
+  </span>
+  <span
+    class={`arrow-${chevronPosition} right ${
+      totalPage > 0 && currentPageIndex + 1 === totalPage ? 'disabled' : ''
+    }`}
+    slot="right-control"
+  >
+    {#if useCustomArrow}
+      {customArrowRightText}
+      {#if useCustomArrowAddChevron}
+        <span class="custom-button-chevron -right"
+          ><Icon class="material-icons">chevron_right</Icon></span
+        >
+      {/if}
+    {:else}
+      <Icon class={`material-icons`}>chevron_right</Icon>
+    {/if}
+  </span>
   <slot />
-  
-  {#if totalItems > 0 && (particlesToShow - totalItems) > 0}
-    {#each Array(particlesToShow - totalItems) as _, i}
-      <div></div>
+
+  {#if totalItems > 0 && perPage - totalItems > 0}
+    {#each Array(perPage - totalItems) as _, i}
+      <div />
     {/each}
   {/if}
-</svelte:component>
+</Carousel>
 
 <style lang="scss">
   @use '../../theme/mixins';
-  aside{
-    &.disabled{
-      :global(.mdc-icon-button){
-        color: #9A9A9A;
+  span {
+    &.disabled {
+      :global(.mdc-icon-button) {
+        color: #9a9a9a;
       }
     }
   }
@@ -134,6 +166,16 @@
     }
     &.right {
       right: 20px;
+    }
+  }
+
+  .custom-button-chevron {
+    display: inline-block;
+    &.-left {
+      padding-right: 4px;
+    }
+    &.-right {
+      padding-left: 4px;
     }
   }
 
@@ -166,8 +208,7 @@
     --sc-color-rgb-light: transparent;
     border: 1px solid #fff;
   }
-  :global(.sc-carousel-dots__dot-container){
-    
+  :global(.sc-carousel-dots__dot-container) {
   }
   :global(.sc-carousel-dot__dot_active) {
     --sc-active-dot-size: 11px;

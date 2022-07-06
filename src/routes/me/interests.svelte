@@ -1,44 +1,44 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import { authStore, User } from '$lib/store/auth';
+  import { session } from '$app/stores';
+  import type { User } from '$lib/store/auth';
   import LayoutAccount from './components/LayoutAccount.svelte';
   import Box from './components/Box.svelte';
   import ButtonBack from './components/ButtonBack.svelte';
   import Field from './components/Field.svelte';
   import InterestsForm from './_form/interests-form.svelte';
   import Text from './components/Text.svelte';
-  import { Interest, InterestType } from '$lib/store/interest';
+  import type { InterestType } from '$lib/store/interest';
   import AlertBox from './components/AlertBox.svelte';
   import { goto } from '$app/navigation';
   import { interestTypeStore } from '$lib/store/interest';
   import { get } from 'svelte/store';
 
-  export const load: Load = async ({ fetch }) => {
-    let me: User | undefined;
-    authStore.subscribe(({ user }) => (me = user));
-    if (me?.travellerMe) {
-      const interestTypes = Object.values(get(interestTypeStore).items);
+  export const load: Load = async ({ fetch, session }) => {
+    const travellerMe = session.travellerMe;
+    if (travellerMe) {
+      const interestTypes = await getCollection(fetch, 'interest-type');
       return {
         props: {
-          me,
           data: interestTypes,
-          dataSelected: me?.travellerMe.interests.map((item) => item.id),
+          dataSelected: travellerMe.interests?.map((item) => item.id),
         },
       };
     }
 
     return {
-      props: { me },
+      props: {},
     };
   };
 </script>
 
 <script lang="ts">
   import ButtonUnderline from './components/ButtonUnderline.svelte';
+  import { updateTravellerMeStore } from '$lib/store/traveller';
+  import { getCollection } from '$lib/store/collection';
+  import { ppatch } from '$lib/utils/fetch';
 
-  let is_edit: boolean = false;
-
-  export let me: User;
+  let is_edit = false;
   export let data: InterestType[];
 
   export let dataSelected: string[];
@@ -52,19 +52,10 @@
   const handleSubmit = async () => {
     window.openLoading();
     try {
-      const res = await fetch('/me/interests/update.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataSelected),
-      });
+      const res = await ppatch('travellers/me', { interests: dataSelected });
       if (res.ok) {
         handleClose();
-        const interestList = data.map((item) => item.interests);
-        me.travellerMe.interests = []
-          .concat(...interestList)
-          .filter((item) => dataSelected.includes(item.id));
+        updateTravellerMeStore(await res.json());
         tempSelected = [...dataSelected];
       }
     } catch (error) {
@@ -74,9 +65,9 @@
   };
 
   const handleDisplay = (selected: string[], type: InterestType) => {
-    let result: string = 'No Preferences';
+    let result = 'No Preferences';
     const cloneSelected = [...selected];
-    const interestSelectedByType = type.interests.filter((item) =>
+    const interestSelectedByType = (type.interests || []).filter((item) =>
       cloneSelected.includes(item.id),
     );
 
@@ -89,19 +80,18 @@
 
 <div class="content interests-content">
   <LayoutAccount currentPage="interests">
-    <svelte:component this={ButtonBack} label="Interests" link="/me" />
-    {#if !me.travellerMe}
-      <svelte:component this={AlertBox}>
-        Before doing this. Please tell us your first and last name. <svelte:component
-          this={ButtonUnderline}
+    <ButtonBack label="Interests" link="/me" />
+    {#if !$session.travellerMe}
+      <AlertBox>
+        Before doing this. Please tell us your first and last name. <ButtonUnderline
           on:click={() => {
             goto('/me/my-account');
           }}
           label="Update them here"
         />
-      </svelte:component>
+      </AlertBox>
     {/if}
-    {#if me.travellerMe}
+    {#if $session.travellerMe}
       {#if !is_edit}
         <Box bind:is_edit title="My Interests" class="">
           {#each data as type}
@@ -111,9 +101,7 @@
           {/each}
         </Box>
       {:else}
-        <svelte:component
-          this={InterestsForm}
-          bind:me
+        <InterestsForm
           bind:data
           bind:dataSelected
           bind:is_edit

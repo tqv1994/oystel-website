@@ -1,43 +1,46 @@
 .search-form-experiences {
-    .mdc-layout-grid {
-        --mdc-layout-grid-gutter-desktop: 0;
-        --mdc-select-idle-line-color: #000;
-        --mdc-select-hover-line-color: #000;
-    }
+  .mdc-layout-grid {
+    --mdc-layout-grid-gutter-desktop: 0;
+    --mdc-select-idle-line-color: #000;
+    --mdc-select-hover-line-color: #000;
+  }
 }
 .search-form-experiences {
-    .mdc-text-field,
-    .mdc-select {
-        height: 35px;
-        width: 100%;
-        padding-right: 15px;
-    }
-    .mdc-select.mdc-select--outlined .mdc-select__anchor {
-        height: 35px;
-    }
-    .mdc-text-field .mdc-notched-outline__leading,
-    .mdc-text-field .mdc-notched-outline__notch,
-    .mdc-text-field .mdc-notched-outline__trailing,
-    .mdc-select .mdc-notched-outline__leading,
-    .mdc-select .mdc-notched-outline__notch,
-    .mdc-select .mdc-notched-outline__trailing {
-        border-color: #000;
-    }
-    // .mdc-select{
-    //     .mdc-notched-outline__notch{
-    //         border-top: 0;
-    //     }
-    //     .mdc-notched-outline__leading{
-    //         border-top: 0;
-    //         border-left: 0;
-    //     }
-    //     .mdc-notched-outline__trailing{
-    //         border-top: 0;
-    //         border-right: 0;
-    //     }
-    // }
-    
-    .mdc-text-field img {
-        filter: brightness(0.1);
-    }
+  .mdc-text-field,
+  .mdc-select {
+    height: 40px;
+    width: 100%;
+    padding-right: 15px;
+  }
+  .mdc-select.mdc-select--outlined .mdc-select__anchor {
+    height: 40px;
+  }
+  .mdc-text-field .mdc-notched-outline__leading,
+  .mdc-text-field .mdc-notched-outline__notch,
+  .mdc-text-field .mdc-notched-outline__trailing,
+  .mdc-select .mdc-notched-outline__leading,
+  .mdc-select .mdc-notched-outline__notch,
+  .mdc-select .mdc-notched-outline__trailing {
+    border-color: #000;
+  }
+  // .mdc-select{
+  //     .mdc-notched-outline__notch{
+  //         border-top: 0;
+  //     }
+  //     .mdc-notched-outline__leading{
+  //         border-top: 0;
+  //         border-left: 0;
+  //     }
+  //     .mdc-notched-outline__trailing{
+  //         border-top: 0;
+  //         border-right: 0;
+  //     }
+  // }
+
+  .mdc-text-field img {
+    filter: brightness(0.1);
+  }
+  .oy-select {
+    --height: 40px;
+  }
 }

@@ -2,10 +2,10 @@
   import Button, { Label } from '@smui/button';
 
   export let label: string | undefined = '';
-  export let href: string;
-  export let target: string;
-  export let type: string;
-  let classNames: string;
+  export let href: string | undefined = undefined;
+  export let target: string | undefined = undefined;
+  export let type: string | undefined = undefined;
+  let classNames: string | '' = '';
   export { classNames as class };
 </script>
 
@@ -13,7 +13,7 @@
   class={`button-underline ${classNames || ''}`}
   on:click
   bind:href
-  bind:type
+  {type}
   bind:target><Label class="text-button2">{label}</Label></Button
 >
 

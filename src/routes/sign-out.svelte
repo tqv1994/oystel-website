@@ -1,13 +1,36 @@
+<script lang="ts" context="module">
+  export const load: Load = async ({ fetch, session, url }) => {
+    const res = await fetch(`/p/auth/sign-out`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
+    });
+
+    return {};
+  };
+</script>
+
 <script lang="ts">
-  import { authStore } from '$lib/store/auth';
-  import { routerHelper } from '$lib/helpers';
+  import { session as sessionStore } from '$app/stores';
+  import { ppost } from '$lib/utils/fetch';
+  import { goto } from '$app/navigation';
+  import type { Load } from '@sveltejs/kit';
+  import { redirect } from '$lib/helpers/redirect.svelte';
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+    sessionStore.set({ user: undefined });
+    redirect('/');
+  });
 
   async function signOut() {
     try {
-      const res = await fetch(`/auth/sign-out.json?_z=${Date.now()}`);
+      const res = await ppost(`auth/sign-out`, {});
       if (res.ok) {
-        authStore.set({ user: undefined });
-        routerHelper.redirect('/');
+        sessionStore.set({ user: undefined });
+        goto('/');
         return;
       }
       console.error('Error authenticating', res);
@@ -16,34 +39,31 @@
     }
   }
 </script>
-  <div class="content">
-    <section class=" d-pt-128 m-pt-70">
+
+<div class="content">
+  <section class=" d-pt-128 m-pt-70">
     <div class="container">
-      {#if $authStore.user}
+      {#if $sessionStore.user}
         <h1>Really sign out?</h1>
         <ul>
           <li>
-            <a href="javascript:void(0)" on:click={signOut}>Yes, sign out</a>
+            <button on:click={signOut}>Yes, sign out</button>
           </li>
           <li><a href="/me">Stay signed in</a></li>
         </ul>
       {:else}
         <h1>You've successfully signed out</h1>
-        <a
-          href="javascript:void(0);"
-          on:click={() => {
-            routerHelper.redirect('/');
-          }}>Go to the home page</a
-        >
+        <a href="/">Go to the home page</a>
       {/if}
     </div>
-    </section>
-  </div>
-  <style lang="scss">
-    @use '../theme/mixins';
-    section{
-      @include mixins.desktop{
-        padding-left: calc(8%);
-      }
+  </section>
+</div>
+
+<style lang="scss">
+  @use '../theme/mixins';
+  section {
+    @include mixins.desktop {
+      padding-left: calc(8%);
     }
-  </style>
+  }
+</style>

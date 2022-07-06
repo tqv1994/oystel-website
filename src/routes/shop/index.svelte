@@ -1,133 +1,56 @@
 <script lang="ts" context="module">
-  import { HomePageData } from '../home/index.json';
   import type { Load } from '@sveltejs/kit';
 
   export const load: Load = async ({ fetch, session, url }) => {
-    const res = await fetch(`/shop.json?_z=${Date.now()}`);
-    if (res.ok) {
-      const data: Page = await res.json();
-      console.log(data);
-      return {
-        props: {
-          data,
-        },
-      };
-    } else {
-      const error = await res.json();
-      console.error(error);
-    }
+    const productDesigners = await getCollection(fetch, 'product-designer');
+    const productTypes = await getCollection(fetch, 'product-type');
     return {
-      props: {},
+      props: {
+        data: await loadFeature(fetch, 'shop'),
+        productDesigners,
+        productTypes
+      },
     };
   };
 </script>
 
 <script lang="ts">
-  import LayoutGrid from '@smui/layout-grid';
-  import { Cell } from '@smui/layout-grid';
-  import Button from '@smui/button';
-  import { Label } from '@smui/common';
-  import Carousel from '$lib/components/Carousel.svelte';
-  import BlurImage from '$lib/components/blur-image.svelte';
   import ShopNavigation from '$lib/components/ShopNavigation.svelte';
-  import { Page } from '$lib/store/page';
+  import type { Page } from '$lib/store/page';
   import FeaturedDrop from '$lib/components/FeaturedDrop.svelte';
   import LookList2 from '$lib/components/LookList2.svelte';
   import DropSlides from '$lib/components/DropSlides.svelte';
-
+  import ShopTitle from '$lib/components/ShopTitle.svelte';
+  import { loadFeature } from '$lib/utils/load';
+  import { getCollection } from '$lib/store/collection';
+import type { Kind } from '$lib/store/category';
+  export let productDesigners: Kind[];
+  export let productTypes: Kind[];
   export let data: Page;
-
-  const carouselConfig = {
-    autoplayDuration: 8000,
-    duration: 1500,
-    infinite: true,
-    particlesToShow: 1,
-    chevronPosition: 'inside',
-  };
-
-  const carouselConfigMobile = {
-    autoplayDuration: 8000,
-    duration: 1500,
-    infinite: true,
-    particlesToShow: 2,
-    chevronPosition: 'outside',
-  };
 </script>
 
-<ShopNavigation />
+<ShopNavigation {productDesigners} {productTypes} />
 <div class="content shop-page-content">
   {#each data?.sections as section}
-    {#if section.__typename === 'ComponentBannersBanner'}
-      <section class="header-title full-width d-pb-20 m-pb-15 pt-0">
-        <div class="content-wrap">
-          <div class="container">
-            <LayoutGrid class="p-0">
-              <Cell spanDevices={{ desktop: 5, phone: 4, tablet: 8 }}>
-                <div class="content-left">
-                  <div>
-                    <span class="text-eyebrow d-mr-50 m-mr-60"
-                      >{section.headline}</span
-                    >
-                    {#if section.actions.length > 0}
-                      <Button variant="outlined" href={section.actions[0].url}
-                        ><Label>{section.actions[0].name}</Label></Button
-                      >
-                    {/if}
-                  </div>
-                  <h2 class="d-mb-30 d-mt-30 d-mt-25 m-mb-15">
-                    {section.name}
-                  </h2>
-                  <p class="mb-0 mt-0 short-description">
-                    {section.description}
-                  </p>
-                </div>
-              </Cell>
-              <Cell spanDevices={{ desktop: 7, phone: 4, tablet: 8 }}>
-                <div class="shop-slides">
-                  <Carousel {...carouselConfig}>
-                    {#if section.gallery.length > 0}
-                      {#each section.gallery as item}
-                        <div class="slides">
-                          <div class="thumbnail">
-                            <div class="image-cover m-none" style="padding-top: 90vh">
-                              <BlurImage {...item} />
-                            </div>
-                            <div class="image-cover d-none m-block" style="padding-top: 100%">
-                              <BlurImage {...item} />
-                            </div>
-                          </div>
-                        </div>
-                      {/each}
-                    {:else}
-                      <div class="slides">
-                        <div class="thumbnail">
-                          <div class="image-cover m-none" style="padding-top: 90vh">
-                            <BlurImage />
-                          </div>
-                          <div class="image-cover d-none m-block" style="padding-top: 100%">
-                            <BlurImage />
-                          </div>
-                        </div>
-                      </div>
-                    {/if}
-                  </Carousel>
-                </div>
-              </Cell>
-            </LayoutGrid>
-          </div>
-        </div>
-      </section>
-    {:else if section.__typename === 'ComponentGalleriesFeaturedDrop'}
+    {#if section.__component === 'banners.banner'}
+      <ShopTitle
+        title={section.name}
+        description={section.description}
+        subTitle={section.headline}
+        gallery={section.gallery}
+        galleryPosition="right"
+      />
+    {:else if section.__component === 'galleries.featured-drop'}
       <FeaturedDrop {...section} />
-    {:else if section.__typename === 'ComponentGalleriesDropGallery'}
+    {:else if section.__component === 'galleries.drop-gallery'}
       <section class="the-latest-section">
-        <div class="container">
+        <div class="container margin-auto medium-max-width">
           <DropSlides title={section.name} drops={section.drops} />
         </div>
       </section>
-    {:else if section.__typename === 'ComponentGalleriesLookGallery'}
+    {:else if section.__component === 'galleries.look-gallery'}
       <section class="">
-        <div class="container">
+        <div class="container margin-auto add-padding">
           <LookList2 items={section.looks} title={section.headline} />
         </div>
       </section>
@@ -160,9 +83,19 @@
     @import './src/style/partial/thumbnail.scss';
     @import './src/style/partial/signup-section.scss';
 
-    .header-title {
-      background-color: #f2f2f2;
+    .header-title.full-width.-slide-content {
+      margin-top: 0 !important;
+      height: calc(100vh - 88px) !important;
+      .image-cover {
+        height: calc(100vh - 88px - 68px - 40px) !important;
+      }
+      @include mixins.mobile {
+        .image-cover {
+          height: 100% !important;
+        }
+      }
     }
+
     .shop-slides {
       height: 100%;
       width: 100%;
@@ -181,7 +114,7 @@
       }
     }
 
-    #featured-drops {
+    section.featured-drops {
       --mdc-layout-grid-gutter-desktop: 15px;
     }
 
@@ -204,14 +137,6 @@
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
-    }
-    .header-title .content-left {
-      padding-top: 30vh;
-    }
-    .header-title .short-description {
-      @include mixins.desktop {
-        width: 80%;
-      }
     }
     .trips-list-wrap {
       padding-bottom: 110px;
@@ -266,12 +191,14 @@
       margin-bottom: 70px;
     }
 
-    #featured-drops .list-featured-drop :global(.mdc-layout-grid__inner) {
+    section.featured-drops
+      .list-featured-drop
+      :global(.mdc-layout-grid__inner) {
       overflow-x: auto;
       grid-auto-flow: column;
     }
 
-    #featured-drops .list-featured-drop {
+    section.featured-drops .list-featured-drop {
       :global(.mdc-layout-grid__inner::-webkit-scrollbar-thumb) {
         background-color: colors.$blue;
       }
@@ -303,13 +230,6 @@
         display: flex;
         justify-content: start;
         margin-top: 20px;
-      }
-      .header-title :global(.mdc-layout-grid__cell:first-child) {
-        order: 2;
-      }
-      .header-title .content-left {
-        padding-top: 15px;
-        padding-bottom: 20px;
       }
 
       .filter-wrap label {
@@ -344,31 +264,6 @@
         line-height: 10px;
         letter-spacing: 0.1px;
         bottom: -15px;
-      }
-    }
-
-    @media (max-width: 1025px) and (min-width: 950px) {
-      .header-title .content-left {
-        .d-mr-50 {
-          margin-right: 10px !important;
-        }
-      }
-    }
-
-    @media (max-width: 1105px) and (min-width: 950px) {
-      #signup-section {
-        .d-mb-100 {
-          margin-bottom: 30px !important;
-        }
-        .d-mt-145 {
-          margin-top: 70px !important;
-        }
-      }
-    }
-
-    @media (max-width: 389px) {
-      .header-title .content-left .m-mr-60 {
-        margin-right: 40px !important;
       }
     }
   }

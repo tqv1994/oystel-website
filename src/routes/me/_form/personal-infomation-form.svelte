@@ -3,92 +3,102 @@
   import Textfield from '@smui/textfield';
   import Field from '../components/Field.svelte';
   import Select, { Option } from '@smui/select';
-  import Autocomplete from '@smui-extra/autocomplete';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import { authStore, User } from '$lib/store/auth';
+  import { session } from '$app/stores';
   import Button from '@smui/button';
   import Note from '../components/Note.svelte';
   import FormToggle from '../components/FormToggle.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import { salutationTypeStore } from '$lib/store/salutation-type';
-  import { get } from 'svelte/store';
-  import { updateTravellerData } from '../../traveller/update-me.json';
-  import { Country, countryStore } from '$lib/store/country';
   import {
     convertTravellerToInput,
-    Traveller,
     TravellerInput,
+    updateTravellerMeStore,
   } from '$lib/store/traveller';
+  import type { Traveller } from '$lib/store/traveller';
   import { createPatternPhoneCode } from '$lib/utils/string';
   import * as yup from 'yup';
-  import { onMount } from 'svelte';
-  import { UpdateUserData } from '../../auth/update.json';
-  import { createTravellerData } from '../../traveller/create.json';
-  import { cmsUrlPrefix } from '$lib/env';
-  import { UploadFile } from '$lib/store/upload-file';
-  import { sortByName } from '$lib/utils/sort';
   import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
   import OyDatepicker from '$lib/components/common/OyDatepicker.svelte';
   import HelperText from '@smui/textfield/helper-text';
-  export let me: User;
-  const travellerMe: Traveller = me.travellerMe;
-  const salutationTypes = Object.values(get(salutationTypeStore).items);
-  const countries = sortByName(Object.values(get(countryStore).items));
+  import { ppatchWithFile, ppostWithFile } from '$lib/utils/fetch';
+  import type { Country } from '$lib/store/country';
+  import type { Kind } from '$lib/store/category';
+  export let travellerMe: Traveller;
+  export let countries: Country[], salutationTypes: Kind[];
   let travellerInput: TravellerInput;
   let phone_code: string;
-  let oysteo_id_number: string = me.id;
+  let oysteo_id_number: string = $session.user?.id || '';
   let errors: any = {};
   let avatarInput: FileList;
   const schemaValidator = yup.object().shape({
-    mobilePhone: yup.number().required(),
-    birthday: yup.string().required(),
-    residence: yup.string().required(),
-    forename: yup.string().required(),
-    surname: yup.string().required()
+    mobilePhone: yup
+      .number()
+      .typeError("That doesn't look like a phone number")
+      .required('Phone number is a required field'),
+    phone_code: yup.string().required('Phone code is a required field'),
+    birthday: yup
+      .string()
+      .typeError('Birthday is a required field')
+      .required('Birthday is a required field'),
+    residence: yup
+      .string()
+      .typeError('Residence is a required field')
+      .required('Residence is a required field'),
+    forename: yup
+      .string()
+      .typeError('Forename is a required field')
+      .required('Forename is a required field'),
+    surname: yup
+      .string()
+      .typeError('Surname is a required field')
+      .required('Surname is a required field'),
+    email: yup
+      .string()
+      .typeError('Email is a required field')
+      .email("Email is not valid")
+      .required('Email is a required field'),
   });
 
-  onMount(async () => {
-    if (me.travellerMe) {
-      travellerInput = convertTravellerToInput(travellerMe);
-      travellerInput.email = travellerInput?.email || me?.email || '';
-      me.travellerMe = travellerMe;
-      phone_code =
-        (travellerInput?.mobilePhone || '').match(createPatternPhoneCode(countries)) +
-        '';
-      phone_code = phone_code.replace('+', '');
-      travellerInput.mobilePhone =
-        travellerInput.mobilePhone?.replace('+' + phone_code, '') || '';
-    } else {
-      travellerInput = new TravellerInput();
-      travellerInput.email = me?.email || '';
-      travellerInput.mobilePhone = '';
-      travellerInput.birthday = '';
-      travellerInput.residence = '';
-      travellerInput.salutationType = '';
-      travellerInput.forename = '';
-      travellerInput.surname = '';
-    }
-  });
+  if (travellerMe) {
+    travellerInput = convertTravellerToInput(travellerMe);
+    travellerInput.email = travellerInput?.email || '';
+    travellerMe = travellerMe;
+    phone_code =
+      (travellerInput?.mobilePhone || '').match(
+        createPatternPhoneCode(countries || []),
+      ) + '';
+    phone_code = phone_code.replace('+', '');
+    travellerInput.mobilePhone =
+      travellerInput.mobilePhone?.replace('+' + phone_code, '') || '';
+  } else {
+    travellerInput = new TravellerInput();
+    travellerInput.email = $session.user?.email || '';
+    travellerInput.mobilePhone = '';
+    travellerInput.birthday = '';
+    travellerInput.residence = '';
+    travellerInput.salutationType = '';
+    travellerInput.forename = '';
+    travellerInput.surname = '';
+  }
 
-  export let is_edit: boolean = true;
+  export let is_edit = true;
 
   async function handleSubmitForm() {
     window.openLoading();
-    let apiUrl: string = 'create.json';
-    let method: string = 'POST';
-    if (me.travellerMe) {
-      apiUrl = 'update-me.json';
-      method = 'PUT';
-    }
     errors = {};
     try {
-      await schemaValidator.validate(travellerInput, { abortEarly: false });
-      const res = await fetch(`/traveller/${apiUrl}`, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      await schemaValidator.validate(
+        { ...travellerInput, phone_code },
+        { abortEarly: false },
+      );
+      const formData = new FormData();
+      if (avatarInput) {
+        let file = avatarInput[0];
+        formData.append('files.avatar', file);
+      }
+      formData.append(
+        'data',
+        JSON.stringify({
           salutationType: travellerInput.salutationType,
           email: travellerInput.email,
           birthday: travellerInput.birthday,
@@ -98,21 +108,17 @@
             (phone_code ? '+' + phone_code : '') + travellerInput.mobilePhone,
           residence: travellerInput.residence,
         }),
-      });
+      );
+      let res;
+      if (travellerMe) {
+        res = await ppatchWithFile('travellers/me', formData);
+      } else {
+        res = await ppostWithFile('travellers/me', formData);
+      }
       if (res.ok) {
-        if (me.travellerMe) {
-          const data: updateTravellerData = await res.json();
-          me.travellerMe = data.updateTraveller.traveller;
-          if (avatarInput) {
-            handleUploadAvatar(avatarInput[0]);
-          } else {
-            is_edit = false;
-          }
-        } else {
-          const data: createTravellerData = await res.json();
-          me.travellerMe = data.createTraveller.traveller;
-          handleUpdateMe();
-        }
+        travellerMe = await res.json();
+        updateTravellerMeStore(travellerMe);
+        is_edit = false;
       } else {
         window.pushToast('An error occurred');
       }
@@ -125,75 +131,34 @@
     }
     window.closeLoading();
   }
-
-  async function handleUpdateMe() {
-    const res = await fetch(`/auth/update.json`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        travellerMe: me.travellerMe.id,
-      }),
-    });
-    if (res.ok) {
-      const data: UpdateUserData = await res.json();
-      me = data.updateUser.user;
-      if (avatarInput) {
-        handleUploadAvatar(avatarInput[0]);
-      } else {
-        authStore.set({ user: me });
-        is_edit = false;
-      }
-    } else {
-      window.pushToast('An error occurred');
-    }
-  }
-
-  async function handleUploadAvatar(file: File) {
-    const dataArray = new FormData();
-    dataArray.append('files', file);
-    dataArray.append('ref', 'user');
-    dataArray.append('source', 'users-permissions');
-    dataArray.append('refId', me.id + '');
-    dataArray.append('field', 'avatar');
-    const res = await fetch(`${cmsUrlPrefix}/upload`, {
-      method: 'POST',
-      body: dataArray,
-    });
-    if (res.ok) {
-      const data: UploadFile[] = await res.json();
-      console.log(data);
-      me.avatar = data[0];
-      authStore.set({ user: me });
-      is_edit = false;
-    } else {
-      window.pushToast('An error occurred');
-    }
-  }
 </script>
 
 {#if travellerInput}
   <form on:submit|preventDefault={handleSubmitForm}>
-    <svelte:component this={FormToggle} title="" bind:is_edit>
+    <FormToggle title="" bind:is_edit>
       <LayoutGrid class="p-0">
         <Cell spanDevices={{ desktop: 8, phone: 4, tablet: 8 }}>
-          <svelte:component
-            this={Field}
-            label="Name*"
-            column_1={4}
-            column_2={8}
-          >
+          <Field label="Name*" column_1={4} column_2={8}>
             <div class="row">
               <div class="d-col-4 m-col-4 mb-0">
-                <Textfield invalid={errors.forename ? true : false} bind:value={travellerInput.forename} label="Forename" type="text">
+                <Textfield
+                  invalid={errors.forename ? true : false}
+                  bind:value={travellerInput.forename}
+                  label="Forename"
+                  type="text"
+                >
                   <HelperText validationMsg slot="helper">
                     {errors?.forename || ''}
                   </HelperText>
                 </Textfield>
               </div>
               <div class="d-col-4 m-col-4 mb-0">
-                <Textfield invalid={errors.surname ? true : false} bind:value={travellerInput.surname} label="Surname" type="text" >
+                <Textfield
+                  invalid={errors.surname ? true : false}
+                  bind:value={travellerInput.surname}
+                  label="Surname"
+                  type="text"
+                >
                   <HelperText validationMsg slot="helper">
                     {errors?.surname || ''}
                   </HelperText>
@@ -210,34 +175,32 @@
                 </Select>
               </div>
             </div>
-          </svelte:component>
-          <svelte:component
-            this={Field}
-            label="Email*"
-            column_1={4}
-            column_2={8}
-          >
-            <Textfield invalid={errors?.email ? true : false} bind:value={travellerInput.email} label="" type="email">
+          </Field>
+          <Field label="Email*" column_1={4} column_2={8}>
+            <Textfield
+              invalid={errors?.email ? true : false}
+              bind:value={travellerInput.email}
+              label=""
+              type="text"
+            >
               <HelperText validationMsg slot="helper">
                 {errors?.email || ''}
               </HelperText>
             </Textfield>
-          </svelte:component>
-          <svelte:component
-            this={Field}
-            label="Cell Phone*"
-            column_1={4}
-            column_2={8}
-          >
+          </Field>
+          <Field label="Cell Phone*" column_1={4} column_2={8}>
             <div class="row">
               <div class="d-col-4 m-col-3 mb-0">
                 <OyAutocomplete
                   key="phone"
+                  invalid={errors?.phone_code ? true : false}
                   options={countries}
                   getOptionLabel={(option) =>
                     option ? `${option.name} +${option.phone}` : ''}
                   bind:value={phone_code}
-                />
+                >
+                  {errors?.phone_code || ''}
+                </OyAutocomplete>
               </div>
               <div class="d-col-8 m-col-9 mb-0">
                 <Textfield
@@ -252,55 +215,44 @@
                 </Textfield>
               </div>
             </div>
-          </svelte:component>
-          <svelte:component
-            this={Field}
-            label="Birth date*"
-            column_1={4}
-            column_2={8}
-          >
-            <OyDatepicker bind:value={travellerInput.birthday} />
-            {#if errors.birthday}
-              <span class="mdc-text-field-helper-text mdc-text-field-helper-text--validation-msg">{errors.birthday}</span>
-            {/if}
-          </svelte:component>
-          <svelte:component
-            this={Field}
-            label="Country of Residence*"
-            column_1={4}
-            column_2={8}
-          >
+          </Field>
+          <Field label="Birth date*" column_1={4} column_2={8}>
+            <OyDatepicker
+              bind:value={travellerInput.birthday}
+              invalid={errors?.birthday ? true : false}
+            >
+              {errors?.birthday || ''}
+            </OyDatepicker>
+          </Field>
+          <Field label="Country of Residence*" column_1={4} column_2={8}>
             <OyAutocomplete
+              invalid={errors?.residence ? true : false}
               options={countries}
               getOptionLabel={(option) => (option ? `${option.name}` : '')}
               key="id"
               bind:value={travellerInput.residence}
-            />
-            {#if errors.residence}
-              <span class="mdc-text-field-helper-text mdc-text-field-helper-text--validation-msg">{errors.residence}</span>
-            {/if}
-          </svelte:component>
-          <svelte:component
-            this={Field}
-            label="OYSTEO ID NUMBER"
-            column_1={4}
-            column_2={8}
-          >
+            >
+              {#if errors.residence}
+                {errors.residence}
+              {/if}
+            </OyAutocomplete>
+          </Field>
+          <Field label="OYSTEO ID NUMBER" column_1={4} column_2={8}>
             <Textfield
               bind:value={oysteo_id_number}
               label=""
               type="text"
               disabled
             />
-          </svelte:component>
+          </Field>
         </Cell>
         <Cell spanDevices={{ desktop: 4, phone: 4, tablet: 8 }}>
           <div class="row mb-20">
             <div class="d-col-12 m-col-3">
               <div class="thumbnail user-profile-image dark mb-45">
                 <div class="image-cover" style="padding-top: 100%">
-                  {#if me.avatar}
-                    <BlurImage {...me.avatar} />
+                  {#if travellerMe?.avatar}
+                    <BlurImage {...travellerMe.avatar} />
                   {:else}
                     <BlurImage url={'/img/me/avatar-default.png'} blurHash="" />
                   {/if}
@@ -320,7 +272,7 @@
       </LayoutGrid>
       <div class="row">
         <div class="d-col-6 m-col-12 m-mb-15">
-          <svelte:component this={Note} />
+          <Note />
         </div>
         <div class="d-col-6 m-col-12">
           <div class="d-block m-none text-right">
@@ -331,7 +283,7 @@
           </div>
         </div>
       </div>
-    </svelte:component>
+    </FormToggle>
   </form>
 {/if}
 <OyNotification />

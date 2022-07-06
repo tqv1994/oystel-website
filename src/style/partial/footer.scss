@@ -1,80 +1,121 @@
-@use "../../theme/colors";
-@use "../../theme/sizes";
-@use "../../theme/variables" as v;
+@use '../../theme/colors';
+@use '../../theme/sizes';
+@use '../../theme/variables' as v;
 @use '../../theme/mixins';
 footer {
-    background-color: #{colors.$black};
+  background-color: #{colors.$black};
+  @include mixins.mobile {
+    .content-wrap .container.medium-max-width {
+      width: 100%;
+      padding: 0 24px;
+    }
+  }
+  @include mixins.desktop {
+    height: 400px;
+  }
+  .mdc-layout-grid {
+    @include mixins.mobile {
+      padding: 90px 0;
+    }
+    @include mixins.desktop {
+      padding: 80px 0 0 0;
+    }
     .mdc-layout-grid {
-        @include mixins.mobile {
-            padding-top: 90px;
-            padding-bottom: 90px;
-        }
-        @include mixins.desktop {
-            padding: 95px 126px 50px calc(8% + var(--mdc-layout-grid-margin-desktop));
-        }
-        .mdc-layout-grid {
-            --mdc-layout-grid-margin-desktop: 0;
-            padding: 0;
-            @media (min-width: 1240px) {
-                --mdc-layout-grid-gutter-desktop: 50px;
-            }
-        }
+      --mdc-layout-grid-margin-desktop: 0;
+      padding: 0;
+      @media (min-width: 1240px) {
+        --mdc-layout-grid-gutter-desktop: 50px;
+      }
     }
-    ul {
-        padding-inline-start: 0;
-        li {
-            font-size: 13px;
-            letter-spacing: 0.2px;
-            line-height: 30px;
-            list-style: none;
-        }
+  }
+  .mdc-button__label {
+    font-size: 14px !important;
+  }
+  ul {
+    padding-left: 0;
+    @include mixins.mobile {
+      margin-bottom: 0;
     }
-    .widget {
-        margin-bottom: 40px;
-    }
+    li {
+      line-height: 30px;
+      list-style: none;
+      margin-bottom: 8px;
 
-    form {
-        .mdc-button {
-            &:hover {
-                border-color: #{colors.$black};
-                --mdc-theme-primary: #{colors.$white};
-                background-color: #{colors.$white};
-                .mdc-button__label {
-                    color: colors.$black !important;
-                }
-            }
-        }
+      a {
+        font-size: 14px;
+        letter-spacing: 0.2px;
+      }
     }
+  }
+  .widget {
+    margin-bottom: 40px;
+    &-title {
+      font-size: 14px;
+      line-height: 23px;
+      letter-spacing: 0;
+      margin-bottom: 8px;
+    }
+    p {
+      font-size: 16px;
+      line-height: 29px;
+      letter-spacing: 0;
+      margin-top: 0;
+    }
+  }
+
+  form {
+    .mdc-button {
+      &:hover {
+        border-color: #{colors.$black};
+        --mdc-theme-primary: #{colors.$white};
+        background-color: #{colors.$white};
+        .mdc-button__label {
+          color: colors.$black !important;
+        }
+      }
+    }
+  }
+
+  .button-socials {
+    padding-top: 16px;
+
+    a {
+      img {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
 }
 
 .user-dashboard {
-    --mdc-tab-horizontal-padding: 0;
-    .mdc-drawer {
-        border-color: transparent;
+  --mdc-tab-horizontal-padding: 0;
+  .mdc-drawer {
+    border-color: transparent;
+  }
+  .mdc-tab-bar {
+    .mdc-tab-scroller__scroll-content {
+      display: block;
     }
-    .mdc-tab-bar {
-        .mdc-tab-scroller__scroll-content {
-            display: block;
-        }
-        .mdc-tab {
-            padding-right: 0;
-            padding-left: 0;
-            justify-content: left;
-            width: 100%;
-            text-transform: uppercase;
-        }
+    .mdc-tab {
+      padding-right: 0;
+      padding-left: 0;
+      justify-content: left;
+      width: 100%;
+      text-transform: uppercase;
     }
-    .personal-info {
-        position: relative;
-        padding: 25px 30px;
-        border: 1px solid #000;
+  }
+  .personal-info {
+    position: relative;
+    padding: 25px 30px;
+    border: 1px solid #000;
+  }
+  .user-profile-image {
+    position: relative;
+    .btn-update-avatar {
+      position: absolute;
+      top: 24px;
+      right: 15px;
     }
-    .user-profile-image {
-        position: relative;
-        .btn-update-avatar {
-            position: absolute;
-            top: 24px;
-            right: 15px;
-        }
-    }
+  }
 }

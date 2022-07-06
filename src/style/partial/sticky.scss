@@ -1,10 +1,10 @@
 .is_sticky.show {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
 }
 .is_sticky {
-    position: fixed;
-    opacity: 0;
-    visibility: hidden;
-    transition: visibility 0s, opacity 0.4s linear;
+  position: fixed;
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility 0s, opacity 0.4s linear;
 }

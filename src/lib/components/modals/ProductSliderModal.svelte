@@ -1,45 +1,18 @@
 <script lang="ts">
   import IconButton from '@smui/icon-button';
-  import Button from '@smui/button';
-  import { Label } from '@smui/common';
   import { Icon } from '@smui/common';
-  import LayoutGrid from '@smui/layout-grid';
-  import { Cell } from '@smui/layout-grid';
   import { Svg } from '@smui/common/elements';
-  import OyCarousel from '../common/OyCarousel.svelte';
-  import { Product } from '$lib/store/product';
-  import BlurImage from '../blur-image.svelte';
-  import { onMount } from 'svelte';
+  import type { Product } from '$lib/store/product';
   import Carousel from '../Carousel.svelte';
-import Markdown from '../Markdown.svelte';
-import { authStore } from '$lib/store/auth';
-import HeartIcon from '$lib/icons/HeartIcon.svelte';
-import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
-import ProductSliderItemModal from './ProductSliderItemModal.svelte';
+  import ProductSliderItemModal from './ProductSliderItemModal.svelte';
   export let open = false;
   export let products: Product[];
   export let active: number;
-
-  const carouselConfig = {
-    autoplayDuration: 8000,
-    duration: 1500,
-    infinite: true,
-    particlesToShow: 1,
-    chevronPosition: 'inside' 
-  };
-
-  const callLikeItem = (item: Product)=> {
-    if($authStore.user){
-      item.liked = true;
-    }else{
-      window.openSignInModal();
-    }
-  }
 </script>
 
 <div class="content-wrap popup-products {open ? 'open' : 'close'}">
   {#if products && products.length > 0 && open}
-    <section class="full-width pt-50 pb-70">
+    <section class="full-width">
       <div class="content-wrap">
         <div class="container">
           <IconButton
@@ -72,7 +45,13 @@ import ProductSliderItemModal from './ProductSliderItemModal.svelte';
               </g>
             </Icon>
           </IconButton>
-          <Carousel {...carouselConfig} initialPageIndex={active}>
+          <Carousel
+            useCustomArrow={true}
+            useCustomArrowAddChevron={true}
+            customArrowLeftText="Previous"
+            customArrowRightText="Next"
+            startIndex={active}
+          >
             {#each products as item}
               <div class="slide-content slide-item">
                 <ProductSliderItemModal {item} />
@@ -89,21 +68,22 @@ import ProductSliderItemModal from './ProductSliderItemModal.svelte';
   @use '../../../theme/mixins';
   @include mixins.mobile {
     .slide-item {
-      @include mixins.mobile{
+      @include mixins.mobile {
         margin-bottom: calc(45px * 2);
       }
-      // .thumbnail {
-      //   margin: auto calc(100px - var(--mdc-layout-grid-margin-phone));
-      // }
     }
   }
   .popup-products {
-    padding-top: 87px;
-    max-height: 100vh;
-    overflow-y: scroll;
-    .slide-item{
-      .mdc-icon-button{
-          filter:brightness(0%);
+    max-height: calc(100vh - 88px);
+    border-top: 1px solid rgba(black, 0.25);
+    @include mixins.mobile {
+      max-height: calc(100vh);
+      border-top: none;
+      z-index: 45;
+    }
+    .slide-item {
+      .mdc-icon-button {
+        filter: brightness(0%);
       }
     }
     @import './src/style/partial/thumbnail.scss';
@@ -112,8 +92,17 @@ import ProductSliderItemModal from './ProductSliderItemModal.svelte';
       --mdc-layout-grid-gutter-desktop: 100px;
       background-color: #fff;
     }
-    .arrow-inside .mdc-icon-button:hover{
-      color: rgba(0,0,0,0.7);
+    :global(.mdc-button.custom-button) {
+      width: auto;
+      min-width: auto;
+      font-size: 16px;
+      padding: 0;
+    }
+    .full-width {
+      padding: 0;
+    }
+    .arrow-inside .mdc-icon-button:hover {
+      color: rgba(0, 0, 0, 0.7);
     }
     .arrow {
       @include mixins.mobile {
@@ -123,7 +112,7 @@ import ProductSliderItemModal from './ProductSliderItemModal.svelte';
       z-index: 1;
       top: 50%;
       &:hover {
-        color: rgba(0,0,0,0.7);
+        color: rgba(0, 0, 0, 0.7);
       }
       &.left {
         left: 20px;
@@ -131,6 +120,30 @@ import ProductSliderItemModal from './ProductSliderItemModal.svelte';
       &.right {
         right: 20px;
       }
+    }
+    .arrow-inside {
+      transform: translateY(-50%);
+      &.left {
+        left: 0;
+        @include mixins.mobile {
+          left: 24px;
+        }
+      }
+      &.right {
+        right: 0;
+        @include mixins.mobile {
+          right: 24px;
+        }
+      }
+      @include mixins.mobile {
+        display: block;
+        top: auto;
+        bottom: 0;
+        position: fixed;
+      }
+    }
+    .sc-carousel__pages-container {
+      align-items: center;
     }
     .sc-carousel-dots__container {
       position: absolute;
@@ -163,8 +176,8 @@ import ProductSliderItemModal from './ProductSliderItemModal.svelte';
 
     .btn-close {
       position: absolute;
-      top: -30px;
-      right: 0;
+      top: 8px;
+      right: 8px;
       z-index: 7;
     }
 

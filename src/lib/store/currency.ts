@@ -1,10 +1,10 @@
-import { Base } from './types';
+import type { Base } from './types';
 
 export type Currency = Base & {
-    name: string;
-    prefix: string;
-    suffix: string;
-    locale: string;
+  name: string;
+  prefix: string;
+  suffix: string;
+  locale: string;
 };
 
 export const currencyFieldsFragment = `

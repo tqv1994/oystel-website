@@ -1,7 +1,7 @@
 <script lang="ts">
   import { storeHelper } from '$lib/helpers';
 
-  import { Drop, DropGallery } from '$lib/store/drop';
+  import type { Drop, DropGallery } from '$lib/store/drop';
 
   import LayoutGrid from '@smui/layout-grid';
   import DropListItem from './DropListItem.svelte';

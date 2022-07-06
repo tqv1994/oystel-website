@@ -1,4 +1,4 @@
-import { RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 import { getSessionCookie } from '$lib/utils/session';
 import { cmsUrlPrefix } from '$lib/env';
 import { makeErrorResponse } from '$lib/utils/fetch';
@@ -22,8 +22,8 @@ export const get: RequestHandler = async (event) => {
     const cookie = getSessionCookie(request.headers.get('cookie'));
     if (cookie) {
       // console.log('we have session cookie...');
-      const res = await fetch(`${cmsUrlPrefix}/auth/me`, {
-        method: 'DELETE',
+      const res = await fetch(`${cmsUrlPrefix}/auth/sign-out`, {
+        method: 'POST',
         headers: {
           Cookie: cookie,
         },

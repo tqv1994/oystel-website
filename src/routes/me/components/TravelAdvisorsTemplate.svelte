@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Advisor } from '$lib/store/advisor';
+  import type { Advisor } from '$lib/store/advisor';
 </script>
 
 <div class="row">
-  <slot/>
+  <slot />
 </div>
 
 <style lang="scss">

@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { CollectionStore, Publishable } from './types';
+import type { CollectionStore, Publishable } from './types';
 
 export const FileStore = writable<CollectionStore<File>>({
   items: {},

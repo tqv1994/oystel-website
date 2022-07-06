@@ -1,22 +1,23 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
   import { routerHelper } from '$lib/helpers/router';
-  import { Category } from '$lib/store/category';
-  import { get } from 'svelte/store';
-  import { productDesignerStore, productTypeStore } from '$lib/store/product';
-import Follow from '../Follow.svelte';
-import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
-import { sortByName } from '$lib/utils/sort';
+  import type { Kind } from '$lib/store/category';
+  import Follow from '../Follow.svelte';
+  import { makeLinkShopCategory, makeLinkShopDesigner } from '$lib/utils/link';
+  import { sortByName } from '$lib/utils/sort';
+import { goto } from '$app/navigation';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
-  type MenuItem = Category & {
-    items?: Category[];
+  export let productDesigners: Kind[] = [];
+  export let productTypes: Kind[] = [];
+  type MenuItem = Kind & {
+    items?: Kind[];
   };
   let menuActive: MenuItem | undefined = undefined;
-  let menus: MenuItem[] = Object.values($productTypeStore.items);
-  const designers = sortByName(Object.values($productDesignerStore.items));
-  menus.splice(1, 0, { id: '999', name: 'Designers', items: designers });
+  let menus: MenuItem[] = productTypes;
+  // let designers: Kind[] = productDesigners;
+  // menus.splice(1, 0, { id: '999', name: 'Designers', items: designers });
   let tabFilters = [
     'A',
     'B',
@@ -46,13 +47,13 @@ import { sortByName } from '$lib/utils/sort';
   function doOpenSubmenu(menu: MenuItem) {
     menuActive = menu;
   }
-  function openLinkCategory(menu: Category) {
-    routerHelper.redirect(makeLinkShopCategory(menu));
+  function openLinkCategory(menu: Kind) {
+    goto(makeLinkShopCategory(menu));
     dispatch('close');
   }
 
-  function openLinkDesginer(menu: Category){
-    routerHelper.redirect(makeLinkShopDesigner(menu));
+  function openLinkDesginer(menu: Kind) {
+    goto(makeLinkShopDesigner(menu));
     dispatch('close');
   }
 
@@ -74,10 +75,10 @@ import { sortByName } from '$lib/utils/sort';
 
   const onScrollToTop = () => {
     let subMenuWrap = document.querySelector('#menu-wrap');
-    if(subMenuWrap){
+    if (subMenuWrap) {
       subMenuWrap.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }
-  }
+  };
 </script>
 
 <div id="menu-wrap" class="mt-20">
@@ -102,8 +103,8 @@ import { sortByName } from '$lib/utils/sort';
     </ul>
   {/if}
   {#if menuActive}
-  <div class="submenu-wrap">
-    <ul >
+    <div class="submenu-wrap">
+      <ul>
         <li>
           <a
             href="javascript:void(0)"
@@ -139,16 +140,24 @@ import { sortByName } from '$lib/utils/sort';
         </ul>
       </ul>
       <div class="filter-wrap">
-          <ul>
-              {#each tabFilters as item}
-                <li><a href="javascript:void(0)" on:click={()=>{activeFilter = item; onScrollToTop()}}>{item}</a></li>
-              {/each}
-          </ul>
+        <ul>
+          {#each tabFilters as item}
+            <li>
+              <a
+                href="javascript:void(0)"
+                on:click={() => {
+                  activeFilter = item;
+                  onScrollToTop();
+                }}>{item}</a
+              >
+            </li>
+          {/each}
+        </ul>
       </div>
-  </div>
+    </div>
   {/if}
 </div>
-<Follow/>
+<Follow />
 
 <style lang="scss">
   :global(#header-action-mobile#header-action-mobile) {
@@ -185,16 +194,16 @@ import { sortByName } from '$lib/utils/sort';
     left: -7px;
     top: -4px;
   }
-  .submenu-wrap{
-      position: relative;
-      .filter-wrap{
-        position: absolute;
-        top: 105px;
-        right: 10px;
-        left: auto;
-        > ul > li{
-            margin-bottom: initial !important;
-        }
+  .submenu-wrap {
+    position: relative;
+    .filter-wrap {
+      position: absolute;
+      top: 105px;
+      right: 10px;
+      left: auto;
+      > ul > li {
+        margin-bottom: initial !important;
       }
+    }
   }
 </style>

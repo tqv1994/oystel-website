@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { User } from '$lib/store/auth';
   import Button, { Label } from '@smui/button';
   import DataTable, { Cell, Head, Body, Row } from '@smui/data-table';
   import ButtonUnderline from '../components/ButtonUnderline.svelte';
@@ -8,17 +7,17 @@
   import Text from '../components/Text.svelte';
   import {
     ENUM_IDENTIFICATION_TYPE_LABEL,
-    Identification,
+    type Identification,
   } from '$lib/store/identification';
-  import { getAllIdentifications } from '$lib/store/traveller';
+  import { type Traveller } from '$lib/store/traveller';
+  import type { Country } from '$lib/store/country';
 
-  export let me: User;
-  let openForm: boolean = false;
+  export let travellerMe: Traveller;
+  export let countries: Country[];
+  let openForm = false;
   let identificationSelected: Identification | undefined;
 
-  const handleFormEditOpen = (
-    identification: Identification,
-  ) => {
+  const handleFormEditOpen = (identification: Identification) => {
     identificationSelected = identification;
     openForm = true;
   };
@@ -32,84 +31,64 @@
   >
     <Head>
       <Row>
-        <Cell style="width: 20%"
-          ><svelte:component this={Text}>Document Type</svelte:component></Cell
-        >
-        <Cell style="width: 80%"
-          ><svelte:component this={Text}>Traveler Name</svelte:component></Cell
-        >
+        <Cell style="width: 20%"><Text>Document Type</Text></Cell>
+        <Cell style="width: 80%"><Text>Traveler Name</Text></Cell>
         <Cell />
         <Cell />
       </Row>
     </Head>
     <Body>
-      {#each getAllIdentifications(me.travellerMe) || [] as item}
-        {#each item.items || [] as identication}
-          <Row>
-            <Cell
-              ><svelte:component this={Text}
-                >{ENUM_IDENTIFICATION_TYPE_LABEL[identication.type] ||
-                  ''}</svelte:component
-              ></Cell
-            >
-            <Cell
-              ><svelte:component this={Text}
-                >{`${identication.traveller?.forename || ''} ${
-                  identication.traveller?.surname
-                }`}</svelte:component
-              ></Cell
-            >
-            <Cell
-              ><svelte:component
-                this={ButtonUnderline}
-                label="Edit"
-                on:click={() => {
-                  handleFormEditOpen(identication);
-                }}
-              /></Cell
-            >
-            <Cell
-              ><svelte:component
-                this={ButtonUnderline}
-                label="View Document"
-              /></Cell
-            >
-          </Row>
-        {/each}
+      {#each travellerMe?.identifications || [] as identification}
+        <Row>
+          <Cell
+            ><Text
+              >{ENUM_IDENTIFICATION_TYPE_LABEL[identification.type] || ''}</Text
+            ></Cell
+          >
+          <Cell
+            ><Text
+              >{`${identification.traveller?.forename || ''} ${
+                identification.traveller?.surname
+              }`}</Text
+            ></Cell
+          >
+          <Cell
+            ><ButtonUnderline
+              label="Edit"
+              on:click={() => {
+                handleFormEditOpen(identification);
+              }}
+            /></Cell
+          >
+          <Cell><ButtonUnderline label="View Document" /></Cell>
+        </Row>
       {/each}
     </Body>
   </DataTable>
 
   <div class="d-none m-block">
-    {#each getAllIdentifications(me.travellerMe) || [] as item}
-    {#each item.items || [] as identication}
+    {#each travellerMe.identifications || [] as identification}
       <div class="row header">
         <div class="m-col-6">
-          <svelte:component this={Text}
-            >{ENUM_IDENTIFICATION_TYPE_LABEL[identication.type] ||
-              ''}</svelte:component
+          <Text
+            >{ENUM_IDENTIFICATION_TYPE_LABEL[identification.type] || ''}</Text
           >
-          <svelte:component
-                this={ButtonUnderline}
-                label="Edit"
-                on:click={() => {
-                  handleFormEditOpen(identication);
-                }}
-              />
+          <ButtonUnderline
+            label="Edit"
+            on:click={() => {
+              handleFormEditOpen(identification);
+            }}
+          />
         </div>
         <div class="m-col-6">
-          <svelte:component this={Text}
-            >{`${identication.traveller?.forename || ''} ${
-              identication.traveller?.surname
-            }`}</svelte:component
+          <Text
+            >{`${identification.traveller?.forename || ''} ${
+              identification.traveller?.surname
+            }`}</Text
           >
-          <svelte:component
-                this={ButtonUnderline}
-                label="View Document"
-              />
+          <ButtonUnderline label="View Document" />
         </div>
       </div>
-      {/each}
     {/each}
   </div>
   <div class="action-button mt-25">
@@ -123,19 +102,18 @@
   </div>
 </div>
 {#if openForm}
-  <svelte:component
-    this={Modal}
+  <Modal
     bind:open={openForm}
     title={`${identificationSelected ? 'Edit' : 'Add'} Travel Document`}
     surface$style="width: 850px; max-width: calc(100vw - 32px);"
   >
-    <svelte:component
-      this={TravelDocumentForm}
-      bind:me
+    <TravelDocumentForm
+      bind:travellerMe
       identification={identificationSelected}
       bind:open={openForm}
+      {countries}
     />
-  </svelte:component>
+  </Modal>
 {/if}
 
 <style lang="scss">

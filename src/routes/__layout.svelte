@@ -1,172 +1,118 @@
 <script lang="ts" context="module">
-  import type { Load } from '@sveltejs/kit';
-  import { authStore } from '$lib/store/auth';
-  import { insertToStore } from '$lib/store/types';
-  import { destinationTypeStore } from '$lib/store/destination-type';
-  import { experienceTypeStore } from '$lib/store/experience-type';
-  import { advisorTypeStore } from '$lib/store/advisor-type';
-  import { countryStore } from '$lib/store/country';
-  import { languageStore } from '$lib/store/language';
-  import { Locals } from '$lib/store/locals';
-  import { MainNavItem } from '$lib/components/nav/types';
-  import { salutationTypeStore } from '$lib/store/salutation-type';
-  import { interestTypeStore } from '$lib/store/interest';
-
-  const mainMenu: MainNavItem[] = [
+  let menu: MainNavItem[] = [
     {
       name: 'Travel Advisors',
-      url: '/advisor',
+      url: '/advisors',
     },
     {
       name: 'Destinations',
-      url: '/destination',
+      url: '/destinations',
     },
     {
       name: 'Experiences',
-      url: '/experience',
+      url: '/experiences',
     },
     { name: 'Editorial', url: '/editorial' },
-    { name: 'Shop', url: '/shop' },
+    {
+      name: 'Shop',
+      url: '/shop',
+      children: [
+        {
+          name: 'Fashion Drops',
+          url: '/shop/fashion-drops',
+          thumbnail: '/img/shop/curated-looks-1.jpg',
+        },
+        {
+          name: 'Curated Looks',
+          url: '/shop/curated-looks-listing',
+          thumbnail: '/img/shop/curated-looks-2.jpg',
+        },
+      ],
+    },
   ];
 
-  export const load: Load<{ session: Locals }> = async ({ session, url }) => {
-    insertToStore(
-      destinationTypeStore,
-      session.metadata?.destinationTypes,
-      false,
+  export const load: Load = async ({ session, fetch }) => {
+    const { user } = session;
+    menu[1].children = await searchFetchTopOfType(
+      fetch,
+      'destination',
+      await getCollection(fetch, 'destination-type'),
     );
-    insertToStore(
-      experienceTypeStore,
-      session.metadata?.experienceTypes,
-      false,
+    menu[2].children = await searchFetchTopOfType(
+      fetch,
+      'experience',
+      await getCollection(fetch, 'experience-type'),
     );
-    insertToStore(advisorTypeStore, session.metadata?.advisorTypes, false);
-    insertToStore(countryStore, session.metadata?.countries, false);
-    insertToStore(languageStore, session.metadata?.languages, false);
-    insertToStore(interestTypeStore, session.metadata?.interestTypes, false);
-    insertToStore(
-      travelPreferenceTypeStore,
-      session.metadata?.travelPreferenceTypes,
-      false,
-    );
-    insertToStore(productColourStore, session.metadata?.productColours, false);
-    insertToStore(
-      productDesignerStore,
-      session.metadata?.productDesigners,
-      false,
-    );
-    insertToStore(
-      productPattnerStore,
-      session.metadata?.productPatterns,
-      false,
-    );
-    insertToStore(productTypeStore, session.metadata?.productTypes, false);
-    insertToStore(vacationStyleStore, session.metadata?.vacationStyles, false);
-    insertToStore(
-      personalPreferenceTypeStore,
-      session.metadata?.personalPreferenceTypes,
-      false,
-    );
-    insertToStore(
-      salutationTypeStore,
-      session.metadata?.salutationTypes,
-      false,
-    );
-    authStore.set({ user: session.user });
 
-    mainMenu[0].children = session.metadata?.feature?.advisors;
-    mainMenu[1].children = session.metadata?.feature?.destinations
-      ? session.metadata?.feature?.destinations.reduce((acc, subItem) => {
-          if (subItem.type1) {
-            const indexExist = acc.findIndex(
-              (subAccItem) => subAccItem.type1.id === subItem.type1.id,
-            );
-            if (indexExist < 0) {
-              acc.push(subItem);
-            }
-          }
-          return acc;
-        }, [])
-      : [];
-    mainMenu[2].children = session.metadata?.feature?.experiences
-      ? session.metadata?.feature?.experiences.reduce((acc, subItem) => {
-          if (subItem.type1) {
-            const indexExist = acc.findIndex(
-              (subAccItem) => subAccItem.type1.id === subItem.type1.id,
-            );
-            if (indexExist < 0) {
-              acc.push(subItem);
-            }
-          }
-          return acc;
-        }, [])
-      : [];
-    mainMenu[4].children = [
-      {
-        name: 'Curated Looks',
-        url: '/shop/curated-looks-listing',
-        description: 'Fashion Collection',
-        gallery: [{ url: '/img/shop/shop-thumbnail.jpg' }],
-      },
-      {
-        name: 'Fashion Drops',
-        url: '/shop/fashion-drops',
-        description: 'Fashion Collection',
-        gallery: [{ url: '/img/shop/shop-thumbnail.jpg' }],
-      },
-    ];
-
-    var active: MainNavItem;
-    let isHomePage = false;
-    for (const item of mainMenu) {
-      if (url.pathname.startsWith(item.url)) {
-        active = item;
-        break;
-      }
-    }
-    if (url.pathname === '/') {
-      isHomePage = true;
-    }
-    return {
-      props: {
-        key: url.pathname,
-        mainMenu,
-        active,
-        isHomePage,
-      },
-    };
+    return { props: { menu } };
   };
+
+  export async function searchFetchTopOfType(
+    fetch: SvelteFetch,
+    index: string,
+    kinds: Kind[],
+  ): Promise<TopItem[]> {
+    const items: TopItem[] = [];
+    for (const kind of kinds) {
+      const res = await trySearch<Destination | Experience>(fetch, index, {
+        limit: 1,
+        sort: ['num_views:desc'],
+        filter: [buildFilter(kind.id, 3)],
+      });
+      items.push({ name: kind.name, item: res.hits[0] });
+    }
+    return items;
+  }
+
+  function buildFilter(kind: string, num: number): string[] {
+    const filter: string[] = [];
+    const id = kind.substring(kind.lastIndexOf('-') + 1);
+    for (let i = 1; i <= num; i++) {
+      filter.push(`type${i} = ${id}`);
+    }
+    return filter;
+  }
 </script>
 
 <script lang="ts">
   import Footer from '$lib/components/Footer.svelte';
-  import MainNav from '$lib/components/nav/MainNav.svelte';
+  import MainNav, {
+    type MainNavItem,
+    type TopItem,
+  } from '$lib/components/nav/MainNav.svelte';
   import MobileBottomTool from '$lib/components/MobileBottomTool.svelte';
-  import {
-    personalPreferenceTypeStore,
-    travelPreferenceTypeStore,
-  } from '$lib/store/preference';
   import Loading from '$lib/components/Loading.svelte';
   import SigninModal from '$lib/components/modals/SigninModal.svelte';
   import SignupModal from '$lib/components/modals/SignupModal.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import {
-    productColourStore,
-    productDesignerStore,
-    productPattnerStore,
-    productTypeStore,
-    vacationStyleStore,
-  } from '$lib/store/product';
-  export let active: MainNavItem | undefined;
-  export let isHomePage = false;
-  export let key: string;
+  import { session } from '$app/stores';
+  import type { Load } from '@sveltejs/kit';
+  import { trySearch } from '$lib/store/search';
+  import type { SvelteFetch } from '$lib/utils/fetch';
+  import type { Kind } from '$lib/store/category';
+  import type { Destination } from '$lib/store/destination';
+  import { getCollection } from '$lib/store/collection';
+  import type { Experience } from '$lib/store/experience';
+  import AutoAdjust from '@smui/top-app-bar/src/AutoAdjust.svelte';
+  import { type TopAppBarComponentDev } from '@smui/top-app-bar';
+  import { onMount } from 'svelte';
+  import { getCookie, setCookie } from '$lib/utils/cookie';
+
+  export let menu: MainNavItem[];
+
+  let topAppBar: TopAppBarComponentDev;
+  let drawerOpen = false;
+
+  onMount(() => {
+    if (!$session.user && !getCookie('isFirstTime')) {
+      window.openSignUpModal();
+    }
+  });
 </script>
 
-<div class="content-wrap">
-  <MainNav items={mainMenu} bind:active />
-  <div>
-    <slot />
-  </div>
+<div class="content-wrap" class:drawer-open={drawerOpen}>
+  <MainNav {topAppBar} {menu} {drawerOpen} />
+  <AutoAdjust {topAppBar}><slot /></AutoAdjust>
   <Footer />
 </div>
 <Loading />

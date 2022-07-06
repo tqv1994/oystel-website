@@ -1,223 +1,69 @@
 <script lang="ts" context="module">
-  import type { Load } from '@sveltejs/kit';
-  import { destinationStore } from '$lib/store/destination';
-  import { storeHelper } from '$lib/helpers';
-  import LayoutGrid from '@smui/layout-grid';
-  import { Cell } from '@smui/layout-grid';
-  import BlurImage from '$lib/components/blur-image.svelte';
-  import { Experience } from '$lib/store/experience';
-  import { Destination } from '$lib/store/destination';
-  import { experienceStore } from '$lib/store/experience';
-  import { getItems } from '$lib/store/types';
-  import { HomePageData } from './home/index.json';
-  import { authStore, User } from '$lib/store/auth';
-  import { ExperienceLikeData } from './experience/like.json';
-  import { DestinationLikeData } from './destination/like.json';
-  import Item from '$lib/components/Item.svelte';
   export const load: Load = async ({ fetch }) => {
-    const res = await fetch(`/home.json?_z=${Date.now()}`);
-    if (res.ok) {
-      const data: HomePageData = await res.json();
-      return {
-        props: {
-          data,
-        },
-      };
-    } else {
-      const error = await res.json();
-      console.error(error);
-      return {
-        props: {
-          error,
-        },
-      };
-    }
+    return {
+      props: {
+        page: await loadFeature(fetch, 'home'),
+        cities: await getCollection(fetch, 'city')
+      },
+    };
   };
 </script>
 
 <script lang="ts">
-  import OySearch from '$lib/components/common/OySearch.svelte';
+  import type { Load } from '@sveltejs/kit';
+  import { storeHelper } from '$lib/helpers';
+  import LayoutGrid from '@smui/layout-grid';
+  import { Cell } from '@smui/layout-grid';
+  import Item from '$lib/components/Item.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import NeverMissDrop from '$lib/components/NeverMissDrop.svelte';
-  import Carousel from '$lib/components/Carousel.svelte';
-  import FeatureDrops from '$lib/components/FeatureDrops.svelte';
   import CuratedExperience from '$lib/components/CuratedExperience.svelte';
-  import { contains } from '$lib/utils/array';
-  import FeaturedDrop from '$lib/components/FeaturedDrop.svelte';
   import WhatToWear from '$lib/components/WhatToWear.svelte';
-
-  export let data: HomePageData;
-  let me: User | undefined = $authStore.user;
-  async function likeExperience(event: CustomEvent) {
-    let liked: boolean;
-    if (!$authStore.user) {
-      window.pushToast('Please login to use this feature');
-      return;
-    }
-    let experience = event.detail.data;
-    let experienceLikedIds: string[] = (
-      $authStore.user?.experienceLikes || []
-    ).map((item: Experience) => item.id);
-    let indexLikeExist = experienceLikedIds.findIndex(
-      (id: string) => id == experience.id,
-    );
-    if (indexLikeExist < 0) {
-      experienceLikedIds.push(experience.id);
-      liked = true;
-    } else {
-      experienceLikedIds.splice(indexLikeExist, 1);
-      liked = false;
-    }
-    const res = await fetch(`/experience/like.json`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(experienceLikedIds),
-    });
-
-    if (res.ok) {
-      const data: ExperienceLikeData = await res.json();
-      $authStore.user.experienceLikes = data.updateUser.user.experienceLikes;
-      authStore.set({ user: $authStore.user });
-      experience.liked = liked;
-      experienceStore.subscribe(
-        (store) => (curatedExperiences = getItems(store)),
-      );
-    } else {
-      const error = await res.json();
-      console.error(error);
-    }
-  }
-
-  async function likeDestination(event: CustomEvent) {
-    const destination = event.detail.item;
-    let liked: boolean;
-    if (!$authStore.user) {
-      window.pushToast('Please login to use this feature');
-      return;
-    }
-    let destinationLikedIds: string[] = (
-      $authStore.user?.destinationLikes || []
-    ).map((item: Destination) => item.id);
-    let indexLikeExist = destinationLikedIds.findIndex(
-      (id: string) => id == destination.id,
-    );
-    if (indexLikeExist < 0) {
-      destinationLikedIds.push(destination.id);
-      liked = true;
-    } else {
-      destinationLikedIds.splice(indexLikeExist, 1);
-      liked = false;
-    }
-    const res = await fetch(`/destination/like.json`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(destinationLikedIds),
-    });
-
-    if (res.ok) {
-      const data: DestinationLikeData = await res.json();
-      $authStore.user.destinationLikes = data.updateUser.user.destinationLikes;
-      authStore.set({ user: $authStore.user });
-      destination.liked = liked;
-      destinationStore.subscribe(
-        (store) => (advisorDestinations = getItems(store)),
-      );
-    } else {
-      const error = await res.json();
-      console.error(error);
-    }
-  }
-
-  const carouselConfig = {
-    autoplayDuration: 8000,
-    duration: 1500,
-    infinite: true,
-    particlesToShow: 1,
-    chevronPosition: 'inside',
-    autoplay: true
-  };
+  import type { Page } from '$lib/store/page';
+  import { loadFeature } from '$lib/utils/load';
+  import HeroGallery from '$lib/components/HeroGallery.svelte';
+  import FeaturedDrop from '$lib/components/FeaturedDrop.svelte';
+  import { getCollection } from '$lib/store/collection';
+  import type { Kind } from '$lib/store/category';
+  export let cities: Kind[] = [];
+  export let page: Page;
 </script>
 
 <svelte:body />
 
 <div class="content home-page-content">
-  
-  <section id="slider" class="full-width hero pt-0">
-    <Carousel {...carouselConfig}>
-      {#if data?.gallery.length > 0}
-        {#each data?.gallery || [] as item}
-          <div class="slide">
-            <div class="image-cover" style="padding-top: 0; height: 100%">
-              <BlurImage {...item} />
-            </div>
-          </div>
-        {/each}
-      {:else}
-        <div class="slide">
-          <div class="image-cover" style="padding-top: 0; height: 100%">
-          <BlurImage />
-        </div>
-      </div>
-      {/if}
-
-    </Carousel>
-    <div class="dark text-box">
-      <div class="container">
-        <h1>Explore the World in Style</h1>
-        <OySearch searchResult="" />
-      </div>
-    </div>
-  </section>
-  
-
-  {#each data.page.sections as section, index}
-    {#if section.__typename === 'ComponentGalleriesDropGallery'}
-      <section id="featured-drops">
-        <FeatureDrops {...section} />
-      </section>
-    {:else if section.__typename === 'ComponentGalleriesDestinationGallery'}
-      <section class="d-pt-100 m-pt-40 from-advisors">
-        <LayoutGrid class="pt-0 pb-0">
-          <Cell span={12}>
-            <h2 class="mt-0">{section.name}</h2>
-          </Cell>
-        </LayoutGrid>
-
-        {#if section.destinations?.length > 0}
-          <LayoutGrid class="pt-0 pb-0">
-            {#each storeHelper.getItems(section.destinations, 4) as item}
-              <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
-                <Item
-                  {item}
-                  {...item}
-                  liked={me
-                    ? contains(me.destinationLikes || [], 'id', item.id)
-                    : false}
-                  pathPrefix="/destination"
-                  on:likeItem={likeDestination}
-                />
-              </Cell>
-            {/each}
-          </LayoutGrid>
-        {/if}
-      </section>
-    {:else if section.__typename === 'ComponentGalleriesExperienceGallery'}
-      <section
-        class="experiences experiences-{index} d-pb-100 m-pb-40"
-      >
-        <div class="container">
-          <h2 class="mt-0 d-mb-35 m-mb-15">{section.name}</h2>
-        </div>
-        <CuratedExperience {...section} on:likeItem={likeExperience} {index} />
-      </section>
-    {:else if section.__typename === 'ComponentBannersBanner'}
-          <WhatToWear {...section} />
-    {:else if section.__typename === 'ComponentGalleriesFeaturedDrop'}
+  {#each page.sections as section, index}
+    {#if section.__component === 'galleries.hero-gallery'}
+      <HeroGallery {section} />
+    {:else if section.__component === 'galleries.featured-drop'}
       <FeaturedDrop {...section} />
+    {:else if section.__component === 'galleries.destination-gallery'}
+      <section class="d-pt-100 m-pt-40 from-advisors">
+        <div class="container margin-auto add-padding">
+          <LayoutGrid class="p-0">
+            <Cell span={12}>
+              <h2 class="section__title">{section.name}</h2>
+            </Cell>
+          </LayoutGrid>
+          {#if section.destinations?.length > 0}
+            <LayoutGrid class="p-0">
+              {#each storeHelper.getItems(section.destinations, 4) as item}
+                <Cell spanDevices={{ desktop: 3, tablet: 4, phone: 2 }}>
+                  <Item {item} pathPrefix="/destinations" {cities} />
+                </Cell>
+              {/each}
+            </LayoutGrid>
+          {/if}
+        </div>
+      </section>
+    {:else if section.__component === 'galleries.experience-gallery'}
+      <section class="experiences experiences-{index} d-pb-100 m-pb-40">
+        <div class="container margin-auto add-padding">
+          <h2 class="section__title">{section.name}</h2>
+          <CuratedExperience {...section} {index} {cities}/>
+        </div>
+      </section>
+    {:else if section.__component === 'banners.banner'}
+      <WhatToWear {...section} />
     {/if}
   {/each}
 </div>
@@ -256,7 +102,7 @@
         text-transform: uppercase;
       }
     }
-  
+
     @media screen and (max-width: 1239px) {
       #slider :global(.dots) {
         margin-top: -45px;

@@ -1,15 +1,15 @@
 <script lang="ts">
   import BoxContent from './BoxContent.svelte';
-  export let title: string = '';
+  export let title = '';
   export let is_edit: boolean;
-  let classNames: string;
+  let classNames = '';
   export { classNames as class };
 </script>
 
-<section class={`${classNames} pt-30 pb-30`}>
-  <svelte:component this={BoxContent} {title} bind:is_edit>
+<section class={`${classNames} my-account-box`}>
+  <BoxContent {title} bind:is_edit>
     <slot />
-  </svelte:component>
+  </BoxContent>
 </section>
 
 <style lang="scss">

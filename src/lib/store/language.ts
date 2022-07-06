@@ -1,9 +1,8 @@
-import { writable } from "svelte/store";
-import { Base, CollectionStore, Nameable } from "./types"
+import { writable } from 'svelte/store';
+import type { Kind } from './category';
+import type { CollectionStore } from './types';
 
-export type Language = Base & Nameable;
-
-export const languageStore = writable<CollectionStore<Language>>({
+export const languageStore = writable<CollectionStore<Kind>>({
   items: {},
 });
 

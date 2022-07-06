@@ -6,11 +6,11 @@
   import { Icon } from '@smui/common';
   import { Svg } from '@smui/common/elements';
   import { destinationStore } from '$lib/store/destination';
-  import { Destination } from '$lib/store/destination';
+  import type { Destination } from '$lib/store/destination';
   import { insertToStore } from '$lib/store/types';
   import { get } from 'svelte/store';
   import { parseId } from '$lib/utils/fetch';
-  import { Product } from '$lib/store/product';
+  import type { Product } from '$lib/store/product';
   import ProductSliderModal from '$lib/components/modals/ProductSliderModal.svelte';
   import { createEventDispatcher } from 'svelte';
 
@@ -42,41 +42,37 @@
   import ProductItem from './ProductItem.svelte';
 
   let dispathcher = createEventDispatcher();
-  export let title: string = 'What to Pack';
+  export let title = 'What to Pack';
   export let items: Product[];
-  let openProductSlide: boolean = false;
+  let openProductSlide = false;
   let productIndex: number;
   function callLikeItem(product: Product) {
     setTimeout(() => {
       dispathcher('likeItem', { product });
     }, 0);
   }
-
-  const carouselConfig = {
-    autoplayDuration: 5000,
-    duration: 1500,
-    infinite: false,
-    particlesToShow: 6,
-    chevronPosition: 'outside',
-    itemsShowMobile: 2,
-  };
 </script>
 
 <section class="what-to-pack">
-  <div class="container">
-    <h2 class="mt-0">{title}</h2>
+  <div class="container margin-auto add-padding">
+    <h2 class="mt-0 what-to-pack-h2">{title}</h2>
     <div class="products-list m-mb-40">
       {#if items.length > 0}
-        <Carousel {...carouselConfig} totalItems={items.length || 0}>
+        <Carousel
+          autoplay={5000}
+          chevronPosition="outside"
+          perPage={2}
+          totalItems={items.length || 0}
+        >
           {#each items as item, i}
-              <ProductItem
-                {...item}
-                {item}
-                on:pointerdown={() => {
-                  openProductSlide = true;
-                  productIndex = i;
-                }}
-              />
+            <ProductItem
+              {...item}
+              {item}
+              on:pointerdown={() => {
+                openProductSlide = true;
+                productIndex = i;
+              }}
+            />
           {/each}
         </Carousel>
       {/if}
@@ -92,6 +88,22 @@
 <style lang="scss">
   @use '../../theme/mixins';
   @use '../../theme/colors';
+  .what-to-pack {
+    padding-top: 16px;
+
+    &-h2 {
+      margin-bottom: 64px;
+      @include mixins.mobile {
+        margin-bottom: 32px;
+      }
+    }
+
+    :global(.sc-carousel__content-container) {
+      @include mixins.mobile {
+        margin-bottom: 16px;
+      }
+    }
+  }
   .products-list :global(.mdc-layout-grid__inner) {
     overflow-x: auto;
     grid-auto-flow: column;
@@ -112,6 +124,9 @@
     :global(.item) {
       padding-right: var(--mdc-layout-grid-gutter-desktop);
     }
+    :global(.image-cover) {
+      padding-top: 144.059406% !important;
+    }
     :global(.arrow-outside.left) {
       right: auto;
     }
@@ -129,12 +144,12 @@
       @include mixins.mobile {
         display: flex;
       }
-      :global(.sc-carousel-dot__dot){
+      :global(.sc-carousel-dot__dot) {
         border-color: #000;
         opacity: 1;
       }
       :global(.sc-carousel-dot__dot_active) {
-          background-color: #000 !important;
+        background-color: #000 !important;
       }
     }
   }

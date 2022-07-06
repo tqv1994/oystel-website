@@ -1,9 +1,8 @@
 import { cmsUrlPrefix } from '$lib/env';
-import { User } from '$lib/store/auth';
-import { Locals } from '$lib/store/locals';
+import type { User } from '$lib/store/auth';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { extractSetCookieHeader } from '$lib/utils/session';
-import { RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 
 type AuthForm = {
   token: string;
@@ -25,14 +24,14 @@ export const post: RequestHandler = async (event) => {
   }
 
   try {
-    const res = await fetch(`${cmsUrlPrefix}/auth/me`, {
+    const res = await fetch(`${cmsUrlPrefix}/auth`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + reqBody.token,
       },
     });
     const body: User = await res.json();
-    // console.log('Sign in success', `${cmsUrlPrefix}/auth/me`, body);
+    // console.log('Sign in success', `${cmsUrlPrefix}/auth`, body);
     event.locals.user = body;
     return new Response(JSON.stringify(body), {
       status: res.status,

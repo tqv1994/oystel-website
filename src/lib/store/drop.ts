@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
-import { GalleryComponentBase } from './component';
-import { Product } from './product';
-import { CollectionStore, Exhibitable } from './types';
+import type { GalleryComponentBase } from './component';
+import type { Product } from './product';
+import type { CollectionStore, Exhibitable } from './types';
 
 export const dropStore = writable<CollectionStore<Drop>>({
   items: {},

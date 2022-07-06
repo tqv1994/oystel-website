@@ -1,32 +1,17 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import LayoutGrid from '@smui/layout-grid';
-  import { Cell } from '@smui/layout-grid';
-  import BlurImage from '$lib/components/blur-image.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import { Experience } from '$lib/store/experience';
+  import type { Experience } from '$lib/store/experience';
   import { experienceStore } from '$lib/store/experience';
   import { getItems } from '$lib/store/types';
-  import { makeLink } from '$lib/utils/link';
-  import { authStore } from '$lib/store/auth';
-  import { ExperienceLikeData } from '../experience/like.json';
-  import { EditorialPageData } from './editorial.json';
+  import { session } from '$app/stores';
 
   export const load: Load = async ({ fetch, session, url }) => {
-    const res = await fetch(`/editorial/editorial.json?_z=${Date.now()}`);
-    if (res.ok) {
-      const data: EditorialPageData = await res.json();
-      return {
-        props: {
-          data,
-        },
-      };
-    } else {
-      const error = await res.json();
-      console.error(error);
-    }
     return {
-      props: {},
+      props: {
+        data: await loadFeature(fetch, 'editorial'),
+        cities: await getCollection(fetch, 'city'),
+      },
     };
   };
 </script>
@@ -36,18 +21,23 @@
   import WhatToWear from '$lib/components/WhatToWear.svelte';
   import ListItem from '$lib/components/ListItem.svelte';
   import DropSlides from '$lib/components/DropSlides.svelte';
+  import type { Page } from '$lib/store/page';
+  import { loadFeature } from '$lib/utils/load';
+  import { getCollection } from '$lib/store/collection';
+  import type { Kind } from '$lib/store/category';
 
-  export let data: EditorialPageData;
+  export let data: Page;
+  export let cities: Kind[] = [];
 
   async function likeExperience(event: CustomEvent) {
     let liked: boolean;
-    if (!$authStore.user) {
+    if (!$session.user) {
       window.pushToast('Please login to use this feature');
       return;
     }
     let experience: Experience = event.detail.data;
     let experienceLikedIds: string[] = (
-      $authStore.user?.experienceLikes || []
+      $session.user?.experienceLikes || []
     ).map((item: Experience) => item.id);
     let indexLikeExist = experienceLikedIds.findIndex(
       (id: string) => id == experience.id,
@@ -69,8 +59,8 @@
 
     if (res.ok) {
       const data: ExperienceLikeData = await res.json();
-      $authStore.user.experienceLikes = data.updateUser.user.experienceLikes;
-      authStore.set({ user: $authStore.user });
+      $session.user.experienceLikes = data.updateUser.user.experienceLikes;
+      session.set({ user: $session.user });
       experience.liked = liked;
       experienceStore.subscribe((store) => (experiences = getItems(store)));
     } else {
@@ -78,52 +68,45 @@
       console.error(error);
     }
   }
-
-  const carouselConfigMobile = {
-    autoplayDuration: 8000,
-    duration: 1500,
-    infinite: true,
-    particlesToShow: 2,
-    chevronPosition: 'outside',
-  };
-  const carouselConfigDesktop = {
-    autoplayDuration: 8000,
-    duration: 1500,
-    infinite: true,
-    particlesToShow: 4,
-    chevronPosition: 'outside',
-  };
 </script>
 
-<div class="content editorial-content d-pt-90 m-pt-65">
-  {#each data.page.sections as section, index}
-    {#if section.__typename === 'ComponentGalleriesExperienceGallery'}
+<div class="content editorial-content d-pt-50 m-pt-25">
+  {#each data?.sections || [] as section, index}
+    {#if section.__component === 'galleries.experience-gallery'}
       <section class="d-pb-100 m-pb-40 experiences experiences-{index}">
-        <div class="container">
-          <p class="text-eyebrow m-0">{section.headline}</p>
-          <h2 class="mt-20 d-mb-40 m-mb-15">{section.name}</h2>
+        <div class="container margin-auto add-padding">
+          <div class="adjust-mobile">
+            <p class="text-eyebrow m-0 adjust-mobile">{section.headline}</p>
+            <h1 class="editorial-grid-title text-h2">{section.name}</h1>
+          </div>
+          <CuratedExperience
+            {...section}
+            subtitle="Featured Editorial"
+            {index}
+            {cities}
+          />
         </div>
-        <CuratedExperience {...section} on:likeItem={likeExperience} subtitle="Featured Editorial" {index} />
       </section>
-    {:else if section.__typename === 'ComponentBannersBanner'}
+    {:else if section.__component === 'banners.banner'}
       <WhatToWear {...section} />
-    {:else if section.__typename === 'ComponentGalleriesDropGallery'}
+    {:else if section.__component === 'galleries.drop-gallery'}
       <section class="the-latest-section d-pt-100 m-pt-40">
-        <div class="container">
-          <DropSlides title={section.name} drops={section.drops}  />
+        <div class="container margin-auto medium-max-width">
+          <DropSlides title={section.name} drops={section.drops} />
         </div>
       </section>
-    {:else if section.__typename === 'ComponentGalleriesDestinationGallery'}
+    {:else if section.__component === 'galleries.destination-gallery'}
       {#if section.destinations.length > 0}
         <section>
-          <div class="container">
-            <div class=" d-pl-100 d-pr-100">
-              <h2>{section.name}</h2>
+          <div class="container margin-auto medium-max-width">
+            <div>
+              <h2 class="all-stories-title">{section.name}</h2>
               <ListItem
-                bind:items={section.destinations}
+                items={section.destinations}
                 desktopColumns={3}
                 mobileColumns={2}
-                pathPrefix="/destination"
+                pathPrefix="/destinations"
+                {cities}
               />
             </div>
             <!-- <div class="pagination-wrap d-mt-120 m-mt-100">
@@ -150,6 +133,13 @@
   .editorial-content {
     @import './src/style/partial/experience-section.scss';
     @import './src/style/partial/thumbnail.scss';
+    .the-latest-section {
+      :global(.stories-list) {
+        @include mixins.desktop {
+          margin-right: -16px;
+        }
+      }
+    }
     #slider {
       h1 {
         @include mixins.mobile {
@@ -190,13 +180,18 @@
       }
       .thumbnail {
         position: relative;
+
+        .image-cover {
+          @include mixins.mobile {
+            padding-top: 100% !important;
+          }
+        }
       }
       .divider {
         width: 20%;
       }
     }
 
-    
     .all-stories-section {
       .pagination-wrap {
         position: relative;
@@ -241,6 +236,30 @@
             margin-right: 10px;
           }
         }
+      }
+    }
+
+    .editorial-grid-title {
+      margin-top: 16px;
+      margin-bottom: 24px;
+      @include mixins.mobile {
+        margin-top: 8px;
+      }
+    }
+
+    .all-stories-title {
+      margin-top: 0;
+    }
+
+    .text-eyebrow.adjust-mobile {
+      @include mixins.mobile {
+        margin-top: 24px !important;
+      }
+    }
+
+    .container-helper.adjust-mobile {
+      @include mixins.mobile {
+        padding: 0 24px;
       }
     }
   }

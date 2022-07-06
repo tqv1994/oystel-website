@@ -1,7 +1,7 @@
 <script lang="ts">
   import ButtonUnderline from '../components/ButtonUnderline.svelte';
-  export let is_edit: boolean = true;
-  export let title: string = '';
+  export let is_edit = true;
+  export let title = '';
   function handleCancelClick() {
     is_edit = false;
   }
@@ -10,8 +10,7 @@
 <div class="form">
   <div class="form-header">
     <h3 class="mdc-typography--headline1 m-0">{title}</h3>
-    <svelte:component
-      this={ButtonUnderline}
+    <ButtonUnderline
       class="btn-cancel"
       on:click={handleCancelClick}
       label="Cancel"
@@ -27,7 +26,7 @@
     --mdc-typography-headline1-font-size: 32px;
     margin-top: 18px;
     padding: 20px 30px;
-    @include mixins.mobile{
+    @include mixins.mobile {
       padding: 20px 10px;
     }
     border: 1px solid #000;
@@ -39,8 +38,8 @@
     :global(.btn-cancel) {
       text-decoration: underline;
       position: absolute;
-      right: 40px;
-      @include mixins.mobile{
+      right: 0;
+      @include mixins.mobile {
         right: 0;
       }
       top: 50%;

@@ -1,5 +1,4 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { createGraphClientFromRequest } from '$lib/utils/graph';
 import { makeErrorResponse } from '$lib/utils/fetch';
 import { uploadFileFieldsFragment } from '$lib/store/upload-file';
 import {
@@ -10,13 +9,13 @@ import { visaFieldsFragment } from '$lib/store/visa';
 import { salutationTypeFieldsFragment } from '$lib/store/salutation-type';
 import { identificationFieldsFragment } from '$lib/store/identification';
 import { countryFieldsFragment } from '$lib/store/country';
-import { Trip, tripFieldsFragment } from '$lib/store/trip';
+import type { Trip } from '$lib/store/trip';
+import { tripFieldsFragment } from '$lib/store/trip';
 import { destinationFieldsFragment } from '$lib/store/destination';
 import { destinationTypeFieldsFragment } from '$lib/store/destination-type';
 import { docmentFieldsFragment } from '$lib/store/document';
 import { insuranceFieldsFragment } from '$lib/store/insurance';
 import { interestFieldsFragment } from '$lib/store/interest';
-import { addressFieldsFragment } from '$lib/store/address';
 import {
   personalPreferenceFieldsFragment,
   travelPreferenceFieldsFragment,
@@ -31,7 +30,6 @@ import {
 } from '$lib/store/roomStyle';
 import { roomPreferenceFieldsFragment } from '$lib/store/roomPreference';
 import { currencyFieldsFragment } from '$lib/store/currency';
-import { travelingWithYouFieldsFragment } from '$lib/store/travelingWithYous';
 
 export type createTripData = {
   createTrip: {
@@ -83,7 +81,7 @@ export const post: RequestHandler = async (event) => {
       .mutation<createTripData>(query, { trip: reqBody })
       .toPromise();
     if (res.data) {
-      return new Response( JSON.stringify(res.data.createTrip.trip));
+      return new Response(JSON.stringify(res.data.createTrip.trip));
     }
     if (res.error) {
       console.log(JSON.stringify(res.error, null, 2));

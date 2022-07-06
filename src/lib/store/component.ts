@@ -1,9 +1,8 @@
-import { Identifiable, Nameable } from './types';
+import type { Kind } from './category';
 
-export type ComponentBase = Identifiable &
-  Nameable & {
-    __typename: string;
-  };
+export type ComponentBase = Kind & {
+  __component: string;
+};
 
 export type GalleryComponentBase = ComponentBase & {
   headline?: string;

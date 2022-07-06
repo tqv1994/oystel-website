@@ -1,80 +1,84 @@
 <script lang="ts">
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import { createEventDispatcher, onMount } from 'svelte';
-  import { Country, countryStore } from '$lib/store/country';
-  import { Category } from '$lib/store/category';
-  import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
-import { sortByName } from '$lib/utils/sort';
-import { experienceTypeStore } from '$lib/store/experience-type';
-import OySelect from '../OySelect.svelte';
+  import { createEventDispatcher } from 'svelte';
+  import { type Country, countryStore } from '$lib/store/country';
+  import type { Kind } from '$lib/store/category';
+  import type { DropdownValue } from '$lib/components/Dropdown.svelte';
+  import OySelect from '../OySelect.svelte';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
+  export let countryOptions: Kind[];
+  export let experienceTypeOptions: Kind[];
   export let searchModel: {
-    experiencetype: string;
-    countries: string[];
+    countryIds: string[] | undefined;
+    typeId: string | undefined;
+    experienceTypeOptions: Kind[];
+    countryOptions: Country[];
   };
-  let experienceTypeData: Category | undefined;
-  let countryData: Country | undefined;
-  let { countries, experiencetype } = searchModel;
-  const experienceTypes = sortByName(Object.values($experienceTypeStore.items));
-  // let experienceTypes: Category[];
-  // experienceTypeStore.subscribe(
-  //   (store) => (experienceTypes = sortByName(Object.values(store.items))),
-  // );
+  let { countryIds, typeId } = searchModel;
 
-  let locations: Country[];
-  countryStore.subscribe((store) => {
-    locations = sortByName(Object.values(store.items));
-  });
   function onSearchSubmit() {
-    console.log('experiencetype',experiencetype);
     setTimeout(() => {
-      dispatch('close', { countries, experiencetype });
+      dispatch('close', { countryIds, typeId });
     }, 0);
   }
 
-  const onAdvisorTypeChange = (event: CustomEvent<DropdownValue<Category>>) => {
-    experiencetype = event.detail.value?.id || null;
+  const onExperienceTypeChange = (event: CustomEvent<DropdownValue<Kind>>) => {
+    typeId = event.detail.value?.id || undefined;
   };
 
-  const onCountryChange = (event: CustomEvent<DropdownValue<Country>>) => {
+  const onCountryChange = (event: CustomEvent<DropdownValue<Country[]>>) => {
     if (event.detail.value) {
-      countries = event.detail.value.map((item: Category) => item.id);
+      const isEqual = (event.detail.value || []).reduce(
+        (acc: boolean, item: Country) => {
+          if (acc) {
+            const indexExist = (countryIds || []).findIndex(
+              (idCountry) => idCountry == item.id,
+            );
+            if (indexExist >= 0) {
+              acc = true;
+            } else {
+              acc = false;
+            }
+          }
+          return acc;
+        },
+        true,
+      );
+      if (!isEqual) {
+        countryIds = event.detail.value.map((item: Country) => item.id);
+      }
     } else {
-      countries = null
+      countryIds = undefined;
     }
   };
 </script>
 
 <div id="form-search-advisor-wrap" class="mt-40">
-  <form
-    class="search-form-advisor"
-    action="/"
-    on:submit|preventDefault={onSearchSubmit}
-  >
+  <form class="search-form-advisor" on:submit|preventDefault={onSearchSubmit}>
     <div class="form-control mb-40">
       <OySelect
-        items={experienceTypes}
+        items={experienceTypeOptions}
         optionIdentifier="id"
         labelIdentifier="name"
         placeholder="By Speciality"
-        on:select={onAdvisorTypeChange}
-        on:clear={onAdvisorTypeChange}
-        value={experiencetype}
+        on:select={onExperienceTypeChange}
+        on:clear={onExperienceTypeChange}
+        value={typeId}
       />
     </div>
     <div class="form-control mb-40">
       <OySelect
-          items={locations}
-          optionIdentifier="id"
-          labelIdentifier="name"
-          on:select={onCountryChange}
-          on:clear={onCountryChange}
-          placeholder="Location"
-          value={countries}
-          isMulti={true}
+        items={countryOptions}
+        optionIdentifier="id"
+        labelIdentifier="name"
+        on:select={onCountryChange}
+        on:clear={onCountryChange}
+        placeholder="Location"
+        value={countryIds}
+        isMulti={true}
       />
     </div>
     <div class="form-control btn-submit-wrap">

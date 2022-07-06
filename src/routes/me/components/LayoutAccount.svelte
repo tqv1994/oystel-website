@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { authStore, User } from '$lib/store/auth';
+  import { session } from '$app/stores';
+  import type { User } from '$lib/store/auth';
   import { onMount, afterUpdate } from 'svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import Drawer, { Content } from '@smui/drawer';
   import List, { Item, Text } from '@smui/list';
   import { goto } from '$app/navigation';
 
-  let me: User | undefined = $authStore.user;
+  let me: User | undefined = $session.user;
   const items = [
     {
       url: '/me/my-account',
@@ -45,13 +46,12 @@
     },
     {
       url: '/me/privacy-setting',
-      title: 'Privacy Settings',
+      title: 'Customer Care',
       slug: 'privacy-setting',
     },
   ];
   export let currentPage: string;
-  afterUpdate(() => {
-  });
+  afterUpdate(() => {});
 
   onMount(async () => {});
 
@@ -59,7 +59,7 @@
     try {
       const res = await fetch(`/api/auth/sign-out?_z=${Date.now()}`);
       if (res.ok) {
-        authStore.set({ user: undefined });
+        session.set({ user: undefined });
         goto('/');
       }
       console.error('Error authenticating', res);
@@ -70,8 +70,8 @@
 </script>
 
 {#if me}
-  <div class="container">
-    <section class="pb-40 pt-100">
+  <div class="container margin-auto add-padding account-layout">
+    <section class="pb-40 pt-0 account-layout-inner">
       <div class="section-body">
         <LayoutGrid class="pl-0 pr-0">
           <Cell
@@ -106,6 +106,21 @@
 
 <style lang="scss">
   @use '../../../theme/mixins';
+  .account-layout {
+    @include mixins.mobile {
+      padding: 0 24px;
+    }
+    .section-body {
+      padding-top: 16px;
+    }
+
+    &-inner {
+      @include mixins.mobile {
+        padding-top: 44px !important;
+      }
+    }
+  }
+
   * :global(.mdc-drawer) {
     background-color: transparent;
   }
@@ -123,7 +138,7 @@
       position: absolute;
       right: 40px;
       top: 25px;
-      @include mixins.mobile{
+      @include mixins.mobile {
         right: 0;
       }
     }
@@ -138,7 +153,7 @@
   * :global(.mdc-drawer .mdc-deprecated-list-item) {
     padding-left: 0;
     margin-left: 0;
-    width:max-content;
+    width: max-content;
   }
 
   * :global(.mdc-drawer) {

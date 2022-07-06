@@ -1,5 +1,5 @@
 <script lang="ts">
-  let classNames: string = '';
+  let classNames = '';
   export { classNames as class };
 </script>
 
@@ -8,8 +8,8 @@
 <style lang="scss">
   @use '../../../theme/mixins';
   h3 {
-    &.large{
-        --mdc-typography-headline1-font-size: 32px;
+    &.large {
+      --mdc-typography-headline1-font-size: 32px;
     }
   }
 </style>

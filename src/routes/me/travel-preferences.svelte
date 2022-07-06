@@ -1,54 +1,51 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import { authStore, User } from '$lib/store/auth';
   import LayoutAccount from './components/LayoutAccount.svelte';
   import Box from './components/Box.svelte';
   import ButtonBack from './components/ButtonBack.svelte';
   import Field from './components/Field.svelte';
   import Text from './components/Text.svelte';
   import {
-    PersonalPreference,
-    PersonalPreferenceType,
-    personalPreferenceTypeStore,
-    TravelPreference,
-    TravelPreferenceType,
-    travelPreferenceTypeStore,
+    type PersonalPreference,
+    type TravelPreference,
   } from '$lib/store/preference';
   import TravelPreferenceForm from './_form/travel-preference-form.svelte';
-  import { Interest } from '$lib/store/interest';
   import { goto } from '$app/navigation';
-  import { get } from 'svelte/store';
 
-  export const load: Load = async ({ fetch }) => {
-    let me: User | undefined;
-    authStore.subscribe(({ user }) => (me = user));
-    if (me?.travellerMe) {
-      const travelPreferenceTypes = Object.values(
-        get(travelPreferenceTypeStore).items,
+  export const load: Load = async ({ fetch, session }) => {
+    const travellerMe = session.travellerMe;
+    if (travellerMe) {
+      const travelPreferenceTypes = await getCollection(
+        fetch,
+        'travel-preference-type',
       );
-      const personalPreferenceTypes = Object.values(
-        get(personalPreferenceTypeStore).items,
+      const personalPreferenceTypes = await getCollection(
+        fetch,
+        'personal-preference-type',
       );
 
       return {
         props: {
-          me,
           travelPreferenceData: travelPreferenceTypes,
-          travelPreferenceSelected: me?.travellerMe.travelPreferences.map(
+          travelPreferenceSelected: travellerMe.travelPreferences?.map(
             (item) => item.id,
           ),
           personalPreferenceData: personalPreferenceTypes,
-          personalPreferenceSelected: me?.travellerMe.personalPreferences.map(
+          personalPreferenceSelected: travellerMe.personalPreferences?.map(
             (item) => item.id,
           ),
           otherPreference: travelPreferenceTypes
-            .filter((item) => item.name == 'Hotel Amenities')[0]
-            .preferences.filter((item) => item.name == 'Other')[0],
+            ? (
+                travelPreferenceTypes.filter(
+                  (item) => item.name == 'Hotel Amenities',
+                )[0]?.preferences || []
+              ).filter((item) => item.name == 'Other')[0]
+            : [],
         },
       };
     }
     return {
-      props: { me },
+      props: {},
     };
   };
 </script>
@@ -56,13 +53,16 @@
 <script lang="ts">
   import AlertBox from './components/AlertBox.svelte';
   import ButtonUnderline from './components/ButtonUnderline.svelte';
+  import { getCollection } from '$lib/store/collection';
+  import { updateTravellerMeStore } from '$lib/store/traveller';
+  import { ppatch } from '$lib/utils/fetch';
+  import { session } from '$app/stores';
 
-  export let me: User;
   export let otherPreference: TravelPreference;
-  let travelEdit: boolean = false;
-  let personalEdit: boolean = false;
-  export let travelPreferenceData: TravelPreferenceType[];
-  export let personalPreferenceData: PersonalPreferenceType[];
+  let travelEdit = false;
+  let personalEdit = false;
+  export let travelPreferenceData: TravelPreference[];
+  export let personalPreferenceData: PersonalPreference[];
   export let travelPreferenceSelected: string[];
   export let personalPreferenceSelected: string[];
 
@@ -71,23 +71,14 @@
   const handleTravelSubmit = async () => {
     window.openLoading();
     try {
-      const res = await fetch('/me/preference/update-travel.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(travelPreferenceSelected),
+      const res = await ppatch('travellers/me', {
+        travelPreferences: travelPreferenceSelected,
       });
       if (res.ok) {
         travelEdit = false;
-        const preferenceList = travelPreferenceData.map(
-          (item) => item.preferences,
-        );
-        me.travellerMe.travelPreferences = []
-          .concat(...preferenceList)
-          .filter((item) => travelPreferenceSelected.includes(item.id));
+        updateTravellerMeStore(await res.json());
         tmpTravelSelected = [...travelPreferenceSelected];
-        updateOther();
+        // updateOther();
       }
     } catch (error) {
       console.log(error);
@@ -114,21 +105,12 @@
   const handlePersonalSubmit = async () => {
     window.openLoading();
     try {
-      const res = await fetch('/me/preference/update-personal.json', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(personalPreferenceSelected),
+      const res = await ppatch('travellers/me', {
+        personalPreferences: personalPreferenceSelected,
       });
       if (res.ok) {
+        updateTravellerMeStore(await res.json());
         personalEdit = false;
-        const preferenceList = personalPreferenceData.map(
-          (item) => item.preferences,
-        );
-        me.travellerMe.personalPreferences = []
-          .concat(...preferenceList)
-          .filter((item) => personalPreferenceSelected.includes(item.id));
         tmpPersonalSelected = [...personalPreferenceSelected];
       }
     } catch (error) {
@@ -139,11 +121,11 @@
 
   const handleDisplay = (
     selected: string[],
-    type: TravelPreferenceType | PersonalPreferenceType,
+    type: TravelPreference | PersonalPreference,
   ) => {
-    let result: string = 'No Preferences';
+    let result = 'No Preferences';
     const cloneSelected = [...selected];
-    const preferenceSelectedByType = type.preferences.filter((item) =>
+    const preferenceSelectedByType = (type.preferences || []).filter((item) =>
       cloneSelected.includes(item.id),
     );
 
@@ -165,19 +147,18 @@
 
 <div class="content travel-preferences-content">
   <LayoutAccount currentPage="travel-preferences">
-    <svelte:component this={ButtonBack} label="Travel Preferences" link="/me" />
-    {#if !me.travellerMe}
-      <svelte:component this={AlertBox}>
-        Before doing this. Please tell us your first and last name. <svelte:component
-          this={ButtonUnderline}
+    <ButtonBack label="Travel Preferences" link="/me" />
+    {#if !$session.travellerMe}
+      <AlertBox>
+        Before doing this. Please tell us your first and last name. <ButtonUnderline
           on:click={() => {
             goto('/me/my-account');
           }}
           label="Update them here"
         />
-      </svelte:component>
+      </AlertBox>
     {/if}
-    {#if me.travellerMe}
+    {#if $session.travellerMe}
       {#if !travelEdit}
         <Box title="Travel" bind:is_edit={travelEdit} class="">
           {#each travelPreferenceData as type}
@@ -188,8 +169,7 @@
         </Box>
       {/if}
       {#if travelEdit}
-        <svelte:component
-          this={TravelPreferenceForm}
+        <TravelPreferenceForm
           data={travelPreferenceData}
           bind:selected={travelPreferenceSelected}
           bind:is_edit={travelEdit}
@@ -208,8 +188,7 @@
           {/each}
         </Box>
       {:else}
-        <svelte:component
-          this={TravelPreferenceForm}
+        <TravelPreferenceForm
           data={personalPreferenceData}
           bind:selected={personalPreferenceSelected}
           bind:is_edit={personalEdit}

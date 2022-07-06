@@ -1,18 +1,16 @@
 <script lang="ts">
   import Field from '../components/Field.svelte';
-  import { User } from '$lib/store/auth';
   import Button from '@smui/button';
   import FormToggle from '../components/FormToggle.svelte';
   import FormField from '@smui/form-field';
   import Checkbox from '@smui/checkbox';
   import { createEventDispatcher } from 'svelte';
-  import { Interest, InterestType } from '$lib/store/interest';
+  import type { InterestType } from '$lib/store/interest';
 
   export let data: InterestType[];
-  export let me: User;
   export let dataSelected: string[];
   const dispatcher = createEventDispatcher();
-  export let is_edit: boolean = true;
+  export let is_edit = true;
 
   const handleSubmit = () => {
     dispatcher('submit');
@@ -84,7 +82,7 @@
   }
   .options-1 {
     grid-template-columns: 1fr 1fr 1fr;
-    @include mixins.mobile{
+    @include mixins.mobile {
       grid-template-columns: 1fr 1fr;
     }
     grid-template-rows: 1fr;

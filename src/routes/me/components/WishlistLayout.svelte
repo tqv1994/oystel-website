@@ -1,9 +1,10 @@
 <script lang="ts">
   import Exhibit from '$lib/components/exhibit.svelte';
-  import { authStore, User } from '$lib/store/auth';
-  import { Destination } from '$lib/store/destination';
-  import { Experience } from '$lib/store/experience';
-  import { Product } from '$lib/store/product';
+  import { session } from '$app/stores';
+  import type { User } from '$lib/store/auth';
+  import type { Destination } from '$lib/store/destination';
+  import type { Experience } from '$lib/store/experience';
+  import type { Product } from '$lib/store/product';
   import Select, { Option } from '@smui/select';
   import type { Load } from '@sveltejs/kit';
   import { createEventDispatcher } from 'svelte';
@@ -11,7 +12,7 @@
   const dispatcher = createEventDispatcher();
 
   export let data: Product[] | Experience[] | Destination[] | [];
-  let filter: string = '';
+  let filter = '';
   const onUnlike = (e: CustomEvent) => {
     dispatcher('unlike', { id: e.detail.id, typeName: e.detail.typeName });
   };
@@ -25,22 +26,23 @@
   <div class="row header mb-30">
     <div class="d-col-6 m-col-6">{data.length} Items</div>
     <div class="d-col-6 m-col-6 text-right">
-      <Select bind:value={filter} label="" class="text-left" on:change={handleFilter}>
+      <Select
+        bind:value={filter}
+        label=""
+        class="text-left"
+        on:change={handleFilter}
+      >
         <Option value="">All</Option>
-        <Option value="Product">Product</Option>
-        <Option value="Destination">Destination</Option>
-        <Option value="Experience">Experience</Option>
+        <Option value="product">Product</Option>
+        <Option value="destination">Destination</Option>
+        <Option value="experience">Experience</Option>
       </Select>
     </div>
   </div>
   <div class="row items-list">
-    {#each filter != '' ? data.filter(item => item.__typename == filter) : data as item}
+    {#each filter != '' ? data.filter((item) => item.typeName == filter) : data as item}
       <div class="d-col-4 m-col-6">
-        <svelte:component
-          this={WishListItem}
-          {item}
-          on:unlike={(e) => onUnlike(e)}
-        />
+        <WishListItem {item} on:unlike={(e) => onUnlike(e)} />
       </div>
     {/each}
   </div>

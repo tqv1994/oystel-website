@@ -1,15 +1,29 @@
-import { writable } from 'svelte/store';
-import { Base, CollectionStore, Nameable } from './types';
+import { get, writable } from 'svelte/store';
+import type { Kind } from './category';
 
-export type Country = Base &
-  Nameable & {
-    code?: string;
-    phone?: number;
-  };
+export type Country = Kind & {
+  code?: string;
+  phone?: number;
+};
 
-export const countryStore = writable<CollectionStore<Country>>({
-  items: {},
-});
+export const countryStore = writable<Country[]>([]);
+
+let countryMap: Record<string, Country>;
+export function getCountryById(id: string): Country | undefined {
+  if (!id) {
+    return;
+  }
+  if (!countryMap) {
+    countryMap = {};
+    const countries = get(countryStore);
+    console.log(countries);
+    for (const country of get(countryStore)) {
+      countryMap[country.id] = country;
+    }
+  }
+  console.log('counties', id, countryMap);
+  return countryMap[`country-${id}`];
+}
 
 export const countryFieldsFragment = `
 fragment countryFields on Country {

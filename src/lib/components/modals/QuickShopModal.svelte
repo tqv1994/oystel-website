@@ -6,8 +6,8 @@
   import { Svg } from '@smui/common/elements';
   import ProductSliderModal from './ProductSliderModal.svelte';
   import { productStore } from '$lib/store/product';
-  import { Product } from '$lib/store/product';
-import ProductShow from '../product-show.svelte';
+  import type { Product } from '$lib/store/product';
+  import ProductShow from '../product-show.svelte';
 
   export let open = false;
   export let products: Product[] = [];
@@ -23,40 +23,40 @@ import ProductShow from '../product-show.svelte';
 <div class="content-wrap popup-quick-shop {open ? 'open' : 'close'}">
   <section class="full-width pt-70 pb-50">
     <div class="content-wrap">
-        <IconButton
-          class="btn-close"
-          on:click={() => {
-            open = false;
-          }}
-        >
-          <Icon component={Svg} viewBox="0 0 14.707 14.707">
-            <g data-name="Close Icon" transform="translate(-4.596 -4.596)">
-              <line
-                id="Line"
-                x2="14"
-                y2="14"
-                transform="translate(4.949 4.949)"
-                fill="none"
-                stroke="#000"
-                stroke-width="1"
-              />
-              <line
-                id="Line-2"
-                data-name="Line"
-                x1="14"
-                y2="14"
-                transform="translate(4.949 4.949)"
-                fill="none"
-                stroke="#000"
-                stroke-width="1"
-              />
-            </g>
-          </Icon>
-        </IconButton>
-        <div class="d-mb-20">
-          <ProductShow items={products} title="" />
-        </div>
+      <IconButton
+        class="btn-close"
+        on:click={() => {
+          open = false;
+        }}
+      >
+        <Icon component={Svg} viewBox="0 0 14.707 14.707">
+          <g data-name="Close Icon" transform="translate(-4.596 -4.596)">
+            <line
+              id="Line"
+              x2="14"
+              y2="14"
+              transform="translate(4.949 4.949)"
+              fill="none"
+              stroke="#000"
+              stroke-width="1"
+            />
+            <line
+              id="Line-2"
+              data-name="Line"
+              x1="14"
+              y2="14"
+              transform="translate(4.949 4.949)"
+              fill="none"
+              stroke="#000"
+              stroke-width="1"
+            />
+          </g>
+        </Icon>
+      </IconButton>
+      <div class="d-mb-20">
+        <ProductShow items={products} title="" />
       </div>
+    </div>
   </section>
 </div>
 <ProductSliderModal

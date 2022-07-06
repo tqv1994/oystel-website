@@ -1,5 +1,5 @@
 <script>
-  import { authStore } from '$lib/store/auth';
+  import { session } from '$app/stores';
   import { afterUpdate } from 'svelte';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
@@ -14,7 +14,7 @@
   import Layout from '$lib/components/common/Layout.svelte';
   let active = 'Account Details';
   let model = { name: 'High places', type: 'company' };
-  let userModel = $authStore.user;
+  let userModel = $session.user;
   const advisorMe = userModel?.advisorMe;
   const agencyApplicationState = advisorMe?.agency.state;
   console.log(advisorMe, agencyApplicationState);
@@ -24,14 +24,14 @@
   };
   let openInviteMembers = false;
   afterUpdate(() => {
-    if (!$authStore.user) {
+    if (!$session.user) {
       window.location.href = '/';
     }
   });
 
   async function signOut() {
     try {
-      console.log($authStore.user);
+      console.log($session.user);
       const res = await fetch('/auth/sign-out.json', {
         method: 'POST',
         headers: {
@@ -42,7 +42,7 @@
         }),
       });
       if (res.ok) {
-        authStore.set({ user: undefined });
+        session.set({ user: undefined });
         location.href = '/';
         return;
       }
@@ -106,11 +106,11 @@
         <div class="section-body">
           <h2 class="mt-30 mb-30">High Places</h2>
           <LayoutGrid class="d-pl-0 d-pt-0 d-pr-0">
-            <Cell span="6">
+            <Cell span={6}>
               <div class="section-members">
                 <LayoutGrid class="p-0 pb-30">
-                  <Cell span="12"><h5 class="mb-0 mt-0">Members</h5></Cell>
-                  <Cell span="12">
+                  <Cell span={12}><h5 class="mb-0 mt-0">Members</h5></Cell>
+                  <Cell span={12}>
                     <ul class="list-members">
                       <li><a href="#">Member 1</a></li>
                       <li><a href="#">Member 2</a></li>
@@ -130,13 +130,13 @@
                 </LayoutGrid>
               </div>
             </Cell>
-            <Cell span="6">
+            <Cell span={6}>
               <div class="section-members-pending">
                 <LayoutGrid class="p-0 pb-30">
-                  <Cell span="12"
+                  <Cell span={12}
                     ><h5 class="mb-0 mt-0">Pending invitations</h5></Cell
                   >
-                  <Cell span="12">
+                  <Cell span={12}>
                     <ul class="list-members">
                       <li><a href="#">Member 1</a></li>
                       <li><a href="#">Member 2</a></li>

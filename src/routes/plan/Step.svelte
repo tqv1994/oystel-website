@@ -1,7 +1,7 @@
 <script lang="ts">
   import { H2 } from '@smui/common/elements';
 
-  let className: string = '';
+  let className = '';
   export { className as class };
   export let title: string;
   export let subtitle: string | undefined = undefined;
@@ -36,12 +36,12 @@
     @include mixins.mobile {
       :global(.title) {
         text-align: left;
-        width:auto;
+        width: auto;
         margin: 0 auto;
       }
       p {
         text-align: left;
-        width:auto;
+        width: auto;
         margin: 0 auto;
       }
     }

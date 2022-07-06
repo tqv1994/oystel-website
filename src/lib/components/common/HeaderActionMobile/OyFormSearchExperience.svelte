@@ -1,15 +1,14 @@
 <script lang="ts">
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import { createEventDispatcher, onMount } from 'svelte';
-  import { Destination } from '$lib/store/destination';
-  import { Experience } from '$lib/store/experience';
-  import { Country, countryStore } from '$lib/store/country';
-  import { Category } from '$lib/store/category';
-  import { Nameable } from '$lib/store/types';
-  import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
-import OySelect from '../OySelect.svelte';
-import { sortByName } from '$lib/utils/sort';
+  import { createEventDispatcher } from 'svelte';
+  import { type Country, countryStore } from '$lib/store/country';
+  import type { Kind } from '$lib/store/category';
+  import type { Nameable } from '$lib/store/types';
+  import type { DropdownValue } from '$lib/components/Dropdown.svelte';
+  import OySelect from '../OySelect.svelte';
+  import { sortByName } from '$lib/utils/sort';
+  import type { Kind } from '$lib/store/order';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
@@ -17,14 +16,14 @@ import { sortByName } from '$lib/utils/sort';
   export let searchModel: {
     experience_type: string;
     destination_type: string;
-    countries: string[];
+    countries: string[] | undefined;
     ordering: string;
   };
   let { experience_type, destination_type, countries, ordering } = searchModel;
-  export let destination_types: Category[];
-  export let experience_types: Category[];
-  const countryOptions = sortByName(Object.values($countryStore.items));
-  export let orderings: Nameable[] = [];
+  export let destinationTypeOptions: Kind[] = [];
+  export let experienceTypeOptions: Kind[] = [];
+  export let countryOptions: Country[] = [];
+  export let orderingTypeOptions: Kind[] = [];
   function onSearchSubmit() {
     setTimeout(() => {
       dispatch('close', {
@@ -36,42 +35,42 @@ import { sortByName } from '$lib/utils/sort';
     }, 0);
   }
 
-
-  const onExperienceTypeChange = (
-    event: CustomEvent<DropdownValue<Category>>,
-  ) => {
-    experience_type = event.detail.value?.id  || '';
+  const onExperienceTypeChange = (event: CustomEvent<DropdownValue<Kind>>) => {
+    experience_type = event.detail.value?.id || '';
   };
 
-  const onDestinationTypeChange = (
-    event: CustomEvent<DropdownValue<Category>>,
-  ) => {
+  const onDestinationTypeChange = (event: CustomEvent<DropdownValue<Kind>>) => {
     destination_type = event.detail.value?.id || '';
   };
 
-  function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
+  function onCountryChange(event: CustomEvent<DropdownValue<Country[]>>) {
     if (event.detail.value) {
-      const isEqual = event.detail.value.reduce((acc : boolean, item: Country)=>{
-          if(acc){
-            const indexExist = countries.findIndex((idCountry)=> idCountry == item.id);
-            if(indexExist >= 0){
+      const isEqual = (event.detail.value || []).reduce(
+        (acc: boolean, item: Country) => {
+          if (acc) {
+            const indexExist = (countries || []).findIndex(
+              (idCountry) => idCountry == item.id,
+            );
+            if (indexExist >= 0) {
               acc = true;
-            }else{
+            } else {
               acc = false;
             }
           }
           return acc;
-        }, true);
-      if(!isEqual){
-        countries = event.detail.value.map((item: Country)=>item.id);
+        },
+        true,
+      );
+      if (!isEqual) {
+        countries = (event.detail.value || []).map((item: Country) => item.id);
       }
     } else {
-      countries = null;
+      countries = undefined;
     }
   }
 
   function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
-    ordering = event.detail.value?.key || '';
+    ordering = event.detail.value?.id || '';
   }
 </script>
 
@@ -81,10 +80,10 @@ import { sortByName } from '$lib/utils/sort';
     action="/"
     on:submit|preventDefault={onSearchSubmit}
   >
-    {#if experience_types.length > 0}
+    {#if experienceTypeOptions.length > 0}
       <div class="form-control mb-40">
         <OySelect
-          items={experience_types}
+          items={experienceTypeOptions}
           optionIdentifier="id"
           labelIdentifier="name"
           placeholder="By Experience Type"
@@ -94,10 +93,10 @@ import { sortByName } from '$lib/utils/sort';
         />
       </div>
     {/if}
-    {#if destination_types.length > 0}
+    {#if destinationTypeOptions.length > 0}
       <div class="form-control mb-40">
         <OySelect
-          items={destination_types}
+          items={destinationTypeOptions}
           optionIdentifier="id"
           labelIdentifier="name"
           placeholder="By Destination Type"
@@ -107,21 +106,24 @@ import { sortByName } from '$lib/utils/sort';
         />
       </div>
     {/if}
-    <div class="form-control mb-40">
-      <OySelect
-        items={countryOptions}
-        optionIdentifier="id"
-        labelIdentifier="name"
-        placeholder="By Country"
-        on:select={onCountryChange}
-        on:clear={onCountryChange}
-        value={countries}
-        isMulti={true}
-      />
-    </div>
-    <div class="form-control mb-80">
-      <OySelect
-          items={orderings}
+    {#if countryOptions.length > 0}
+      <div class="form-control mb-40">
+        <OySelect
+          items={countryOptions}
+          optionIdentifier="id"
+          labelIdentifier="name"
+          placeholder="By Country"
+          on:select={onCountryChange}
+          on:clear={onCountryChange}
+          value={countries}
+          isMulti={true}
+        />
+      </div>
+    {/if}
+    {#if orderingTypeOptions.length > 0}
+      <div class="form-control mb-80">
+        <OySelect
+          items={orderingTypeOptions}
           optionIdentifier="key"
           labelIdentifier="name"
           placeholder="Order By"
@@ -129,7 +131,8 @@ import { sortByName } from '$lib/utils/sort';
           on:clear={onSortChange}
           value={ordering}
         />
-    </div>
+      </div>
+    {/if}
     <div class="form-control btn-submit-wrap">
       <Button variant="outlined" style="width: 100%;" type="submit"
         ><Label>Filter Your Results</Label></Button

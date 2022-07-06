@@ -3,7 +3,7 @@
   import { Svg } from '@smui/common/elements';
   export let width: number | undefined;
   export let height: number | undefined;
-  let classNames: string;
+  let classNames: string | '' = '';
   export { classNames as class };
 </script>
 

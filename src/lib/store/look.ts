@@ -1,10 +1,13 @@
-import { Exhibitable } from '$lib/store/types';
-import { Product } from './product';
+import type { Exhibitable } from '$lib/store/types';
+import type { Kind } from './category';
+import type { Product } from './product';
 
 export type Look = Exhibitable & {
   products: Product[];
   intro: string;
   description2: string;
+  curatedBy: string;
+  type1: Kind;
 };
 
 export const lookFieldsFragment = `
@@ -16,6 +19,11 @@ fragment lookFields on Look {
   intro
   gallery {
     ...uploadFileFields
+  }
+  curatedBy
+  type1 {
+    id
+    name
   }
 }
 `;

@@ -114,7 +114,7 @@
     <Button on:click={() => (open = false)}>
       <Label>Cancel</Label>
     </Button>
-    <Button on:click={onSubmit()}>
+    <Button>
       <Label>Submit</Label>
     </Button>
   </Actions>

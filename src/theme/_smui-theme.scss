@@ -6,14 +6,13 @@
 @use '@material/theme/color-palette';
 
 // Svelte Colors!
-@use '@material/theme/index' as theme with
-  (
-    $primary: #000,
-    $secondary: #F2F2F2,
-    $surface: #fff,
-    $background: #fff,
-    $error: color-palette.$red-900
-  );
+@use '@material/theme/index' as theme with (
+  $primary: #000,
+  $secondary: #f2f2f2,
+  $surface: #fff,
+  $background: #fff,
+  $error: color-palette.$red-900
+);
 @use './variables' as v;
 @use './spacing-helpers';
 // use Typeography
@@ -43,7 +42,6 @@
   )
 );
 
-
 @font-face {
   font-family: Surt;
   src: url('./fonts/surt-regular/surt-regular.woff');
@@ -52,21 +50,40 @@
 
 @font-face {
   font-family: Surt;
+  src: url('./fonts/surt-regular/Surt-RegularOblique.woff');
+  font-weight: 400;
+  font-style: oblique;
+}
+
+@font-face {
+  font-family: Surt;
   // src: url('/fonts/at-surt-light.woff');
-  src: url('/fonts/AT-Surt-Light.woff2.otf');
+  src: url('/fonts/surt-light/Surt-Light.woff');
   //src: url('./fonts/surt-light/Surt-LightExtended.woff') format('woff');
   font-weight: 300;
 }
 
 @font-face {
   font-family: Surt;
-  src: url('./fonts/surt-semi-bold/Surt-SemiBoldExtended.woff');
+  src: url('./fonts/surt-bold/Surt-Medium.woff');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Surt;
+  src: url('./fonts/surt-bold/Surt-SemiBold.woff');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: Surt;
+  src: url('./fonts/surt-bold/Surt-Bold.woff');
   font-weight: 700;
 }
 
 @font-face {
   font-family: Surt;
-  src: url('./fonts/surt-normal-ultra-bold/SurtNormal-UltraBold.woff');
+  src: url('./fonts/surt-bold/Surt-UltraBold.woff');
   font-weight: 800;
 }
 
@@ -146,7 +163,9 @@ $desktop-width: sizes.$desktop-width;
     transform: translate3d(0, 100%, 0);
   }
 }
-*, ::after, ::before {
+*,
+::after,
+::before {
   box-sizing: border-box;
 }
 html,
@@ -209,7 +228,7 @@ p,
   font-family: var(--mdc-typography-photodetail-font-family);
   font-size: var(--mdc-typography-photodetail-font-size);
   font-weight: var(--mdc-typography-photodetail-font-weight);
-  line-height:  var(--mdc-typography-photodetail-line-height);
+  line-height: var(--mdc-typography-photodetail-line-height);
   letter-spacing: var(--mdc-typography-photodetail-letter-spacing);
 }
 
@@ -219,26 +238,26 @@ button .text-eyebrow,
   font-family: var(--mdc-typography-eyebrow-font-family) !important;
   font-size: var(--mdc-typography-eyebrow-font-size) !important;
   font-weight: var(--mdc-typography-eyebrow-font-weight) !important;
-  line-height:  var(--mdc-typography-eyebrow-line-height) !important;
+  line-height: var(--mdc-typography-eyebrow-line-height) !important;
   letter-spacing: var(--mdc-typography-eyebrow-letter-spacing) !important;
 }
-.text-button2{
+.text-button2 {
   @include typography.typography('button');
   font-size: var(--mdc-typography-button2-font-size) !important;
 }
 
-.text-warning{
-  color: #F0C11B !important;
+.text-warning {
+  color: #f0c11b !important;
 }
 
-.text-danger{
-  color: #DA1E27 !important;
+.text-danger {
+  color: #da1e27 !important;
 }
 
 caption {
   @include typography.typography('caption');
 }
-.mdc-notched-outline--upgraded .mdc-floating-label--float-above{
+.mdc-notched-outline--upgraded .mdc-floating-label--float-above {
   /* Set width for input label*/
   max-width: calc(100% / 0.5);
 }
@@ -248,20 +267,26 @@ input,
 select,
 textarea {
   font-family: var(--mdc-typography-form-font-family);
-  font-size:  var(--mdc-typography-form-font-size);
+  font-size: var(--mdc-typography-form-font-size);
   font-weight: var(--mdc-typography-form-font-weight);
   line-height: var(--mdc-typography-form-line-height);
   letter-spacing: var(--mdc-typography-form-letter-spacing);
   font-style: normal;
 }
-.mdc-floating-label{
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.mdc-floating-label {
   font-style: oblique;
 }
 select,
 .mdc-select .mdc-floating-label.mdc-floating-label {
   font-style: normal;
 }
-button.mdc-button, a.mdc-button {
+button.mdc-button,
+a.mdc-button {
   --mdc-theme-primary: #{colors.$black};
   @include button.outline-color(#000);
   @include button.outline-width(1px, 40px);
@@ -328,18 +353,22 @@ button.mdc-button, a.mdc-button {
   }
 }
 
-
-
-section{
-  padding-top: 50px;
-  padding-bottom: 50px;
-  @include mixins.mobile{
+section {
+  padding-top: 54px;
+  padding-bottom: 54px;
+  @include mixins.mobile {
     padding-top: 20px;
     padding-bottom: 20px;
   }
+  .section__title {
+    margin: 0 0 24px 0;
+    @include mixins.mobile {
+      margin-bottom: 15px;
+    }
+  }
 }
 
-.mdc-tab.mdc-tab{
+.mdc-tab.mdc-tab {
   font-family: var(--mdc-typography-button-font-family);
   font-size: var(--mdc-typography-button-font-size);
   font-weight: var(--mdc-typography-button-font-weight);
@@ -370,11 +399,11 @@ section{
 }
 
 /* MDC Table */
-.mdc-data-table{
-  .mdc-data-table__table{
+.mdc-data-table {
+  .mdc-data-table__table {
     white-space: pre-wrap;
   }
-  .mdc-data-table__table-container{
+  .mdc-data-table__table-container {
     &::-webkit-scrollbar-track {
       background-color: #d3d3d3;
     }
@@ -386,7 +415,7 @@ section{
     &::-webkit-scrollbar-thumb {
       background-color: #{colors.$blue};
     }
-    td{
+    td {
       word-break: break-word;
     }
   }
@@ -396,10 +425,39 @@ section{
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  .container{
+  margin-right: auto;
+  .container {
     max-width: sizes.$contentMaxWidth;
     margin-left: var(--mdc-layout-grid-margin-desktop);
     margin-right: var(--mdc-layout-grid-margin-desktop);
+
+    &.margin-auto {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    &.add-padding {
+      padding-left: 64px;
+      padding-right: 64px;
+      @include mixins.mobile {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+    }
+
+    &.medium-max-width {
+      width: 100%;
+      padding: 0 24px;
+      @include mixins.desktop {
+        width: 78%;
+        max-width: sizes.$contentMediumMaxWidth;
+        padding: 0;
+      }
+    }
+
+    .container-helper {
+      padding: 0 var(--mdc-layout-grid-margin-desktop);
+    }
   }
   @media screen and (max-width: $mobile-width) {
     .container {
@@ -443,8 +501,8 @@ section{
 
 @include mixins.dark {
   * {
-      color: colors.$white !important;
-    }
+    color: colors.$white !important;
+  }
   .mdc-button {
     @include button.outline-color(colors.$white);
   }
@@ -457,7 +515,7 @@ section{
   .divider {
     --divider-line-color: #{colors.$white};
   }
-  svg{
+  svg {
     filter: none;
   }
 }
@@ -490,15 +548,15 @@ section{
   .divider {
     --divider-line-color: #{colors.$black};
   }
-  svg{
+  svg {
     filter: brightness(0.1);
   }
 }
 
-.clearfix{
+.clearfix {
   display: inline-block;
   &:after {
-    content: ".";
+    content: '.';
     display: block;
     clear: both;
     visibility: hidden;
@@ -526,8 +584,8 @@ section {
   padding-left: 0;
 }
 @include mixins.desktop {
-  .page.page-home{
-    #logo{
+  .page.page-home {
+    #logo {
       margin-left: 100px;
     }
   }
@@ -615,7 +673,8 @@ section {
 }
 
 /* mdc-dialog */
-body.mdc-dialog-scroll-lock{ // Fixed error jumpled screen when open dialog
+body.mdc-dialog-scroll-lock {
+  // Fixed error jumpled screen when open dialog
   overflow: auto;
 }
 
@@ -631,7 +690,7 @@ body.mdc-dialog-scroll-lock{ // Fixed error jumpled screen when open dialog
     left: 0;
     width: 100%;
     height: 1px;
-    background-color: var(--divider-line-color,#{colors.$white});
+    background-color: var(--divider-line-color, #{colors.$white});
   }
 }
 

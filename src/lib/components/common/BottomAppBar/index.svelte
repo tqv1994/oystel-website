@@ -4,7 +4,7 @@
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
   import { createEventDispatcher } from 'svelte';
-  import { authStore } from '$lib/store/auth';
+  import { session } from '$app/stores';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
   import SearchIcon from '$lib/icons/SearchIcon.svelte';
   import TripIcon from '$lib/icons/TripIcon.svelte';
@@ -26,7 +26,7 @@
 </script>
 
 <div class=" d-none m-block" id="bottom-app-bar">
-  <LayoutGrid class="pb-30">
+  <LayoutGrid class="mobile-nav-wrapper">
     <Cell spanDevices={{ phone: 1, desktop: 3, tablet: 2 }} class="text-center">
       <Button
         on:click={() => {
@@ -35,7 +35,7 @@
       >
         <div class="wrap-item">
           <HeartIcon size="md" /><br />
-          <Label class="text-eyebrow">Wishlist</Label>
+          <Label class="text-eyebrow">Wishlists</Label>
         </div>
       </Button>
     </Cell>
@@ -66,10 +66,10 @@
     <Cell spanDevices={{ phone: 1, desktop: 3, tablet: 2 }} class="text-center">
       <Button
         on:click={() => {
-          if($authStore.user){
-            let link = $authStore.user ? '/me' : '';
+          if ($session.user) {
+            let link = $session.user ? '/me' : '';
             openLink(link);
-          }else{
+          } else {
             window.openSignInModal();
           }
         }}
@@ -82,10 +82,11 @@
     </Cell>
   </LayoutGrid>
 </div>
+
 <style lang="scss">
   #bottom-app-bar {
     --mdc-text-button-with-icon-icon-size: 21px;
-    z-index: 20;
+    z-index: 102;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -96,7 +97,8 @@
       text-align: center;
       :global(.mdc-button__icon) {
         margin-right: 0;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
+        width: 24px !important;
       }
     }
     :global(.mdc-button) {
@@ -106,6 +108,11 @@
     :global(.mdc-button) {
       min-width: auto;
       overflow: visible;
+    }
+    :global(.mdc-layout-grid) {
+      @media screen and (max-width: 599px) {
+        padding: 16px 24px 28px 24px;
+      }
     }
   }
 </style>

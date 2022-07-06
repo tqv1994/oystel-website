@@ -1,4 +1,4 @@
-import { Nameable, Publishable } from '$lib/store/types';
+import type { Nameable, Publishable } from '$lib/store/types';
 
 export function sortByName<T extends Nameable>(items: T[]): T[] {
   return items.sort((a, b) => {

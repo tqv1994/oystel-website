@@ -1,23 +1,21 @@
 import { writable } from 'svelte/store';
-import { UploadFile } from './upload-file';
-import {
+import type { UploadFile } from './upload-file';
+import type {
   Categorizable,
   CollectionStore,
   Exhibitable,
   Nationalizable,
 } from './types';
-import { Destination } from './destination';
-import { Look } from './look';
-import { Product } from './product';
+import type { Destination } from './destination';
+import type { Look } from './look';
+import type { Product } from './product';
 import {
-  Ordering,
   ORDER_BY_NAME_ASC,
   ORDER_BY_NAME_DESC,
   ORDER_BY_PUBLISH_DATE_ASC,
   ORDER_BY_PUBLISH_DATE_DESC,
 } from './order';
-import { SearchResultItemWithCountryId, SearchResultItemWithTypeIDs } from './search';
-import { GalleryComponentBase } from './component';
+import type { GalleryComponentBase } from './component';
 
 export type ExperienceBase = Exhibitable & {
   intro: string;
@@ -26,15 +24,17 @@ export type ExperienceBase = Exhibitable & {
   looks: Look[];
   pack: Product[];
   num_views: number;
+  city?: number;
 };
 
-export type Experience = ExperienceBase & Nationalizable & Categorizable &{
-  liked: boolean;
-};
-
-export type ExperienceSearchResultItem = ExperienceBase & SearchResultItemWithTypeIDs & SearchResultItemWithCountryId;
+export type Experience = ExperienceBase &
+  Nationalizable &
+  Categorizable & {
+    liked: boolean;
+  };
 
 export type ExperienceGallery = GalleryComponentBase & {
+  __component: 'galleries.experience-gallery';
   experiences: Experience[];
 };
 
@@ -42,7 +42,7 @@ export const experienceStore = writable<CollectionStore<Experience>>({
   items: {},
 });
 
-export const experienceOrderings: Ordering[] = [
+export const experienceOrderings: Kind[] = [
   ORDER_BY_NAME_ASC,
   ORDER_BY_NAME_DESC,
   ORDER_BY_PUBLISH_DATE_ASC,
@@ -86,21 +86,3 @@ fragment experienceGalleryFields on ComponentGalleriesExperienceGallery {
   }
 }
 `;
-
-export class ExperienceInput {
-  num_views: number
-
-  constructor(values: Object = {}) {
-      Object.assign(this, values);
-  }
-}
-
-export const convertExperienceToInput = (experience: Experience): ExperienceInput => {
-  let result: ExperienceInput;
-  const data: any = { ...experience };
-  delete data.id;
-  delete data.updated_at
-  delete data.__typename;
-  result = new ExperienceInput(data);
-  return result;
-}

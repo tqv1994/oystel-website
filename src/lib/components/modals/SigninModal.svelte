@@ -19,13 +19,17 @@
     GoogleAuthProvider,
     FacebookAuthProvider,
   } from 'firebase/auth';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import * as yup from 'yup';
-  import { routerHelper } from '$lib/helpers';
-import { authStore } from '$lib/store/auth';
-import { goto } from '$app/navigation';
+  import { session } from '$app/stores';
+  import { goto } from '$app/navigation';
+  import { PASSWORD_RESET_LINK } from '$lib/const';
+  import FacebookIcon from '$lib/icons/FacebookIcon.svelte';
+  import GoogleIcon from '$lib/icons/GoogleIcon.svelte';
+  import type { Auth } from '$lib/store/auth';
+  import { getWebsiteUrl } from '$lib/utils/link';
   let open: boolean;
-  const dispatch = createEventDispatcher();
+  let showLinkReResetPassword = false;
   let model = {
     email: '',
     password: '',
@@ -33,9 +37,9 @@ import { goto } from '$app/navigation';
   let classModal = '';
   let errors = {};
   function openModal() {
-    if(!$authStore.user){
+    if (!$session.user) {
       open = true;
-    }else{
+    } else {
       goto('/me');
     }
   }
@@ -59,7 +63,6 @@ import { goto } from '$app/navigation';
   function closeHandler(e) {
     window.closeSignInModal();
   }
-  
 
   async function signInWithGoogle() {
     const auth = getAuth();
@@ -80,9 +83,18 @@ import { goto } from '$app/navigation';
             body: JSON.stringify({ token }),
           });
           if (res.ok) {
-            routerHelper.redirect('/');
+            const authRes: Auth = await res.json();
+            session.update((s) => {
+              s.user = authRes.user;
+              s.travellerMe = authRes.travellerMe;
+              return s;
+            });
+            window.closeSignInModal();
+            window.pushToast('Logged in successfully');
+            // goto('/');
+          } else {
+            console.error('Error authenticating', res);
           }
-          console.error('Error authenticating', res);
         } catch (error) {
           console.error('Create/update user failure', error);
         }
@@ -109,9 +121,7 @@ import { goto } from '$app/navigation';
           return;
         }
         try {
-          console.log('facebook login', cred.user);
           const token = await cred.user.getIdToken();
-          console.log('token', token);
           const res = await fetch('/auth.json', {
             method: 'POST',
             headers: {
@@ -120,7 +130,14 @@ import { goto } from '$app/navigation';
             body: JSON.stringify({ token }),
           });
           if (res.ok) {
-            routerHelper.redirect('/');
+            const authRes: Auth = await res.json();
+            session.update((s) => {
+              s.user = authRes.user;
+              s.travellerMe = authRes.travellerMe;
+              return s;
+            });
+            window.closeSignInModal();
+            window.pushToast('Logged in successfully');
           }
           console.error('Error authenticating', res);
         } catch (error) {
@@ -135,7 +152,6 @@ import { goto } from '$app/navigation';
       const email = error.email;
       // The AuthCredential type that was used.
       const credential = FacebookAuthProvider.credentialFromError(error);
-      console.log('error login facebook ', error);
       // ...
     }
   }
@@ -152,25 +168,47 @@ import { goto } from '$app/navigation';
         model.password,
       );
       if (cred && cred.user) {
-        const token = await cred.user.getIdToken();
-        const res = await fetch('/auth.json', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            token,
-          }),
-        });
-        if (res.ok) {
-          window.pushToast('Logged in successfully');
-          routerHelper.redirect('/me');
+        if (cred.user.emailVerified) {
+          const token = await cred.user.getIdToken();
+          const res = await fetch('/auth.json', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              token,
+            }),
+          });
+          if (res.ok) {
+            const authRes: Auth = await res.json();
+            session.update((s) => {
+              s.user = authRes.user;
+              s.travellerMe = authRes.travellerMe;
+              return s;
+            });
+            window.closeSignInModal();
+            window.pushToast('Logged in successfully');
+            goto('/');
+          }
+        } else {
+          session.set({ user: undefined });
+          open = false;
+          goto(`/auth/verify?email=${encodeURIComponent(model.email)}`);
         }
       }
+      showLinkReResetPassword = false;
     } catch (err) {
-      if (err.code === 'auth/user-not-found') {
-        errors.email = 'Email or password is incorrect';
-      } else {
+      console.log('code', err.code);
+      if (
+        err.code === 'auth/wrong-password'
+      ) {
+        errors.password = 'Password is incorrect';
+        showLinkReResetPassword = true;
+      }else if( err.code === 'auth/user-not-found') {
+        errors.email = 'This email is unregistered';
+        showLinkReResetPassword = false;
+      }else {
+        showLinkReResetPassword = false;
         console.error('Error registering', err);
         if (typeof err == 'object') {
           if (err.inner) {
@@ -183,7 +221,34 @@ import { goto } from '$app/navigation';
     }
   }
 
-  onMount(()=>{
+  const sendMailForgotPassword = async () => {
+    if (model.email) {
+      const res = await fetch('/p/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: model.email,
+          continueUrl: `${getWebsiteUrl()}${PASSWORD_RESET_LINK}`,
+        }),
+      });
+      if (res.ok) {
+        showLinkReResetPassword = false;
+        open = false;
+        goto(`/auth/forgot-password?email=${model.email}`);
+      } else {
+        const error = await res.json();
+        console.error(error);
+        window.pushToast('Something went wrong! Please try again later');
+        showLinkReResetPassword = false;
+      }
+    } else {
+      window.pushToast('Email address is not valid');
+    }
+  };
+
+  onMount(() => {
     window.openSignInModal = openModal;
     window.closeSignInModal = closeModal;
   });
@@ -205,15 +270,12 @@ import { goto } from '$app/navigation';
       class="material-icons close-modal">close</IconButton
     >
     <div class="content-wrap">
-      <div class="container d-m-0">
+      <div class="container margin-auto add-padding">
         <LayoutGrid>
           <Cell spanDevices={{ desktop: 6, mobile: 4, tablet: 8 }}>
             <div class="d-pr-150">
-              <p class="text-sub-title mb-50">
-                Lorem ipsum dolor sit sen amet, consectetur adipiscing elit, sed
-                do eiusmod tempor.
-              </p>
-              <h1 class="m-mb-0">Welcome Back</h1>
+              <p class="text-sub-title mb-50">To continue, sign in.</p>
+              <h3 class="m-mb-0 text-h1">Welcome Back</h3>
             </div>
           </Cell>
           <Cell spanDevices={{ desktop: 6, tablet: 8, phone: 4 }}>
@@ -223,32 +285,26 @@ import { goto } from '$app/navigation';
                 <LayoutGrid>
                   <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
                     <Button on:click={signInWithFacebook} variant="unelevated">
-                      <Icon component={Svg} viewBox="0 0 15.126 15.126">
-                        <path
-                          id="Icon_-_Facebook"
-                          data-name="Icon - Facebook"
-                          d="M13.461,0H.788A.787.787,0,0,0,0,.788V13.464a.786.786,0,0,0,.788.785H7.614V8.733H5.758V6.582H7.614V5a2.591,2.591,0,0,1,2.766-2.841,15.693,15.693,0,0,1,1.659.083V4.161H10.9c-.893,0-1.066.423-1.066,1.046V6.579h2.129L11.686,8.73H9.832v5.519h3.629a.789.789,0,0,0,.788-.788V.788A.789.789,0,0,0,13.461,0Z"
-                          fill="#5078bc"
-                        />
-                      </Icon>
+                      <FacebookIcon
+                        color="#000"
+                        width={15.126}
+                        height={15.126}
+                      />
                       <Label class="text-body2">Facebook</Label>
                     </Button>
                   </Cell>
                   <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
                     <Button on:click={signInWithGoogle} variant="unelevated"
-                      ><Icon component={Svg} viewBox="0 0 15.126 15.126">
-                        <path
-                          id="Icon_-_Google"
-                          data-name="Icon - Google"
-                          d="M7.563,0a7.563,7.563,0,1,0,7.563,7.563A7.559,7.559,0,0,0,7.563,0Zm4.345,9.186a4.217,4.217,0,0,1-1.183,1.953,4.3,4.3,0,0,1-1.925.99A4.7,4.7,0,0,1,6.408,12.1,4.971,4.971,0,0,1,4.7,11.248,4.685,4.685,0,0,1,3.438,9.681a4.8,4.8,0,0,1-.413-3.025,4.651,4.651,0,0,1,.413-1.183A4.853,4.853,0,0,1,6.105,3.135a4.8,4.8,0,0,1,3.163.028,4.348,4.348,0,0,1,1.513.935c-.137.165-.3.3-.468.468l-.853.853a2.711,2.711,0,0,0-1.018-.605,2.6,2.6,0,0,0-1.375-.055,2.835,2.835,0,0,0-1.4.77,2.867,2.867,0,0,0-.688,1.1,2.924,2.924,0,0,0,0,1.815A2.8,2.8,0,0,0,6.05,9.873a2.362,2.362,0,0,0,1.045.44,3.106,3.106,0,0,0,1.128,0A2.6,2.6,0,0,0,9.268,9.9,2.109,2.109,0,0,0,10.2,8.443H7.646V6.628h4.4A6.142,6.142,0,0,1,11.908,9.186Z"
-                          fill="#5078bc"
-                        />
-                      </Icon><Label class="text-body2">Google</Label></Button
+                      ><GoogleIcon
+                        width={15.126}
+                        height={15.126}
+                        color="#000"
+                      /><Label class="text-body2">Google</Label></Button
                     >
                   </Cell>
                 </LayoutGrid>
               </div>
-              <div class="title-with-line mb-20">
+              <div class="title-with-line mb-30">
                 <b /><span class="title">Or</span><b />
               </div>
               <div class="signin-form">
@@ -296,11 +352,19 @@ import { goto } from '$app/navigation';
                       </div>
                     </Cell>
                     <Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
-                      <a
-                        href="javascript:void(0);"
-                        on:click={doSignUp}
-                        class="text-small">Not a member yet? Sign up.</a
-                      >
+                      {#if !showLinkReResetPassword}
+                        <a
+                          href="javascript:void(0);"
+                          on:click={doSignUp}
+                          class="text-small">Not a member yet? Sign up.</a
+                        >
+                      {:else}
+                        <a
+                          href="javascript:void(0);"
+                          on:click={sendMailForgotPassword}
+                          class="text-small">Reset password?</a
+                        >
+                      {/if}
                     </Cell>
                   </LayoutGrid>
                 </form>
@@ -319,23 +383,23 @@ import { goto } from '$app/navigation';
   @import './src/style/partial/signin-modal.scss';
   #signin-modal {
     @import './src/style/partial/form.scss';
+    z-index: 100;
+    .close-modal {
+      right: 8px !important;
+    }
     .mdc-text-field {
       input:-webkit-autofill,
       input:-webkit-autofill:hover,
       input:-webkit-autofill:focus,
       input:-webkit-autofill:active {
         -webkit-text-fill-color: #fff !important;
-        -webkit-box-shadow: 0 0 0 30px colors.$blue inset;
-        box-shadow: 0 0 0 30px colors.$blue inset;
+        -webkit-box-shadow: 0 0 0 30px colors.$black inset;
+        box-shadow: 0 0 0 30px colors.$black inset;
       }
     }
     .mdc-dialog__content {
-      padding-left: var(--mdc-layout-grid-margin-desktop);
-      padding-right: var(--mdc-layout-grid-margin-desktop);
-      @include mixins.mobile {
-        padding-left: 0;
-        padding-right: 0;
-      }
+      padding-left: 0;
+      padding-right: 0;
     }
 
     @media screen and (max-width: 999px) {

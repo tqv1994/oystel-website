@@ -1,9 +1,9 @@
 import { sortByPublishedAt } from '$lib/utils/sort';
 
-import { Writable } from 'svelte/store';
-import { Category } from './category';
-import { Country } from './country';
-import { UploadFile } from './upload-file';
+import type { Writable } from 'svelte/store';
+import type { Kind } from './category';
+import type { Country } from './country';
+import type { UploadFile } from './upload-file';
 
 export interface FetchError {
   code?: number;
@@ -36,13 +36,13 @@ export type Nameable = {
 export type Linkable = Identifiable & Nameable;
 
 export type Nationalizable = {
-  country: Country;
+  country?: string;
 };
 
 export type Categorizable = {
-  type1: Category;
-  type2: Category;
-  type3: Category;
+  type1: Kind;
+  type2: Kind;
+  type3: Kind;
 };
 
 export type Recordable = {
@@ -67,7 +67,7 @@ export type Exhibitable = Publishable &
   Categorizable &
   Likeable & {
     description: string;
-    gallery: UploadFile[];
+    gallery?: UploadFile[];
   };
 
 export type Searchable = Exhibitable & Nationalizable & Categorizable;

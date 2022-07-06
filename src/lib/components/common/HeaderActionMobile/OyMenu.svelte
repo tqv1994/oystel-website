@@ -5,7 +5,8 @@
   import { createEventDispatcher } from 'svelte';
   import { menus } from '$lib/const';
   import { routerHelper } from '$lib/helpers/router';
-import Follow from '../Follow.svelte';
+  import Follow from '../Follow.svelte';
+  import { goto } from '$app/navigation';
 
   const dispatch = createEventDispatcher();
   export let showSubmenu = false;
@@ -14,7 +15,7 @@ import Follow from '../Follow.svelte';
     menuActive = menu;
   }
   function openLink(menu: any) {
-    routerHelper.redirect(menu.link);
+    goto(menu.link);
     dispatch('close');
   }
 </script>
@@ -75,7 +76,8 @@ import Follow from '../Follow.svelte';
     </ul>
   {/if}
 </div>
-<Follow/>
+<Follow />
+
 <style>
   :global(#header-action-mobile#header-action-mobile) {
     background-color: #f0f7f8;

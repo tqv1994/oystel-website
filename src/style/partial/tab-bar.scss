@@ -1,11 +1,11 @@
 @use '../../theme/colors';
-.mdc-tab-indicator .mdc-tab-indicator__content--underline{
-    border-width: 0;
+.mdc-tab-indicator .mdc-tab-indicator__content--underline {
+  border-width: 0;
 }
-.mdc-tab-bar{
-    .mdc-tab{
-        .mdc-tab-indicator__content--underline{
-            border-width: 1px;
-        }
+.mdc-tab-bar {
+  .mdc-tab {
+    .mdc-tab-indicator__content--underline {
+      border-width: 1px;
     }
+  }
 }

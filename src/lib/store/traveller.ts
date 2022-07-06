@@ -1,18 +1,25 @@
-import { map } from '@firebase/util';
-import { Address } from './address';
-import { Category } from './category';
-import { Country } from './country';
-import { Identification } from './identification';
-import { Interest } from './interest';
-import { Language } from './language';
-import { PersonalPreference, TravelPreference } from './preference';
-import { Visa } from './visa';
+import { session } from '$app/stores';
+import { get, writable } from 'svelte/store';
+import {
+  convertAddressToInput,
+  type Address,
+  type AddressInput,
+} from './address';
+import type { Kind } from './category';
+import type { Country } from './country';
+import type { Destination } from './destination';
+import type { Experience } from './experience';
+import type { Identification } from './identification';
+import type { Interest } from './interest';
+import type { PersonalPreference, TravelPreference } from './preference';
+import type { Product } from './product';
+import type { UploadFile } from './upload-file';
 
 export type Traveller = {
   id: number;
   created_at?: string;
   updated_at?: string;
-  salutationType: Category;
+  salutationType: Kind;
   forename: string;
   surname: string;
   birthday: string;
@@ -27,14 +34,13 @@ export type Traveller = {
   instagram: string;
   facebook: string;
   messenger: string;
-  language: string
+  language: string;
   nationality: Country;
   residence: Country;
   email: string;
   children: Traveller;
-  addresses: Address[];
-  visas: Visa[];
-  identifications: Identification[];
+  // visas: Visa[];
+  // identifications: Identification[];
   spouse: Traveller[];
   partners: Traveller[];
   parents: Traveller[];
@@ -58,50 +64,146 @@ export type Traveller = {
   passportExpiryDate: string;
   passportPlaceOfIssue: string;
   medicalCondition: string;
-  myAssistantName: string
-  myAssistantSalutationType: Category;
+  myAssistantName: string;
+  myAssistantSalutationType: Kind;
   myAssistantEmail: string;
   myAssistantPhone: string;
   myAssistantContactNotes: string;
-  myAssistantLanguage: Language;
-}
+  myAssistantLanguage: Kind;
+  avatar: UploadFile;
+  userMe: string;
+  destinationLikes?: Destination[];
+  experienceLikes?: Experience[];
+  productLikes?: Product[];
+  address?: Address;
+  identifications: Identification[];
+};
+
+export const updateTravellerMeStore = (travellerMe: Traveller) => {
+  session.update((s) => {
+    if (s.user && s.travellerMe) {
+      let identifications: Identification[] = [];
+      if (s.travellerMe.identifications) {
+        identifications = s.travellerMe.identifications;
+      }
+      s.travellerMe = travellerMe;
+      s.travellerMe.identifications = identifications;
+    }
+    return s;
+  });
+};
+
+export const updateRelationshipToTravellerMe = (
+  traveller: Traveller,
+  relationship: string,
+  isRemove = false,
+) => {
+  session.update((s) => {
+    if (s.user && s.travellerMe) {
+      const travellerMe = s.travellerMe;
+      if (relationship === RELATIVES.children) {
+        if (isRemove === false) {
+          travellerMe.children = traveller;
+        } else {
+          travellerMe.children = null;
+        }
+      } else {
+        const index = (travellerMe[relationship] || []).findIndex(
+          (item: Traveller) => item.id.toString() === traveller.id.toString(),
+        );
+        if (index >= 0) {
+          if (isRemove === false) {
+            travellerMe[relationship][index] = traveller;
+          } else {
+            travellerMe[relationship].splice(index, 1);
+          }
+        } else {
+          if (isRemove === false) {
+            if (travellerMe[relationship]) {
+              travellerMe[relationship].push(traveller);
+            } else {
+              travellerMe[relationship] = [traveller];
+            }
+          }
+        }
+      }
+      s.travellerMe = travellerMe;
+    }
+    return s;
+  });
+};
+
+export const updateIdentificationToTravellerMe = (
+  identification: Identification,
+  isRemove = false,
+) => {
+  session.update((s) => {
+    if (s.user && s.travellerMe) {
+      const travellerMe = s.travellerMe;
+      if (!travellerMe.identifications) {
+        travellerMe.identifications = [identification];
+      } else {
+        if (isRemove === false) {
+          const index = travellerMe.identifications.findIndex(
+            (item) => item.id.toString() === identification.id.toString(),
+          );
+          if (index >= 0) {
+            travellerMe.identifications[index] = identification;
+          } else {
+            travellerMe.identifications.push(identification);
+          }
+        } else {
+          const index = travellerMe.identifications.findIndex(
+            (item) => item.id.toString() === identification.id.toString(),
+          );
+          if (index >= 0) {
+            travellerMe.identifications.splice(index, 1);
+          }
+        }
+      }
+      s.travellerMe = travellerMe;
+    }
+
+    return s;
+  });
+};
 
 export class TravellerInput {
-  salutationType: string
-  forename: string
-  surname: string
-  birthday: string
-  height: number
-  weight: number
-  notes: string
-  homePhone: string
-  mobilePhone: string
-  workPhone: string
-  emergencyPhone: string
-  whatsapp: string
-  instagram: string
-  facebook: string
-  messenger: string
-  addresses: string[]
-  language: string
-  nationality: string
-  residence: string
-  visas: string[]
-  identifications: string[]
-  email: string
-  spouse: string[]
-  partners: string[]
-  parents: string[]
-  children: string
-  relatives: string[]
-  friends: string[]
-  otherRelations: string[]
-  passportNumber: string
-  passportExpiryDate: string
-  passportPlaceOfIssue: string
-  medicalCondition: string
-  gender: string
-  myAssistantName: string
+  salutationType: string;
+  forename: string;
+  surname: string;
+  birthday: string;
+  height: number;
+  weight: number;
+  notes: string;
+  homePhone: string;
+  mobilePhone: string;
+  workPhone: string;
+  emergencyPhone: string;
+  whatsapp: string;
+  instagram: string;
+  facebook: string;
+  messenger: string;
+  address: AddressInput;
+  language: string;
+  nationality: string;
+  residence: string;
+  visas: string[];
+  identifications: string[];
+  email: string;
+  spouse: string[];
+  partners: string[];
+  parents: string[];
+  children: string;
+  relatives: string[];
+  friends: string[];
+  otherRelations: string[];
+  passportNumber: string;
+  passportExpiryDate: string;
+  passportPlaceOfIssue: string;
+  medicalCondition: string;
+  gender: string;
+  myAssistantName: string;
   myAssistantSalutationType: string; // ID
   myAssistantEmail: string;
   myAssistantPhone: string;
@@ -111,15 +213,12 @@ export class TravellerInput {
   constructor(values: Object = {}) {
     Object.assign(this, values);
   }
-};
+}
 
 export function convertTravellerToInput(traveller: Traveller): TravellerInput {
   let result: TravellerInput;
   const data: any = { ...traveller };
-  data.salutationType = traveller.salutationType?.id;
-  data.addresses = traveller.addresses?.map((item) => { return item.id });
-  data.visas = traveller.visas?.map((item) => { return item.id });
-  data.identifications = traveller.identifications?.map((item) => { return item.id });
+  data.salutationType = (traveller.salutationType?.id || '').toString();
   data.partners = traveller.partners?.map((item) => item.id);
   data.parents = traveller.parents?.map((item) => item.id);
   data.children = traveller.children?.id;
@@ -128,93 +227,161 @@ export function convertTravellerToInput(traveller: Traveller): TravellerInput {
   data.spouse = traveller.spouse?.map((item) => item.id);
   data.otherRelations = traveller.otherRelations?.map((item) => item.id);
   data.nationality = traveller.nationality?.id;
-  data.interests = traveller.interests?.map((item)=> item.id);
-  data.personalPreferences = traveller.personalPreferences?.map((item)=>item.id);
-  data.travelPreferences = traveller.travelPreferences?.map((item)=>item.id);
+  data.interests = traveller.interests?.map((item) => item.id);
+  data.personalPreferences = traveller.personalPreferences?.map(
+    (item) => item.id,
+  );
+  data.travelPreferences = traveller.travelPreferences?.map((item) => item.id);
   data.myAssistantSalutationType = traveller.myAssistantSalutationType?.id;
   data.myAssistantLanguage = traveller.myAssistantLanguage?.id;
   data.residence = traveller.residence?.id || null;
+  if (data.address) {
+    data.address = convertAddressToInput(data.address);
+  } else {
+    data.address = {
+      line1: '',
+      line2: '',
+      locality: '',
+      city: '',
+      country: '',
+      province: '',
+      postcode: '',
+    };
+  }
   delete data.__typename;
   delete data.id;
-  result = data;
-  return result;
+  return data;
 }
 
-export enum ENUM_TRAVELLER_GENDER  {
-  Female = "Female",
-  Male = "Male",
-  Others = "Others"
+export enum ENUM_TRAVELLER_GENDER {
+  Female = 'Female',
+  Male = 'Male',
+  Others = 'Others',
 }
 
 export const RELATIVE_LABELS = {
-  spouse: "Spouse",
-  parents: "Parent",
-  partners: "Partner",
-  relatives: "Relative",
-  otherRelatives: "Other Relative",
-  children: "Child"
+  spouse: 'Spouse',
+  parents: 'Parent',
+  partners: 'Partner',
+  relatives: 'Relative',
+  otherRelations: 'Other Relations',
+  children: 'Child',
 };
 
 export const RELATIVES = {
-  spouse: "spouse",
-  parents: "parents",
-  partners: "partners",
-  relatives: "relatives",
-  otherRelatives: "otherRelatives",
-  children: "children"
-}
+  spouse: 'spouse',
+  parents: 'parents',
+  partners: 'partners',
+  relatives: 'relatives',
+  otherRelations: 'otherRelations',
+  children: 'children',
+};
+
+export const getRelativeKeyByLabel = (label: string) => {
+  switch (label) {
+    case RELATIVE_LABELS.spouse:
+      return RELATIVES.spouse;
+    case RELATIVE_LABELS.parents:
+      return RELATIVES.parents;
+    case RELATIVE_LABELS.partners:
+      return RELATIVES.partners;
+    case RELATIVES.children:
+      return RELATIVES.children;
+    default:
+      return RELATIVES.otherRelations;
+  }
+};
 
 export type IdentificationWithRelationship = {
-  items: Identification[]
+  items: Identification[];
   relationship: string;
-}
+};
 
-export function getAllIdentifications(traveller: Traveller): IdentificationWithRelationship[] {
-  let result: IdentificationWithRelationship[] = [];
-  result.push({ items: traveller.identifications.map(item => { item.traveller = traveller; return item; }), relationship: "Me" });
+export function getAllIdentifications(
+  traveller: Traveller,
+): IdentificationWithRelationship[] {
+  const result: IdentificationWithRelationship[] = [];
+  result.push({
+    items: traveller.identifications.map((item) => {
+      item.traveller = traveller;
+      return item;
+    }),
+    relationship: 'Me',
+  });
 
   if (traveller.children) {
-    result.push({ items: traveller.children.identifications.map(item => { item.traveller = traveller.children; return item; }), relationship: "Children" });
+    result.push({
+      items: traveller.children.identifications.map((item) => {
+        item.traveller = traveller.children;
+        return item;
+      }),
+      relationship: 'Children',
+    });
   }
 
   if (traveller.spouse) {
     let items: Identification[] = [];
-    for (let travellerItem of traveller.spouse) {
-      items = items.concat(travellerItem?.identifications.map(item => { item.traveller = travellerItem; return item; }));
+    for (const travellerItem of traveller.spouse) {
+      items = items.concat(
+        travellerItem?.identifications.map((item) => {
+          item.traveller = travellerItem;
+          return item;
+        }),
+      );
     }
-    result.push({ items, relationship: "Spouse" });
+    result.push({ items, relationship: 'Spouse' });
   }
 
   if (traveller.parents) {
     let items: Identification[] = [];
-    for (let travellerItem of traveller.parents) {
-      items = items.concat(travellerItem?.identifications.map(item => { item.traveller = travellerItem; return item; }));
+    for (const travellerItem of traveller.parents) {
+      items = items.concat(
+        travellerItem?.identifications.map((item) => {
+          item.traveller = travellerItem;
+          return item;
+        }),
+      );
     }
-    result.push({ items, relationship: "Parent" });
+    result.push({ items, relationship: 'Parent' });
   }
 
   if (traveller.partners) {
     let items: Identification[] = [];
-    for (let travellerItem of traveller.partners) {
-      items = items.concat(travellerItem?.identifications.map(item => { item.traveller = travellerItem; return item; }));
+    for (const travellerItem of traveller.partners) {
+      items = items.concat(
+        travellerItem?.identifications.map((item) => {
+          item.traveller = travellerItem;
+          return item;
+        }),
+      );
     }
-    result.push({ items, relationship: "Partner" });
+    result.push({ items, relationship: 'Partner' });
   }
 
   if (traveller.relatives) {
     let items: Identification[] = [];
-    for (let travellerItem of traveller.relatives) {
-      items = items.concat(travellerItem?.identifications.map(item => { item.traveller = travellerItem; return item; }));
+    for (const travellerItem of traveller.relatives) {
+      items = items.concat(
+        travellerItem?.identifications.map((item) => {
+          item.traveller = travellerItem;
+          return item;
+        }),
+      );
     }
-    result.push({ items, relationship: "Relative" });
+    result.push({ items, relationship: 'Relative' });
   }
 
   if (traveller.otherRelations) {
     let items: Identification[] = [];
-    for (let travellerItem of traveller.otherRelations) {
-      items = items.concat(travellerItem?.identifications.map(item => { item.traveller = travellerItem; return item; }));
+    for (const travellerItem of traveller.otherRelations) {
+      items = items.concat(
+        travellerItem?.identifications.map((item) => {
+          item.traveller = travellerItem;
+          return item;
+        }),
+      );
     }
-    result.push({ items, relationship: "Other Relative" });
+    result.push({ items, relationship: 'Other Relative' });
   }
   return result;
 }
@@ -239,9 +406,6 @@ fragment travellerFields on Traveller {
   facebook,
   messenger,
   language,
-  addresses {
-    ...addressFields
-  }
   nationality {
       ...countryFields
   },
@@ -249,12 +413,6 @@ fragment travellerFields on Traveller {
       ...countryFields
   },
   email,
-  visas {
-      ...visaFields
-  },
-  identifications {
-      ...identificationFields
-    },
     children { 
         ...subTravellerFields
       },
@@ -339,12 +497,6 @@ fragment subTravellerFields on Traveller {
   residence {
       ...countryFields
   },
-  email,
-  visas {
-      ...visaFields
-  },
-  identifications {
-      ...identificationFields
-    },
+  email
 }
 `;

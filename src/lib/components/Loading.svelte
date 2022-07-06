@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   let open = false;
-  let text: string = 'Saving...';
+  let text = 'Saving...';
   const handleOpenLoading = (label: string) => {
     text = label ? `${label}...` : text;
     open = true;

@@ -5,12 +5,12 @@ export const dateTimeHelper = {
     if (!date) {
       return '';
     }
-    try{
+    try {
       return dayjs(date).format(format);
-    }catch(error){
+    } catch (error) {
       // Fix error of dayjs
       const dateData = new Date(date);
-      const month = dateData.toLocaleString('en', { month: 'long'});
+      const month = dateData.toLocaleString('en', { month: 'long' });
       return `${month} ${dateData.getDate()}, ${dateData.getFullYear()}`;
     }
   },

@@ -1,10 +1,7 @@
 import { writable } from 'svelte/store';
-import { Category } from './category';
-import { CollectionStore } from './types';
+import type { Kind } from './category';
 
-export const experienceTypeStore = writable<CollectionStore<Category>>({
-  items: {},
-});
+export const experienceTypeStore = writable<Kind[]>([]);
 
 export const experienceTypeFieldsFragment = `
 fragment experienceTypeFields on ExperienceType {

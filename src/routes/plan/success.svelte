@@ -2,18 +2,11 @@
   import Button from '@smui/button';
   import { Label } from '@smui/common';
   import type { Load } from '@sveltejs/kit';
-  import { authStore } from '$lib/store/auth';
-  import { Locals } from '$lib/store/locals';
   import PlanTemplate from './PlanTemplate.svelte';
-  import { UploadFile } from '$lib/store/upload-file';
+  import type { UploadFile } from '$lib/store/upload-file';
 
-  export const load: Load<{ session: Locals }> = async ({ session, url }) => {
-    authStore.set({ user: session.user });
-    return {
-      props: {
-        key: url.pathname,
-      },
-    };
+  export const load: Load = async ({ session, url }) => {
+    return {};
   };
 </script>
 

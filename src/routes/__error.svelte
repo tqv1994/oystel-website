@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
   import type { ErrorLoad } from '@sveltejs/kit';
-  import { Locals } from '$lib/store/locals';
+  import type { Locals } from '$lib/store/locals';
 
   export const load: ErrorLoad<{ session: Locals }> = async ({
     url,

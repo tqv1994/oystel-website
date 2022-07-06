@@ -2,7 +2,7 @@
   import { Icon } from '@smui/common';
   import { Svg } from '@smui/common/elements';
 
-  export let size: string = 'sm';
+  export let size = 'sm';
 </script>
 
 {#if size == 'sm'}

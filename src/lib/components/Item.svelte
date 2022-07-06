@@ -2,105 +2,127 @@
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
   import BlurImage from '$lib/components/blur-image.svelte';
-  import { Experience } from '$lib/store/experience';
-  import { Destination } from '$lib/store/destination';
+  import type { Experience } from '$lib/store/experience';
+  import type { Destination } from '$lib/store/destination';
   import { makeLink } from '$lib/utils/link';
   import IconButton from '@smui/icon-button';
-  import { Searchable } from '$lib/store/types';
+  import type { Searchable } from '$lib/store/types';
   import HeartFilledIcon from '$lib/icons/HeartFilledIcon.svelte';
   import HeartIcon from '$lib/icons/HeartIcon.svelte';
-  import { UploadFile } from '$lib/store/upload-file';
-  import { Country } from '$lib/store/country';
-  import { Category } from '$lib/store/category';
-  import { Product } from '$lib/store/product';
-  import { authStore } from '$lib/store/auth';
-  import { likeExperienceService } from '$lib/services/experience.service';
-  import { likeDestinationService } from '$lib/services/destination.service';
+  import type { Product } from '$lib/store/product';
+  import OyDeviceDetector from './common/OyDeviceDetector.svelte';
+  import { updateTravellerMeStore, type Traveller } from '$lib/store/traveller';
+  import { ppatch } from '$lib/utils/fetch';
+  import { session } from '$app/stores';
+  import { actionLike } from './LikeAction.svelte';
+  import type { Kind } from '$lib/store/category';
+  import { getShortText } from '$lib/utils/string';
+  import FeaturedImage from './FeaturedImage.svelte';
+  export let cities: Kind[] = [];
   export let item: Experience | Destination | Product | Searchable;
-  export let pathPrefix: string;
-  export let key: number | null = null;
-  export let group_id: number | string | null = null;
-  export let gallery: UploadFile[] | undefined = undefined;
-  let liked: boolean = false;
-  export let id: string;
-  export let name: string;
-  export let intro: string;
-  export let description: string | undefined = undefined;
-  export let country: Country | undefined = undefined;
-  export let type: Category | undefined = undefined;
-  export let introShow: boolean = false;
-  let me = $authStore.user;
-  $: if (me) {
-    if (pathPrefix.startsWith('/experience')) {
-      const indexExist = (me.experienceLikes || []).findIndex(
-        (itemExperience) =>
-          item.id.replace('experience-', '') === itemExperience.id,
-      );
-      if (indexExist < 0) {
-        liked = false;
-      } else {
-        liked = true;
+  export let pathPrefix: string | null;
+  let liked = false;
+  let city: Kind | undefined;
+  export let introShow = false;
+  let classNames: string | '' = '';
+  export { classNames as class };
+  session.subscribe((s) => {
+    if (s.user && s.travellerMe) {
+      const travellerMe = s.travellerMe;
+      if (pathPrefix && pathPrefix.startsWith('/experiences')) {
+        const indexExist = (travellerMe.experienceLikes || []).findIndex(
+          (itemExperience) =>
+            item.id.toString() === itemExperience.id.toString(),
+        );
+        if (indexExist < 0) {
+          liked = false;
+        } else {
+          liked = true;
+        }
+      } else if (pathPrefix && pathPrefix.startsWith('/destinations')) {
+        const indexExist = (travellerMe.destinationLikes || []).findIndex(
+          (itemDestination) =>
+            item?.id.toString() === itemDestination.id.toString(),
+        );
+        if (indexExist < 0) {
+          liked = false;
+        } else {
+          liked = true;
+        }
       }
-    } else if (pathPrefix.startsWith('/destination')) {
-      const indexExist = (me.destinationLikes || []).findIndex(
-        (itemDestination) =>
-          item.id.replace('destination-', '') === itemDestination.id,
-      );
-      if (indexExist < 0) {
-        liked = false;
-      } else {
-        liked = true;
-      }
-    } else {
-      liked = false;
     }
-  } else {
-    liked = false;
+  });
+  console.log('gallery', item.gallery);
+  $: if (!city && item.city && cities.length > 0) {
+    city = cities.find(
+      (cityItem) => cityItem.id.toString() === item.city.toString(),
+    );
   }
 
   async function callLikeItem() {
-    if (me) {
-      if (pathPrefix.startsWith('/experience')) {
-        try {
-          const userUpdated = await likeExperienceService(
-            item.id.replace('experience-', ''),
-            me.experienceLikes || [],
-          );
-          me.experienceLikes = userUpdated.experienceLikes;
-          authStore.set({ user: me });
-        } catch (error) {
-          console.error(error);
+    actionLike(async () => {
+      try {
+        let res;
+        if (pathPrefix && pathPrefix.startsWith('/experiences')) {
+          res = await ppatch('travellers/me', {
+            experienceLikes: processItemLikeIds(
+              item.id.toString(),
+              $session.travellerMe?.experienceLikes || [],
+            ),
+          });
+        } else if (pathPrefix && pathPrefix.startsWith('/destinations')) {
+          res = await ppatch('travellers/me', {
+            destinationLikes: processItemLikeIds(
+              item.id.toString(),
+              $session.travellerMe?.destinationLikes || [],
+            ),
+          });
         }
-      }
-      if (pathPrefix.startsWith('/destination')) {
-        try {
-          const userUpdated = await likeDestinationService(
-            item.id.replace('destination-', ''),
-            me.destinationLikes || [],
-          );
-          me.destinationLikes = userUpdated.destinationLikes;
-          authStore.set({ user: me });
-        } catch (error) {
-          console.error(error);
+        if (res && res.ok) {
+          updateTravellerMeStore(await res.json());
+        } else {
+          window.pushToast('An error occurred');
         }
+      } catch (error) {
+        console.error(error);
       }
-    } else {
-      window.openSignInModal();
-    }
+    }, $session);
   }
+
+  const processItemLikeIds = (
+    id: string,
+    items: (Experience | Destination)[],
+  ) => {
+    const itemIds: string[] = items.map((item) => item.id.toString());
+    const indexExist = itemIds.findIndex((item) => item === id);
+    if (indexExist < 0) {
+      itemIds.push(id);
+    } else {
+      itemIds.splice(indexExist, 1);
+    }
+    return itemIds;
+  };
 </script>
 
-<div class="item">
+<div class="item {classNames}">
   <div class="thumbnail">
     <a href={makeLink(pathPrefix, item)}>
-      <div class="image-cover" style="padding-top: calc(410 / 315 * 100%)">
-        <BlurImage />
-        {#if gallery && gallery.length > 0 && gallery[0] !== null}
-          <BlurImage {...gallery[0]} />
-        {:else}
-          <BlurImage />
-        {/if}
-      </div>
+      <OyDeviceDetector showInDesktop={true}>
+        <FeaturedImage
+          image={(item.gallery || []).length > 0 ? item.gallery[0] : undefined}
+          alt={item.name || ''}
+          style="padding-top: calc(410 / 311 * 100%)"
+          size="small"
+        />
+      </OyDeviceDetector>
+      <OyDeviceDetector showInMobile={true}>
+        <FeaturedImage
+          image={(item.gallery || []).length > 0 ? item.gallery[0] : undefined}
+          alt={item.name || ''}
+          style="padding-top: calc(195 / 152 * 100%)"
+          size="small"
+        />
+      </OyDeviceDetector>
     </a>
     <IconButton
       class="btn-favorite {liked ? 'liked' : ''}"
@@ -115,13 +137,13 @@
     <LayoutGrid class="p-0">
       <Cell spanDevices={{ desktop: 6, phone: 2 }}
         ><p class="text-eyebrow text-left m-0 mt-20 mb-0">
-          {country?.name || type?.name || ''}
+          {city?.name || item.type?.name || ''}
         </p></Cell
       >
     </LayoutGrid>
-    <h4 class="title mt-15 mb-15">{name}</h4>
+    <h4 class="title mt-15 mb-15">{item.name || item.location || ''}</h4>
     {#if introShow}
-      <p class="short-text m-none m-0">{(intro || '').substring(0, 80)}</p>
+      <p class="short-text m-none m-0">{getShortText(item.description)}</p>
     {/if}
   </a>
 </div>
@@ -135,11 +157,16 @@
     .divider::after {
       background-color: rgba(0, 0, 0, 0.2);
     }
-    .title {
-      height: 32px;
-      overflow: hidden;
+    :global(.mdc-layout-grid__inner) {
       @include mixins.mobile {
-        height: 43px;
+        grid-gap: 0;
+      }
+    }
+    .title {
+      margin-bottom: 24px !important;
+      @include mixins.mobile {
+        height: auto;
+        margin-bottom: 8px !important;
       }
     }
     .thumbnail {

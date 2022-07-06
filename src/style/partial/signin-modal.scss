@@ -1,8 +1,8 @@
-@use "../../theme/colors";
-@use "../../theme/sizes";
-@use "../../theme/variables" as v;
-@use "@material/button";
-@use "@material/textfield";
+@use '../../theme/colors';
+@use '../../theme/sizes';
+@use '../../theme/variables' as v;
+@use '@material/button';
+@use '@material/textfield';
 @use '../../theme/mixins';
 #signin-modal.mdc-dialog {
   --mdc-dialog-z-index: 10;
@@ -33,7 +33,7 @@
   .mdc-dialog__surface {
     width: 100vw;
     max-width: var(--wrap-width);
-    background-color: #{colors.$blue};
+    background-color: #{colors.$black};
     .mdc-dialog__content {
       max-width: sizes.$contentMaxWidth;
       margin: auto;
@@ -69,7 +69,7 @@
         text-transform: initial;
         background: #{colors.$white};
         * {
-          color: colors.$blue !important;
+          color: colors.$black !important;
         }
       }
     }
@@ -84,7 +84,7 @@
         text-transform: initial;
         background: #{colors.$white};
         * {
-          color: colors.$blue !important;
+          color: colors.$black !important;
         }
       }
       a {

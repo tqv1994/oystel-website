@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { authStore } from '$lib/store/auth';
+  import { session } from '$app/stores';
   import { goto } from '$app/navigation';
   import TopAppBar from '@smui/top-app-bar';
   import { Row } from '@smui/top-app-bar';
@@ -37,16 +37,16 @@
   let urlViewAllSubmenu: string;
   let emailSubscribe = '';
   let page = '';
-  let userModel = $authStore.user;
+  let userModel = $session.user;
   export let openSignupModal = false;
   export let openSigninModal = false;
   let contentHeaderAction = '';
   let tabsSubMenu: any[];
   const dispatch = createEventDispatcher();
-  let openSearch: boolean = false;
+  let openSearch = false;
   let outerWidth: number;
 
-  export let refreshPage: boolean = false;
+  export let refreshPage = false;
   export let config = {
     header: {
       page: '',
@@ -76,7 +76,7 @@
   }
 
   function callOpenSignupModal(event: any) {
-    userModel = $authStore.user;
+    userModel = $session.user;
     if (!userModel) {
       openSignupModal = true;
       openSigninModal = false;
@@ -90,7 +90,7 @@
   }
 
   function callOpenSigninModal(event: any) {
-    userModel = $authStore.user;
+    userModel = $session.user;
     if (!userModel) {
       openSignupModal = false;
       openSigninModal = true;
@@ -137,7 +137,7 @@
   }
 
   function handleGotoPlanTrip() {
-    userModel = $authStore.user;
+    userModel = $session.user;
     if (!userModel) {
       openSignupModal = false;
       openSigninModal = true;
@@ -269,8 +269,8 @@
                     </Icon>
                   </IconButton>
                   <IconButton
-                    href={$authStore.user ? '/me' : ''}
-                    on:click={$authStore.user ? () => {} : callOpenSigninModal}
+                    href={$session.user ? '/me' : ''}
+                    on:click={$session.user ? () => {} : callOpenSigninModal}
                   >
                     <Icon component={Svg} viewBox="-4 -4 24 24">
                       <g

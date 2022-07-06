@@ -1,6 +1,7 @@
-<script lang="ts" context="module">
+<script lang="ts">
   import { Icon } from '@smui/common';
   import { Svg } from '@smui/common/elements';
+  export let color: string = "#000";
 </script>
 
 <Icon component={Svg} viewBox="0 0 18.858 18.858">
@@ -15,7 +16,7 @@
       x2="18"
       transform="translate(331.5 24.5)"
       fill="none"
-      stroke="#000"
+      stroke={color}
       stroke-width="1.25"
     />
     <line
@@ -25,7 +26,7 @@
       x2="18"
       transform="translate(349 24) rotate(90)"
       fill="none"
-      stroke="#000"
+      stroke={color}
       stroke-width="1.25"
     />
   </g>

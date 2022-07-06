@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import { authStore, User } from '$lib/store/auth';
+  import { session } from '$app/stores';
   import LayoutAccount from './components/LayoutAccount.svelte';
   import Tab, { Label } from '@smui/tab';
   import TabBar from '@smui/tab-bar';
@@ -8,75 +8,132 @@
   import TripTabItem from './components/TripTabItem.svelte';
   import Select, { Option } from '@smui/select';
   import ButtonBack from './components/ButtonBack.svelte';
-  import { Trip } from '$lib/store/trip';
+  import { ENUM_TRIP_STATE, type Trip } from '$lib/store/trip';
   import { goto } from '$app/navigation';
   import AlertBox from './components/AlertBox.svelte';
-import ButtonUnderline from './components/ButtonUnderline.svelte';
-  
-  export const load: Load = async ({ fetch, url }) => {
-    let me: User | undefined;
+  import ButtonUnderline from './components/ButtonUnderline.svelte';
+  import { getCollection } from '$lib/store/collection';
+  import type { Kind } from '$lib/store/category';
+  import type { Destination } from '$lib/store/destination';
+  import type { UploadFile } from '$lib/store/upload-file';
+  import { ppost } from '$lib/utils/fetch';
 
-    authStore.subscribe(({ user }) => (me = user));
-    if (me.travellerMe) {
-      try {
-        const res = await fetch(`/me/trip/list.json`);
-        if (res.ok) {
-          let data = await res.json();
-          return {
-            props: {
-              trips: data.trips,
-              enquiryTrips: data.trips.filter(
-                (item) => item.state == 'enquired' || item.state == 'new_enquiry',
-              ),
-              planningTrips: data.trips.filter(
-                (item) => item.state == 'planning',
-              ),
-              activeTrips: data.trips.filter(
-                (item) => item.state == 'progressing',
-              ),
-              pastTrips: data.trips.filter((item) => item.state == 'completed'),
-              me,
-            },
-          };
+  export type TripWithImage = Trip & { image: UploadFile };
+
+  export const load: Load = async ({ fetch, url }) => {
+    try {
+      const countries = await getCollection(fetch, 'country');
+      const destinations = await getCollection(fetch, 'destination');
+      const res = await fetch(`/p/trips`);
+      if (res.ok) {
+        let trips: TripWithImage[] = await res.json();
+        trips = trips.map((trip) => {
+          return addTripImage(trip, countries, destinations);
+        });
+        return {
+          props: {
+            trips: trips,
+            enquiryTrips: (trips || []).filter(
+              (item: TripWithImage) =>
+                item.state == 'enquired' || item.state == 'new_enquiry',
+            ),
+            planningTrips: (trips || []).filter(
+              (item: TripWithImage) => item.state == 'planning',
+            ),
+            activeTrips: (trips || []).filter(
+              (item: TripWithImage) => item.state == 'progressing',
+            ),
+            pastTrips: (trips || []).filter(
+              (item) =>
+                item.state === ENUM_TRIP_STATE.completed ||
+                item.state === ENUM_TRIP_STATE.canceled,
+            ),
+          },
+        };
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return {};
+  };
+
+  function addTripImage(
+    trip: TripWithImage,
+    countries: Kind[],
+    destinations: Destination[],
+  ) {
+    if (trip.desiredDestinations) {
+      let countryNames = trip.desiredDestinations.split(',');
+      countryNames = countryNames.map((item) => item.trim());
+      if (countryNames.length > 0) {
+        const countrySelected = countries.find(
+          (item) => item.name === countryNames[0],
+        );
+        if (countrySelected) {
+          const destinationSelected = destinations.find(
+            (item) =>
+              (item.country || '').toString() ===
+              (countrySelected?.id || '').toString(),
+          );
+          if (destinationSelected) {
+            trip.image = (destinationSelected.gallery || [])[0];
+          }
         }
-      } catch (error) {
-        console.log(error);
       }
     }
-    return {
-      props: { me },
-    };
-  };
+    return trip;
+  }
 </script>
 
 <script lang="ts">
-  export let trips: Trip[];
-  export let enquiryTrips: Trip[];
-  export let planningTrips: Trip[];
-  export let activeTrips: Trip[];
-  export let pastTrips: Trip[];
-  export let me: User;
+  export let trips: TripWithImage[] = [];
+  export let enquiryTrips: TripWithImage[] = [];
+  export let planningTrips: TripWithImage[] = [];
+  export let activeTrips: TripWithImage[] = [];
+  export let pastTrips: TripWithImage[] = [];
   let active = 'Enquiry';
+  async function handleRemoveTrip(event: CustomEvent<TripWithImage>) {
+    window.openLoading('Loading');
+    if (event.detail && event.detail.state === ENUM_TRIP_STATE.new_enquiry) {
+      try {
+        const res = await ppost(`trips/cancel/${event.detail.id}`, {
+          state: ENUM_TRIP_STATE.canceled,
+        });
+        if (res.ok) {
+          enquiryTrips = enquiryTrips.filter(
+            (item) => item.id !== event.detail.id,
+          );
+          const trip = { ...event.detail };
+          trip.state = ENUM_TRIP_STATE.canceled;
+          pastTrips.push(trip);
+        }
+      } catch (err) {
+        window.pushToast('An error occurred! Please try again later');
+      }
+    } else {
+      window.pushToast('You do not have the right to delete this trip');
+    }
+    window.closeLoading();
+  }
 </script>
 
 <div class="content trips-content">
   <LayoutAccount currentPage="trips">
-    <svelte:component this={ButtonBack} label="Trips" link="/me" />
-    {#if !me.travellerMe}
-    <svelte:component this={AlertBox}>
-      Before doing this. Please tell us your first and last name. <svelte:component
-        this={ButtonUnderline}
-        on:click={() => {
-          goto('/me/my-account');
-        }}
-        label="Update them here"
-      />
-    </svelte:component>
+    <ButtonBack label="Trips" link="/me" />
+    {#if !$session.travellerMe}
+      <AlertBox>
+        Before doing this. Please tell us your first and last name. <ButtonUnderline
+          on:click={() => {
+            goto('/me/my-account');
+          }}
+          label="Update them here"
+        />
+      </AlertBox>
     {/if}
     {#if trips}
-      <svelte:component this={BoxTabs}>
+      <BoxTabs>
         <div slot="tabs">
-          <div class="d-block m-none">
+          <div class="d-block m-none desktop-tabs">
             <TabBar
               tabs={['Enquiry', 'Planning', 'Active', 'Past']}
               let:tab
@@ -88,7 +145,7 @@ import ButtonUnderline from './components/ButtonUnderline.svelte';
             </TabBar>
           </div>
           <div class="d-none m-block">
-            <Select bind:value={active} label="">
+            <Select class="my-trips-mobile-tabs" bind:value={active} label="">
               <Option value="Enquiry" selected>Enquiry</Option>
               <Option value="Planning">Planning</Option>
               <Option value="Active">Active</Option>
@@ -98,16 +155,16 @@ import ButtonUnderline from './components/ButtonUnderline.svelte';
         </div>
         <div slot="content">
           {#if active == 'Enquiry'}
-            <svelte:component this={TripTabItem} trips={enquiryTrips} />
+            <TripTabItem trips={enquiryTrips} on:delete={handleRemoveTrip} />
           {:else if active == 'Planning'}
-            <svelte:component this={TripTabItem} trips={planningTrips} />
+            <TripTabItem trips={planningTrips} />
           {:else if active == 'Active'}
-            <svelte:component this={TripTabItem} trips={activeTrips} />
+            <TripTabItem trips={activeTrips} />
           {:else if active == 'Past'}
-            <svelte:component this={TripTabItem} trips={pastTrips} />
+            <TripTabItem trips={pastTrips} />
           {/if}
         </div>
-      </svelte:component>
+      </BoxTabs>
     {/if}
   </LayoutAccount>
 </div>
@@ -122,6 +179,34 @@ import ButtonUnderline from './components/ButtonUnderline.svelte';
     }
     .sc-carousel-dots__container {
       display: none;
+    }
+
+    .desktop-tabs {
+      :global(.mdc-tab) {
+        height: 56px !important;
+      }
+      :global(.mdc-tab--active) {
+        font-weight: 900;
+      }
+    }
+
+    :global(.my-trips-mobile-tabs) {
+      .mdc-select__anchor {
+        @include mixins.mobile {
+          &::before {
+            height: 34px;
+          }
+        }
+      }
+
+      .mdc-select__selected-text-container {
+        margin-top: -16px;
+
+        .mdc-select__selected-text {
+          font-weight: 900;
+          font-size: 14px;
+        }
+      }
     }
   }
 </style>

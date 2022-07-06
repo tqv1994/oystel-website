@@ -1,16 +1,21 @@
 <script lang="ts">
   import Step from '../Step.svelte';
-  import FormField from '@smui/form-field';
   import Textfield from '@smui/textfield';
   import Select from '@smui/select';
   import { Option } from '@smui/select';
   import { TripInput } from '$lib/store/trip';
 
-  let flights: string = '';
+  let flights = '';
   export let tripInput: TripInput = new TripInput();
-  let needFlights = tripInput.needFlights ? 'yes' : 'no';
   tripInput.travelByFlight ||= '';
   tripInput.travelAnotherWay ||= '';
+  const travelByFlightOptions = [
+    'Economy',
+    'Premium Economy',
+    'Business',
+    'First',
+    'Private',
+  ];
 </script>
 
 <Step title="Your travel" subtitle="" class="your-travel-step-content">
@@ -21,13 +26,13 @@
     <div class="d-col-5 m-col-12">
       <Select
         label="Select"
-        bind:value={needFlights}
-        on:SMUI:select:value={(e) => {
-          tripInput.needFlights = e.detail == 'yes' ? true : false;
+        value={tripInput.needFlights === true ? 'yes' : 'no'}
+        on:SMUISelect:change={(e) => {
+          tripInput.needFlights = e.detail.value == 'yes' ? true : false;
         }}
       >
-        <Option value={'yes'}>No</Option>
-        <Option value={'no'}>Yes</Option>
+        <Option value={'no'}>No</Option>
+        <Option value={'yes'}>Yes</Option>
       </Select>
     </div>
   </div>
@@ -38,7 +43,15 @@
       >
     </div>
     <div class="d-col-5 m-col-12">
-      <Textfield bind:value={tripInput.travelByFlight} />
+      <Select
+        id="budget-currency"
+        noLabel
+        bind:value={tripInput.travelByFlight}
+      >
+        {#each travelByFlightOptions as option}
+          <Option value={option}>{option}</Option>
+        {/each}
+      </Select>
     </div>
   </div>
   <div class="row">

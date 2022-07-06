@@ -1,19 +1,20 @@
 <script lang="ts" context="module">
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
-  import { Identifiable, Nameable, Searchable } from '$lib/store/types';
-  import { SearchResultGroup } from '$lib/store/search';
+  import type { Identifiable, Nameable, Searchable } from '$lib/store/types';
+  import type { SearchResultGroup } from '$lib/store/search';
   import { createEventDispatcher } from 'svelte';
   import Item from '$lib/components/Item.svelte';
+  import type { Kind } from '$lib/store/category';
 </script>
 
 <script lang="ts">
   let dispathcher = createEventDispatcher();
 
-  export let categories: (Identifiable & Nameable)[];
-  export let groups: Record<string, SearchResultGroup<Searchable>>;
+  export let groups: SearchResultGroup<Searchable>[] = [];
   export let pathPrefix: string;
-  export let showHeadings: boolean = true;
+  export let cities: Kind[] = [];
+
   function callLikeItem(event: CustomEvent) {
     setTimeout(() => {
       if (event.detail.group_id && event.detail.key) {
@@ -24,17 +25,23 @@
       }
     }, 0);
   }
+
+  function makeLinkToType(id?: string): string {
+    return id
+      ? `${pathPrefix}?t=${id.substring(id.lastIndexOf('-') + 1)}`
+      : pathPrefix;
+  }
 </script>
 
-{#each categories as cat, i}
-  {#if (groups[cat.id]?.items || []).length}
-    <div class="container">
-      {#if showHeadings}
+{#each groups as group, i}
+  {#if group.result.hits.length}
+    <div class="container search-result-wrapper">
+      {#if groups.length > 1 && group.kind}
         <div class="section-title">
           <LayoutGrid class="p-0">
-            <Cell span="12"
+            <Cell span={12}
               ><h2 class="title {i === 0 ? 'mt-0' : ''} d-mb-30">
-                {cat.name}
+                {group.kind?.name}
               </h2></Cell
             >
           </LayoutGrid>
@@ -42,22 +49,21 @@
       {/if}
       <div class="section-content">
         <LayoutGrid class="p-0">
-          {#each groups[cat.id].items as d, index}
+          {#each group.result.hits as d, index}
             <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
               <Item
                 {...d}
                 bind:pathPrefix
                 bind:item={d}
-                group_id={cat.id}
-                key={index}
                 on:likeItem={callLikeItem}
                 introShow={true}
+                {cities}
               />
             </Cell>
           {/each}
-          {#if groups[cat.id].hasMore}
+          {#if groups.length > 1}
             <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-              <a href="{pathPrefix}?t={cat.id}">
+              <a href={makeLinkToType(group.kind?.id)}>
                 <div
                   class="experience-read-more item-read-more"
                   style="padding-top: calc(410 / 315 * 100%)"
@@ -81,16 +87,15 @@
   /* Section title */
   .section-title .title {
     position: relative;
+    overflow: hidden;
+    height: 100%;
   }
-  .section-title .title:after {
-    content: '';
-    display: inline-block;
-    border-top: 1px solid;
-    border-color: #000;
-    vertical-align: middle;
-    width: 100%;
-    margin-right: -100%;
-    margin-left: 40px;
+
+  .search-result-wrapper {
+    margin-bottom: 120px;
+    @include mixins.mobile {
+      margin-bottom: 56px;
+    }
   }
 
   .item-read-more {

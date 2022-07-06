@@ -1,24 +1,22 @@
-import { goto } from '$app/navigation';
-import { meilisearchApiKey, meilisearchUrl } from '$lib/env';
-import { makeErrorResponse } from '$lib/utils/fetch';
-import { removeMeilisearchPrefixId } from '$lib/utils/string';
-import { RequestHandler } from '@sveltejs/kit';
-import { MeiliSearch } from 'meilisearch';
-import { Category } from './category';
 import {
-  NAME_ASC_KEY,
-  OrderingKey,
-  orderings,
-  ORDER_BY_NAME_ASC,
-} from './order';
-import { Identifiable } from './types';
+  meilisearchAdminApiKey,
+  meilisearchPublicApiKey,
+  meilisearchUrl,
+} from '$lib/env';
+import type { SvelteFetch } from '$lib/utils/fetch';
+import type { SearchRequest, SearchResponse } from 'meilisearch';
+import type { Identifiable, Searchable } from './types';
+import type { Kind } from './category';
+import type { Product } from './product';
+import type { Destination } from './destination';
+import type { Experience } from './experience';
 
 export const QUERY = 'q';
 export const TYPE = 't';
 export const COUNTRY = 'c';
-export const EXPERIENCE_TYPE = 'x';
-export const DESTINATION_TYPE = 'd';
-export const LANGUAGE = 'lo';
+export const EXPERIENCE_TYPE = 'te';
+export const DESTINATION_TYPE = 'td';
+export const LANGUAGE = 'la';
 export const ORDERING = 'o';
 export const LIMIT = 'l';
 export const PRODUCT_DESIGNER = 'pd';
@@ -40,152 +38,190 @@ export type SearchParamKey =
   | typeof PRODUCT_PATTERN
   | typeof VACATION_STYLE;
 
-export type SearchParams = {
-  [QUERY]?: string;
-  [TYPE]?: string;
-  [COUNTRY]?: string;
-  [EXPERIENCE_TYPE]?: string;
-  [DESTINATION_TYPE]?: string;
-  [LANGUAGE]?: string;
-  [ORDERING]?: OrderingKey;
-  [LIMIT]?: number;
-  [PRODUCT_DESIGNER]?: string;
-  [PRODUCT_COLOUR]?: string[];
-  [PRODUCT_PATTERN]?: string[];
-  [VACATION_STYLE]?: string;
+export type SearchResultGroup<T extends Searchable = Searchable> = {
+  kind?: Kind;
+  result: SearchResponse<T>;
 };
 
-export type SearchResultGroup<T extends Identifiable> = {
-  hasMore: boolean;
-  items: T[];
+export type SearchResultCollections = {
+  destinations: SearchResultGroup<Destination>[];
+  experiences: SearchResultGroup<Experience>[];
 };
 
-export type SearchResultItemWithCountryId = {
-  country: string;
-};
-
-export type SearchResultItemWithTypeIDs = {
-  type1: string;
-  type2: string;
-  type3: string;
-};
-
-export const searchClient = new MeiliSearch({
-  host: meilisearchUrl,
-  apiKey: meilisearchApiKey,
-});
-
-export function makeQueryString(params: SearchParams): string {
-  const s = new URLSearchParams();
-  let k: keyof SearchParams;
-  for (k in params) {
-    if (Object.prototype.hasOwnProperty.call(params, k)) {
-      let v = params[k];
-      if (v) {
-        if(Array.isArray(v)){
-          v = v.toString();
-        }
-        s.append(k, v as string);
-      }
-    }
-  }
-  return `?${s.toString()}`;
-}
-
-export function parseSearchParams(query: URLSearchParams): SearchParams {
-  return {
-    [QUERY]: query.get(QUERY) || undefined,
-    [TYPE]: query.get(TYPE) || undefined,
-    [COUNTRY]: query.get(COUNTRY) || undefined,
-    [EXPERIENCE_TYPE]: query.get(EXPERIENCE_TYPE) || undefined,
-    [DESTINATION_TYPE]: query.get(DESTINATION_TYPE) || undefined,
-    [LANGUAGE]: query.get(LANGUAGE) || undefined,
-    [ORDERING]: (query.get(ORDERING) as OrderingKey) || NAME_ASC_KEY,
-    [LIMIT]: parseInt(query.get(LIMIT) || '20', 10),
-    [PRODUCT_DESIGNER]: query.get(PRODUCT_DESIGNER) || undefined,
-    [PRODUCT_COLOUR]:  query.get(PRODUCT_COLOUR) || undefined,
-    [PRODUCT_PATTERN]: query.get(PRODUCT_PATTERN) || undefined,
-    [VACATION_STYLE]: query.get(VACATION_STYLE) || undefined
-  };
-}
-
-export const search = (p: SearchParams) => goto(makeQueryString(p));
-
-export function createSearchHandler<T extends Identifiable>(
+export async function trySearchGetOne<T>(
+  fetch: SvelteFetch,
   index: string,
-): RequestHandler {
-  const typeIndex = searchClient.index(`${index}-type`);
-  const contentIndex = searchClient.index(index);
-
-  return async (event) => {
-    try {
-      const params = parseSearchParams(event.url.searchParams);
-      const result: Record<string, SearchResultGroup<T>> = {};
-      if (params[TYPE]) {
-        result[params[TYPE] as string] = await searchContent<T>(params);
-      } else {
-        const tRes = await typeIndex.search<Category>();
-        if (tRes.nbHits) {
-          for (const t of tRes.hits) {
-            const id = removeMeilisearchPrefixId(`${index}-type-`,t.id);
-            params[TYPE] = id;
-            result[id] = await searchContent<T>(params);
-          }
-        } else {
-          console.error('Error: "type" has no result');
-          return makeErrorResponse(
-            500,
-            'INTERNAL_SERVER_ERROR',
-            'Error searching for destinations',
-          );
-        }
-      }
-      return new Response(JSON.stringify(result));
-    } catch (error) {
-      console.error('Error searching for destinations', error);
+  id: string,
+): Promise<T | undefined> {
+  try {
+    const res = await searchGetOne(fetch, index, id);
+    if (res.ok) {
+      return await res.json();
+    } else {
+      console.error('Failed to load', index, id, res.status, await res.text());
     }
-    return makeErrorResponse(
-      500,
-      'INTERNAL_SERVER_ERROR',
-      'Error searching for destinations',
-    );
-  };
-
-  async function searchContent<T extends Identifiable>(
-    params: SearchParams,
-  ): Promise<SearchResultGroup<T>> {
-    const filter: Array<string | Array<string>> = [];
-    if (params[TYPE]) {
-      filter.push([
-        `type1 = ${params[TYPE]}`,
-        `type2 = ${params[TYPE]}`,
-        `type3 = ${params[TYPE]}`,
-      ]);
-    }
-    if (params[COUNTRY]) {
-      const filterCountries = (params[COUNTRY] || '').split(',').reduce((acc: string, item: string)=>{
-        if(item !== ''){
-          if(acc == ''){
-            acc += `country = ${item}`;
-          }else{
-            acc += ` OR country = ${item}`;
-          }
-        }
-        return acc;
-      },'');
-      filter.push(`(${filterCountries})`);
-    }
-    const limit = params[LIMIT] || 20;
-    const o = params[ORDERING];
-    const ordering = (o && orderings[o]) || ORDER_BY_NAME_ASC;
-    const res = await contentIndex.search<T>(params[QUERY], {
-      filter,
-      limit,
-      sort: [ordering.value],
-    });
-    return {
-      hasMore: res.nbHits > limit,
-      items: res.nbHits ? res.hits : [],
-    };
+  } catch (err) {
+    console.error('Error load', index, id, err);
   }
+}
+
+export function searchGetOne(
+  fetch: SvelteFetch,
+  index: string,
+  id: string,
+): Promise<Response> {
+  return searchGet(
+    fetch,
+    `${meilisearchUrl}/indexes/${index}/documents/${index}-${id}`,
+  );
+}
+
+function searchGet(fetch: SvelteFetch, url: string): Promise<Response> {
+  return fetch(url, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${meilisearchAdminApiKey}`,
+    },
+  });
+}
+
+function searchFetch(
+  fetch: SvelteFetch,
+  index: string,
+  options: SearchRequest,
+): Promise<Response> {
+  return fetch(`${meilisearchUrl}/indexes/${index}/search`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${meilisearchPublicApiKey}`,
+    },
+    body: JSON.stringify(options),
+  });
+}
+
+export async function trySearch<T extends Identifiable>(
+  fetch: SvelteFetch,
+  index: string,
+  options: SearchRequest,
+): Promise<SearchResponse<T>> {
+  try {
+    const res = await searchFetch(fetch, index, options);
+    if (res.ok) {
+      const data: SearchResponse<T> = await res.json();
+      for (const item of data.hits) {
+        item.id = item.id.substring(index.length + 1);
+      }
+      return data;
+    } else {
+      console.error('Failed search', index, res.status, await res.text());
+    }
+  } catch (err) {
+    console.error('Error search', index, err);
+  }
+  return {
+    hits: [],
+    offset: options.offset || 0,
+    limit: options.limit || 0,
+    processingTimeMs: 0,
+    exhaustiveNbHits: true,
+    nbHits: 0,
+    query: options.q || '',
+  };
+}
+
+// type DoSearchParams = {
+//   q?: string | null;
+//   kind: Kind;
+//   limit: number;
+//   kindFilter: string[];
+//   countryFilter: string[];
+//   orderingTypeIds: string[];
+//   filter?: (string | string[])[];
+// };
+// export async function doSearch<T extends Searchable>(
+//   fetch: SvelteFetch,
+//   index: string,
+//   { q, kind, orderingTypeIds, limit, filter = [] }: DoSearchParams,
+// ): Promise<SearchResultGroup<T>> {
+//   const data = await trySearch<T>(fetch, index, {
+//     q,
+//     filter,
+//     limit,
+//     sort: orderingTypeIds,
+//   });
+//   return {
+//     ...kind,
+//     items: data.hits,
+//   };
+// }
+
+type BuildKindParams = {
+  prefix?: string;
+  id: string;
+  n: number;
+  acc?: string[];
+};
+export function buildKindFilter({
+  prefix = 'type',
+  id,
+  n = 5,
+  acc = [],
+}: BuildKindParams): string[] {
+  for (let i = 1; i <= n; i++) {
+    acc.push(`${prefix}${i} = ${id}`);
+  }
+  return acc;
+}
+
+export type ProductSearchParams = {
+  q?: string | null;
+  typeId?: string | null;
+  designerId?: string | null;
+  patternIds?: string[];
+  colourIds?: string[];
+  vacationStyleId?: string | null;
+};
+export async function searchProducts({
+  q,
+  designerId,
+  typeId,
+  patternIds,
+  colourIds,
+  vacationStyleId,
+}: ProductSearchParams): Promise<Product[]> {
+  const filter: (string | string[])[] = [];
+  if (patternIds?.length) {
+    const patternFilter: string[] = [];
+    for (let i = 1; i <= patternIds.length; i++) {
+      patternFilter.push(`product_pattern= ${patternIds}`);
+    }
+    filter.push(patternFilter);
+  }
+
+  if (colourIds?.length) {
+    const colourFilter: string[] = [];
+    for (let i = 1; i <= colourIds.length; i++) {
+      colourFilter.push(`product_colour= ${colourIds}`);
+    }
+    filter.push(colourFilter);
+  }
+
+  if (designerId) {
+    filter.push(`product_designer = ${designerId}`);
+  }
+  if (vacationStyleId) {
+    filter.push(`vacation_style = ${vacationStyleId}`);
+  }
+  if (typeId) {
+    filter.push(buildKindFilter({ id: typeId, n: 3 }));
+  }
+  const res = await trySearch<Product>(fetch, 'product', {
+    q,
+    filter,
+    limit: 999,
+  });
+  return res.hits;
 }

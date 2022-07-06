@@ -1,4 +1,4 @@
-import { Exhibitable } from '$lib/store/types';
+import type { Exhibitable } from '$lib/store/types';
 
 export type Attraction = Exhibitable;
 

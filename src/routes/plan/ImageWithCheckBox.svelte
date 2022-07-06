@@ -1,6 +1,6 @@
 <script lang="ts">
-import BlurImage from '$lib/components/blur-image.svelte';
-import { UploadFile } from '$lib/store/upload-file';
+  import BlurImage from '$lib/components/blur-image.svelte';
+  import type { UploadFile } from '$lib/store/upload-file';
 
   import Checkbox from '@smui/checkbox';
   export let selected: string[];
@@ -10,7 +10,7 @@ import { UploadFile } from '$lib/store/upload-file';
 
 <div class="item">
   <div class="thumbnail">
-    <div class="image-cover"/>
+    <div class="image-cover" />
     <BlurImage {...image} />
     <Checkbox bind:group={selected} {value} />
   </div>

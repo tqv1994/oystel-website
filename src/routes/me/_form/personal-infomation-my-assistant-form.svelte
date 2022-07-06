@@ -2,121 +2,136 @@
   import Textfield from '@smui/textfield';
   import Field from '../components/Field.svelte';
   import Select, { Option } from '@smui/select';
-  import { authStore, User } from '$lib/store/auth';
   import Button from '@smui/button';
-  import Note from '../components/Note.svelte';
   import FormToggle from '../components/FormToggle.svelte';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import { salutationTypeStore } from '$lib/store/salutation-type';
-  import { get } from 'svelte/store';
-  import { countryStore } from '$lib/store/country';
-  import { convertTravellerToInput, Traveller, TravellerInput } from '$lib/store/traveller';
-  import * as yup from 'yup';
-  import { sortByName } from '$lib/utils/sort';
-import { languageStore } from '$lib/store/language';
-import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
-import { onMount } from 'svelte';
-import { createPatternPhoneCode } from '$lib/utils/string';
-import { updateTravellerMeService } from '$lib/services/traveller.service';
-  export let me: User;
-  const travellerMe: Traveller = me.travellerMe;
-  const salutationTypes = Object.values(get(salutationTypeStore).items);
-  const countries = sortByName(Object.values(get(countryStore).items));
-  const languages = sortByName(Object.values(get(languageStore).items));
+  import type { Country } from '$lib/store/country';
+  import {
+    convertTravellerToInput,
+    TravellerInput,
+    updateTravellerMeStore,
+  } from '$lib/store/traveller';
+  import type { Traveller } from '$lib/store/traveller';
+  import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+  import { createPatternPhoneCode } from '$lib/utils/string';
+  import { ppatch } from '$lib/utils/fetch';
+  import type { Kind } from '$lib/store/category';
+  export let travellerMe: Traveller;
+  export let countries: Country[], salutationTypes: Kind[], languages: Kind[];
   let travellerInput: TravellerInput;
-  let phone_code: string = '1';
-  onMount(async()=>{
-    
-  });
 
-  if(me.travellerMe){
-    travellerInput = convertTravellerToInput(me.travellerMe);
-    phone_code =
-        travellerInput?.myAssistantPhone?.match(createPatternPhoneCode(countries)) +
-        '';
-      travellerInput.myAssistantPhone =
-        travellerInput.myAssistantPhone?.replace(phone_code, '') || '';
-      phone_code = phone_code.replace("+","");
-  }else{
-    travellerInput = new TravellerInput();
-    travellerInput.myAssistantSalutationType = "1";
-    travellerInput.myAssistantLanguage = "1";
-  }
-  
+  travellerInput = convertTravellerToInput(travellerMe);
+  let phone_code: string =
+    travellerInput?.myAssistantPhone?.match(
+      createPatternPhoneCode(countries || []),
+    ) + '';
+  travellerInput.myAssistantPhone =
+    travellerInput.myAssistantPhone?.replace(phone_code, '') || '';
+  phone_code = phone_code.replace('+', '');
 
   let errors: any = {};
 
-  export let is_edit: boolean = true;
+  export let is_edit = true;
 
   async function handleSubmitForm() {
     window.openLoading();
-    await updateTravellerMeService(new TravellerInput({
-      myAssistantName: travellerInput.myAssistantName,
-      myAssistantSalutationType: travellerInput.myAssistantSalutationType,
-      myAssistantLanguage: travellerInput.myAssistantLanguage,
-      myAssistantContactNotes: travellerInput.myAssistantContactNotes,
-      myAssistantPhone: (phone_code ? `+${phone_code}` : '') + travellerInput.myAssistantPhone 
-    })).then((output: Traveller)=>{
-      console.log(output);
-      me.travellerMe = output;
-      authStore.set({user: me});
-      is_edit = false;
-    }).catch(error=>{
-      console.error({error});
+    try {
+      const res = await ppatch('travellers/me', {
+        myAssistantName: travellerInput.myAssistantName,
+        myAssistantSalutationType: travellerInput.myAssistantSalutationType,
+        myAssistantLanguage: travellerInput.myAssistantLanguage,
+        myAssistantContactNotes: travellerInput.myAssistantContactNotes,
+        myAssistantPhone:
+          (phone_code ? `+${phone_code}` : '') +
+          travellerInput.myAssistantPhone,
+      });
+      if (res.ok) {
+        travellerMe = await res.json();
+        updateTravellerMeStore(travellerMe);
+        is_edit = false;
+      } else {
+        console.error({ error });
+        window.pushToast('An error occurred');
+      }
+    } catch (error) {
       window.pushToast('An error occurred');
-    });
+    }
+
     window.closeLoading();
   }
 </script>
 
-<form on:submit|preventDefault={handleSubmitForm}>
-  <svelte:component this={FormToggle} title="" bind:is_edit>
-    <svelte:component this={Field} label="Name" column_1={4} column_2={6}>
-      <div class="row">
-        <div class="d-col-7 m-col-7 mb-0">
-          <Textfield bind:value={travellerInput.myAssistantName} label="Name" type="text" />
+{#if travellerInput}
+  <form on:submit|preventDefault={handleSubmitForm}>
+    <FormToggle title="" bind:is_edit>
+      <Field label="Name" column_1={4} column_2={6}>
+        <div class="row">
+          <div class="d-col-7 m-col-7 mb-0">
+            <Textfield
+              bind:value={travellerInput.myAssistantName}
+              label="Name"
+              type="text"
+            />
+          </div>
+          <div class="d-col-5 m-col-5 mb-0">
+            <Select
+              bind:value={travellerInput.myAssistantSalutationType}
+              label="Salutation"
+            >
+              {#each salutationTypes || [] as item}
+                <Option value={item.id}>{item.name}</Option>
+              {/each}
+            </Select>
+          </div>
         </div>
-        <div class="d-col-5 m-col-5 mb-0">
-          <Select bind:value={travellerInput.myAssistantSalutationType} label="Salutation">
-            {#each salutationTypes || [] as item}
-              <Option value={item.id}>{item.name}</Option>
-            {/each}
-          </Select>
+      </Field>
+      <Field label="Language" column_1={4} column_2={6}>
+        <OyAutocomplete
+          options={languages}
+          getOptionLabel={(option) => option?.name || ''}
+          key="id"
+          bind:value={travellerInput.myAssistantLanguage}
+        />
+      </Field>
+      <Field label="Phone" column_1={4} column_2={6}>
+        <div class="row">
+          <div class="d-col-4 m-col-3">
+            <OyAutocomplete
+              options={countries}
+              key="phone"
+              getOptionLabel={(option) =>
+                option ? `${option.name} +${option.phone}` : ''}
+              bind:value={phone_code}
+            />
+          </div>
+          <div class="d-col-8 m-col-9">
+            <Textfield
+              bind:value={travellerInput.myAssistantPhone}
+              label=""
+              type="phone"
+            />
+            {#if errors.phone}
+              <span class="text-danger text-eyebrow">{errors.phone}</span>
+            {/if}
+          </div>
         </div>
-      </div>
-    </svelte:component>
-    <svelte:component this={Field} label="Language" column_1={4} column_2={6}>
-      <OyAutocomplete options={languages} getOptionLabel={(option)=>option?.name || ''} key="id" bind:value={travellerInput.myAssistantLanguage} />
-    </svelte:component>
-    <svelte:component this={Field} label="Phone" column_1={4} column_2={6}>
-      <div class="row">
-        <div class="d-col-4 m-col-3">
-          <OyAutocomplete options={countries} key="phone" getOptionLabel={(option)=> option ? `${option.name} +${option.phone}` : ''} bind:value={phone_code} />
-        </div>
-        <div class="d-col-8 m-col-9">
-          <Textfield bind:value={travellerInput.myAssistantPhone} label="" type="phone" />
-          {#if errors.phone}
-            <span class="text-danger text-eyebrow">{errors.phone}</span>
-          {/if}
-        </div>
-      </div>
-    </svelte:component>
-    <svelte:component
-      this={Field}
-      label="Contact Notes"
-      column_1={4}
-      column_2={6}
-    >
-      <Textfield bind:value={travellerInput.myAssistantContactNotes} type="text" textarea />
-    </svelte:component>
+      </Field>
+      <Field label="Contact Notes" column_1={4} column_2={6}>
+        <Textfield
+          bind:value={travellerInput.myAssistantContactNotes}
+          type="text"
+          textarea
+        />
+      </Field>
       <div class="d-block m-none text-right">
         <Button variant="unelevated" type="submit">Save Changes</Button>
       </div>
       <div class="m-block d-none text-center">
         <Button variant="unelevated" type="submit">Save Changes</Button>
       </div>
-  </svelte:component>
-</form>
+    </FormToggle>
+  </form>
+{/if}
 <OyNotification />
 
 <style lang="scss">

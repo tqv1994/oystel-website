@@ -17,11 +17,11 @@
   };
   let type: Type;
   let message: string;
-  let confirmLabel: string = 'Yes';
-  let cancelLabel: string = 'Cancel';
+  let confirmLabel = 'Yes';
+  let cancelLabel = 'Cancel';
   let handleConfirm: any;
   let handleCancel: any;
-  let open: boolean = false;
+  let open = false;
   onMount(() => {
     window.onAlert = (config: Config) => {
       open = true;

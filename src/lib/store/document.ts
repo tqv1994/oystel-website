@@ -1,11 +1,11 @@
-import { Identifiable } from "./types";
-import { UploadFile } from "./upload-file";
+import type { Identifiable } from './types';
+import type { UploadFile } from './upload-file';
 
 export type Document = Identifiable & {
-    type: string;
-    documents: UploadFile[];
-    description: string;
-}
+  type: string;
+  documents: UploadFile[];
+  description: string;
+};
 
 export const docmentFieldsFragment = `
 fragment documentFields on Document{
@@ -16,4 +16,4 @@ fragment documentFields on Document{
     }
     description
 }
-`
+`;

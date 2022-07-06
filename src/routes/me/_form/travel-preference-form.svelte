@@ -1,20 +1,16 @@
 <script lang="ts">
   import Textfield from '@smui/textfield';
   import Field from '../components/Field.svelte';
-  import { User } from '$lib/store/auth';
   import Button from '@smui/button';
   import FormToggle from '../components/FormToggle.svelte';
   import FormField from '@smui/form-field';
   import Checkbox from '@smui/checkbox';
   import { createEventDispatcher } from 'svelte';
-  import {
-    TravelPreference,
-    TravelPreferenceType,
-  } from '$lib/store/preference';
-  import CloseIcon from '$lib/icons/CloseIcon.svelte';
+  import { type TravelPreference } from '$lib/store/preference';
+  import type { Kind } from '$lib/store/category';
 
-  export let is_edit: boolean = true;
-  export let data: TravelPreferenceType[];
+  export let is_edit = true;
+  export let data: Kind[];
   export let selected: string[];
   export let title: string;
   export let otherPreference: TravelPreference;
@@ -26,13 +22,13 @@
 </script>
 
 <form>
-  <FormToggle bind:is_edit title={title}>
+  <FormToggle bind:is_edit {title}>
     {#each data as type}
       <Field label={type.name} column_1={3} column_2={9} class="mb-10">
         <div
           class="options options-{type.name == 'Hotel Amenities' ? '2' : '1'}"
         >
-          {#each type.preferences as preference}
+          {#each type.preferences || [] as preference}
             {#if type.name == 'Hotel Amenities' && preference.name == 'Other'}
               <FormField>
                 <Checkbox bind:group={selected} value={preference.id} />

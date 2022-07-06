@@ -1,218 +1,172 @@
 <script lang="ts">
-  import { Category } from '$lib/store/category';
-  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
+  import type { Kind } from '$lib/store/category';
   import {
-    productColourStore,
-    productDesignerStore,
-    productPattnerStore,
-    productTypeStore,
-    vacationStyleStore,
-  } from '$lib/store/product';
-  import {
-    PRODUCT_COLOUR,
-    PRODUCT_DESIGNER,
-    PRODUCT_PATTERN,
-    QUERY,
-    search,
-    SearchParams,
-    TYPE,
-    VACATION_STYLE,
+    buildKindFilter,
+    searchProducts,
+    trySearch,
+    type ProductSearchParams,
   } from '$lib/store/search';
-  import { sortByName } from '$lib/utils/sort';
-
+  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
   import LayoutGrid, { Cell } from '@smui/layout-grid';
   import Textfield from '@smui/textfield';
   import Icon from '@smui/textfield/icon';
-  import OyAutocomplete from './common/OyAutocomplete.svelte';
-  import Dropdown, { DropdownValue } from './Dropdown.svelte';
+  import type { DropdownValue } from '$lib/components/Dropdown.svelte';
   import _ from 'lodash';
   import Button from '@smui/button/src/Button.svelte';
   import Label from '@smui/list/src/Label.svelte';
   import OySelect from './common/OySelect.svelte';
+  import type { Product } from '$lib/store/product';
+  import SearchIcon from '$lib/icons/SearchIcon.svelte';
+  export let params: ProductSearchParams;
+  let {
+    q = '',
+    colourIds,
+    patternIds,
+    designerId,
+    vacationStyleId,
+    typeId,
+  } = params;
+  export let types: Kind[];
+  export let patterns: Kind[];
+  export let designers: Kind[];
+  export let colours: Kind[];
+  export let vacationStyles: Kind[];
+  let contentHeaderActionMobile = '';
+  export let searchResult: Product[];
 
-  export let query: string = '';
-  export let type: string = '';
-  export let designer: string = '';
-  export let colours: string[] = [];
-  export let patterns: string[] = [];
-  export let vacationStyle: string = '';
-
-  let contentHeaderActionMobile: string = '';
-  let typeOptions: Category[] = [];
-  productTypeStore.subscribe((store) => {
-    typeOptions = sortByName(Object.values(store.items));
-  });
-  let designerOptions: Category[] = [];
-  productDesignerStore.subscribe((store) => {
-    designerOptions = sortByName(Object.values(store.items));
-  });
-  let colourOptions: Category[] = [];
-  productColourStore.subscribe((store) => {
-    colourOptions = sortByName(Object.values(store.items));
-  });
-  let patternOptions: Category[] = [];
-  productPattnerStore.subscribe((store) => {
-    patternOptions = sortByName(Object.values(store.items));
-  });
-
-  let vacationStyleOptions: Category[] = [];
-  vacationStyleStore.subscribe((store) => {
-    vacationStyleOptions = sortByName(Object.values(store.items));
-  });
-
-  function go(params: SearchParams) {
-    search({
-      [QUERY]: query,
-      [TYPE]: type,
-      [PRODUCT_DESIGNER]: designer,
-      [PRODUCT_COLOUR]: colours,
-      [PRODUCT_PATTERN]: patterns,
-      [VACATION_STYLE]: vacationStyle,
-      ...params,
+  async function go() {
+    searchResult = await searchProducts({
+      q,
+      typeId,
+      colourIds,
+      patternIds,
+      designerId,
+      vacationStyleId,
     });
   }
   const goSlow = _.debounce(go, 1000);
 
-  function onQueryInput(event: InputEvent) {
+  function onQueryInput(event: CustomEvent) {
     const q = (event.target as HTMLInputElement).value.trim();
-    if (q.length > 2) {
-      goSlow({ q });
+    if (!q || q.length > 1) {
+      goSlow();
     }
   }
 
-  function onTypeChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ [TYPE]: event.detail.value?.id });
+  function onTypeChange(event: CustomEvent<DropdownValue<Kind>>) {
+    typeId = event.detail.value?.id;
+    go();
   }
 
-  function onDesignerChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ [PRODUCT_DESIGNER]: event.detail.value?.id || null });
+  function onDesignerChange(event: CustomEvent<DropdownValue<Kind>>) {
+    designerId = event.detail.value?.id;
+    go();
   }
 
-  function onColourChange(event: CustomEvent<DropdownValue<Category>>) {
+  function onColourChange(event: CustomEvent<DropdownValue<Kind[]>>) {
     if (event.detail.value) {
-      go({
-        [PRODUCT_COLOUR]: event.detail.value.map((item: Category) => item.id),
-      });
+      colourIds = event.detail.value.map((item: Kind) => item.id);
     } else {
-      go({ [PRODUCT_COLOUR]: null });
+      colourIds = undefined;
     }
+    go();
   }
 
-  function onPatternChange(event: CustomEvent<DropdownValue<Category>>) {
-    console.log('event value', event.detail);
+  function onPatternChange(event: CustomEvent<DropdownValue<Kind>>) {
     if (event.detail.value) {
-      go({
-        [PRODUCT_PATTERN]: event.detail.value.map((item: Category) => item.id),
-      });
+      patternIds = event.detail.value.map((item: Kind) => item.id);
     } else {
-      go({ [PRODUCT_PATTERN]: null });
+      patternIds = undefined;
     }
+    go();
   }
 
-  function onVacationStyleChange(event: CustomEvent<DropdownValue<Category>>) {
-    go({ [VACATION_STYLE]: event.detail.value?.id });
+  function onVacationStyleChange(event: CustomEvent<DropdownValue<Kind>>) {
+    vacationStyleId = event.detail.value?.id;
+    go();
   }
 
   function onSearchSubmitMobile(event: CustomEvent) {
     contentHeaderActionMobile = '';
-    go({
-      [QUERY]: event.detail.query || '',
-      [TYPE]: event.detail.type || '',
-      [PRODUCT_DESIGNER]: event.detail.designer || '',
-      [PRODUCT_PATTERN]: event.detail.patterns || null,
-      [PRODUCT_COLOUR]: event.detail.colours || null,
-      [VACATION_STYLE]: event.detail.vacationStyle || '',
-    });
+    q = event.detail.query;
+    designerId = event.detail.designerId;
+    typeId = event.detail.typeId;
+    colourIds = event.detail.colourIds;
+    patternIds = event.detail.patternIds;
+    vacationStyleId = event.detail.vacationStyleId;
+    go();
   }
 </script>
 
-<form
-  class="search-form m-none"
-  method="GET"
-  on:submit|preventDefault={() => {
-    go({});
-  }}
->
+<form class="search-form m-none" method="GET" on:submit|preventDefault={go}>
   <LayoutGrid class="p-0">
-    <Cell span="2">
+    <Cell span={2}>
       <div class="form-control">
         <Textfield
           variant="outlined"
-          bind:value={query}
+          bind:value={q}
           on:input={onQueryInput}
           label="Start with a search"
           withTrailingIcon={false}
         >
-          <Icon slot="trailingIcon"
-            ><img src="/img/icons/icon-search.svg" /></Icon
-          >
+          <Icon slot="trailingIcon"><SearchIcon /></Icon>
         </Textfield>
       </div>
     </Cell>
-    <Cell span="2">
+    <Cell span={2}>
       <div class="form-control">
         <OySelect
-          items={typeOptions}
-          optionIdentifier="id"
-          labelIdentifier="name"
+          items={types}
           placeholder="Category"
           on:select={onTypeChange}
           on:clear={onTypeChange}
-          value={type}
+          value={typeId}
         />
       </div>
     </Cell>
-    <Cell span="2">
+    <Cell span={2}>
       <div class="form-control">
         <OySelect
-          items={designerOptions}
-          optionIdentifier="id"
-          labelIdentifier="name"
+          items={designers}
           placeholder="Designer"
           on:select={onDesignerChange}
           on:clear={onDesignerChange}
-          value={designer}
+          value={designerId}
         />
       </div>
     </Cell>
-    <Cell span="2">
+    <Cell span={2}>
       <div class="form-control">
         <OySelect
-          items={colourOptions}
-          optionIdentifier="id"
-          labelIdentifier="name"
+          items={colours}
           placeholder="Colours"
           on:select={onColourChange}
           on:clear={onColourChange}
-          value={colours}
+          value={colourIds}
           isMulti={true}
         />
       </div>
     </Cell>
-    <Cell span="2">
+    <Cell span={2}>
       <div class="form-control">
         <OySelect
-          items={patternOptions}
-          optionIdentifier="id"
-          labelIdentifier="name"
+          items={patterns}
           placeholder="Patterns"
           on:select={onPatternChange}
           on:clear={onPatternChange}
-          value={patterns}
+          value={patternIds}
           isMulti={true}
         />
       </div>
     </Cell>
-    <Cell span="2">
+    <Cell span={2}>
       <div class="form-control">
         <OySelect
-          items={vacationStyleOptions}
-          optionIdentifier="id"
-          labelIdentifier="name"
+          items={vacationStyles}
           placeholder="Vacation Style"
           on:select={onVacationStyleChange}
           on:clear={onVacationStyleChange}
-          value={patterns}
+          value={vacationStyleId}
         />
       </div>
     </Cell>
@@ -229,7 +183,19 @@
 
 <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  searchModel={{ type, designer, colours, patterns, query }}
+  productTypes={types}
+  productColours={colours}
+  productDesigners={designers}
+  productPatterns={patterns}
+  {vacationStyles}
+  searchModel={{
+    typeId,
+    designerId,
+    colourIds,
+    patternIds,
+    query : q,
+    vacationStyleId,
+  }}
   on:close={onSearchSubmitMobile}
 />
 

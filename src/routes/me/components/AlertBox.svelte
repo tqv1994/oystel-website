@@ -1,12 +1,12 @@
 <script lang="ts">
   import Text from './Text.svelte';
-  export let type: string = 'warning';
+  export let type = 'warning';
 </script>
 
 <div class={`alert ${type}`}>
-  <svelte:component this={Text} class="inner">
-    <slot/>
-  </svelte:component>
+  <Text class="inner">
+    <slot />
+  </Text>
 </div>
 
 <style lang="scss">

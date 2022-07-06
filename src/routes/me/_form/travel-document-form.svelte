@@ -7,29 +7,34 @@
   import ButtonUnderline from '../components/ButtonUnderline.svelte';
   import {
     convertIdentificationToInput,
-    Identification,
+    type Identification,
     IdentificationInput,
     typeOptions,
   } from '$lib/store/identification';
   import { get } from 'svelte/store';
-  import { countryStore } from '$lib/store/country';
-  import { authStore, User } from '$lib/store/auth';
-  import { RELATIVES, RELATIVE_LABELS, Traveller } from '$lib/store/traveller';
+  import { countryStore, type Country } from '$lib/store/country';
+  import { session } from '$app/stores';
+  import type { User } from '$lib/store/auth';
+  import {
+    RELATIVES,
+    RELATIVE_LABELS,
+    updateIdentificationToTravellerMe,
+    type Traveller,
+  } from '$lib/store/traveller';
   import { cmsUrlPrefix } from '$lib/env';
-  import { updateIdentificationData } from '../../identification/update-[id].json';
-  import { createIdentificationData } from '../../identification/create.json';
-  import { UploadFile } from '$lib/store/upload-file';
+  import type { UploadFile } from '$lib/store/upload-file';
   import Text from '../components/Text.svelte';
   import IconButton from '@smui/icon-button';
   import * as yup from 'yup';
-  import { sortByName } from '$lib/utils/sort';
   import OyAutocomplete from '$lib/components/common/OyAutocomplete.svelte';
+  import { pdelete, ppatchWithFile, ppostWithFile } from '$lib/utils/fetch';
   type TravellerRelative = Traveller & {
     relativeType: string;
   };
-  export let identification: Identification;
-  export let me: User;
-  export let open: boolean = false;
+  export let identification: Identification | undefined;
+  export let travellerMe: Traveller;
+  export let countries: Country[];
+  export let open = false;
   let identificationInput: IdentificationInput;
   if (identification?.id) {
     identificationInput = convertIdentificationToInput(identification);
@@ -37,15 +42,14 @@
     }
   } else {
     identificationInput = new IdentificationInput();
-    identificationInput.traveller = me.travellerMe.id+"" || '';
+    identificationInput.traveller = travellerMe.id + '' || '';
     identificationInput.documentId = '';
   }
-  const countries = sortByName(Object.values(get(countryStore).items));
   let travellerOptions: TravellerRelative[];
   let imageFront: FileList;
   let imageBack: FileList;
-  let imageFrontInput: string = '';
-  let imageBackInput: string = '';
+  let imageFrontInput = '';
+  let imageBackInput = '';
   let errors: any = {};
   const schemaValidator = yup.object().shape({
     traveller: yup.number().required(),
@@ -58,9 +62,9 @@
 
   function getTravellerOptions() {
     travellerOptions = [];
-    if (me.travellerMe) {
-      travellerOptions.push({ ...me.travellerMe, relativeType: 'Me' });
-      const data: any = me.travellerMe;
+    if (travellerMe) {
+      travellerOptions.push({ ...travellerMe, relativeType: 'Me' });
+      const data: any = travellerMe;
       for (let relativeType in RELATIVES) {
         if (data[relativeType] && relativeType === 'children') {
           travellerOptions.push({ ...data[relativeType], relativeType });
@@ -78,40 +82,32 @@
   async function handleSubmitForm() {
     window.openLoading();
     errors = {};
-    let apiUrl: string = 'create.json';
-    let method: string = 'POST';
-    if (identification?.id) {
-      apiUrl = `update-${identification.id}.json`;
-      method = 'PUT';
-    }
     try {
       await schemaValidator.validate(identificationInput, {
         abortEarly: false,
       });
-      const res = await fetch(`/identification/${apiUrl}`, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...identificationInput,
-        }),
-      });
+      const formData = new FormData();
+      if (imageFront) {
+        let file = imageFront[0];
+        formData.append('files.front', file);
+      }
+      if (imageBack) {
+        let file = imageBack[0];
+        formData.append('files.back', file);
+      }
+      formData.append('data', JSON.stringify(identificationInput));
+      let res;
+      if (identification?.id) {
+        res = await ppatchWithFile(
+          `identifications/${identification.id}`,
+          formData,
+        );
+      } else {
+        res = await ppostWithFile(`identifications`, formData);
+      }
       if (res.ok) {
-        if (method == 'POST') {
-          const data: createIdentificationData = await res.json();
-          identification = data.createIdentification.identification;
-        } else {
-          const data: updateIdentificationData = await res.json();
-          identification = data.updateIdentification.identification;
-        }
-        if (imageFront) {
-          await handleUploadImage(imageFront[0], 'front');
-        }
-        if (imageBack) {
-          await handleUploadImage(imageBack[0], 'back');
-        }
-        await getTraveller();
+        updateIdentificationToTravellerMe(await res.json());
+        open = false;
       } else {
         window.pushToast('An error occurred');
       }
@@ -123,41 +119,6 @@
       }
     }
     window.closeLoading();
-  }
-
-  async function handleUploadImage(file: File, field: string) {
-    const dataArray = new FormData();
-    dataArray.append('files', file);
-    dataArray.append('ref', 'identification');
-    dataArray.append('refId', identification.id + '');
-    dataArray.append('field', field);
-    const res = await fetch(`${cmsUrlPrefix}/upload`, {
-      method: 'POST',
-      body: dataArray,
-    });
-    if (res.ok) {
-      const data: UploadFile = await res.json();
-      if (field == 'front') {
-        identification.front = data;
-      }
-      {
-        identification.back = [data];
-      }
-    } else {
-      window.pushToast('An error occurred');
-    }
-  }
-
-  async function getTraveller() {
-    const res = await fetch(
-      `/traveller/${me.travellerMe.id}.json?_z=${Date.now()}`,
-    );
-    if (res.ok) {
-      const data: Traveller = await res.json();
-      me.travellerMe = data;
-      authStore.set({ user: me });
-      open = false;
-    }
   }
 
   const handleClearImage = (field: string) => {
@@ -172,14 +133,10 @@
 
   const handleRemoveIdentification = async () => {
     window.openLoading();
-    const res = await fetch(
-      `/identification/delete-${identification.id}.json`,
-      {
-        method: 'DELETE',
-      },
-    );
+    const res = await pdelete(`identifications/${identification.id}`);
     if (res.ok) {
-      await getTraveller();
+      updateIdentificationToTravellerMe(await res.json(), true);
+      open = false;
     } else {
       window.pushToast('An error occurred');
     }
@@ -188,12 +145,7 @@
 </script>
 
 <form on:submit|preventDefault={handleSubmitForm} class="form pt-20">
-  <svelte:component
-    this={Field}
-    label="Traveler Name*"
-    column_1={4}
-    column_2={8}
-  >
+  <Field label="Traveler Name*" column_1={4} column_2={8}>
     <OyAutocomplete
       options={travellerOptions}
       key="id"
@@ -206,41 +158,30 @@
           : ''}
     />
     {#if errors.traveller}
-      <svelte:component this={Text} class="text-danger text-eyebrow"
-        >{errors.traveller}</svelte:component
-      >
+      <Text class="text-danger text-eyebrow">{errors.traveller}</Text>
     {/if}
-  </svelte:component>
-  <svelte:component
-    this={Field}
-    label="Document Type*"
-    column_1={4}
-    column_2={8}
-  >
+  </Field>
+  <Field label="Document Type*" column_1={4} column_2={8}>
     <Select bind:value={identificationInput.type} label="">
       {#each typeOptions as item}
         <Option value={item.key}>{item.label}</Option>
       {/each}
     </Select>
     {#if errors.type}
-      <svelte:component this={Text} class="text-danger text-eyebrow"
-        >{errors.type}</svelte:component
-      >
+      <Text class="text-danger text-eyebrow">{errors.type}</Text>
     {/if}
-  </svelte:component>
-  <svelte:component this={Field} label="Document ID*" column_1={4} column_2={8}>
+  </Field>
+  <Field label="Document ID*" column_1={4} column_2={8}>
     <Textfield
       bind:value={identificationInput.documentId}
       type="text"
       label=""
     />
     {#if errors.documentId}
-      <svelte:component this={Text} class="text-danger text-eyebrow"
-        >{errors.documentId}</svelte:component
-      >
+      <Text class="text-danger text-eyebrow">{errors.documentId}</Text>
     {/if}
-  </svelte:component>
-  <svelte:component this={Field} label="Country*" column_1={4} column_2={8}>
+  </Field>
+  <Field label="Country*" column_1={4} column_2={8}>
     <OyAutocomplete
       key="id"
       options={countries}
@@ -248,17 +189,10 @@
       bind:value={identificationInput.country}
     />
     {#if errors.country}
-      <svelte:component this={Text} class="text-danger text-eyebrow"
-        >{errors.country}</svelte:component
-      >
+      <Text class="text-danger text-eyebrow">{errors.country}</Text>
     {/if}
-  </svelte:component>
-  <svelte:component
-    this={Field}
-    label="Upload New File Front"
-    column_1={4}
-    column_2={8}
-  >
+  </Field>
+  <Field label="Upload New File Front" column_1={4} column_2={8}>
     {#if !identification?.front}
       <Textfield
         bind:value={imageFrontInput}
@@ -268,9 +202,8 @@
       />
     {/if}
     {#if identification?.front}
-      <svelte:component this={Text}>
-        <svelte:component
-          this={ButtonUnderline}
+      <Text>
+        <ButtonUnderline
           label="See detail"
           href={identification.front.url}
           target="_blank"
@@ -282,15 +215,10 @@
             handleClearImage('front');
           }}>close</IconButton
         >
-      </svelte:component>
+      </Text>
     {/if}
-  </svelte:component>
-  <svelte:component
-    this={Field}
-    label="Upload New File Back"
-    column_1={4}
-    column_2={8}
-  >
+  </Field>
+  <Field label="Upload New File Back" column_1={4} column_2={8}>
     {#if !identification?.back || identification?.back?.length == 0}
       <Textfield
         bind:value={imageBackInput}
@@ -300,9 +228,8 @@
       />
     {/if}
     {#if identification?.back?.length > 0}
-      <svelte:component this={Text}>
-        <svelte:component
-          this={ButtonUnderline}
+      <Text>
+        <ButtonUnderline
           label="See detail"
           href={identification.back[0]?.url}
           target="_blank"
@@ -314,29 +241,28 @@
             handleClearImage('back');
           }}>close</IconButton
         >
-      </svelte:component>
+      </Text>
     {/if}
-  </svelte:component>
+  </Field>
   <div class="row mt-30 m-none">
     <div class="d-col-4 m-col-12">
-      <svelte:component this={Note} />
+      <Note />
     </div>
     <div class="d-col-8 m-col-12">
       <Button variant="unelevated" type="submit"
         ><Label class="text-button2">Save Changes</Label></Button
       >
-      <svelte:component
-        this={ButtonUnderline}
-        type="button"
+      <ButtonUnderline
         class="btn-delete pl-20 pr-20"
         label="Delete Record"
+        type="button"
         on:click={handleRemoveIdentification}
       />
     </div>
   </div>
   <div class="row d-none m-block text-center mt-20">
     <div class="m-col-12 mb-30">
-      <svelte:component this={Note} />
+      <Note />
     </div>
     <div class="m-col-12 mb-10">
       <Button variant="unelevated" type="submit"
@@ -344,8 +270,7 @@
       >
     </div>
     <div class="m-col-12">
-      <svelte:component
-        this={ButtonUnderline}
+      <ButtonUnderline
         class="btn-delete"
         type="button"
         label="Delete Record"

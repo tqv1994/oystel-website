@@ -2,7 +2,7 @@
   import IconButton from '@smui/icon-button';
   import BlurImage from '$lib/components/blur-image.svelte';
   import OysteoLogo from '$lib/components/OysteoLogo.svelte';
-  import { UploadFile } from '$lib/store/upload-file';
+  import type { UploadFile } from '$lib/store/upload-file';
 
   export let image1: UploadFile;
   export let image2: UploadFile;
@@ -31,10 +31,13 @@
 </div>
 
 <style type="text/scss">
+  @use '../../theme/mixins';
   * :global(.btn-close) {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 16px;
+    right: 16px;
+    padding: 0;
+    font-size: 32px;
   }
 
   .root {
@@ -63,6 +66,9 @@
     grid-area: 1 / 3 / 3 / 4;
     align-self: center;
     padding: 2em 3em;
+    @include mixins.mobile {
+      padding: 24px 24px 2em 24px;
+    }
   }
 
   @media (min-width: 768px) {

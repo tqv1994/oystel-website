@@ -1,332 +1,224 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit';
-  import { ExperienceSearchResultItem } from '$lib/store/experience';
-  import { experienceTypeStore } from '$lib/store/experience-type';
-  import { DestinationSearchResultItem } from '$lib/store/destination';
-  import { destinationTypeStore } from '$lib/store/destination-type';
-  import { countryStore } from '$lib/store/country';
   import { onMount } from 'svelte';
   import LayoutGrid from '@smui/layout-grid';
   import { Cell } from '@smui/layout-grid';
   import Textfield from '@smui/textfield';
   import Button from '@smui/button';
   import { Label } from '@smui/common';
-  import { Icon } from '@smui/common';
-  import HeaderActionMobile from '$lib/components/common/HeaderActionMobile/index.svelte';
-  import { authStore } from '$lib/store/auth';
+  import { session } from '$app/stores';
   import OyNotification from '$lib/components/common/OyNotification.svelte';
-  import { Experience } from '$lib/store/experience';
-  import { Country } from '$lib/store/country';
-  import { Destination } from '$lib/store/destination';
-  import { get } from 'svelte/store';
-  import Dropdown, { DropdownValue } from '$lib/components/Dropdown.svelte';
-  import {
-    Ordering,
-    orderings,
-    ORDER_BY_NAME_ASC,
-    ORDER_BY_NAME_DESC,
-    ORDER_BY_PUBLISH_DATE_ASC,
-    ORDER_BY_PUBLISH_DATE_DESC,
-  } from '$lib/store/order';
+  import type { Experience } from '$lib/store/experience';
+  import type { Country } from '$lib/store/country';
+  import type { Destination } from '$lib/store/destination';
+  import type {
+    DropdownMultiValues,
+    DropdownValue,
+  } from '$lib/components/Dropdown.svelte';
+  import { orderingTypes, type OrderingKey } from '$lib/store/order';
   import _ from 'lodash';
   import {
     COUNTRY,
     LIMIT,
     ORDERING,
     QUERY,
-    search,
-    SearchParams,
     EXPERIENCE_TYPE,
     DESTINATION_TYPE,
-    SearchResultGroup,
+    trySearch,
+    type SearchResultCollections,
+    type SearchResultGroup,
+    buildKindFilter,
   } from '$lib/store/search';
-  import { Category } from '$lib/store/category';
-  import { sortByName } from '$lib/utils/sort';
-  import { Nameable } from '$lib/store/types';
-  import { contains } from '$lib/utils/array';
-  import { ExperienceLikeData } from './experience/like.json';
-  import { DestinationLikeData } from './destination/like.json';
+  import { mustFindKind, type Kind } from '$lib/store/category';
+  import type { SvelteFetch } from '$lib/utils/fetch';
   import Item from '$lib/components/Item.svelte';
   import OySelect from '$lib/components/common/OySelect.svelte';
-  const Orderings: Nameable[] = [
-    ORDER_BY_NAME_ASC,
-    ORDER_BY_NAME_DESC,
-    ORDER_BY_PUBLISH_DATE_ASC,
-    ORDER_BY_PUBLISH_DATE_DESC,
-  ];
-  export const load: Load = async ({ fetch, session, url }) => {
-    url.searchParams.set(LIMIT, '10');
-    const searchResultExperience: Experience[] = [];
-    const searchResultDestination: Destination[] = [];
-    const countries = get(countryStore);
-    const experienceTypes = get(experienceTypeStore);
-    const destinationTypes = get(destinationTypeStore);
-    const resExperience = await fetch(
-      `/experience/search.json?${url.searchParams.toString()}`,
-    );
-    if (resExperience.ok) {
-      const searchDataExperience: SearchResultGroup<ExperienceSearchResultItem> =
-        await resExperience.json();
-      for (const item of searchDataExperience.items) {
-        searchResultExperience.push({
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          intro: item.intro,
-          gallery: item.gallery,
-          videos: item.videos,
-          looks: item.looks,
-          pack: item.pack,
-          destinations: [],
-          country: countries.items[item.country],
-          created_at: item.created_at,
-          updated_at: item.updated_at,
-          published_at: item.published_at,
-          type1: experienceTypes.items[item.type1],
-          type2: experienceTypes.items[item.type2],
-          type3: experienceTypes.items[item.type3],
-          liked: contains(session.user?.experienceLikes || [], 'id', item.id),
-        });
-      }
-    }
+  import { getCollection } from '$lib/store/collection';
+  import Icon from '@smui/textfield/icon';
 
-    const resDestination = await fetch(
-      `/destination/search.json?${url.searchParams.toString()}`,
-    );
-    if (resDestination.ok) {
-      const searchDataDestination: SearchResultGroup<DestinationSearchResultItem> =
-        await resDestination.json();
-      for (const item of searchDataDestination.items) {
-        searchResultDestination.push({
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          intro: item.intro,
-          gallery: item.gallery,
-          videos: item.videos,
-          looks: item.looks,
-          pack: item.pack,
-          experiences: item.experiences,
-          accommodations: item.accommodations,
-          restaurants: item.restaurants,
-          attractions: item.attractions,
-          country: countries.items[item.country],
-          type1: destinationTypes.items[item.type1],
-          type2: destinationTypes.items[item.type2],
-          type3: destinationTypes.items[item.type3],
-          created_at: item.created_at,
-          updated_at: item.updated_at,
-          published_at: item.published_at,
-          liked: contains(session.user?.destinationLikes || [], 'id', item.id),
-        });
-      }
-    }
+  export const load: Load = async ({ fetch, url: { searchParams } }) => {
+    const q = searchParams.get(QUERY) || '';
+    const limit = parseInt(searchParams.get(LIMIT) || '20', 10);
+    const experienceTypeId = searchParams.get(EXPERIENCE_TYPE) || undefined;
+    const destinationTypeId = searchParams.get(DESTINATION_TYPE) || undefined;
+    const countryIds = searchParams.getAll(COUNTRY);
+    const orderingTypeIds = searchParams.getAll(ORDERING) as OrderingKey[];
+
+    const countries = await getCollection<Country>(fetch, 'country');
+    const experienceTypes = await getCollection(fetch, 'experience-type');
+    const destinationTypes = await getCollection(fetch, 'destination-type');
+    const cities = await getCollection(fetch, 'city');
+
+    const searchResult = await _search(fetch, {
+      q,
+      countryIds,
+      experienceTypeId,
+      destinationTypeId,
+      experienceTypes,
+      destinationTypes,
+      orderingTypeIds,
+    });
+
     return {
       props: {
-        searchResultExperience,
-        searchResultDestination,
-        query: url.searchParams.get(QUERY) || '',
-        experience_type: url.searchParams.get(EXPERIENCE_TYPE) || '',
-        destination_type: url.searchParams.get(DESTINATION_TYPE) || '',
-        countries: (url.searchParams.get(COUNTRY) || '').split(','),
-        ordering:
-          orderings[url.searchParams.get(ORDERING) || '']?.key ||
-          ORDER_BY_NAME_ASC.key,
+        q,
+        destinationTypes,
+        experienceTypes,
+        countries,
+        countryIds,
+        limit,
+        orderingTypeIds,
+        searchResult,
+        cities,
       },
     };
   };
+
+  type SearchParams = {
+    q?: string;
+    countryIds: string[];
+    experienceTypeId?: string;
+    destinationTypeId?: string;
+    orderingTypeIds: string[];
+    experienceTypes: Kind[];
+    destinationTypes: Kind[];
+  };
+
+  async function _search(
+    fetch: SvelteFetch,
+    {
+      q,
+      countryIds,
+      experienceTypeId,
+      destinationTypeId,
+      orderingTypeIds,
+      experienceTypes,
+      destinationTypes,
+    }: SearchParams,
+  ): Promise<SearchResultCollections> {
+    const countryFilter = countryIds.map((id) => `country = ${id}`);
+
+    let expResults: SearchResultGroup<Experience>[] = [];
+    let desResults: SearchResultGroup<Destination>[] = [];
+    const kindFilter: string[] = [];
+
+    if (experienceTypeId) {
+      buildKindFilter({
+        acc: kindFilter,
+        id: experienceTypeId,
+        n: 3,
+      });
+      expResults.push({
+        kind: mustFindKind(experienceTypes, experienceTypeId),
+        result: await trySearch<Experience>(fetch, 'experience', {
+          q,
+          limit: 999,
+          filter: [countryFilter, kindFilter],
+          sort: orderingTypeIds,
+        }),
+      });
+    } else {
+      expResults.push({
+        result: await trySearch<Experience>(fetch, 'experience', {
+          q,
+          limit: 999,
+          filter: [countryFilter, kindFilter],
+          sort: orderingTypeIds,
+        }),
+      });
+    }
+
+    if (destinationTypeId) {
+      buildKindFilter({
+        acc: kindFilter,
+        id: destinationTypeId,
+        n: 5,
+      });
+      desResults.push({
+        kind: mustFindKind(destinationTypes, destinationTypeId),
+        result: await trySearch<Destination>(fetch, 'destination', {
+          q,
+          limit: 999,
+          filter: [countryFilter, kindFilter],
+          sort: orderingTypeIds,
+        }),
+      });
+    } else {
+      desResults.push({
+        result: await trySearch<Destination>(fetch, 'destination', {
+          q,
+          limit: 999,
+          filter: [countryFilter, kindFilter],
+          sort: orderingTypeIds,
+        }),
+      });
+    }
+
+    return {
+      experiences: expResults,
+      destinations: desResults,
+    };
+  }
 </script>
 
 <script type="ts">
-  export let query: string = '';
-  export let destination_type: string;
-  export let experience_type: string;
-  export let countries: string[];
-  export let ordering: string;
+  import SearchIcon from '$lib/icons/SearchIcon.svelte';
+
+  export let destinationTypes: Kind[];
+  export let experienceTypes: Kind[];
+  export let countries: Country[];
+  export let searchResult: SearchResultCollections;
+  export let destinationTypeId: string;
+  export let experienceTypeId: string;
+  export let q: string;
+  export let countryIds: string[];
+  export let orderingTypeIds: string[];
+  export let cities: Kind[];
+
   let contentHeaderActionMobile = '';
-  export let searchResultDestination: Destination[];
-  export let searchResultExperience: Experience[];
-  let experienceTypes: Category[];
-  experienceTypeStore.subscribe((store) => {
-    experienceTypes = sortByName(Object.values(store.items));
-  });
 
-  let destinationTypes: Category[];
-  destinationTypeStore.subscribe(
-    (store) => (destinationTypes = sortByName(Object.values(store.items))),
-  );
-
-  let countryOptions: Country[];
-  countryStore.subscribe((store) => {
-    countryOptions = sortByName(Object.values(store.items));
-  });
-
-  function go(params: SearchParams) {
-    search({
-      q: query,
-      x: experience_type || '',
-      d: destination_type || '',
-      c: countries || '',
-      o: ordering || '',
-      ...params,
+  async function go() {
+    searchResult = await _search(fetch, {
+      q,
+      countryIds,
+      experienceTypeId,
+      destinationTypeId,
+      experienceTypes,
+      destinationTypes,
+      orderingTypeIds,
     });
   }
   const goSlow = _.debounce(go, 1000);
 
-  function onQueryInput(event: InputEvent) {
+  function onQueryInput(event: CustomEvent) {
     const q = (event.target as HTMLInputElement).value.trim();
-    if (q.length > 2) {
-      goSlow({ q });
+    if (!q || q.length > 2) {
+      goSlow();
     }
   }
 
-  function onExperienceTypeChange(event: CustomEvent<DropdownValue<Category>>) {
-    experience_type = event.detail.value?.id || '';
-    goSlow({ x: experience_type });
+  function onExperienceTypeChange(event: CustomEvent<DropdownValue<Kind>>) {
+    experienceTypeId = event.detail.value?.id || '';
+    goSlow();
   }
 
-  function onDestinationTypeChange(
-    event: CustomEvent<DropdownValue<Category>>,
-  ) {
-    destination_type = event.detail.value?.id || '';
-    goSlow({ d: destination_type });
+  function onDestinationTypeChange(event: CustomEvent<DropdownValue<Kind>>) {
+    destinationTypeId = event.detail.value?.id || '';
+    goSlow();
   }
 
-  function onCountryChange(event: CustomEvent<DropdownValue<Country>>) {
+  function onCountryChange(event: CustomEvent<DropdownMultiValues<Country>>) {
     if (event.detail.value) {
-      const isEqual = event.detail.value.reduce(
-        (acc: boolean, item: Country) => {
-          if (acc) {
-            const indexExist = countries.findIndex(
-              (idCountry) => idCountry == item.id,
-            );
-            if (indexExist >= 0) {
-              acc = true;
-            } else {
-              acc = false;
-            }
-          }
-          return acc;
-        },
-        true,
-      );
-      if (!isEqual) {
-        goSlow({
-          [COUNTRY]: event.detail.value.map((item: Country) => item.id),
-        });
-      }
+      countryIds = event.detail.value.map((c) => c.id);
     } else {
-      goSlow({ [COUNTRY]: null });
+      countryIds = [];
     }
+    goSlow();
   }
 
-  function onSortChange(event: CustomEvent<DropdownValue<Ordering>>) {
-    ordering = event.detail.value?.key || '';
-    goSlow({ o: ordering });
-  }
-
-  function onSearchSubmitMobile(event: CustomEvent) {
-    contentHeaderActionMobile = '';
-    goSlow({
-      c: event.detail.countries || '',
-      d: event.detail.destination_type || '',
-      x: event.detail.experience_type || '',
-      o: event.detail.ordering || '',
-    });
-  }
-
-  async function likeExperience(event: CustomEvent) {
-    let liked: boolean;
-    if (!$authStore.user) {
-      window.pushToast('Please login to use this feature');
-      return;
-    }
-    let experience = event.detail.item;
-    let experienceLikedIds: string[] = (
-      $authStore.user?.experienceLikes || []
-    ).map((item: Experience) => item.id);
-    let indexLikeExist = experienceLikedIds.findIndex(
-      (id: string) => id == experience.id,
-    );
-    if (indexLikeExist < 0) {
-      experienceLikedIds.push(experience.id);
-      liked = true;
-    } else {
-      experienceLikedIds.splice(indexLikeExist, 1);
-      liked = false;
-    }
-    const res = await fetch(`/experience/like.json`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(experienceLikedIds),
-    });
-
-    if (res.ok) {
-      const data: ExperienceLikeData = await res.json();
-      $authStore.user.experienceLikes = data.updateUser.user.experienceLikes;
-      authStore.set({ user: $authStore.user });
-      experience.liked = liked;
-      searchResultExperience = searchResultExperience.map(
-        (item: Experience) => {
-          if (item.id == experience.id) {
-            item = experience;
-          }
-          return item;
-        },
-      );
-    } else {
-      const error = await res.json();
-      console.error(error);
-    }
-  }
-
-  async function likeDestination(event: CustomEvent) {
-    let liked: boolean;
-    if (!$authStore.user) {
-      window.pushToast('Please login to use this feature');
-      return;
-    }
-    let destination = event.detail.item;
-    let destinationLikedIds: string[] = (
-      $authStore.user?.destinationLikes || []
-    ).map((item: Destination) => item.id);
-    let indexLikeExist = destinationLikedIds.findIndex(
-      (id: string) => id == destination.id,
-    );
-    if (indexLikeExist < 0) {
-      destinationLikedIds.push(destination.id);
-      liked = true;
-    } else {
-      destinationLikedIds.splice(indexLikeExist, 1);
-      liked = false;
-    }
-    const res = await fetch(`/destination/like.json`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(destinationLikedIds),
-    });
-
-    if (res.ok) {
-      const data: DestinationLikeData = await res.json();
-      $authStore.user.destinationLikes = data.updateUser.user.destinationLikes;
-      authStore.set({ user: $authStore.user });
-      destination.liked = liked;
-      searchResultDestination = searchResultDestination.map(
-        (item: Destination) => {
-          if (item.id == destination.id) {
-            item = destination;
-          }
-          return item;
-        },
-      );
-    } else {
-      const error = await res.json();
-      console.error(error);
-    }
+  function onSortChange(event: CustomEvent<DropdownValue<Kind>>) {
+    orderingTypeIds = event.detail.value?.id ? [event.detail.value.id] : [];
+    goSlow();
   }
 
   function onScrollFixedHeader() {
@@ -364,82 +256,70 @@
   }}
 />
 <div class="content search-page-content">
-  <section class="header-title d-pt-150 d-pb-55 m-pt-100 m-pb-25 full-width">
+  <section class="header-title d-pb-55 m-pt-40 m-pb-25 full-width">
     <div class="content-wrap">
       <div class="container m-none">
         <form
           class="search-form-experiences"
           method="GET"
-          on:submit|preventDefault={() => {
-            go({});
-          }}
+          on:submit|preventDefault={go}
         >
           <LayoutGrid class="p-0">
-            <Cell span="4">
+            <Cell span={4}>
               <div class="form-control">
                 <Textfield
                   variant="outlined"
-                  bind:value={query}
+                  bind:value={q}
                   label="Start with a search"
                   withTrailingIcon={false}
                   on:input={onQueryInput}
                 >
-                  <Icon slot="trailingIcon"
-                    ><img src="/img/icons/icon-search.svg" /></Icon
-                  >
+                  <Icon slot="trailingIcon"><SearchIcon /></Icon>
                 </Textfield>
               </div>
             </Cell>
-            <Cell span="2">
+            <Cell span={2}>
               <div class="form-control">
                 <OySelect
                   items={experienceTypes}
-                  optionIdentifier="id"
-                  labelIdentifier="name"
                   placeholder="By Experience Type"
                   on:select={onExperienceTypeChange}
                   on:clear={onExperienceTypeChange}
-                  value={experience_type}
+                  value={experienceTypeId}
                 />
               </div>
             </Cell>
-            <Cell span="2">
+            <Cell span={2}>
               <div class="form-control">
                 <OySelect
                   items={destinationTypes}
-                  optionIdentifier="id"
-                  labelIdentifier="name"
                   placeholder="By Destination Type"
                   on:select={onDestinationTypeChange}
                   on:clear={onDestinationTypeChange}
-                  value={destination_type}
+                  value={destinationTypeId}
                 />
               </div>
             </Cell>
-            <Cell span="2">
+            <Cell span={2}>
               <div class="form-control">
                 <OySelect
-                  items={countryOptions}
-                  optionIdentifier="id"
-                  labelIdentifier="name"
+                  items={countries}
                   placeholder="By Country"
                   on:select={onCountryChange}
                   on:clear={onCountryChange}
-                  value={countries}
+                  value={countryIds}
                   isMulti={true}
                 />
               </div>
             </Cell>
-            <Cell span="2">
+            <Cell span={2}>
               <div class="form-control">
                 <OySelect
-                  items={Orderings}
-                  optionIdentifier="key"
-                  labelIdentifier="name"
+                  items={orderingTypes}
                   placeholder="Sort By"
                   on:select={onSortChange}
                   on:clear={onSortChange}
-                  value={ordering}
+                  value={orderingTypeIds[0]}
                 />
               </div>
             </Cell>
@@ -448,7 +328,7 @@
       </div>
       <div class="container m-block d-none">
         <LayoutGrid class="p-0">
-          <Cell span="12">
+          <Cell span={12}>
             <Button
               on:click={() => {
                 contentHeaderActionMobile = 'experience-search';
@@ -465,39 +345,33 @@
     <div class="container">
       <div class="section-content">
         <LayoutGrid class="p-0">
-          {#each searchResultDestination || [] as item, i}
-            <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-              <Item
-                {...item}
-                pathPrefix="/destination"
-                bind:item
-                on:likeItem={likeDestination}
-              />
-            </Cell>
+          {#each searchResult.destinations as group}
+            {#each group.result.hits as item}
+              <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
+                <Item introShow={true} pathPrefix="/destinations" bind:item {cities} />
+              </Cell>
+            {/each}
           {/each}
-          {#each searchResultExperience || [] as item, i}
-            <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
-              <Item
-                {...item}
-                pathPrefix="/experience"
-                bind:item
-                on:likeItem={likeExperience}
-              />
-            </Cell>
+          {#each searchResult.experiences as group}
+            {#each group.result.hits as item}
+              <Cell spanDevices={{ desktop: 3, phone: 2, tablet: 4 }}>
+                <Item introShow={true} pathPrefix="/experiences" bind:item {cities} />
+              </Cell>
+            {/each}
           {/each}
         </LayoutGrid>
       </div>
     </div>
   </section>
 </div>
-<HeaderActionMobile
+<!-- <HeaderActionMobile
   bind:content={contentHeaderActionMobile}
-  searchModel={{ experience_type, destination_type, ordering, countries }}
+  searchModel={{ experienceTypes, destinationType, ordering, countries }}
   experience_types={experienceTypes}
-  destination_types={destinationTypes}
+  {destinationTypes}
   orderings={Orderings}
   on:close={onSearchSubmitMobile}
-/>
+/> -->
 <OyNotification />
 
 <style lang="scss" global>

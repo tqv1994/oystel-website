@@ -1,20 +1,21 @@
 import { writable } from 'svelte/store';
-import { Action } from './action';
-import { ComponentBase } from './component';
-import { CollectionStore } from './types';
-import { UploadFile } from './upload-file';
+import type { Action } from './action';
+import type { ComponentBase } from './component';
+import type { CollectionStore } from './types';
+import type { UploadFile } from './upload-file';
 
 export const bannerStore = writable<CollectionStore<Banner>>({
   items: {},
 });
 
 export type Banner = ComponentBase & {
-    headline?: string;
-    description?: string;
-    actions?: Action[];
-    gallery?: UploadFile[];
-    background?: UploadFile[];
-  };
+  __component: 'banners.banner';
+  headline?: string;
+  description?: string;
+  actions?: Action[];
+  gallery?: UploadFile[];
+  background?: UploadFile[];
+};
 
 export const bannerFieldsFragment = `
 fragment bannerFields on ComponentBannersBanner {
